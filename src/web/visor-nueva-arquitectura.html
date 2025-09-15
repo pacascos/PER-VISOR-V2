@@ -2826,6 +2826,10 @@
                 }
             });
         };
+
+        // URL parameter support: if URL has ?search=id, set search input
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('search')) document.getElementById('searchInput').value = urlParams.get('search');
     </script>
 </body>
 </html>

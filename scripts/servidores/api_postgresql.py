@@ -11,8 +11,14 @@ import requests
 import psycopg2
 import psycopg2.extras
 from datetime import datetime
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, session
 from flask_cors import CORS
+import hashlib
+import secrets
+from functools import wraps
+import jwt
+from datetime import datetime, timedelta
+import random
 
 # Configuración
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'your-api-key-here')
@@ -49,6 +55,11 @@ logger = logging.getLogger(__name__)
 # Crear aplicación Flask
 app = Flask(__name__)
 CORS(app)
+
+# Configuración de sesiones y JWT
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', secrets.token_hex(32))
+JWT_SECRET = os.getenv('JWT_SECRET', secrets.token_hex(32))
+JWT_EXPIRATION_HOURS = 24
 
 # Funciones de base de datos
 def get_db_connection():
@@ -202,8 +213,9 @@ def _build_filter_conditions(convocatoria, tema, search_text):
         params.extend([tema, tema])
 
     if search_text:
-        where_conditions.append("(q.texto_pregunta ILIKE %s)")
-        params.append(f'%{search_text}%')
+        # Buscar por texto de pregunta o por ID exacto
+        where_conditions.append("(q.texto_pregunta ILIKE %s OR q.id::text = %s)")
+        params.extend([f'%{search_text}%', search_text])
 
     where_clause = " AND ".join(where_conditions) if where_conditions else "1=1"
     return where_clause, params
@@ -1056,6 +1068,701 @@ def borrar_explicacion():
         logger.error(f"Error borrando explicación: {e}")
         return jsonify({'error': str(e)}), 500
 
+# ====================================
+# SISTEMA DE AUTENTICACIÓN
+# ====================================
+
+JWT_SECRET = os.getenv('JWT_SECRET', 'your-secret-key-change-in-production')
+
+def hash_password(password):
+    """Hash password with salt"""
+    salt = secrets.token_hex(16)
+    password_hash = hashlib.sha256((password + salt).encode()).hexdigest()
+    return f"{salt}:{password_hash}"
+
+def verify_password(password, hashed):
+    """Verify password against hash"""
+    try:
+        salt, stored_hash = hashed.split(':')
+        password_hash = hashlib.sha256((password + salt).encode()).hexdigest()
+        return password_hash == stored_hash
+    except:
+        return False
+
+def generate_jwt_token(user_id, username):
+    """Generate JWT token for user"""
+    payload = {
+        'user_id': str(user_id),
+        'username': username,
+        'exp': datetime.utcnow() + timedelta(days=7),
+        'iat': datetime.utcnow()
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm='HS256')
+
+def verify_jwt_token(token):
+    """Verify and decode JWT token"""
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
+        return payload
+    except jwt.ExpiredSignatureError:
+        return None
+    except jwt.InvalidTokenError:
+        return None
+
+def require_auth(f):
+    """Decorator to require authentication"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        token = None
+        auth_header = request.headers.get('Authorization')
+
+        if auth_header:
+            try:
+                token = auth_header.split(' ')[1]  # Bearer <token>
+            except IndexError:
+                return jsonify({'error': 'Invalid authorization header format'}), 401
+
+        if not token:
+            return jsonify({'error': 'Token missing'}), 401
+
+        payload = verify_jwt_token(token)
+        if not payload:
+            return jsonify({'error': 'Token invalid or expired'}), 401
+
+        # Add user info to request context
+        request.current_user = {
+            'user_id': payload['user_id'],
+            'username': payload['username']
+        }
+
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.route('/auth/register', methods=['POST'])
+def register_user():
+    """Register new user"""
+    try:
+        data = request.get_json()
+
+        # Validación básica
+        required_fields = ['username', 'email', 'password']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({'error': f'Campo requerido: {field}'}), 400
+
+        username = data['username'].strip()
+        email = data['email'].strip().lower()
+        password = data['password']
+
+        # Validaciones
+        if len(username) < 3:
+            return jsonify({'error': 'El nombre de usuario debe tener al menos 3 caracteres'}), 400
+
+        if len(password) < 6:
+            return jsonify({'error': 'La contraseña debe tener al menos 6 caracteres'}), 400
+
+        if '@' not in email:
+            return jsonify({'error': 'Email inválido'}), 400
+
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Verificar si usuario ya existe
+        cur.execute("SELECT id FROM users WHERE username = %s OR email = %s", (username, email))
+        existing_user = cur.fetchone()
+
+        if existing_user:
+            return jsonify({'error': 'Usuario o email ya existe'}), 409
+
+        # Hash password
+        password_hash = hash_password(password)
+
+        # Crear usuario
+        cur.execute("""
+            INSERT INTO users (username, email, password_hash, created_at)
+            VALUES (%s, %s, %s, CURRENT_TIMESTAMP)
+            RETURNING id, username, email, created_at
+        """, (username, email, password_hash))
+
+        user = cur.fetchone()
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        # Generate JWT token
+        token = generate_jwt_token(user['id'], user['username'])
+
+        logger.info(f"✅ Usuario registrado: {username} ({email})")
+
+        return jsonify({
+            'success': True,
+            'message': 'Usuario registrado correctamente',
+            'user': {
+                'id': str(user['id']),
+                'username': user['username'],
+                'email': user['email'],
+                'created_at': user['created_at'].isoformat()
+            },
+            'token': token
+        }), 201
+
+    except Exception as e:
+        logger.error(f"Error registrando usuario: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/auth/login', methods=['POST'])
+def login_user():
+    """Login user"""
+    try:
+        data = request.get_json()
+
+        username = data.get('username', '').strip()
+        password = data.get('password', '')
+
+        if not username or not password:
+            return jsonify({'error': 'Usuario y contraseña requeridos'}), 400
+
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Buscar usuario (por username o email)
+        cur.execute("""
+            SELECT id, username, email, password_hash, created_at, last_login
+            FROM users
+            WHERE username = %s OR email = %s
+        """, (username, username))
+
+        user = cur.fetchone()
+
+        if not user or not verify_password(password, user['password_hash']):
+            return jsonify({'error': 'Credenciales inválidas'}), 401
+
+        # Actualizar last_login
+        cur.execute("""
+            UPDATE users SET last_login = CURRENT_TIMESTAMP
+            WHERE id = %s
+        """, (user['id'],))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        # Generate JWT token
+        token = generate_jwt_token(user['id'], user['username'])
+
+        logger.info(f"🔑 Usuario logueado: {user['username']}")
+
+        return jsonify({
+            'success': True,
+            'message': 'Login exitoso',
+            'user': {
+                'id': str(user['id']),
+                'username': user['username'],
+                'email': user['email'],
+                'created_at': user['created_at'].isoformat() if user['created_at'] else None,
+                'last_login': user['last_login'].isoformat() if user['last_login'] else None
+            },
+            'token': token
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error en login: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/auth/me', methods=['GET'])
+@require_auth
+def get_current_user():
+    """Get current user info"""
+    try:
+        user_id = request.current_user['user_id']
+
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Obtener información del usuario
+        cur.execute("""
+            SELECT id, username, email, created_at, last_login
+            FROM users WHERE id = %s
+        """, (user_id,))
+
+        user = cur.fetchone()
+        cur.close()
+        conn.close()
+
+        if not user:
+            return jsonify({'error': 'Usuario no encontrado'}), 404
+
+        return jsonify({
+            'user': {
+                'id': str(user['id']),
+                'username': user['username'],
+                'email': user['email'],
+                'created_at': user['created_at'].isoformat() if user['created_at'] else None,
+                'last_login': user['last_login'].isoformat() if user['last_login'] else None
+            }
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo usuario actual: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+# ====================================
+# SISTEMA DE EXÁMENES
+# ====================================
+
+@app.route('/exams/generate', methods=['POST'])
+@require_auth
+def generate_exam():
+    """Generate new PER exam for user"""
+    try:
+        user_id = request.current_user['user_id']
+
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Obtener configuración de UT
+        cur.execute("SELECT * FROM ut_configuration ORDER BY ut_number")
+        ut_configs = cur.fetchall()
+
+        if not ut_configs:
+            return jsonify({'error': 'Configuración de UT no encontrada'}), 500
+
+        # Crear nuevo examen
+        cur.execute("""
+            INSERT INTO user_exams (user_id, exam_type, total_questions, status)
+            VALUES (%s, 'PER', 45, 'in_progress')
+            RETURNING id
+        """, (user_id,))
+
+        exam_id = cur.fetchone()['id']
+
+        # Generar preguntas por UT
+        questions_selected = []
+        question_order = 1
+
+        for ut_config in ut_configs:
+            ut_number = ut_config['ut_number']
+            category_name = ut_config['category_name']
+            questions_needed = ut_config['questions_per_exam']
+
+            # Obtener preguntas disponibles para esta UT solo de exámenes PER
+            cur.execute("""
+                SELECT q.id FROM questions q
+                JOIN exams e ON q.exam_id = e.id
+                WHERE q.categoria = %s
+                AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
+                AND q.anulada = false
+                ORDER BY RANDOM()
+                LIMIT %s
+            """, (category_name, questions_needed))
+
+            ut_questions = cur.fetchall()
+
+            if len(ut_questions) < questions_needed:
+                logger.warning(f"⚠️ Solo {len(ut_questions)} preguntas PER disponibles para UT{ut_number} ({category_name}), se necesitan {questions_needed}")
+
+            # Asignar preguntas al examen
+            for question in ut_questions:
+                cur.execute("""
+                    INSERT INTO exam_questions (user_exam_id, question_id, question_order, ut_category, ut_number)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, (exam_id, question['id'], question_order, category_name, ut_number))
+
+                questions_selected.append({
+                    'question_id': str(question['id']),
+                    'order': question_order,
+                    'ut_number': ut_number,
+                    'ut_category': category_name
+                })
+
+                question_order += 1
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        logger.info(f"🎯 Examen generado para usuario {request.current_user['username']}: {len(questions_selected)} preguntas")
+
+        return jsonify({
+            'success': True,
+            'exam_id': str(exam_id),
+            'total_questions': len(questions_selected),
+            'questions': questions_selected,
+            'message': f'Examen generado con {len(questions_selected)} preguntas'
+        }), 201
+
+    except Exception as e:
+        logger.error(f"Error generando examen: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/exams/<exam_id>/questions', methods=['GET'])
+@require_auth
+def get_exam_questions(exam_id):
+    """Get questions for a specific exam"""
+    try:
+        user_id = request.current_user['user_id']
+
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Verificar que el examen pertenezca al usuario
+        cur.execute("""
+            SELECT id FROM user_exams
+            WHERE id = %s AND user_id = %s
+        """, (exam_id, user_id))
+
+        exam = cur.fetchone()
+        if not exam:
+            return jsonify({'error': 'Examen no encontrado'}), 404
+
+        # Obtener preguntas del examen con detalles
+        cur.execute("""
+            SELECT
+                eq.question_order,
+                eq.ut_category,
+                eq.ut_number,
+                q.id,
+                q.texto_pregunta,
+                q.respuesta_correcta,
+                q.categoria,
+                q.numero_pregunta,
+                e.tipo_examen,
+                e.titulo,
+                e.convocatoria
+            FROM exam_questions eq
+            JOIN questions q ON eq.question_id = q.id
+            JOIN exams e ON q.exam_id = e.id
+            WHERE eq.user_exam_id = %s
+            ORDER BY eq.question_order
+        """, (exam_id,))
+
+        questions = cur.fetchall()
+
+        questions_list = []
+        for q in questions:
+            # Obtener opciones para esta pregunta
+            cur.execute("""
+                SELECT opcion, texto
+                FROM answer_options
+                WHERE question_id = %s
+                ORDER BY opcion
+            """, (q['id'],))
+
+            options = cur.fetchall()
+
+            # Organizar opciones en el formato esperado
+            question_data = {
+                'question_id': str(q['id']),
+                'order': q['question_order'],
+                'ut_number': q['ut_number'],
+                'ut_category': q['ut_category'],
+                'texto_pregunta': q['texto_pregunta'],
+                'respuesta_correcta': q['respuesta_correcta'],
+                'categoria': q['categoria'],
+                'numero_pregunta': q['numero_pregunta'],
+                'tipo_examen': q['tipo_examen'],
+                'titulo_examen': q['titulo'],
+                'convocatoria': q['convocatoria']
+            }
+
+            # Agregar opciones
+            for option in options:
+                question_data[f'opcion_{option["opcion"]}'] = option['texto']
+
+            questions_list.append(question_data)
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'exam_id': exam_id,
+            'questions': questions_list,
+            'total_questions': len(questions_list)
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo preguntas del examen: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/exams/<exam_id>/submit', methods=['POST'])
+@require_auth
+def submit_exam_answers(exam_id):
+    """Submit answers for an exam"""
+    try:
+        user_id = request.current_user['user_id']
+        data = request.get_json()
+        answers = data.get('answers', [])
+
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Verificar que el examen pertenezca al usuario y esté en progreso
+        cur.execute("""
+            SELECT id, started_at FROM user_exams
+            WHERE id = %s AND user_id = %s AND status = 'in_progress'
+        """, (exam_id, user_id))
+
+        exam = cur.fetchone()
+        if not exam:
+            return jsonify({'error': 'Examen no encontrado o ya finalizado'}), 404
+
+        # Procesar respuestas
+        total_questions = 0
+        correct_answers = 0
+        ut_results = {}
+
+        for answer_data in answers:
+            question_id = answer_data.get('question_id')
+            selected_answer = answer_data.get('selected_answer')
+
+            if not question_id or not selected_answer:
+                continue
+
+            # Obtener datos de la pregunta
+            cur.execute("""
+                SELECT q.respuesta_correcta, eq.ut_number, eq.ut_category
+                FROM questions q
+                JOIN exam_questions eq ON q.id = eq.question_id
+                WHERE q.id = %s AND eq.user_exam_id = %s
+            """, (question_id, exam_id))
+
+            question_info = cur.fetchone()
+            if not question_info:
+                continue
+
+            # Verificar si la respuesta es correcta
+            is_correct = selected_answer.lower() == question_info['respuesta_correcta'].lower()
+
+            # Guardar respuesta del usuario
+            cur.execute("""
+                INSERT INTO user_answers (user_exam_id, question_id, selected_answer, is_correct, answered_at)
+                VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP)
+                ON CONFLICT (user_exam_id, question_id)
+                DO UPDATE SET
+                    selected_answer = EXCLUDED.selected_answer,
+                    is_correct = EXCLUDED.is_correct,
+                    answered_at = EXCLUDED.answered_at
+            """, (exam_id, question_id, selected_answer, is_correct))
+
+            total_questions += 1
+            if is_correct:
+                correct_answers += 1
+
+            # Contar por UT
+            ut_num = question_info['ut_number']
+            if ut_num not in ut_results:
+                ut_results[ut_num] = {'correct': 0, 'total': 0, 'errors': 0}
+
+            ut_results[ut_num]['total'] += 1
+            if is_correct:
+                ut_results[ut_num]['correct'] += 1
+            else:
+                ut_results[ut_num]['errors'] += 1
+
+        # Calcular resultado final
+        score_percentage = (correct_answers / total_questions * 100) if total_questions > 0 else 0
+        passed = _check_exam_passed(score_percentage, ut_results)
+
+        # Calcular duración del examen
+        duration_minutes = _calculate_exam_duration(exam['started_at'])
+
+        # Actualizar estado del examen
+        cur.execute("""
+            UPDATE user_exams SET
+                completed_at = CURRENT_TIMESTAMP,
+                duration_minutes = %s,
+                correct_answers = %s,
+                status = 'completed',
+                passed = %s,
+                score_percentage = %s,
+                metadata = %s
+            WHERE id = %s
+        """, (duration_minutes, correct_answers, passed, score_percentage,
+              json.dumps({'ut_results': ut_results}), exam_id))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        logger.info(f"📝 Examen completado - Usuario: {request.current_user['username']}, "
+                   f"Puntuación: {score_percentage:.1f}%, Aprobado: {passed}")
+
+        return jsonify({
+            'success': True,
+            'exam_id': exam_id,
+            'total_questions': total_questions,
+            'correct_answers': correct_answers,
+            'score_percentage': round(score_percentage, 2),
+            'passed': passed,
+            'duration_minutes': duration_minutes,
+            'ut_results': ut_results
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error enviando respuestas del examen: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+def _check_exam_passed(score_percentage, ut_results):
+    """Check if exam is passed based on PER criteria"""
+    # Criterio 1: Puntuación general >= 65%
+    if score_percentage < 65:
+        return False
+
+    # Criterio 2: UT críticas con límites de errores
+    critical_uts = {
+        5: 2,   # Balizamiento - máximo 2 errores
+        6: 5,   # RIPA - máximo 5 errores
+        11: 2   # Carta navegación - máximo 2 errores
+    }
+
+    for ut_number, max_errors in critical_uts.items():
+        if ut_number in ut_results:
+            if ut_results[ut_number]['errors'] > max_errors:
+                return False
+
+    return True
+
+def _calculate_exam_duration(started_at):
+    """Calculate exam duration in minutes"""
+    from datetime import datetime
+    if isinstance(started_at, str):
+        started_at = datetime.fromisoformat(started_at.replace('Z', '+00:00'))
+
+    duration = datetime.now(started_at.tzinfo) - started_at
+    return int(duration.total_seconds() / 60)
+
+@app.route('/user/exams', methods=['GET'])
+@require_auth
+def get_user_exams():
+    """Get user's exam history"""
+    try:
+        user_id = request.current_user['user_id']
+
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Obtener exámenes del usuario
+        cur.execute("""
+            SELECT
+                id,
+                exam_type,
+                started_at,
+                completed_at,
+                duration_minutes,
+                total_questions,
+                correct_answers,
+                status,
+                passed,
+                score_percentage,
+                metadata
+            FROM user_exams
+            WHERE user_id = %s
+            ORDER BY started_at DESC
+        """, (user_id,))
+
+        exams = cur.fetchall()
+        cur.close()
+        conn.close()
+
+        exams_list = []
+        for exam in exams:
+            exam_data = {
+                'id': str(exam['id']),
+                'exam_type': exam['exam_type'],
+                'started_at': exam['started_at'].isoformat() if exam['started_at'] else None,
+                'completed_at': exam['completed_at'].isoformat() if exam['completed_at'] else None,
+                'duration_minutes': exam['duration_minutes'],
+                'total_questions': exam['total_questions'],
+                'correct_answers': exam['correct_answers'],
+                'status': exam['status'],
+                'passed': exam['passed'],
+                'score_percentage': float(exam['score_percentage']) if exam['score_percentage'] else None
+            }
+
+            if exam['metadata']:
+                exam_data['metadata'] = json.loads(exam['metadata'])
+
+            exams_list.append(exam_data)
+
+        return jsonify({
+            'exams': exams_list,
+            'total_exams': len(exams_list)
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo historial de exámenes: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/per-questions/stats', methods=['GET'])
+def get_per_questions_stats():
+    """Get statistics of available PER questions by category"""
+    try:
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Obtener estadísticas de preguntas PER por categoría
+        cur.execute("""
+            SELECT
+                q.categoria,
+                COUNT(*) as total_preguntas,
+                COUNT(CASE WHEN e.tipo_examen = 'PER_NORMAL' THEN 1 END) as per_normal,
+                COUNT(CASE WHEN e.tipo_examen = 'PER_LIBERADO' THEN 1 END) as per_liberado,
+                COUNT(CASE WHEN q.anulada = false THEN 1 END) as preguntas_validas
+            FROM questions q
+            JOIN exams e ON q.exam_id = e.id
+            WHERE (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
+            GROUP BY q.categoria
+            ORDER BY q.categoria
+        """)
+
+        stats = cur.fetchall()
+
+        # Obtener configuración de UT para comparar
+        cur.execute("SELECT * FROM ut_configuration ORDER BY ut_number")
+        ut_configs = cur.fetchall()
+
+        cur.close()
+        conn.close()
+
+        # Formatear estadísticas
+        stats_list = []
+        for stat in stats:
+            stats_list.append({
+                'categoria': stat['categoria'],
+                'total_preguntas': stat['total_preguntas'],
+                'per_normal': stat['per_normal'],
+                'per_liberado': stat['per_liberado'],
+                'preguntas_validas': stat['preguntas_validas']
+            })
+
+        # Formatear configuración UT
+        ut_config_list = []
+        for ut in ut_configs:
+            ut_config_list.append({
+                'ut_number': ut['ut_number'],
+                'ut_name': ut['ut_name'],
+                'category_name': ut['category_name'],
+                'questions_per_exam': ut['questions_per_exam']
+            })
+
+        return jsonify({
+            'per_questions_stats': stats_list,
+            'ut_configuration': ut_config_list,
+            'total_per_questions': sum(s['total_preguntas'] for s in stats_list)
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo estadísticas de preguntas PER: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
 if __name__ == '__main__':
     logger.info("🚀 API PER Nueva Arquitectura iniciando...")
     logger.info("🔹 Base de datos: PostgreSQL")
@@ -1075,5 +1782,11 @@ if __name__ == '__main__':
     logger.info("   - GET    /images/<filename>")
     logger.info("   - PUT    /preguntas/<question_id>")
     logger.info("   - GET    /stats")
+    logger.info("🔐 Endpoints de autenticación:")
+    logger.info("   - POST   /auth/register")
+    logger.info("   - POST   /auth/login")
+    logger.info("   - GET    /auth/me")
+    logger.info("🎯 Endpoints de exámenes:")
+    logger.info("   - POST   /exams/generate")
     
     app.run(host='0.0.0.0', port=5001, debug=False)
