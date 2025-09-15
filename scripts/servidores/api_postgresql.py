@@ -188,6 +188,69 @@ def get_preguntas(exam_id):
         logger.error(f"Error obteniendo preguntas: {e}")
         return jsonify({'error': str(e)}), 500
 
+def _build_filter_conditions(convocatoria, tema, search_text):
+    """Construir condiciones WHERE para filtros de preguntas"""
+    where_conditions = []
+    params = []
+
+    if convocatoria:
+        where_conditions.append("e.convocatoria = %s")
+        params.append(convocatoria)
+
+    if tema:
+        where_conditions.append("(q.categoria = %s OR q.subcategoria = %s)")
+        params.extend([tema, tema])
+
+    if search_text:
+        where_conditions.append("(q.texto_pregunta ILIKE %s)")
+        params.append(f'%{search_text}%')
+
+    where_clause = " AND ".join(where_conditions) if where_conditions else "1=1"
+    return where_clause, params
+
+def _get_filtered_questions_query(where_clause):
+    """Obtener query SQL para preguntas filtradas"""
+    return f"""
+        SELECT
+            q.id, q.numero_pregunta, q.texto_pregunta,
+            q.respuesta_correcta, q.imagen_pregunta, q.imagen_respuesta,
+            q.categoria, q.subcategoria, q.exam_id, q.anulada,
+            e.titulo as exam_titulo, e.convocatoria, e.tipo_examen,
+            array_agg(
+                json_build_object(
+                    'opcion', ao.opcion,
+                    'texto', ao.texto,
+                    'es_correcta', ao.es_correcta
+                ) ORDER BY ao.opcion
+            ) as opciones
+        FROM questions q
+        LEFT JOIN answer_options ao ON q.id = ao.question_id
+        JOIN exams e ON q.exam_id = e.id
+        WHERE {where_clause}
+        GROUP BY q.id, q.numero_pregunta, q.texto_pregunta,
+                 q.respuesta_correcta, q.imagen_pregunta, q.imagen_respuesta,
+                 q.categoria, q.subcategoria, q.exam_id, q.anulada, e.titulo, e.convocatoria, e.tipo_examen
+        ORDER BY e.convocatoria DESC, e.titulo, q.numero_pregunta
+    """
+
+def _format_questions_response(preguntas):
+    """Formatear respuesta de preguntas para el frontend"""
+    result = []
+    for pregunta in preguntas:
+        pregunta_dict = dict(pregunta)
+
+        # Convertir opciones de array a diccionario
+        opciones_dict = {}
+        if pregunta_dict['opciones'] and pregunta_dict['opciones'][0]:
+            for opcion in pregunta_dict['opciones']:
+                if opcion:  # Verificar que no sea None
+                    opciones_dict[opcion['opcion']] = opcion['texto']
+
+        pregunta_dict['opciones'] = opciones_dict
+        result.append(pregunta_dict)
+
+    return result
+
 @app.route('/preguntas-filtradas')
 def get_preguntas_filtradas():
     """Obtener preguntas filtradas por múltiples criterios"""
@@ -195,76 +258,27 @@ def get_preguntas_filtradas():
         conn = get_db_connection()
         if not conn:
             return jsonify({'error': 'Database connection failed'}), 500
-        
+
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        
+
         # Obtener parámetros de filtro
         convocatoria = request.args.get('convocatoria', '')
         tema = request.args.get('tema', '')
         search_text = request.args.get('search', '')
-        
+
         # Construir consulta SQL dinámica
-        where_conditions = []
-        params = []
-        
-        if convocatoria:
-            where_conditions.append("e.convocatoria = %s")
-            params.append(convocatoria)
-        
-        if tema:
-            where_conditions.append("(q.categoria = %s OR q.subcategoria = %s)")
-            params.extend([tema, tema])
-        
-        if search_text:
-            where_conditions.append("(q.texto_pregunta ILIKE %s)")
-            params.append(f'%{search_text}%')
-        
-        where_clause = " AND ".join(where_conditions) if where_conditions else "1=1"
-        
-        query = f"""
-            SELECT
-                q.id, q.numero_pregunta, q.texto_pregunta,
-                q.respuesta_correcta, q.imagen_pregunta, q.imagen_respuesta,
-                q.categoria, q.subcategoria, q.exam_id, q.anulada,
-                e.titulo as exam_titulo, e.convocatoria, e.tipo_examen,
-                array_agg(
-                    json_build_object(
-                        'opcion', ao.opcion,
-                        'texto', ao.texto,
-                        'es_correcta', ao.es_correcta
-                    ) ORDER BY ao.opcion
-                ) as opciones
-            FROM questions q
-            LEFT JOIN answer_options ao ON q.id = ao.question_id
-            JOIN exams e ON q.exam_id = e.id
-            WHERE {where_clause}
-            GROUP BY q.id, q.numero_pregunta, q.texto_pregunta,
-                     q.respuesta_correcta, q.imagen_pregunta, q.imagen_respuesta,
-                     q.categoria, q.subcategoria, q.exam_id, q.anulada, e.titulo, e.convocatoria, e.tipo_examen
-            ORDER BY e.convocatoria DESC, e.titulo, q.numero_pregunta
-        """
-        
+        where_clause, params = _build_filter_conditions(convocatoria, tema, search_text)
+        query = _get_filtered_questions_query(where_clause)
+
         cur.execute(query, params)
         preguntas = cur.fetchall()
-        
-        # Convertir a formato esperado por el frontend
-        result = []
-        for pregunta in preguntas:
-            pregunta_dict = dict(pregunta)
-            
-            # Convertir opciones de array a diccionario
-            opciones_dict = {}
-            if pregunta_dict['opciones'] and pregunta_dict['opciones'][0]:
-                for opcion in pregunta_dict['opciones']:
-                    if opcion:  # Verificar que no sea None
-                        opciones_dict[opcion['opcion']] = opcion['texto']
-            
-            pregunta_dict['opciones'] = opciones_dict
-            result.append(pregunta_dict)
-        
+
+        # Formatear respuesta
+        result = _format_questions_response(preguntas)
+
         cur.close()
         conn.close()
-        
+
         logger.info(f"✅ Filtradas {len(result)} preguntas con criterios: conv={convocatoria}, tema={tema}, text={search_text}")
         return jsonify({
             'success': True,
@@ -277,7 +291,7 @@ def get_preguntas_filtradas():
                 'search_text': search_text
             }
         })
-        
+
     except Exception as e:
         logger.error(f"Error obteniendo preguntas filtradas: {e}")
         return jsonify({'error': str(e)}), 500
@@ -665,6 +679,116 @@ def get_stats():
         logger.error(f"Error obteniendo estadísticas: {e}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/preguntas-individual/<question_id>', methods=['GET'])
+def get_individual_question(question_id):
+    """Obtener una pregunta específica por su ID"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # Obtener la pregunta con sus opciones
+        cur.execute("""
+            SELECT 
+                q.id, q.numero_pregunta, q.texto_pregunta, 
+                q.respuesta_correcta, q.imagen_pregunta, q.imagen_respuesta,
+                q.categoria, q.subcategoria, q.exam_id, q.anulada,
+                e.titulo as exam_titulo, e.convocatoria, e.tipo_examen,
+                array_agg(
+                    json_build_object(
+                        'opcion', ao.opcion,
+                        'texto', ao.texto,
+                        'es_correcta', ao.es_correcta
+                    ) ORDER BY ao.opcion
+                ) as opciones
+            FROM questions q
+            LEFT JOIN answer_options ao ON q.id = ao.question_id
+            LEFT JOIN exams e ON q.exam_id = e.id
+            WHERE q.id = %s
+            GROUP BY q.id, q.numero_pregunta, q.texto_pregunta, 
+                     q.respuesta_correcta, q.imagen_pregunta, q.imagen_respuesta,
+                     q.categoria, q.subcategoria, q.exam_id, q.anulada, e.titulo, e.convocatoria, e.tipo_examen
+        """, (question_id,))
+
+        question = cur.fetchone()
+        cur.close()
+        conn.close()
+
+        if not question:
+            return jsonify({'error': 'Pregunta no encontrada'}), 404
+
+        # Convertir a diccionario
+        question_dict = dict(question)
+        
+        # Procesar opciones
+        if question_dict['opciones'] and question_dict['opciones'][0]:
+            opciones_dict = {}
+            for opcion in question_dict['opciones']:
+                opciones_dict[opcion['opcion']] = opcion['texto']
+            question_dict['opciones'] = opciones_dict
+        else:
+            question_dict['opciones'] = {}
+
+        return jsonify({
+            'success': True,
+            'question': question_dict
+        })
+
+    except Exception as e:
+        logger.error(f"❌ Error obteniendo pregunta {question_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+def _build_question_update_fields(data):
+    """Construir campos y parámetros para actualización de pregunta"""
+    update_fields = []
+    params = []
+
+    field_mappings = {
+        'texto_pregunta': 'texto_pregunta',
+        'categoria': 'categoria',
+        'subcategoria': 'subcategoria',
+        'respuesta_correcta': 'respuesta_correcta',
+        'anulada': 'anulada'
+    }
+
+    for field_name, db_column in field_mappings.items():
+        if field_name in data:
+            update_fields.append(f'{db_column} = %s')
+            params.append(data[field_name])
+
+    return update_fields, params
+
+def _ensure_anulada_column_exists(cur):
+    """Asegurar que la columna anulada existe en la tabla questions"""
+    cur.execute("""
+        DO $$ BEGIN
+            ALTER TABLE questions ADD COLUMN anulada BOOLEAN DEFAULT FALSE;
+        EXCEPTION WHEN duplicate_column THEN
+            -- La columna ya existe, no hacer nada
+        END $$;
+    """)
+
+def _update_question_options(cur, question_id, data):
+    """Actualizar opciones de respuesta de una pregunta"""
+    if 'opciones' not in data:
+        return
+
+    # Primero, eliminar las opciones existentes
+    cur.execute("DELETE FROM answer_options WHERE question_id = %s", (question_id,))
+
+    # Insertar las nuevas opciones
+    for letra, texto in data['opciones'].items():
+        respuesta_correcta = data.get('respuesta_correcta')
+        es_correcta = False
+        if respuesta_correcta:  # Solo comparar si respuesta_correcta no es None/null
+            es_correcta = (letra == respuesta_correcta.lower())
+        cur.execute("""
+            INSERT INTO answer_options (question_id, opcion, texto, es_correcta)
+            VALUES (%s, %s, %s, %s)
+        """, (question_id, letra, texto, es_correcta))
+
 @app.route('/preguntas/<question_id>', methods=['PUT'])
 def update_question(question_id):
     """Actualizar una pregunta específica"""
@@ -679,33 +803,12 @@ def update_question(question_id):
 
         cur = conn.cursor()
 
-        # Actualizar pregunta principal
-        update_fields = []
-        params = []
-
-        if 'categoria' in data:
-            update_fields.append('categoria = %s')
-            params.append(data['categoria'])
-
-        if 'subcategoria' in data:
-            update_fields.append('subcategoria = %s')
-            params.append(data['subcategoria'])
-
-        if 'respuesta_correcta' in data:
-            update_fields.append('respuesta_correcta = %s')
-            params.append(data['respuesta_correcta'])
-
+        # Asegurar que la columna anulada existe si se va a actualizar
         if 'anulada' in data:
-            # Añadir campo anulada si no existe
-            cur.execute("""
-                DO $$ BEGIN
-                    ALTER TABLE questions ADD COLUMN anulada BOOLEAN DEFAULT FALSE;
-                EXCEPTION WHEN duplicate_column THEN
-                    -- La columna ya existe, no hacer nada
-                END $$;
-            """)
-            update_fields.append('anulada = %s')
-            params.append(data['anulada'])
+            _ensure_anulada_column_exists(cur)
+
+        # Actualizar pregunta principal
+        update_fields, params = _build_question_update_fields(data)
 
         if update_fields:
             params.append(question_id)
@@ -714,25 +817,17 @@ def update_question(question_id):
                 SET {', '.join(update_fields)}, updated_at = NOW()
                 WHERE id = %s
             """
+            logger.info(f"🔍 Ejecutando query: {update_query}")
+            logger.info(f"🔍 Con parámetros: {params}")
             cur.execute(update_query, params)
+            logger.info(f"🔍 Filas afectadas: {cur.rowcount}")
 
         # Actualizar opciones de respuesta si se proporcionan
-        if 'opciones' in data:
-            # Primero, eliminar las opciones existentes
-            cur.execute("DELETE FROM answer_options WHERE question_id = %s", (question_id,))
+        _update_question_options(cur, question_id, data)
 
-            # Insertar las nuevas opciones
-            for letra, texto in data['opciones'].items():
-                respuesta_correcta = data.get('respuesta_correcta')
-                es_correcta = False
-                if respuesta_correcta:  # Solo comparar si respuesta_correcta no es None/null
-                    es_correcta = (letra == respuesta_correcta.lower())
-                cur.execute("""
-                    INSERT INTO answer_options (question_id, opcion, texto, es_correcta)
-                    VALUES (%s, %s, %s, %s)
-                """, (question_id, letra, texto, es_correcta))
-
+        logger.info(f"🔍 Haciendo commit de los cambios...")
         conn.commit()
+        logger.info(f"✅ Commit realizado exitosamente")
         cur.close()
         conn.close()
 

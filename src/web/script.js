@@ -318,65 +318,77 @@ class ExamViewer {
     }
     
     setupEventListeners() {
+        this._setupDebugListeners();
+        this._setupFilterListeners();
+        this._setupSearchListeners();
+        this._setupActionListeners();
+    }
+
+    _setupDebugListeners() {
         // Botón de debug/configuración (tuerca)
         document.getElementById('debugToggle').addEventListener('click', () => {
             this.toggleDebugInfo();
         });
-        
+    }
+
+    _setupFilterListeners() {
         // Filtro de convocatoria (filtra datos, no cambia archivo)
         document.getElementById('filterConvocatoria').addEventListener('change', (e) => {
             this.filters.convocatoria = e.target.value;
             this.updateDynamicFilters('convocatoria');
             this.applyFilters();
         });
-        
+
         // Filtros dinámicos en cascada
         document.getElementById('filterTitulacion').addEventListener('change', (e) => {
             this.filters.titulacion = e.target.value;
             this.updateDynamicFilters('titulacion');
             this.applyFilters();
         });
-        
-        
+
         document.getElementById('filterTest').addEventListener('change', (e) => {
             this.filters.test = e.target.value;
             this.updateDynamicFilters('test');
             this.applyFilters();
         });
-        
+
         document.getElementById('filterTema').addEventListener('change', (e) => {
             this.filters.tema = e.target.value;
             this.applyFilters();
         });
-        
+
         document.getElementById('filterDuplicados').addEventListener('change', (e) => {
             this.filters.duplicados = e.target.checked;
             this.applyFilters();
         });
-        
+    }
+
+    _setupSearchListeners() {
         // Búsqueda
         document.getElementById('searchInput').addEventListener('input', (e) => {
             this.filters.search = e.target.value.toLowerCase();
             this.applyFilters();
         });
-        
-        // Botones de acción
-        document.getElementById('searchBtn').addEventListener('click', () => {
-            this.applyFilters();
-        });
-        
-        document.getElementById('clearFilters').addEventListener('click', () => {
-            this.clearFilters();
-        });
-        
-        document.getElementById('toggleAnswers').addEventListener('click', () => {
-            this.toggleAnswers();
-        });
-        
+
         document.getElementById('clearSearch').addEventListener('click', () => {
             document.getElementById('searchInput').value = '';
             this.filters.search = '';
             this.applyFilters();
+        });
+    }
+
+    _setupActionListeners() {
+        // Botones de acción
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            this.applyFilters();
+        });
+
+        document.getElementById('clearFilters').addEventListener('click', () => {
+            this.clearFilters();
+        });
+
+        document.getElementById('toggleAnswers').addEventListener('click', () => {
+            this.toggleAnswers();
         });
     }
     
@@ -2536,8 +2548,8 @@ class ExamViewer {
                 return;
             }
             
-            // Cambiar botón a estado de carga
-            this.updateExplanationButton(hashPregunta, 'loading');
+            // Cambiar botón a estado de procesamiento
+            this.updateExplanationButton(hashPregunta, 'processing', false);
             
             // Generar explicación usando Flask
             const explicacion = await this.callOpenAI(pregunta);
@@ -2552,9 +2564,9 @@ class ExamViewer {
                 this.explicaciones[hashPregunta] = explicacion;
                 console.log('📝 Cache local actualizado');
                 
-                // Actualizar botón
-                this.updateExplanationButton(hashPregunta, 'view');
-                console.log('🔄 Botón actualizado a "view"');
+                // Actualizar botón a estado completado
+                this.updateExplanationButton(hashPregunta, 'completed', false);
+                console.log('🔄 Botón actualizado a "completed"');
                 
                 // Mostrar explicación generada
                 this.showExplanation(hashPregunta);
@@ -2568,8 +2580,8 @@ class ExamViewer {
             console.error('❌ Error generando explicación:', error);
             alert(`Error generando explicación: ${error.message}`);
             
-            // Restaurar botón
-            this.updateExplanationButton(hashPregunta, 'generate');
+            // Restaurar botón a estado de error
+            this.updateExplanationButton(hashPregunta, 'error', false);
         }
     }
     
@@ -2784,27 +2796,62 @@ class ExamViewer {
     }
     
     
-    updateExplanationButton(hashPregunta, estado) {
+    updateExplanationButton(hashPregunta, estado, isAutoMode = false) {
         const buttons = document.querySelectorAll(`[onclick*="'${hashPregunta}'"]`);
         
         buttons.forEach(button => {
             if (button.classList.contains('btn-explanation')) {
                 switch (estado) {
                     case 'loading':
-                        button.innerHTML = '⏳ Generando...';
+                    case 'processing':
+                        button.innerHTML = isAutoMode ? '⏳ Auto-generando...' : '⏳ Generando...';
                         button.disabled = true;
-                        button.className = 'btn-explanation btn-explanation-loading';
+                        button.style.cursor = 'wait';
+                        button.className = 'btn-explanation btn-explanation-processing';
+                        // Añadir animación de rotación
+                        button.style.animation = 'spin 1s linear infinite';
+                        break;
+                    case 'completed':
+                        button.innerHTML = '✅ Listo';
+                        button.disabled = false;
+                        button.style.cursor = 'pointer';
+                        button.style.animation = 'successPulse 0.5s ease-in-out';
+                        button.className = 'btn-explanation btn-explanation-completed';
+                        // Auto-transition a 'view' después de 2 segundos
+                        setTimeout(() => {
+                            this.updateExplanationButton(hashPregunta, 'view', isAutoMode);
+                        }, 2000);
                         break;
                     case 'view':
-                        button.innerHTML = '📖 Ver explicación';
+                        button.innerHTML = '👁️ Ver explicación';
                         button.disabled = false;
+                        button.style.cursor = 'pointer';
+                        button.style.animation = 'none';
                         button.className = 'btn-explanation btn-explanation-view';
                         button.onclick = () => this.showExplanation(hashPregunta);
+                        break;
+                    case 'regenerate':
+                        button.innerHTML = '🔄 Regenerar';
+                        button.disabled = false;
+                        button.style.cursor = 'pointer';
+                        button.style.animation = 'none';
+                        button.className = 'btn-explanation btn-explanation-regenerate';
+                        button.onclick = () => this.generateExplanation(hashPregunta);
                         break;
                     case 'generate':
                         button.innerHTML = '🤖 Generar explicación';
                         button.disabled = false;
+                        button.style.cursor = 'pointer';
+                        button.style.animation = 'none';
                         button.className = 'btn-explanation btn-explanation-generate';
+                        button.onclick = () => this.generateExplanation(hashPregunta);
+                        break;
+                    case 'error':
+                        button.innerHTML = '❌ Error - Reintentar';
+                        button.disabled = false;
+                        button.style.cursor = 'pointer';
+                        button.style.animation = 'none';
+                        button.className = 'btn-explanation btn-explanation-error';
                         button.onclick = () => this.generateExplanation(hashPregunta);
                         break;
                 }
