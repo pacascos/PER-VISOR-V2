@@ -1,0 +1,8 @@
+# Scripts de mantenimiento - no subir a git
+*.log
+*.tmp
+*.bak
+*_BACKUP_*.json
+*_antes_restauracion_*.json
+temp/
+cache/

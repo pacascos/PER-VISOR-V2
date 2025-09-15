@@ -1,0 +1,130 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific - archivos temporales y backups
+*.backup_*
+*.json.backup_*
+temp_*.txt
+temp_*.json
+*_temp.py
+debug_*.py
+analizar_*.py
+
+# Archivos de prueba y experimentales
+BACKUP_*.json
+RESPALDO_*.json
+*_AUTOMATICO_v*.json
+preguntas_*.json
+respuestas_*.json
+estructura_*.json
+*_completo.json
+*_EXTRAIDO.json
+*_RECREO_*.json
+examenes_unificados_*.json
+
+# Mantener solo los archivos principales del sistema
+# Los PDFs originales se mantienen
+# Los JSON finales se mantienen
+
+# Logs y archivos de debug
+*.log
+debug.txt
+
+# Archivos temporales de extracción
+imagenes_temp/
+*.png
+*.jpg
+*.jpeg
+
+# SEGURIDAD - Archivos sensibles (NUNCA subir a GitHub)
+.env
+.env.local
+.env.production
+.env.staging
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+*secret*
+*SECRET*
+*password*
+*PASSWORD*
+config/secrets/
+credentials/
+keys/
+.secrets/
+
+# Archivos de configuración con datos sensibles
+config.json
+config.py
+settings.json
+database.json
+.credentials
+.aws/
+.gcp/
+.azure/
+.env
+.env.local
+.env.production
+.env.staging
+
+# Tokens y claves de API
+*token*
+*TOKEN*
+*api_key*
+*API_KEY*
+auth.json
+oauth.json
+service-account*.json
+
+# Certificados SSL/TLS
+*.csr
+*.srl
+*.cert
+ca-bundle.*

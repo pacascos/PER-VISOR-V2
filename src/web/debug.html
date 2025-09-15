@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forzar Recarga Cache - Debug Explicaciones</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug Explicaciones - Forzar Recarga Cache</h1>
+    
+    <div class="debug-section info">
+        <h3>📋 Instrucciones:</h3>
+        <ol>
+            <li>Haz clic en "Verificar Explicaciones" para ver el estado actual</li>
+            <li>Haz clic en "Forzar Recarga Completa" para limpiar cache</li>
+            <li>Recarga la página principal y verifica los botones</li>
+        </ol>
+    </div>
+    
+    <div class="debug-section">
+        <h3>🔍 Verificar Estado Actual</h3>
+        <button onclick="verificarExplicaciones()">Verificar Explicaciones</button>
+        <div id="resultado-verificacion"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>🔄 Forzar Recarga Completa</h3>
+        <button onclick="forzarRecargaCompleta()">Forzar Recarga Completa</button>
+        <div id="resultado-recarga"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>📊 Logs de Debug</h3>
+        <button onclick="limpiarLogs()">Limpiar Logs</button>
+        <pre id="logs"></pre>
+    </div>
+
+    <script>
+        function log(mensaje) {
+            const logs = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            logs.textContent += `[${timestamp}] ${mensaje}\n`;
+        }
+        
+        function limpiarLogs() {
+            document.getElementById('logs').textContent = '';
+        }
+        
+        async function verificarExplicaciones() {
+            log('🔍 Verificando explicaciones...');
+            
+            try {
+                // Cargar datos principales
+                const dataResponse = await fetch('data/json/data_unificado_con_duplicados.json');
+                const data = await dataResponse.json();
+                log(`✅ Datos cargados: ${data.examenes.length} exámenes`);
+                
+                // Cargar explicaciones
+                const explicacionesResponse = await fetch('data/json/explicaciones.json');
+                const explicaciones = await explicacionesResponse.json();
+                log(`✅ Explicaciones cargadas: ${Object.keys(explicaciones).length}`);
+                log(`🔑 Hashes: ${Object.keys(explicaciones).join(', ')}`);
+                
+                // Verificar preguntas con explicación
+                let preguntasConExplicacion = 0;
+                let explicacionesEncontradas = 0;
+                
+                for (const examen of data.examenes) {
+                    for (const pregunta of examen.preguntas) {
+                        if (pregunta.hash_explicacion) {
+                            preguntasConExplicacion++;
+                            if (explicaciones[pregunta.hash_explicacion]) {
+                                explicacionesEncontradas++;
+                            }
+                        }
+                    }
+                }
+                
+                const resultado = `
+                    <div class="success">
+                        <h4>✅ Verificación Completada</h4>
+                        <p><strong>Preguntas con hash_explicacion:</strong> ${preguntasConExplicacion}</p>
+                        <p><strong>Explicaciones encontradas:</strong> ${explicacionesEncontradas}</p>
+                        <p><strong>Coincidencias:</strong> ${explicacionesEncontradas}/${preguntasConExplicacion}</p>
+                        <p><strong>Porcentaje:</strong> ${Math.round((explicacionesEncontradas / preguntasConExplicacion) * 100)}%</p>
+                    </div>
+                `;
+                
+                document.getElementById('resultado-verificacion').innerHTML = resultado;
+                log(`📊 Resultado: ${explicacionesEncontradas}/${preguntasConExplicacion} (${Math.round((explicacionesEncontradas / preguntasConExplicacion) * 100)}%)`);
+                
+            } catch (error) {
+                const resultado = `
+                    <div class="error">
+                        <h4>❌ Error en Verificación</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                document.getElementById('resultado-verificacion').innerHTML = resultado;
+                log(`❌ Error: ${error.message}`);
+            }
+        }
+        
+        function forzarRecargaCompleta() {
+            log('🔄 Forzando recarga completa del cache...');
+            
+            // Limpiar localStorage
+            localStorage.clear();
+            log('✅ localStorage limpiado');
+            
+            // Limpiar sessionStorage
+            sessionStorage.clear();
+            log('✅ sessionStorage limpiado');
+            
+            // Forzar recarga con parámetros de cache busting
+            const timestamp = Date.now();
+            const url = `index.html?t=${timestamp}&cache=bust`;
+            
+            const resultado = `
+                <div class="success">
+                    <h4>✅ Cache Limpiado</h4>
+                    <p>localStorage y sessionStorage limpiados</p>
+                    <p><a href="${url}" target="_blank">Abrir página principal con cache busting</a></p>
+                    <p><strong>O simplemente:</strong> Ctrl+F5 (Windows) o Cmd+Shift+R (Mac)</p>
+                </div>
+            `;
+            
+            document.getElementById('resultado-recarga').innerHTML = resultado;
+            log('✅ Cache limpiado. Usa Ctrl+F5 o Cmd+Shift+R para recargar');
+        }
+        
+        // Auto-verificar al cargar
+        window.addEventListener('load', () => {
+            log('🚀 Página de debug cargada');
+            verificarExplicaciones();
+        });
+    </script>
+</body>
+</html>

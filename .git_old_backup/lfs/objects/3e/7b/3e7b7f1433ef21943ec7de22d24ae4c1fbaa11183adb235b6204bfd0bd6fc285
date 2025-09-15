@@ -1,0 +1,224 @@
+{
+  "top_duplicados": [
+    {
+      "hash": "9f5410026ab6272f",
+      "apariciones": 8,
+      "convocatorias": [
+        "2021-07-RECREO",
+        "2021-12-RECREO"
+      ],
+      "titulaciones": [
+        "PER"
+      ],
+      "temas": [
+        "Emergencias en la mar"
+      ]
+    },
+    {
+      "hash": "7a3d775c7ae39cd8",
+      "apariciones": 6,
+      "convocatorias": [
+        "2024-11-RECREO",
+        "2025-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "temas": [
+        "Nomenclatura náutica"
+      ]
+    },
+    {
+      "hash": "8685049832aaf11e",
+      "apariciones": 5,
+      "convocatorias": [
+        "2021-07-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PY"
+      ],
+      "temas": [
+        "Carta de navegación",
+        "Meteorología"
+      ]
+    },
+    {
+      "hash": "cfcc26390cb57a8d",
+      "apariciones": 5,
+      "convocatorias": [
+        "2021-07-RECREO"
+      ],
+      "titulaciones": [
+        "PER"
+      ],
+      "temas": [
+        "Teoría de la navegación"
+      ]
+    },
+    {
+      "hash": "e159fe2d8445c00c",
+      "apariciones": 4,
+      "convocatorias": [
+        "2021-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "temas": [
+        "Nomenclatura náutica"
+      ]
+    },
+    {
+      "hash": "8032823b77c4ff5b",
+      "apariciones": 4,
+      "convocatorias": [
+        "2021-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "temas": [
+        "Nomenclatura náutica"
+      ]
+    },
+    {
+      "hash": "c1b6c8dbf745e8ad",
+      "apariciones": 4,
+      "convocatorias": [
+        "2021-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "temas": [
+        "Elementos de amarre y fondeo"
+      ]
+    },
+    {
+      "hash": "29d32ef8414f27c3",
+      "apariciones": 4,
+      "convocatorias": [
+        "2021-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "temas": [
+        "Elementos de amarre y fondeo"
+      ]
+    },
+    {
+      "hash": "7d4e90c9ac94044c",
+      "apariciones": 4,
+      "convocatorias": [
+        "2021-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "temas": [
+        "Seguridad"
+      ]
+    },
+    {
+      "hash": "28febb39b790573d",
+      "apariciones": 4,
+      "convocatorias": [
+        "2021-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "temas": [
+        "Seguridad"
+      ]
+    }
+  ],
+  "stats_por_convocatoria": {
+    "2021-04-RECREO": {
+      "total": 0,
+      "duplicadas": 200
+    },
+    "2021-07-RECREO": {
+      "total": 0,
+      "duplicadas": 369
+    },
+    "2021-12-RECREO": {
+      "total": 0,
+      "duplicadas": 372
+    },
+    "2021-10-RECREO": {
+      "total": 0,
+      "duplicadas": 147
+    },
+    "2022-06-RECREO": {
+      "total": 0,
+      "duplicadas": 389
+    },
+    "2022-04-RECREO": {
+      "total": 0,
+      "duplicadas": 256
+    },
+    "2022-10-RECREO": {
+      "total": 0,
+      "duplicadas": 140
+    },
+    "2022-12-RECREO": {
+      "total": 0,
+      "duplicadas": 378
+    },
+    "2023-04-RECREO": {
+      "total": 0,
+      "duplicadas": 384
+    },
+    "2023-06-RECREO": {
+      "total": 0,
+      "duplicadas": 144
+    },
+    "2023-11-RECREO": {
+      "total": 0,
+      "duplicadas": 381
+    },
+    "2024-04-RECREO": {
+      "total": 0,
+      "duplicadas": 375
+    },
+    "2024-06-RECREO": {
+      "total": 0,
+      "duplicadas": 248
+    },
+    "2025-06-RECREO": {
+      "total": 0,
+      "duplicadas": 158
+    },
+    "2024-11-RECREO": {
+      "total": 0,
+      "duplicadas": 374
+    },
+    "2025-04-RECREO": {
+      "total": 0,
+      "duplicadas": 388
+    }
+  },
+  "stats_por_tema": {
+    "Reglamento (RIPA)": 1092,
+    "Balizamiento": 596,
+    "Teoría de la navegación": 472,
+    "Seguridad": 448,
+    "Meteorología": 425,
+    "Nomenclatura náutica": 417,
+    "Carta de navegación": 288,
+    "Emergencias en la mar": 270,
+    "Legislación": 242,
+    "Elementos de amarre y fondeo": 234,
+    "Maniobra y navegación": 219
+  }
+}

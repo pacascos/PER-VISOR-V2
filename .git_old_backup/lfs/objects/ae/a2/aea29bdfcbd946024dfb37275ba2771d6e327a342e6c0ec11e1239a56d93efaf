@@ -1,0 +1,3656 @@
+{
+  "metadata": {
+    "fecha_procesamiento": "2025-09-09T14:03:31.507357",
+    "total_examenes": 2,
+    "total_preguntas": 125,
+    "include_respuestas": true,
+    "cobertura_respuestas": 0.0
+  },
+  "examenes": [
+    {
+      "titulacion": "PER",
+      "numero_test": "0",
+      "convocatoria": "2021_02_recreo",
+      "tipo_examen": "PER_NORMAL",
+      "preguntas": [
+        {
+          "numero": 1,
+          "enunciado": "Si una embarcación tiene asiento negativo:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El puntal es menor que el calado a proa."
+            },
+            {
+              "letra": "B",
+              "texto": "La embarcación no está adrizada."
+            },
+            {
+              "letra": "C",
+              "texto": "El calado de popa de la embarcación es menor que el calado de proa."
+            },
+            {
+              "letra": "D",
+              "texto": "El puntal es menor que el calado a popa."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Nomenclatura náutica",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 616
+          }
+        },
+        {
+          "numero": 2,
+          "enunciado": "A la acción de largar cadena para fondear la embarcación, se la denomina también:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Virar."
+            },
+            {
+              "letra": "B",
+              "texto": "Levar."
+            },
+            {
+              "letra": "C",
+              "texto": "Filar."
+            },
+            {
+              "letra": "D",
+              "texto": "Zarpar."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Nomenclatura náutica",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 628
+          }
+        },
+        {
+          "numero": 3,
+          "enunciado": "¿Cuál de las siguientes afirmaciones es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El costado de sotavento de una embarcación es aquel por donde viene el viento."
+            },
+            {
+              "letra": "B",
+              "texto": "De forma general, una embarcación está escorada si el calado de proa es distinto del calado a popa."
+            },
+            {
+              "letra": "C",
+              "texto": "Escorar y adrizar son sinónimos."
+            },
+            {
+              "letra": "D",
+              "texto": "De forma general, una embarcación adrizada tendrá una escora nula."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Nomenclatura náutica",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 640
+          }
+        },
+        {
+          "numero": 4,
+          "enunciado": "¿Cuál de las siguientes afirmaciones NO es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "En un sistema de hélices gemelas de giro exterior, la hélice instalada a estribor será dextrógira."
+            },
+            {
+              "letra": "B",
+              "texto": "Las hélices están formadas por una o más palas fijadas a su núcleo."
+            },
+            {
+              "letra": "C",
+              "texto": "La pieza en forma de capuchón situada en el extremo exterior de la hélice, protegiendo el orificio donde va el eje, se denomina capacete."
+            },
+            {
+              "letra": "D",
+              "texto": "Las hélices de palas abatibles suelen utilizarse para reducir el rozamiento durante la navegación a Elementos de amarre y fondeo."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Nomenclatura náutica",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 652
+          }
+        },
+        {
+          "numero": 5,
+          "enunciado": "¿Cuál de los siguientes aspectos NO influirá en la elección del lugar de fondeo?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La sonda del lugar a elegir."
+            },
+            {
+              "letra": "B",
+              "texto": "La eslora de la embarcación."
+            },
+            {
+              "letra": "C",
+              "texto": "El círculo de garreo de la embarcación."
+            },
+            {
+              "letra": "D",
+              "texto": "La regulación sobre fondeo aplicable en la zona a elegir."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Elementos de amarre y fondeo",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 667
+          }
+        },
+        {
+          "numero": 6,
+          "enunciado": "Una roldana es un elemento:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Situado en la regala para protegerla y donde se acoplan los eslabones de la cadena."
+            },
+            {
+              "letra": "B",
+              "texto": "Sobre el que gira el cabo en las poleas, motones y pastecas."
+            },
+            {
+              "letra": "C",
+              "texto": "Que a bordo de una embarcación sirve para afirmar drizas, escotas y amarras."
+            },
+            {
+              "letra": "D",
+              "texto": "Fuertemente asegurado a la cubierta, que sirve para hacer firmes los cabos de amarre al atracar."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Elementos de amarre y fondeo",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 679
+          }
+        },
+        {
+          "numero": 7,
+          "enunciado": "Medida a tomar en caso de hipotermia:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Dar a beber alcohol para aumentar la temperatura corporal."
+            },
+            {
+              "letra": "B",
+              "texto": "No quitar la ropa mojada para evitar un mayor enfriamiento."
+            },
+            {
+              "letra": "C",
+              "texto": "Quitar toda la ropa mojada y secar sin frotar."
+            },
+            {
+              "letra": "D",
+              "texto": "Quitar toda la ropa mojada frotando con fuerza."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Seguridad",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 690
+          }
+        },
+        {
+          "numero": 8,
+          "enunciado": "El reflector radar:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Es un receptor de radio con antena direccional que emite una señal radar."
+            },
+            {
+              "letra": "B",
+              "texto": "Mide la velocidad de la embarcación sobre el agua y la distancia navegada."
+            },
+            {
+              "letra": "C",
+              "texto": "Tiene como objeto el hacer más visible a la embarcación ante el radar de otras naves."
+            },
+            {
+              "letra": "D",
+              "texto": "Es un dispositivo pasivo o activo que evita las interferencias de otros equipos electrónicos con la"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Seguridad",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 702
+          }
+        },
+        {
+          "numero": 9,
+          "enunciado": "Cuando tomemos remolque, ¿cómo lo amarraremos?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Mediante un nudo que no pueda ser deshecho bajo tensión."
+            },
+            {
+              "letra": "B",
+              "texto": "Mediante un nudo que pueda ser deshecho bajo tensión por el operador."
+            },
+            {
+              "letra": "C",
+              "texto": "Mediante un nudo que, a más tensión, más apretado esté y más difícil sea su suelta."
+            },
+            {
+              "letra": "D",
+              "texto": "Mediante cualquier nudo, todos son válidos."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Seguridad",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 715
+          }
+        },
+        {
+          "numero": 10,
+          "enunciado": "Las aguas someras son:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Aguas profundas que suponen un peligro para la navegación."
+            },
+            {
+              "letra": "B",
+              "texto": "Aguas poco profundas que suponen un peligro para la navegación."
+            },
+            {
+              "letra": "C",
+              "texto": "Aguas profundas que no suponen un peligro para la navegación."
+            },
+            {
+              "letra": "D",
+              "texto": "Aguas poco profundas que no suponen un peligro para la navegación."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Seguridad",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 727
+          }
+        },
+        {
+          "numero": 11,
+          "enunciado": "De conformidad con la Regala 33.1 del Capítulo V del Convenio Internacional SOLAS, el capitán de un buque que, estando en el mar, reciba una señal que le indique que hay personas en peligro en el mar:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Sólo está obligado a acudir en su auxilio si está en condiciones de prestar ayuda."
+            },
+            {
+              "letra": "B",
+              "texto": "Sólo está obligado a informar al servicio de búsqueda y salvamento pertinente, debiendo anotarlo en el diario de navegación."
+            },
+            {
+              "letra": "C",
+              "texto": "Está obligado siempre a acudir a toda máquina en su auxilio."
+            },
+            {
+              "letra": "D",
+              "texto": "La obligación de prestar auxilio depende de la condición jurídica de las personas en peligro."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Legislación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 739
+          }
+        },
+        {
+          "numero": 12,
+          "enunciado": "En los tramos de costa que no estén balizados como zona de baño:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Se permiten vertidos desde las embarcaciones en los términos que se determina en la Orden"
+            },
+            {
+              "letra": "B",
+              "texto": "Siempre que se adopten las precauciones necesarias para evitar riesgos a la seguridad de la vida humana en la mar, se podrá navegar a una velocidad superior a tres nudos."
+            },
+            {
+              "letra": "C",
+              "texto": "Ésta ocupa una franja de marca contigua a la costa de una anchura de 200 metros en las playas y 50 metros en el resto de la costa."
+            },
+            {
+              "letra": "D",
+              "texto": "El lanzamiento o varada de embarcaciones deberá hacerse a través de canales debidamente"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Legislación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 750
+          }
+        },
+        {
+          "numero": 13,
+          "enunciado": "Los colores de la marca cardinal Norte son:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Amarillo sobre negro."
+            },
+            {
+              "letra": "B",
+              "texto": "Negro sobre amarillo."
+            },
+            {
+              "letra": "C",
+              "texto": "Verde sobre fondo rojo."
+            },
+            {
+              "letra": "D",
+              "texto": "Rojo sobre fondo verde."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 767
+          }
+        },
+        {
+          "numero": 14,
+          "enunciado": "Las marcas de peligro aislado se colocan:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "En aguas navegables, indicando siempre en qué dirección se encuentra el peligro."
+            },
+            {
+              "letra": "B",
+              "texto": "Sobre, o próximas, a un peligro rodeado por todas partes de aguas navegables."
+            },
+            {
+              "letra": "C",
+              "texto": "Rodeando una zona peligrosa, por lo que siempre se deben emplear varias a la vez."
+            },
+            {
+              "letra": "D",
+              "texto": "Próximas a un peligro, siempre junto a una marca cardinal que indique la posición de dicho"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 779
+          }
+        },
+        {
+          "numero": 15,
+          "enunciado": "La marca de tope de una marca de aguas navegables será de color:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Negro."
+            },
+            {
+              "letra": "B",
+              "texto": "Rojo y negro."
+            },
+            {
+              "letra": "C",
+              "texto": "Rojo y blanco."
+            },
+            {
+              "letra": "D",
+              "texto": "Rojo."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 792
+          }
+        },
+        {
+          "numero": 16,
+          "enunciado": "La forma de las marcas laterales en la región A puede ser:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Cilíndrica o esférica."
+            },
+            {
+              "letra": "B",
+              "texto": "Cónica o esférica."
+            },
+            {
+              "letra": "C",
+              "texto": "Esférica."
+            },
+            {
+              "letra": "D",
+              "texto": "Cilíndrica o cónica."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 804
+          }
+        },
+        {
+          "numero": 17,
+          "enunciado": "Una marca especial será de color:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Amarillo."
+            },
+            {
+              "letra": "B",
+              "texto": "Rojo."
+            },
+            {
+              "letra": "C",
+              "texto": "Rojo y negro."
+            },
+            {
+              "letra": "D",
+              "texto": "Rojo y amarillo."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 816
+          }
+        },
+        {
+          "numero": 18,
+          "enunciado": "Estando a bordo de nuestra embarcación necesitamos pedir ayuda, ¿cuál de las siguientes señales sería correcta de acuerdo con el anexo IV de señales de peligro del RIPA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Emitir un sonido producido por cualquier aparato de señales de niebla, repetido a intervalos de un"
+            },
+            {
+              "letra": "B",
+              "texto": "Emitir un sonido producido por cualquier aparato de señales de niebla, repetido a intervalos de 30"
+            },
+            {
+              "letra": "C",
+              "texto": "Enviar una alerta de socorro mediante llamada selectiva digital, a través del canal 16 de VHF."
+            },
+            {
+              "letra": "D",
+              "texto": "Enviar una alerta de socorro mediante llamada selectiva digital, a través del canal 70 de VHF."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 826
+          }
+        },
+        {
+          "numero": 19,
+          "enunciado": "Según la Regla 18.b del RIPA, los buques de vela, en navegación, se mantendrán apartados de la derrota de:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Un buque restringido por su calado."
+            },
+            {
+              "letra": "B",
+              "texto": "Una moto náutica."
+            },
+            {
+              "letra": "C",
+              "texto": "Un hidroavión amarado."
+            },
+            {
+              "letra": "D",
+              "texto": "Un buque sin gobierno, un buque con capacidad de maniobra restringida o un buque dedicado a la"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 841
+          }
+        },
+        {
+          "numero": 20,
+          "enunciado": "Si se debe navegar a lo largo de un paso o canal angosto, siempre que se pueda hacer sin que entrañe peligro, ¿cómo se debe hacer, según la Regla 9.a del RIPA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Siempre pegados a las boyas verdes."
+            },
+            {
+              "letra": "B",
+              "texto": "Siempre pegados a las boyas rojas."
+            },
+            {
+              "letra": "C",
+              "texto": "Por el centro del canal."
+            },
+            {
+              "letra": "D",
+              "texto": "Manteniéndose lo más cerca posible del límite exterior del paso o canal que queda por su costado"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 855
+          }
+        },
+        {
+          "numero": 21,
+          "enunciado": "La Regla 3 del RIPA define a un buque restringido por su calado como:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Cualquier buque que, por razón de su calado en relación con la profundidad y la anchura disponibles del agua navegable, tiene una capacidad muy restringida de apartarse de la derrota que"
+            },
+            {
+              "letra": "B",
+              "texto": "Un buque de propulsión mecánica que tiene siempre una capacidad restringida de apartarse de la derrota que está siguiendo."
+            },
+            {
+              "letra": "C",
+              "texto": "Un buque de propulsión mecánica que, por razón de su calado en relación con la profundidad y la anchura disponibles del agua navegable, tiene una capacidad muy restringida de apartarse de la derrota que está siguiendo."
+            },
+            {
+              "letra": "D",
+              "texto": "Un buque de propulsión mecánica con capacidad de maniobra restringida."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 869
+          }
+        },
+        {
+          "numero": 22,
+          "enunciado": "Según establece la Regla 14.c del RIPA, cuando un buque abrigue dudas de si existe una situación de vuelta encontrada:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Se pondrá en comunicación con el otro buque a través del canal 16 de VHF, para aclarar la"
+            },
+            {
+              "letra": "B",
+              "texto": "Mantendrá su rumbo y velocidad, para no confundir al otro buque."
+            },
+            {
+              "letra": "C",
+              "texto": "Supondrá que existe y actuará en consecuencia."
+            },
+            {
+              "letra": "D",
+              "texto": "Se pondrá en comunicación con el otro buque a través del canal 16 de VHF, indicándole que ambos deberán caer a babor."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 886
+          }
+        },
+        {
+          "numero": 23,
+          "enunciado": "La Regla 27.a del RIPA determina que un buque sin gobierno ni arrancada exhibirá:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Dos luces verdes todo horizonte en línea vertical, en el lugar más visible, y dos bolas o marcas similares en línea vertical, en el lugar más visible."
+            },
+            {
+              "letra": "B",
+              "texto": "Tres luces rojas todo horizonte en línea vertical, en el lugar más visible, y tres bolas o marcas similares en línea vertical, en el lugar más visible."
+            },
+            {
+              "letra": "C",
+              "texto": "Dos luces blancas todo horizonte en línea vertical, en el lugar más visible, y una marca bicónica, en el lugar más visible."
+            },
+            {
+              "letra": "D",
+              "texto": "Dos luces rojas todo horizonte en línea vertical, en el lugar más visible, y dos bolas o marcas similares en línea vertical, en el lugar más visible."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 898
+          }
+        },
+        {
+          "numero": 24,
+          "enunciado": "Según la Regla 24.e del RIPA, todo buque u objeto remolcado, que sea visible y no esté parcialmente sumergido, exhibirá:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Una marca bicónica en el lugar más visible, cuando la longitud del remolque sea superior a 200"
+            },
+            {
+              "letra": "B",
+              "texto": "Una bola u objeto análogo en el lugar más visible."
+            },
+            {
+              "letra": "C",
+              "texto": "Tres marcas en línea vertical en el lugar más visible. La más elevada y la más baja de estas marcas serán bolas y la marca central será bicónica."
+            },
+            {
+              "letra": "D",
+              "texto": "Una marca cilíndrica en el lugar más visible."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 914
+          }
+        },
+        {
+          "numero": 25,
+          "enunciado": "Encontrándonos en navegación, se nos hace de noche y la tripulación a bordo de la embarcación deseamos descansar. Para ello, paramos el motor y encendemos una luz advirtiendo de nuestra presencia, tras lo cual nos ponemos todos a echar una cabezada. ¿Es correcto este proceder?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Sí, debemos encender una luz tal y como prescribe la Regla 27 del RIPA."
+            },
+            {
+              "letra": "B",
+              "texto": "No, debemos encender dos luces rojas todo horizonte como prescribe la Regla 27 del RIPA."
+            },
+            {
+              "letra": "C",
+              "texto": "No, debemos mantener en todo momento una eficaz vigilancia visual y auditiva, como prescribe la"
+            },
+            {
+              "letra": "D",
+              "texto": "No, debemos encender tres luces rojas todo horizonte como prescribe la Regla 27 del RIPA."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 929
+          }
+        },
+        {
+          "numero": 26,
+          "enunciado": "Según la Regla 30 del RIPA determina que un buque fondeado exhibirá en el lugar más visible:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "i) en la parte de proa, una luz roja todo horizonte o una bola; y ii) en la popa, o cerca de ella, y a una altura inferior a la de la luz prescrita en el apartado i), una luz roja todo horizonte."
+            },
+            {
+              "letra": "B",
+              "texto": "i) en la parte de proa, una luz roja todo horizonte o un cilindro; y ii) en la popa, o cerca de ella, y a una altura inferior a la de la luz prescrita en el apartado i), una luz roja todo horizonte."
+            },
+            {
+              "letra": "C",
+              "texto": "i) en la parte de proa, una luz blanca todo horizonte o una bola; y ii) en la popa, o cerca de ella, y a una altura inferior a la de la luz prescrita en el apartado i), una luz blanca todo horizonte."
+            },
+            {
+              "letra": "D",
+              "texto": "i) en la parte de proa, una luz roja todo horizonte o una marca bicónica; y ii) en la popa, o cerca de ella, y a una altura inferior a la de la luz prescrita en el apartado i), una luz blanca todo horizonte."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 944
+          }
+        },
+        {
+          "numero": 27,
+          "enunciado": "La Regla 35 del RIPA determina que un buque sin gobierno o con su capacidad de manobra restringida, un buque restringido por su calado, un buque de vela, un buque dedicado a la pesca y todo buque dedicado a remolcar o a empujar a otro buque, en las proximidades o dentro de una zona de visibilidad reducida, ya sea de día o de noche, emitirá las siguientes señales:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "A intervalos que no excedan de un minuto dos pitadas consecutivas, a saber, una larga seguida por"
+            },
+            {
+              "letra": "B",
+              "texto": "A intervalos que no excedan de dos minutos dos pitadas consecutivas, a saber, una larga seguida"
+            },
+            {
+              "letra": "C",
+              "texto": "A intervalos que no excedan de dos minutos tres pitadas consecutivas, a saber, una larga seguida"
+            },
+            {
+              "letra": "D",
+              "texto": "A intervalos que no excedan de dos minutos tres pitadas consecutivas, a saber, dos largas seguidas Maniobra y navegación."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 960
+          }
+        },
+        {
+          "numero": 28,
+          "enunciado": "Nos abarloamos a otra embarcación si:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Atracamos al costado de otra embarcación."
+            },
+            {
+              "letra": "B",
+              "texto": "Atracamos con el costado al muelle."
+            },
+            {
+              "letra": "C",
+              "texto": "Adelantamos por estribor a otra embarcación."
+            },
+            {
+              "letra": "D",
+              "texto": "Atracamos popa con popa."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Maniobra y navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 977
+          }
+        },
+        {
+          "numero": 29,
+          "enunciado": "Si se amarra una embarcación de costado al muelle, ¿cuál de los siguientes cabos se da por el costado opuesto al muelle, y es muy útil para ayudar a desatracar?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Largo."
+            },
+            {
+              "letra": "B",
+              "texto": "Través."
+            },
+            {
+              "letra": "C",
+              "texto": "Codera."
+            },
+            {
+              "letra": "D",
+              "texto": "Spring. Emergencias en la mar."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Maniobra y navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 989
+          }
+        },
+        {
+          "numero": 30,
+          "enunciado": "Si necesitamos una consulta médica mientras estamos navegando, debemos contactar con:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El hospital más cercano a la costa, ya que España no dispone de Centro Radio-Médico."
+            },
+            {
+              "letra": "B",
+              "texto": "El Centro Radio-Médico Español, salvo si lo hacemos en un idioma distinto al castellano, en cuyo caso tendremos que esperar a llegar a tierra."
+            },
+            {
+              "letra": "C",
+              "texto": "El Centro Radio-Médico Español, con el que siempre deberemos contactar por teléfono."
+            },
+            {
+              "letra": "D",
+              "texto": "El Centro Radio-Médico Español, bien por radiotelefonía (onda corta o media) o bien por teléfono."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Emergencias en la mar",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1003
+          }
+        },
+        {
+          "numero": 31,
+          "enunciado": "Según la clasificación UNE de los incendios, ¿cuál de estas afirmaciones es correcta?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Clase C: fuegos de combustibles líquidos o sólidos licuables."
+            },
+            {
+              "letra": "B",
+              "texto": "Clase A: fuegos de combustibles sólidos."
+            },
+            {
+              "letra": "C",
+              "texto": "Clase F: fuegos de metales."
+            },
+            {
+              "letra": "D",
+              "texto": "Clase B: fuegos de gases."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Emergencias en la mar",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1016
+          }
+        },
+        {
+          "numero": 32,
+          "enunciado": "Ante la certeza de una vía de agua, ¿cuál de las siguientes actuaciones NO es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "No se debe poner en marcha el motor de la embarcación."
+            },
+            {
+              "letra": "B",
+              "texto": "Activar la bomba de achique."
+            },
+            {
+              "letra": "C",
+              "texto": "Aislar la inundación cerrando tambuchos, puertas, escotillas y válvulas estancas al objeto de aislar el compartimento en que se produjo la avería."
+            },
+            {
+              "letra": "D",
+              "texto": "Emplear la bomba de refrigeración del motor para achicar el agua si ésta tiene la tubería de aspiración próxima al compartimento inundado."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Emergencias en la mar",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1028
+          }
+        },
+        {
+          "numero": 33,
+          "enunciado": "¿Qué significa “rolar”?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Girar el viento, es decir, cambiar de dirección."
+            },
+            {
+              "letra": "B",
+              "texto": "Empeorar el tiempo a lo que el viento se refiere, es decir, aumentar la intensidad."
+            },
+            {
+              "letra": "C",
+              "texto": "Aumento brusco y momentáneo de la fuerza del viento."
+            },
+            {
+              "letra": "D",
+              "texto": "Decrecer la fuerza del viento."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Meteorología",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1043
+          }
+        },
+        {
+          "numero": 34,
+          "enunciado": "La intensidad del viento:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Es función del gradiente barométrico, es decir, cuanto más cercanas están las isobaras más fuerte"
+            },
+            {
+              "letra": "B",
+              "texto": "Es función del gradiente barométrico, es decir, cuanto más cercanas están las isobaras más débil"
+            },
+            {
+              "letra": "C",
+              "texto": "Es función de la presión hidrostática del agua."
+            },
+            {
+              "letra": "D",
+              "texto": "Es función de la presión hidrostática del agua y de su salinidad."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Meteorología",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1052
+          }
+        },
+        {
+          "numero": 35,
+          "enunciado": "¿Cómo es la trayectoria de las borrascas en el Hemisferio Norte?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Las altas presiones llevan una trayectoria de Este a Oeste."
+            },
+            {
+              "letra": "B",
+              "texto": "Se mueven muy lentamente siendo casi estáticas, por lo que apenas tienen trayectoria."
+            },
+            {
+              "letra": "C",
+              "texto": "Las bajas presiones llevan una trayectoria de Este a Oeste."
+            },
+            {
+              "letra": "D",
+              "texto": "Las bajas presiones llevan una trayectoria de Oeste a Este."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Meteorología",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1066
+          }
+        },
+        {
+          "numero": 36,
+          "enunciado": "¿Qué nos indica una subida brusca y rápida en la presión indicada por el barómetro aneroide?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Una tendencia al empeoramiento."
+            },
+            {
+              "letra": "B",
+              "texto": "Una tendencia al empeoramiento, con fuertes vientos, precipitaciones y riesgo de temporal."
+            },
+            {
+              "letra": "C",
+              "texto": "Una tendencia a la mejoría que indica que se afianza el buen tiempo seco y encalmado, de"
+            },
+            {
+              "letra": "D",
+              "texto": "Una tendencia a la mejoría sin poder asegurar su persistencia. Teoría de la navegación."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Meteorología",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1078
+          }
+        },
+        {
+          "numero": 37,
+          "enunciado": "La corrección total es:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El ángulo formado por la dirección de la proa y el meridiano magnético del lugar."
+            },
+            {
+              "letra": "B",
+              "texto": "La suma algebraica de la declinación magnética y el desvío."
+            },
+            {
+              "letra": "C",
+              "texto": "La suma de la declinación magnética y el desvío cuando este último queda a la izquierda del norte"
+            },
+            {
+              "letra": "D",
+              "texto": "El ángulo que forma la dirección de la proa con el meridiano verdadero del lugar de signo opuesto"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Teoría de la navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1092
+          }
+        },
+        {
+          "numero": 38,
+          "enunciado": "En función del meridiano que consideremos para medir el rumbo, ¿qué tres clases de rumbo existen?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El rumbo verdadero, el rumbo de superficie y el rumbo magnético."
+            },
+            {
+              "letra": "B",
+              "texto": "El rumbo verdadero, el rumbo de superficie y el rumbo efectivo."
+            },
+            {
+              "letra": "C",
+              "texto": "El rumbo verdadero, el rumbo de aguja y el rumbo magnético."
+            },
+            {
+              "letra": "D",
+              "texto": "el rumbo verdadero, el rumbo de aguja y el rumbo de superficie."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Teoría de la navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1106
+          }
+        },
+        {
+          "numero": 39,
+          "enunciado": "La conversión del rumbo S60E a rumbo circular es:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "280º."
+            },
+            {
+              "letra": "B",
+              "texto": "300º."
+            },
+            {
+              "letra": "C",
+              "texto": "120º."
+            },
+            {
+              "letra": "D",
+              "texto": "240º."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Teoría de la navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1118
+          }
+        },
+        {
+          "numero": 40,
+          "enunciado": "Señale cuál de las afirmaciones siguientes NO es CORRECTA:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La relación entre el rumbo de aguja y la marcación queda definida por la fórmula Da = Ra + M."
+            },
+            {
+              "letra": "B",
+              "texto": "Las marcaciones se cuentan de 0º a 180º desde la proa hacia estribor o babor."
+            },
+            {
+              "letra": "C",
+              "texto": "La relación entre el rumbo y la marcación queda definida por la fórmula D = R + M."
+            },
+            {
+              "letra": "D",
+              "texto": "Las marcaciones se cuentan de 0º a 360º en el sentido de las agujas del reloj."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Teoría de la navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1127
+          }
+        },
+        {
+          "numero": 41,
+          "enunciado": "¿Cuál de las siguientes afirmaciones sobre el desvío de la aguja es cierta?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Varía con el rumbo de la embarcación."
+            },
+            {
+              "letra": "B",
+              "texto": "Es igual para todas las agujas náuticas de una embarcación."
+            },
+            {
+              "letra": "C",
+              "texto": "No depende del emplazamiento de la aguja en la embarcación."
+            },
+            {
+              "letra": "D",
+              "texto": "Depende de la situación geográfica cuando la embarcación navega. Carta de navegación."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Teoría de la navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1139
+          }
+        },
+        {
+          "numero": 42,
+          "enunciado": "Una embarcación que se sitúa en la enfilación del faro de Cabo Roche y el faro de Cabo Trafalgar aguja náutica.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Ct = 0º."
+            },
+            {
+              "letra": "B",
+              "texto": "Ct = 1º (+)."
+            },
+            {
+              "letra": "C",
+              "texto": "Ct = 1º (-)."
+            },
+            {
+              "letra": "D",
+              "texto": "Ct = 2º (+)"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Carta de navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1152
+          }
+        },
+        {
+          "numero": 43,
+          "enunciado": "Para una embarcación que se sitúa en la marca especial al Este de la Línea de la Concepción, calcular el rumbo de aguja (Ra) para pasar a 4,2 millas del faro de Punta Almina, teniendo como desvío de aguja para ese rumbo 3,5ºE y declinación magnética la obtenida en la carta náutica de enseñanza del Estrecho de Gibraltar para 2021.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Ra = 159º."
+            },
+            {
+              "letra": "B",
+              "texto": "Ra = 155º."
+            },
+            {
+              "letra": "C",
+              "texto": "Ra = 153º."
+            },
+            {
+              "letra": "D",
+              "texto": "Ra = 157º."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Carta de navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1166
+          }
+        },
+        {
+          "numero": 44,
+          "enunciado": "Calcular la situación verdadera de una embarcación que se encuentra dentro de la zona prohibida de pesca a 3,5 millas del faro de Punta de Gracia y en la demora verdadera 084º del faro de Punta Paloma.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "l = 36º 04,8’N L = 005º 51,9’W"
+            },
+            {
+              "letra": "B",
+              "texto": "l = 36º 04,8’N L = 005º 45,4’W"
+            },
+            {
+              "letra": "C",
+              "texto": "l = 36º 03,2’N L = 005º 44,7’W"
+            },
+            {
+              "letra": "D",
+              "texto": "l = 36º 03,2’N L = 005º 51,7’W"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Carta de navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1181
+          }
+        },
+        {
+          "numero": 45,
+          "enunciado": "Situada una embarcación al 350º verdadero y a 5 millas del faro de Punta Malabata, se emprende a las",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción A no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción B no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción C no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción D no disponible"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Carta de navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1194
+          }
+        },
+        {
+          "numero": 1,
+          "enunciado": "En una maniobra de rescate desde un helicóptero de Salvamento Marítimo, se debe:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Despejar la cubierta de todo material y equipos que puedan salir volando."
+            },
+            {
+              "letra": "B",
+              "texto": "Lanzar un cohete provisto de paracaídas para identificar nuestra posición."
+            },
+            {
+              "letra": "C",
+              "texto": "En el caso de ser un velero, mantener las velas izadas y arrancar el motor."
+            },
+            {
+              "letra": "D",
+              "texto": "Esperar las instrucciones del comandante del helicóptero para ver qué elementos de cubierta deben"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Nomenclatura náutica",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1206
+          }
+        },
+        {
+          "numero": 2,
+          "enunciado": "Para mejorar la estabilidad de una embarcación debemos:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Mover los pesos de forma que el centro de carena de la embarcación se sitúe lo más bajo posible."
+            },
+            {
+              "letra": "B",
+              "texto": "Mover los pesos para conseguir elevar el centro de gravedad de la embarcación, de esta forma la altura metacéntrica transversal (GM) será mayor."
+            },
+            {
+              "letra": "C",
+              "texto": "Mover los pesos de forma que el centro de gravedad de la embarcación se sitúe lo más bajo posible."
+            },
+            {
+              "letra": "D",
+              "texto": "Mover los pesos horizontalmente, de proa a popa, para que solo se vea afectada la posición horizontal del centro de gravedad de la embarcación."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Nomenclatura náutica",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1218
+          }
+        },
+        {
+          "numero": 3,
+          "enunciado": "En caso de emergencia, ¿qué debemos hacer si se tuviera que abandonar la embarcación?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Esperar a que la radiobaliza trasmita automáticamente, nunca la activaremos manualmente, para no confundir a Salvamento Marítimo."
+            },
+            {
+              "letra": "B",
+              "texto": "Hacer una llamada de socorro y activar la radiobaliza manualmente."
+            },
+            {
+              "letra": "C",
+              "texto": "Disparar todas las bengalas de mano antes de embarcar en la balsa salvavidas."
+            },
+            {
+              "letra": "D",
+              "texto": "Soltar la driza de la balsas salvavidas antes de lanzarla al agua."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Nomenclatura náutica",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1231
+          }
+        },
+        {
+          "numero": 4,
+          "enunciado": "¿Cuantos días habrá de resistir a flote como mínimo una balsa salvavidas, independientemente del estado de la mar?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "15 días."
+            },
+            {
+              "letra": "B",
+              "texto": "20 días."
+            },
+            {
+              "letra": "C",
+              "texto": "25 días."
+            },
+            {
+              "letra": "D",
+              "texto": "30 días."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Nomenclatura náutica",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1243
+          }
+        },
+        {
+          "numero": 5,
+          "enunciado": "Respecto a las acciones a llevar a cabo a la llegada del helicóptero de Salvamento Marítimo, ¿cuál de las siguientes afirmaciones es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Amarrar el cable o guía en alguna parte de nuestra embarcación para no perderlo."
+            },
+            {
+              "letra": "B",
+              "texto": "Seguir las instrucciones de la tripulación del helicóptero, excepto si éstas nos parecen complicadas."
+            },
+            {
+              "letra": "C",
+              "texto": "El patrón dirigirá las operaciones de rescate en el momento de la llegada del helicóptero."
+            },
+            {
+              "letra": "D",
+              "texto": "Esperar que el cable de izado toque primero el agua o el barco, a fin de que descargue la electricidad estática."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Elementos de amarre y fondeo",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1255
+          }
+        },
+        {
+          "numero": 6,
+          "enunciado": "¿Cuál de las siguientes afirmaciones relativas a la estabilidad transversal es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La altura metacéntrica transversal es la distancia entre el centro de carena y el metacentro."
+            },
+            {
+              "letra": "B",
+              "texto": "Cuando el metacentro está situado por encima del centro de gravedad el equilibrio es estable."
+            },
+            {
+              "letra": "C",
+              "texto": "Cuando el metacentro está situado por encima del centro de gravedad el equilibrio es inestable."
+            },
+            {
+              "letra": "D",
+              "texto": "Si trasladamos un peso fijo hacia arriba, obtenemos más estabilidad."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Elementos de amarre y fondeo",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1269
+          }
+        },
+        {
+          "numero": 7,
+          "enunciado": "La zafa hidrostática de una radiobaliza es:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Un mecanismo automático que permite liberarla cuando la embarcación está sumergida a una determinada profundidad."
+            },
+            {
+              "letra": "B",
+              "texto": "El mecanismo transmisor de la señal de 406 MHz."
+            },
+            {
+              "letra": "C",
+              "texto": "Un mecanismo que permite establecer comunicaciones bidireccionales."
+            },
+            {
+              "letra": "D",
+              "texto": "Un mecanismo que transmite la llamada selectiva digital (LSD)."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Seguridad",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1281
+          }
+        },
+        {
+          "numero": 8,
+          "enunciado": "¿Cuál de las siguientes afirmaciones relativas a la estabilidad transversal es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El centro de gravedad es el punto en el que están concentradas todas las fuerzas de empuje que sufre el casco por estar sumergido en un líquido."
+            },
+            {
+              "letra": "B",
+              "texto": "Un buque adrizado se caracteriza por tener escora nula."
+            },
+            {
+              "letra": "C",
+              "texto": "Cuando el metacentro está situado por debajo del centro de gravedad, el equilibrio es estable."
+            },
+            {
+              "letra": "D",
+              "texto": "Los buques con una altura metacéntrica muy grande se recuperan de las escoras muy lentamente, por tener poca estabilidad."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Seguridad",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1294
+          }
+        },
+        {
+          "numero": 9,
+          "enunciado": "Los cohetes lanzabengalas con paracaídas se deben lanzar:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Por la banda de sotavento, para evitar que los residuos incandescentes caigan sobre la cubierta."
+            },
+            {
+              "letra": "B",
+              "texto": "Por la banda de barlovento, para mejorar su visibilidad."
+            },
+            {
+              "letra": "C",
+              "texto": "Siempre inmediatamente después de abandonar la embarcación y ocupar la balsa salvavidas."
+            },
+            {
+              "letra": "D",
+              "texto": "Horizontalmente."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Seguridad",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1308
+          }
+        },
+        {
+          "numero": 10,
+          "enunciado": "¿Cuál de las siguientes afirmaciones relativas a la operación de rescate, por parte del helicóptero de Salvamento Marítimo, NO es CORRECTA:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Durante el izado deben mantenerse los brazos pegados al cuerpo o cruzados en el pecho."
+            },
+            {
+              "letra": "B",
+              "texto": "Durante el rescate nunca nos tiraremos al agua para ser rescatados, aunque nos lo indique el comandante del helicóptero."
+            },
+            {
+              "letra": "C",
+              "texto": "Previamente al izado, debe asegurarse bien el arnés y mantener la calma."
+            },
+            {
+              "letra": "D",
+              "texto": "Los rescatadores serán los encargados de introducir a bordo del helicóptero a la persona rescatada."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Seguridad",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1320
+          }
+        },
+        {
+          "numero": 11,
+          "enunciado": "En un frente ocluido frío:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La temperatura de la masa de aire fría que empuja por detrás es más fría que la de la masa de aíre que va por delante de ella."
+            },
+            {
+              "letra": "B",
+              "texto": "La temperatura de la masa de aire fría que empuja por detrás es menos fría que la de la masa de aíre que va por delante de ella."
+            },
+            {
+              "letra": "C",
+              "texto": "La temperatura de la masa de aire fría que empuja por detrás es más cálida que la de la masa de aíre que va por delante de ella."
+            },
+            {
+              "letra": "D",
+              "texto": "La ascensión de aire es espontánea."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Legislación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1334
+          }
+        },
+        {
+          "numero": 12,
+          "enunciado": "Si observamos oleaje que no está siendo generado por un viento que sopla localmente, diremos que se trata de:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Mar de fetch."
+            },
+            {
+              "letra": "B",
+              "texto": "Mar epicicloidal."
+            },
+            {
+              "letra": "C",
+              "texto": "Mar de fondo."
+            },
+            {
+              "letra": "D",
+              "texto": "Mar de viento."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Legislación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1346
+          }
+        },
+        {
+          "numero": 13,
+          "enunciado": "En una borrasca:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El viento suele ser de intensidad moderada a fuerte y gira paralelo a las isobaras y en el sentido de las agujas del reloj (en el Hemisferio Norte) debido a la aceleración de Coriolis."
+            },
+            {
+              "letra": "B",
+              "texto": "Las presiones en su interior suelen situarse por encima de los 760 mmHg."
+            },
+            {
+              "letra": "C",
+              "texto": "La presión en su interior es menor que la existente en la región que la rodea."
+            },
+            {
+              "letra": "D",
+              "texto": "La presión es máxima en el centro y debe estar rodeada al menos, por una isobara cerrada."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1359
+          }
+        },
+        {
+          "numero": 14,
+          "enunciado": "Al temporal súbito y violento con fuertes ráfagas de viento del Oeste al Noroeste que azota las zonas del Mar Cantábrico y del Golfo de Vizcaya se le denomina:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Céfiros."
+            },
+            {
+              "letra": "B",
+              "texto": "Galerna."
+            },
+            {
+              "letra": "C",
+              "texto": "Cierzo."
+            },
+            {
+              "letra": "D",
+              "texto": "Viento del Norte."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1372
+          }
+        },
+        {
+          "numero": 15,
+          "enunciado": "Se entiende por periodo de ola:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Al tiempo, en segundos, que tarda un seno en recorrer dos veces la distancia entre crestas."
+            },
+            {
+              "letra": "B",
+              "texto": "Al tiempo, en segundos, que tardan dos crestas sucesivas en pasar por un mismo punto."
+            },
+            {
+              "letra": "C",
+              "texto": "Al tiempo, en segundos, que tardan un seno y una cresta consecutivos en recorrer el fetch del viento que forma la ola."
+            },
+            {
+              "letra": "D",
+              "texto": "Al tiempo, en segundos, que tarda una cresta en recorrer dos veces la distancia entre senos."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1385
+          }
+        },
+        {
+          "numero": 16,
+          "enunciado": "La corriente de superficie, en general, en el Estrecho de Gibraltar es de rumbo:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Oeste, debido a que el Mar Mediterráneo tiene mayor salinidad que el Océano Atlántico."
+            },
+            {
+              "letra": "B",
+              "texto": "Este, debido al déficit de agua en el Mar Mediterráneo con respecto al Océano Atlántico."
+            },
+            {
+              "letra": "C",
+              "texto": "Este, debido al déficit de agua en el Océano Atlántico con respecto al Mar Mediterráneo."
+            },
+            {
+              "letra": "D",
+              "texto": "Oeste, debido a que el Mar Mediterráneo tiene menor salinidad que el Océano Atlántico."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1398
+          }
+        },
+        {
+          "numero": 17,
+          "enunciado": "Cuando el aire se satura de vapor de agua:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La humedad relativa es del 0%."
+            },
+            {
+              "letra": "B",
+              "texto": "La humedad absoluta es del 100%."
+            },
+            {
+              "letra": "C",
+              "texto": "Se llega al punto de rocío."
+            },
+            {
+              "letra": "D",
+              "texto": "La temperatura desciende."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1410
+          }
+        },
+        {
+          "numero": 18,
+          "enunciado": "Generalmente, la humedad absoluta se mide en:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "g/m3."
+            },
+            {
+              "letra": "B",
+              "texto": "litros/m3."
+            },
+            {
+              "letra": "C",
+              "texto": "% (tanto por ciento)."
+            },
+            {
+              "letra": "D",
+              "texto": "litros/ ºC."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1419
+          }
+        },
+        {
+          "numero": 19,
+          "enunciado": "En los mapas meteorológicos de superficie en los que viene dibujadas las isobaras, el gradiente de presión nos indica:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La velocidad del viento que circula entre dichas isobaras."
+            },
+            {
+              "letra": "B",
+              "texto": "La distancia entre los puntos de las isobaras."
+            },
+            {
+              "letra": "C",
+              "texto": "La fuerza que empuja al aire situado en el punto de más presión hacia el aire situado en el de menos presión, haciendo que el aire se mueva desde las bajas a las altas presiones con una aceleración igual al gradiente de presión por unidad de volumen."
+            },
+            {
+              "letra": "D",
+              "texto": "La fuerza que empuja al aire situado en el punto de menos presión hacia el aire situado en el de más presión, haciendo que el aire se mueva desde las altas a las bajas presiones con una aceleración igual al gradiente de presión por unidad de volumen."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1431
+          }
+        },
+        {
+          "numero": 20,
+          "enunciado": "En el litoral atlántico gallego, la corriente general suele ser de rumbo:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Norte."
+            },
+            {
+              "letra": "B",
+              "texto": "Sur."
+            },
+            {
+              "letra": "C",
+              "texto": "Noreste."
+            },
+            {
+              "letra": "D",
+              "texto": "Noroeste. Teoría de navegación."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1448
+          }
+        },
+        {
+          "numero": 21,
+          "enunciado": "Si manipulamos un radar con el norte arriba, los puntos señalados con el cursor corresponderán a:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Demoras verdaderas."
+            },
+            {
+              "letra": "B",
+              "texto": "Demoras de aguja."
+            },
+            {
+              "letra": "C",
+              "texto": "Marcaciones."
+            },
+            {
+              "letra": "D",
+              "texto": "Demoras aparentes."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1461
+          }
+        },
+        {
+          "numero": 22,
+          "enunciado": "¿Qué tipo de avisos a los navegantes existen?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Particulares, Seguridad, Permanentes y Temporales."
+            },
+            {
+              "letra": "B",
+              "texto": "Generales, Permanentes, Temporales y Preliminares."
+            },
+            {
+              "letra": "C",
+              "texto": "Generales, Seguridad y Temporales."
+            },
+            {
+              "letra": "D",
+              "texto": "Generales, Particulares, Seguridad y Temporales."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1473
+          }
+        },
+        {
+          "numero": 23,
+          "enunciado": "¿En qué caso dos buques que navegan por la misma zona tendrán la misma corrección total?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Nunca, ya que la declinación magnética depende de los hierros del buque."
+            },
+            {
+              "letra": "B",
+              "texto": "En cualquier caso, al navegar en la misma zona."
+            },
+            {
+              "letra": "C",
+              "texto": "Sólo en el caso de que ambos buques naveguen con rumbo Norte."
+            },
+            {
+              "letra": "D",
+              "texto": "Cuando sus desvíos de aguja coincidan."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1485
+          }
+        },
+        {
+          "numero": 24,
+          "enunciado": "El ángulo formado entre el rumbo verdadero y el rumbo efectivo en presencia de corriente se llama:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Abatimiento."
+            },
+            {
+              "letra": "B",
+              "texto": "Derrota."
+            },
+            {
+              "letra": "C",
+              "texto": "Deriva."
+            },
+            {
+              "letra": "D",
+              "texto": "Rumbo aparente."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1494
+          }
+        },
+        {
+          "numero": 25,
+          "enunciado": "¿Cuál es la definición de Rumbo Verdadero?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Es el ángulo que forma la línea proa-popa de nuestro barco con el meridiano del lugar."
+            },
+            {
+              "letra": "B",
+              "texto": "Es el ángulo que forma la línea proa-popa de nuestro barco con el meridiano de aguja."
+            },
+            {
+              "letra": "C",
+              "texto": "Es el ángulo que forma la línea proa-popa de nuestro barco con el paralelo verdadero."
+            },
+            {
+              "letra": "D",
+              "texto": "Es el ángulo que forma la línea proa-popa de nuestro barco con el paralelo de aguja."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1506
+          }
+        },
+        {
+          "numero": 26,
+          "enunciado": "¿Cuál de las siguientes afirmaciones relativas a las cartas náuticas es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Las cartas náuticas son una publicación en desuso y no exigible según la normativa española sobre"
+            },
+            {
+              "letra": "B",
+              "texto": "Estas publicaciones describen las costas y los puertos con toda clase de detalles interesantes para la navegación y son un complemento esencial del GPS."
+            },
+            {
+              "letra": "C",
+              "texto": "Las cartas náuticas a bordo estarán actualizadas y nos serviremos de los avisos a los navegantes para actualizar cualquier información que nos dé dicha carta."
+            },
+            {
+              "letra": "D",
+              "texto": "Con cartas electrónicas a bordo no se necesitan las correcciones, ya que se actualizan automáticamente al llegar al puerto."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1518
+          }
+        },
+        {
+          "numero": 27,
+          "enunciado": "Las ENC-Oficiales son cartas:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Raster."
+            },
+            {
+              "letra": "B",
+              "texto": "Vectoriales."
+            },
+            {
+              "letra": "C",
+              "texto": "Printing."
+            },
+            {
+              "letra": "D",
+              "texto": "Chart."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1534
+          }
+        },
+        {
+          "numero": 28,
+          "enunciado": "¿Cómo se definen los paralelos?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Son circunferencias menores paralelas al Ecuador y perpendiculares al eje terrestre."
+            },
+            {
+              "letra": "B",
+              "texto": "En las proyecciones Mercatorianas, son circunferencias paralelas al Ecuador y perpendiculares al"
+            },
+            {
+              "letra": "C",
+              "texto": "Son circunferencias del mismo diámetro, paralelas al Ecuador y perpendiculares al eje terrestre."
+            },
+            {
+              "letra": "D",
+              "texto": "Son líneas imaginarias que dividen el globo terráqueo en longitudes."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Maniobra y navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1546
+          }
+        },
+        {
+          "numero": 29,
+          "enunciado": "El sistema AIS es:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Un sistema de fonía."
+            },
+            {
+              "letra": "B",
+              "texto": "Un sistema automático anticolisión."
+            },
+            {
+              "letra": "C",
+              "texto": "Un sistema de identificación automática."
+            },
+            {
+              "letra": "D",
+              "texto": "Un sistema de registro de datos de travesía."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Maniobra y navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1559
+          }
+        },
+        {
+          "numero": 30,
+          "enunciado": "¿Qué es la corrección total?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Es el desvío del compás a tener en cuenta para gobernar la embarcación."
+            },
+            {
+              "letra": "B",
+              "texto": "Es la desviación que sufriremos por agentes externos, como el viento y la corriente, y que es necesario conocer para gobernar el buque."
+            },
+            {
+              "letra": "C",
+              "texto": "Es la suma algebraica del desvío y el abatimiento."
+            },
+            {
+              "letra": "D",
+              "texto": "Es la suma algebraica de la declinación magnética y el desvío del compás."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Emergencias en la mar",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1568
+          }
+        },
+        {
+          "numero": 31,
+          "enunciado": "Hallar nuestra situación simultánea estando situados en la demora verdadera =208º del faro de Cabo Espartel y la demora verdadera = 136º del faro de Punta Malabata.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "l = 35º 54,2’N L = 005º 51,0’W."
+            },
+            {
+              "letra": "B",
+              "texto": "l = 35º 53,7’N L = 005º 50,6’W."
+            },
+            {
+              "letra": "C",
+              "texto": "l = 35º 55,0’N L = 005º 50,6’W."
+            },
+            {
+              "letra": "D",
+              "texto": "l = 35º 53,2’N L = 005º 51,5’W."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Emergencias en la mar",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1582
+          }
+        },
+        {
+          "numero": 32,
+          "enunciado": "Navegando al rumbo de aguja = 284,5º a una velocidad de máquinas de 7 nudos, observamos a la Hrb 11:12 el faro de punto Gracia con una demora de aguja de 350º. Manteniendo rumbo y velocidad observamos nuevamente el faro de Punta Gracia con una demora de aguja = 060º a la Hrb 12:36.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "l = 36º 02,2’N L = 005º 58,0’W."
+            },
+            {
+              "letra": "B",
+              "texto": "l = 36º 01,3’N L = 005º 59,0’W."
+            },
+            {
+              "letra": "C",
+              "texto": "l = 36º 00,3’N L = 005º 59,0’W."
+            },
+            {
+              "letra": "D",
+              "texto": "l = 36º 02,3’N L = 005º 58,5’W."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Emergencias en la mar",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1595
+          }
+        },
+        {
+          "numero": 33,
+          "enunciado": "Navegando al rumbo verdadero =072º a una velocidad de máquinas de 8 nudos, observamos a la Hrb 16:06 el faro de Punta Europa con una demora verdadera de 020º. Manteniendo rumbo y velocidad observamos el faro de Punta Almina con una demora verdadera =175º a la Hrb 16:36. Hallar la situación no simultánea a la Hrb 16:36.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "l = 35º 59,5’N L = 005º 16,0’W."
+            },
+            {
+              "letra": "B",
+              "texto": "l = 36º 02,2’N L = 005º 16,4’W."
+            },
+            {
+              "letra": "C",
+              "texto": "l = 36º 03,8’N L = 005º 17,8’W."
+            },
+            {
+              "letra": "D",
+              "texto": "l = 35º 02,2’N L = 005º 18,5’W."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Meteorología",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1610
+          }
+        },
+        {
+          "numero": 34,
+          "enunciado": "Situados en la demora verdadera del faro de Cabo Trafalgar = 340º y una distancia del mismo de 3 millas, damos rumbo para pasar a 6,1 millas del faro de Punta de Gracia. Calcular el rumbo de aguja si el desvío de la aguja es 2ºW, la declinación magnética es la de la carta para 2021 y tenemos un viento del NE que nos provoca un abatimiento de 4º.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "149º."
+            },
+            {
+              "letra": "B",
+              "texto": "141º."
+            },
+            {
+              "letra": "C",
+              "texto": "135º."
+            },
+            {
+              "letra": "D",
+              "texto": "144º."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Meteorología",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1625
+          }
+        },
+        {
+          "numero": 35,
+          "enunciado": "Con los datos de la carta, ¿cuál es la Corrección Total para el año 2021, si el desvío de la aguja es 3ºW?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "4º (-)."
+            },
+            {
+              "letra": "B",
+              "texto": "4º (+)."
+            },
+            {
+              "letra": "C",
+              "texto": "1,5º (-)."
+            },
+            {
+              "letra": "D",
+              "texto": "1,5º (+)."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Meteorología",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1637
+          }
+        },
+        {
+          "numero": 36,
+          "enunciado": "Siendo la situación inicial l = 36º 05,0’N y L= 006º 15,0’W y la final l = 35º 53,4’N y L= 005º 52,0’W, hallar el rumbo directo y la distancia entre ambas posiciones.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Rumbo = 122º distancia = 21,8 millas."
+            },
+            {
+              "letra": "B",
+              "texto": "Rumbo = 118º distancia = 19,8 millas."
+            },
+            {
+              "letra": "C",
+              "texto": "Rumbo = 125º distancia = 20,4 millas."
+            },
+            {
+              "letra": "D",
+              "texto": "Rumbo = 117º distancia = 23,4 millas."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Meteorología",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1648
+          }
+        },
+        {
+          "numero": 37,
+          "enunciado": "Siendo el rumbo de la corriente = 130º, la intensidad horaria de la corriente 3 nudos y estando situados a",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción A no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción B no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción C no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción D no disponible"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Teoría de la navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1660
+          }
+        },
+        {
+          "numero": 38,
+          "enunciado": "A la Hrb 11:06 estamos situados en l = 35º 45,2’N y L= 006º 00,5’W con rumbo de aguja = 300º, viento del W que nos abate 4º y una corriente de intensidad horaria de 2,5 nudos y rumbo 045º. Hallar la nudos.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "l = 35º 56,0’N L = 006º 07,6’W."
+            },
+            {
+              "letra": "B",
+              "texto": "l = 35º 55,5’N L = 006º 07,0’W."
+            },
+            {
+              "letra": "C",
+              "texto": "l = 35º 57,0’N L = 006º 06,6’W."
+            },
+            {
+              "letra": "D",
+              "texto": "l = 35º 54,9’N L = 006º 08,8’W. presión atmosférica de 1003 Mb y una sonda en la carta de 6,8 m."
+            },
+            {
+              "letra": "A",
+              "texto": "6,50 m."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Teoría de la navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1674
+          }
+        },
+        {
+          "numero": 39,
+          "enunciado": "Hallar la sonda en el momento de la primera bajamar, el día 27 de febrero de 2021 en Tarifa, con una",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "6,50 m."
+            },
+            {
+              "letra": "B",
+              "texto": "6,90 m."
+            },
+            {
+              "letra": "C",
+              "texto": "7,70 m."
+            },
+            {
+              "letra": "D",
+              "texto": "7,10 m."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Teoría de la navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1688
+          }
+        },
+        {
+          "numero": 40,
+          "enunciado": "A la Hrb 16:00 salimos del faro de la punta del espigón del Puerto de Tánger con un rumbo verdadero = 350º y una velocidad de máquinas de 7 nudos. A la Hrb 17:30 observamos el faro de Punta de Gracia a 6,1 millas y el faro de Punta Paloma a 4,2 millas. ¿Cuál es el rumbo e intensidad horaria de la corriente?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Rºc = 242º. Ihc = 2,9’."
+            },
+            {
+              "letra": "B",
+              "texto": "Rºc = 062º. Ihc = 3,2’."
+            },
+            {
+              "letra": "C",
+              "texto": "Rºc = 060º. Ihc = 2,9’."
+            },
+            {
+              "letra": "D",
+              "texto": "Rºc = 240º. Ihc = 3,2’. EXAMEN DE CAPITÁN DE YATE Teoría de navegación."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Teoría de la navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1700
+          }
+        }
+      ]
+    },
+    {
+      "titulacion": "CY",
+      "numero_test": "0",
+      "convocatoria": "2021_02_recreo",
+      "tipo_examen": "CY_NORMAL",
+      "preguntas": [
+        {
+          "numero": 1,
+          "enunciado": "Cuando el Sol alcanza el solsticio de verano, ¿cuál de las siguientes afirmaciones es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Alcanza un valor máximo de declinación negativa."
+            },
+            {
+              "letra": "B",
+              "texto": "La declinación es justamente cero, el Sol pasa por el horizonte."
+            },
+            {
+              "letra": "C",
+              "texto": "Alcanza un valor máximo de declinación positiva."
+            },
+            {
+              "letra": "D",
+              "texto": "La declinación es justamente cero, el Sol pasa por el ecuador terrestre."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Nomenclatura náutica",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1728
+          }
+        },
+        {
+          "numero": 2,
+          "enunciado": "Se define Ángulo Sidéreo como:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El arco de ecuador contado desde Aries hasta el circulo horario del astro de 0º a 360º en sentido inverso, o sea mirando desde el polo norte en sentido de las agujas del reloj."
+            },
+            {
+              "letra": "B",
+              "texto": "El arco de ecuador contado desde Aries hasta el circulo horario del astro de 0º a 360º en sentido directo, o sea mirando desde el polo norte en sentido contrario a las agujas del reloj."
+            },
+            {
+              "letra": "C",
+              "texto": "El arco de ecuador contado desde Libra hasta el circulo horario del astro de 0º a 360º en sentido directo, o sea mirando desde el polo norte en sentido contrario a las agujas del reloj."
+            },
+            {
+              "letra": "D",
+              "texto": "El arco de ecuador contado desde Libra hasta el circulo horario del astro de 0º a 360º en sentido inverso, o sea mirando desde el polo norte en sentido de las agujas del reloj."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Nomenclatura náutica",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1739
+          }
+        },
+        {
+          "numero": 3,
+          "enunciado": "Señale cuál de las siguientes afirmaciones NO es CORRECTA:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La hora civil en Greenwich es igual a la hora civil del lugar más la longitud."
+            },
+            {
+              "letra": "B",
+              "texto": "Se denomina hora legal a la hora correspondiente al huso horario."
+            },
+            {
+              "letra": "C",
+              "texto": "Se denomina Tiempo Universal al tiempo que ha transcurrido desde que el sol medio pasó por el meridiano inferior del lugar."
+            },
+            {
+              "letra": "D",
+              "texto": "La hora oficial se diferencia de la hora civil en Greenwich por una cantidad (O) establecida por el gobierno competente en función de su estrategia de ahorro energético."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Nomenclatura náutica",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1754
+          }
+        },
+        {
+          "numero": 4,
+          "enunciado": "El meridiano celeste que contiene al Zenit se le denomina:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Meridiano vertical."
+            },
+            {
+              "letra": "B",
+              "texto": "Meridiano inferior del lugar."
+            },
+            {
+              "letra": "C",
+              "texto": "Meridiano superior del lugar."
+            },
+            {
+              "letra": "D",
+              "texto": "Meridiano primario."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Nomenclatura náutica",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1767
+          }
+        },
+        {
+          "numero": 5,
+          "enunciado": "Nos disponemos a realizar una observación con el sextante, señale cuál de las siguientes afirmaciones NO es CORRECTA:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Si la altura del astro es próxima a los 90º, se aconseja calcular antes el azimut para observar la altura en esa dirección."
+            },
+            {
+              "letra": "B",
+              "texto": "Si el horizonte es poco visible, conviene observar lo más bajo posible para tener más cerca la línea"
+            },
+            {
+              "letra": "C",
+              "texto": "El sitio de la observación debe estar protegido de viento y alejado de la chimenea para evitar refracciones anormales al atravesar los rayos del astro el aire caliente."
+            },
+            {
+              "letra": "D",
+              "texto": "Es preferible observar los astros con alturas menores de 15º y mayores de 65º, las correcciones a la lectura son menores y por tanto más reales."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Elementos de amarre y fondeo",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1782
+          }
+        },
+        {
+          "numero": 6,
+          "enunciado": "Se define Ascensión Recta como:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El arco de ecuador contado desde Aries hasta el circulo horario del astro, en el sentido de las agujas del reloj visto desde el N."
+            },
+            {
+              "letra": "B",
+              "texto": "El arco de ecuador igual al Ángulo Sidéreo"
+            },
+            {
+              "letra": "C",
+              "texto": "El horario del lugar del astro."
+            },
+            {
+              "letra": "D",
+              "texto": "El arco de ecuador contado desde Aries hasta el circulo horario del astro, en sentido contrario a las agujas del reloj visto desde el N."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Elementos de amarre y fondeo",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1798
+          }
+        },
+        {
+          "numero": 7,
+          "enunciado": "Cuando planificamos una ruta:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Debemos hacer acopio de todas las cartas náuticas exactas y actualizadas en la escala adecuada, que se requiera para la travesía prevista, que nos indiquen los peligros de la zona por la que vamos a"
+            },
+            {
+              "letra": "B",
+              "texto": "Podemos hacer uso exclusivamente de la información proporcionada por radio, las cartas son un instrumento accesorio si la navegación es próxima a la costa."
+            },
+            {
+              "letra": "C",
+              "texto": "No es necesario tener todas las cartas actualizadas, podemos priorizar según el tipo de navegación que vamos a realizar."
+            },
+            {
+              "letra": "D",
+              "texto": "Si la navegación es entre puntos situados dentro de aguas interiores, no es necesario llevar catálogo"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Seguridad",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1811
+          }
+        },
+        {
+          "numero": 8,
+          "enunciado": "¿Qué estrella reconoceríamos si prolongamos la línea de Canopus – Achernar en la constelación de la Cruz del Sur?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Fomalhaut."
+            },
+            {
+              "letra": "B",
+              "texto": "Antares."
+            },
+            {
+              "letra": "C",
+              "texto": "Acrux."
+            },
+            {
+              "letra": "D",
+              "texto": "Mimosa."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Seguridad",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1827
+          }
+        },
+        {
+          "numero": 9,
+          "enunciado": "¿Cómo se define el Almicantarat?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Es el lugar geométrico de todos los puntos de la esfera celeste que tienen el mismo azimut."
+            },
+            {
+              "letra": "B",
+              "texto": "Es el lugar geométrico de todos los puntos de la esfera celeste que tienen la misma altura."
+            },
+            {
+              "letra": "C",
+              "texto": "Es el arco de horizonte que va desde los puntos cardinales Norte o Sur hasta el vertical del astro."
+            },
+            {
+              "letra": "D",
+              "texto": "Es el círculo máximo perpendicular a los polos celestes."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Seguridad",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1839
+          }
+        },
+        {
+          "numero": 10,
+          "enunciado": "¿Qué es el semicírculo horario?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Es el arco de ecuador contado hacia el Este."
+            },
+            {
+              "letra": "B",
+              "texto": "Es el lugar comprendido entre el polo elevado y el centro del astro."
+            },
+            {
+              "letra": "C",
+              "texto": "Es el lugar geométrico de los puntos de la Tierra con el mismo horario."
+            },
+            {
+              "letra": "D",
+              "texto": "Es el lugar geométrico de los puntos de la esfera celeste con el mismo horario. Cálculo de Navegación."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Seguridad",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1850
+          }
+        },
+        {
+          "numero": 11,
+          "enunciado": "El día 28 de febrero de 2021, siendo hora UTC 13:12:08, se desea saber la hora civil del lugar en un punto de longitud 060º23’W.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "09:10:36 (día 28)"
+            },
+            {
+              "letra": "B",
+              "texto": "09:12:08 (día 28)"
+            },
+            {
+              "letra": "C",
+              "texto": "17:13:40 (día 27)"
+            },
+            {
+              "letra": "D",
+              "texto": "17:13:40 (día 28)"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Legislación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1860
+          }
+        },
+        {
+          "numero": 12,
+          "enunciado": "Sabiendo que el día 28 de febrero de 2020 se ha tomado una altura instrumental de la estrella Vega de cero del tambor micrométrico del sextante queda a 0,3’ por debajo del cero del nonius, se pide calcular la altura verdadera de la estrella.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "18º 57,6’."
+            },
+            {
+              "letra": "B",
+              "texto": "19º 02,8’"
+            },
+            {
+              "letra": "C",
+              "texto": "19º 12,6’."
+            },
+            {
+              "letra": "D",
+              "texto": "19º 07,2’."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Legislación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1873
+          }
+        },
+        {
+          "numero": 13,
+          "enunciado": "El 28 de febrero de 2020, estando situados en latitud: 45º29,0’N; longitud: 028º54,0’W, se pide calcular la Hrb del paso del Sol por el meridiano superior del lugar.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "12h 08,2m."
+            },
+            {
+              "letra": "B",
+              "texto": "16h 08,2m."
+            },
+            {
+              "letra": "C",
+              "texto": "12h 17,0m."
+            },
+            {
+              "letra": "D",
+              "texto": "14h 08,2m."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1888
+          }
+        },
+        {
+          "numero": 14,
+          "enunciado": "Calcular la situación observada por dos rectas de altura simultaneas, en la situación de estima: 34º 50,0’N; 019º 18,0’E, sabiendo que se han obtenido los siguientes determinantes: Rigel: azimut = S26ºW; Δa= -3’. Sirius: azimut = S05ºE;   Δa= -13’.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "34º 54,5’N ; 019º 05,0’E."
+            },
+            {
+              "letra": "B",
+              "texto": "35º 01,5’N ; 018º 57,5’E."
+            },
+            {
+              "letra": "C",
+              "texto": "34º 44,0’N ; 019º 25,0’E."
+            },
+            {
+              "letra": "D",
+              "texto": "34º 54,0’N ; 019º 25,5’E."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1901
+          }
+        },
+        {
+          "numero": 15,
+          "enunciado": "El 13 de noviembre de 2020, al ser TU = 03:33:42, en una situación de latitud 30º 00,0’N y longitud total.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Ct = 3,2º (-)"
+            },
+            {
+              "letra": "B",
+              "texto": "Ct = 4,5º (-)"
+            },
+            {
+              "letra": "C",
+              "texto": "Ct = 4,5º (+)"
+            },
+            {
+              "letra": "D",
+              "texto": "Ct = 3,2º (+)"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1917
+          }
+        },
+        {
+          "numero": 16,
+          "enunciado": "Hallar el azimut náutico y la altura estimada de un astro, siendo la latitud del observador 25º00,0’N, la declinación del astro 38º47,3’ y el horario del lugar 351º 18,9’.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Zv = 026,4º y ae = 73º 54,5’."
+            },
+            {
+              "letra": "B",
+              "texto": "Zv = 027,3º y ae = 73º 54,5’."
+            },
+            {
+              "letra": "C",
+              "texto": "Zv = N25,9E y ae = 74º 23,0’."
+            },
+            {
+              "letra": "D",
+              "texto": "Zv = N28,2E y ae = 74º 23,0’."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1928
+          }
+        },
+        {
+          "numero": 17,
+          "enunciado": "¿Cuál de los siguientes resultados más se aproxima al horario y la declinación de la estrella Sirius en",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "hG Sirius = 1º 12,1’ y Dec. Sirius = -16º22,8’."
+            },
+            {
+              "letra": "B",
+              "texto": "hG Sirius = 2º 02,9’ y Dec. Sirius = -16º44,6’."
+            },
+            {
+              "letra": "C",
+              "texto": "hG Sirius = 1º 20,9’ y Dec. Sirius = -16º44,6’."
+            },
+            {
+              "letra": "D",
+              "texto": "hG Sirius = 2º 43,7’ y Dec. Sirius = 16º22,8’."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Balizamiento",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1940
+          }
+        },
+        {
+          "numero": 18,
+          "enunciado": "Calcular el Rumbo inicial, en circulares, para navegar por una derrota ortodrómica entre los siguientes puntos: A = 34º22,0’S; 175º 12,0’W y B = 11º39,0’N; 091º34,0’W.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Ri = 126,4."
+            },
+            {
+              "letra": "B",
+              "texto": "Ri = 056,4."
+            },
+            {
+              "letra": "C",
+              "texto": "Ri = 076,8."
+            },
+            {
+              "letra": "D",
+              "texto": "Ri = 256,8."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1953
+          }
+        },
+        {
+          "numero": 19,
+          "enunciado": "El 30 de noviembre de 2020, al ser TU = 5h 12m 06s, en un lugar de longitud 030º 30,5’W, se observa altura de la estrella Polar?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Latitud = 40º 30,1’N."
+            },
+            {
+              "letra": "B",
+              "texto": "Latitud = 40º 34,2’N."
+            },
+            {
+              "letra": "C",
+              "texto": "Latitud = 40º 38,3’N."
+            },
+            {
+              "letra": "D",
+              "texto": "Latitud = 40º 50,3’N."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1965
+          }
+        },
+        {
+          "numero": 20,
+          "enunciado": "Calcular la distancia ortodrómica entre los siguientes puntos: A = 34º 22,0’S; 175º 12,0’W y B = 11º 39,0’N; 091º 34,0’W.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "4845 millas."
+            },
+            {
+              "letra": "B",
+              "texto": "5484 millas."
+            },
+            {
+              "letra": "C",
+              "texto": "5844 millas."
+            },
+            {
+              "letra": "D",
+              "texto": "5412 millas."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1979
+          }
+        },
+        {
+          "numero": 21,
+          "enunciado": "En un ciclón tropical, los semicírculos peligroso y manejable estarán:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "A la izquierda de la trayectoria el primero y a la derecha de la trayectoria el segundo en ambos"
+            },
+            {
+              "letra": "B",
+              "texto": "A la izquierda de la trayectoria el primero y a la derecha de la trayectoria el segundo en el"
+            },
+            {
+              "letra": "C",
+              "texto": "A la derecha de la trayectoria el primero y a la izquierda de la trayectoria el segundo en el"
+            },
+            {
+              "letra": "D",
+              "texto": "A la izquierda de la trayectoria el primero y a la derecha de la trayectoria el segundo en el"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 1993
+          }
+        },
+        {
+          "numero": 22,
+          "enunciado": "Las trayectorias típicas que describen los ciclones tropicales en el hemisferio norte llevan dirección:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "W o WSW, recurvando luego hacia el SE."
+            },
+            {
+              "letra": "B",
+              "texto": "S o SE, recurvando luego hacia el N y NE."
+            },
+            {
+              "letra": "C",
+              "texto": "W o WNW, recurvando luego hacia el N y NE."
+            },
+            {
+              "letra": "D",
+              "texto": "W o WNW, recurvando luego hacia el SE."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2006
+          }
+        },
+        {
+          "numero": 23,
+          "enunciado": "Las fuertes descargas eléctricas que se producen en la atmósfera dentro de las nubes o entre una nube y la superficie terrestre se las conoce por:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Relámpagos."
+            },
+            {
+              "letra": "B",
+              "texto": "Truenos."
+            },
+            {
+              "letra": "C",
+              "texto": "Rayos."
+            },
+            {
+              "letra": "D",
+              "texto": "Fuego de San Telmo."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2018
+          }
+        },
+        {
+          "numero": 24,
+          "enunciado": "¿Cuál de las siguientes afirmaciones es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La tropopausa es el estrato que hace de unión entre la troposfera y la mesosfera y en ella circula el jet stream o corriente en chorro."
+            },
+            {
+              "letra": "B",
+              "texto": "La tropopausa es el estrato que hace de unión entre la troposfera y la estratosfera."
+            },
+            {
+              "letra": "C",
+              "texto": "La mesosfera es el estrato que hace de unión entre la ionosfera y la exosfera."
+            },
+            {
+              "letra": "D",
+              "texto": "La altura de la troposfera es de aproximadamente 100 km y su frontera con la capa superior se denomina tropopausa."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2031
+          }
+        },
+        {
+          "numero": 25,
+          "enunciado": "¿Cuál de las siguientes afirmaciones sobre las auroras polares es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Son un tipo de fenómeno óptico que aparece por la refracción de los rayos solares, cuando estos atraviesan capas de la atmósfera con distinta temperatura."
+            },
+            {
+              "letra": "B",
+              "texto": "Son un tipo de fenómeno óptico, que se produce principalmente en la astenosfera."
+            },
+            {
+              "letra": "C",
+              "texto": "Son llamadas auroras boreales cuando ocurren en el Hemisferio Sur y australes cuando lo hacen en el Hemisferio Norte."
+            },
+            {
+              "letra": "D",
+              "texto": "Son un tipo de fenómenos óptico que ocurre principalmente en latitudes altas."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2045
+          }
+        },
+        {
+          "numero": 26,
+          "enunciado": "¿En qué capa de la atmósfera se produce la reflexión de las ondas hertzianas que se emplean para las radiocomunicaciones?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Troposfera."
+            },
+            {
+              "letra": "B",
+              "texto": "Astenosfera."
+            },
+            {
+              "letra": "C",
+              "texto": "Ionosfera."
+            },
+            {
+              "letra": "D",
+              "texto": "Capa E1 de la Magnetosfera."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2059
+          }
+        },
+        {
+          "numero": 27,
+          "enunciado": "La Corriente Ecuatorial del Norte:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Se origina a la altura de las Islas de Cabo Verde."
+            },
+            {
+              "letra": "B",
+              "texto": "Pasa entre la isla de Madagascar y el continente africano."
+            },
+            {
+              "letra": "C",
+              "texto": "Tiene dirección predominante Este."
+            },
+            {
+              "letra": "D",
+              "texto": "No existe ninguna corriente con este nombre."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Reglamento (RIPA)",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2072
+          }
+        },
+        {
+          "numero": 28,
+          "enunciado": "La escala Saffir-Simpson cataloga los ciclones tropicales en:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Cinco categorías: 1, 2, 3, 4 y 5, siendo los ciclones de categoría 1 de mayor intensidad que los de la"
+            },
+            {
+              "letra": "B",
+              "texto": "Cinco categorías: 1, 2, 3, 4 y 5, siendo los ciclones de categoría 1 de menor intensidad que los de la"
+            },
+            {
+              "letra": "C",
+              "texto": "Seis categorías: 1, 2, 3, 5, 5 y 6, siendo los ciclones de categoría 6 de menor intensidad que los de"
+            },
+            {
+              "letra": "D",
+              "texto": "Seis categorías: 1, 2, 3, 5, 5 y 6, siendo los ciclones de categoría 6 de mayor intensidad que los de"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Maniobra y navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2081
+          }
+        },
+        {
+          "numero": 29,
+          "enunciado": "En relación a los ciclones tropicales, ¿cuál de las siguientes afirmaciones es FALSA si queremos determinar el cuadrante en el que se halla el buque?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Si el viento rola en el sentido de las agujas del reloj, nos encontraremos en el semicírculo derecho."
+            },
+            {
+              "letra": "B",
+              "texto": "Si el viento mantiene una dirección constante, nos encontramos en la misma trayectoria del vórtice."
+            },
+            {
+              "letra": "C",
+              "texto": "Si el viento rola en el sentido contrario de las agujas del reloj, nos encontraremos en el semicírculo"
+            },
+            {
+              "letra": "D",
+              "texto": "No se puede determinar el cuadrante en el que nos encontramos conociendo únicamente el cambio de la dirección del viento."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Maniobra y navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2097
+          }
+        },
+        {
+          "numero": 30,
+          "enunciado": "Informado de la presencia de hielos en su derrota o cerca de ella, el capitán de todo buque está obligado a:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "En todo momento, a navegar manteniendo una distancia de seguridad de la zona peligrosa."
+            },
+            {
+              "letra": "B",
+              "texto": "Durante el día, a navegar a una velocidad de tres nudos y modificar su derrota para distanciarse de"
+            },
+            {
+              "letra": "C",
+              "texto": "Durante la noche, a navegar a una velocidad moderada o a modificar su derrota para distanciarse de"
+            },
+            {
+              "letra": "D",
+              "texto": "En todo momento, a navegar a una velocidad moderada y, durante la noche, a permanecer"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Emergencias en la mar",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2112
+          }
+        },
+        {
+          "numero": 31,
+          "enunciado": "Elija la traducción adecuada: “Are you dragging/dredging anchor?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "¿Está usted arrastrando/arriando el ancla?"
+            },
+            {
+              "letra": "B",
+              "texto": "¿Está usted garreando/arrastrando el ancla?"
+            },
+            {
+              "letra": "C",
+              "texto": "¿Está usted arrastrando/enredando el ancla?"
+            },
+            {
+              "letra": "D",
+              "texto": "¿Está usted garreando/encepando el ancla?"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Emergencias en la mar",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2129
+          }
+        },
+        {
+          "numero": 32,
+          "enunciado": "Elija la traducción adecuada: “List/danger of capsizing.”.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Escora/peligro de zozobra."
+            },
+            {
+              "letra": "B",
+              "texto": "Varada/escora peligrosa."
+            },
+            {
+              "letra": "C",
+              "texto": "Hundimiento/escora peligrosa."
+            },
+            {
+              "letra": "D",
+              "texto": "Inundación/peligro de hundimiento."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Emergencias en la mar",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2141
+          }
+        },
+        {
+          "numero": 33,
+          "enunciado": "Elija la traducción adecuada: “The construction of lights and shapes and the installation of lights on board the vessel shall be to the satisfaction of the appropriate authority of the State whose flag the vessel is entitled to fly”.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La construcción de luces y marcas, así como la instalación de luces a bordo del buque, se ajustarán a criterios que la autoridad competente del Estado cuyo pabellón tenga derecho a enarbolar el buque juzgue satisfactorios."
+            },
+            {
+              "letra": "B",
+              "texto": "La construcción de luces y marcas, así como la instalación de luces a bordo del buque, se ajustarán a criterios que la autoridad competente del Estado cuyo pabellón tenga obligación de enarbolar el buque juzgue satisfactorios."
+            },
+            {
+              "letra": "C",
+              "texto": "La construcción de luces y marcas, así como la instalación de luces a bordo del buque, se podrán ajustar a criterios que la autoridad competente del pabellón cuyo Estado tenga obligación de enarbolar el buque considere obligatorios."
+            },
+            {
+              "letra": "D",
+              "texto": "La construcción de luces y marcas, así como la instalación de luces a bordo de un buque en tránsito, se ajustarán a criterios que la autoridad competente del Estado cuyo pabellón tenga obligación de enarbolar el buque en tránsito juzgue satisfactorios."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Meteorología",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2150
+          }
+        },
+        {
+          "numero": 34,
+          "enunciado": "Elija la traducción adecuada: “A vessel engaged in fishing shall not impede the passage of any other vessel navigating within a narrow channel or fairway”.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Los buques dedicados a la pesca no impedirán el paso de ningún crucero que navegue dentro de un paso o canal angosto."
+            },
+            {
+              "letra": "B",
+              "texto": "Los buques dedicados a la pesca no estorbarán el tránsito de ningún otro buque que navegue paralelo a un paso o canal angosto."
+            },
+            {
+              "letra": "C",
+              "texto": "Los buques dedicados a la pesca no estorbarán el tránsito de ningún otro buque que navegue dentro de un paso o canal angosto."
+            },
+            {
+              "letra": "D",
+              "texto": "Los buques pesqueros no estorbarán el tránsito a los cruceros que naveguen dentro de un paso o"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Meteorología",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2172
+          }
+        },
+        {
+          "numero": 35,
+          "enunciado": "Elija la traducción adecuada: “The term “vessel constrained by her draught” means a power-driven vessel which, because of her draught in relation to the available depth un width of navigable water, is severely restricted in her ability to deviate from the course she is following”.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La expresión “buque restringido por su diseño” significa un buque de propulsión mecánica que, por razón de su diseño en relación con la profundidad y la velocidad del agua navegable, tiene una capacidad muy restringida de apartarse de la derrota que está siguiendo."
+            },
+            {
+              "letra": "B",
+              "texto": "La expresión “buque restringido por su calado” significa un buque de propulsión mecánica que, por razón de su calado en relación con la profundidad disponible y la anchura del canal navegable, tiene una capacidad restringida de apartarse de la derrota que está siguiendo."
+            },
+            {
+              "letra": "C",
+              "texto": "La expresión “buque restringido por su calado” significa un buque de propulsión mecánica que, por razón de su calado en relación con la profundidad y la anchura disponible del agua navegable, no tiene capacidad de apartarse de la derrota que está siguiendo."
+            },
+            {
+              "letra": "D",
+              "texto": "La expresión “buque restringido por su calado” significa un buque de propulsión mecánica que, por razón de su calado en relación con la profundidad y la anchura disponible del agua navegable, tiene una capacidad muy restringida de apartarse de la derrota que está siguiendo."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Meteorología",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2189
+          }
+        },
+        {
+          "numero": 36,
+          "enunciado": "Elija la traducción adecuada: “Uncharted reef/rocks/shoal/dangerous wreck/obstruction reported/located in position….”.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Arrecife/rocas/orilla/restos peligrosos de abordaje/obstrucción indicados en las cartas notificado(a) / localizado(a) en la situación…."
+            },
+            {
+              "letra": "B",
+              "texto": "Arrecife/rocas/banco/restos peligrosos de naufragio/obstrucción sin indicar en las cartas notificado(a) / localizado(a) en la situación…."
+            },
+            {
+              "letra": "C",
+              "texto": "Escollo/rocas/profundidad/restos peligrosos de naufragio/obstrucción sin indicar en las cartas notificado(a) / localizado(a) en la situación…."
+            },
+            {
+              "letra": "D",
+              "texto": "Escollo/rocas/esquina/restos peligrosos de naufragio/obstrucción sin indicar en las cartas notificado(a) / localizado(a) en la situación…"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Meteorología",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2211
+          }
+        },
+        {
+          "numero": 37,
+          "enunciado": "Elija la traducción adecuada: “The bearing of the mark or vessel concerned is the bearing in the 360- degree rotation from north (true north unless otherwise stated), except in the case of relative bearings. Bearings may be either FROM the mark or FROM the vessel”.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La demora de la marca o del buque de que se trate es la demora expresada en la notación de 360º a partir del norte (norte verdadero, a menos que se indique otra cosa), excepto en el caso de las demoras relativas. Las demoras podrán expresarse A PARTIR DE la marca o A PARTIR DEL buque."
+            },
+            {
+              "letra": "B",
+              "texto": "La demora de la marca o del buque de que se trate siempre se expresará en la notación de 360º a partir del norte (norte verdadero, a menos que se indique otra cosa). Se podrá indicar si el rumbo se da EN DIRECCIÓN A o APARTIR DE una marca."
+            },
+            {
+              "letra": "C",
+              "texto": "La demora de la marca o del buque de que se trate se expresará en la notación de 360º desde el norte verdadero (a menos que se indique otra cosa). Se podrá indicar si el rumbo se da EN DIRECCIÓN A o A PARTIR de una marca."
+            },
+            {
+              "letra": "D",
+              "texto": "La demora de la marca o del buque de que se trate es la demora expresada en la notación de 360º a partir del norte (norte verdadero, a menos que se indique otra cosa), excepto en el caso de las demoras relativas. Las demoras podrán expresarse EN DIRECCIÓN A la marca o EN DIRECCIÓN al buque."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Teoría de la navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2225
+          }
+        },
+        {
+          "numero": 38,
+          "enunciado": "Elija la traducción adecuada: ”Nothing in these Rules shall interfere with the operation of special rules made by an appropriate authority for roadsteads, harbours, rivers, lakes or inland waterways connected with the high seas and navigable by seagoing vessels. Such special rules shall confirm as closely as possible to these Rules”.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Ninguna disposición del presente Reglamento impedirá la aplicación de reglas especiales, establecidas por la autoridad competente para carreteras, puertos, ríos, lagos o aguas interiores que tengan comunicación con alta mar y sean navegables por los buques de navegación marítimas. Dichas reglas especiales deberán acercarse en todo lo posible a lo dispuesto en el presente Reglamento."
+            },
+            {
+              "letra": "B",
+              "texto": "Ninguna disposición del presente Reglamento impedirá la aplicación de reglas especiales, establecidas por la autoridad competente para las radas, puertos, ríos, lagos o canales que tengan comunicación con alta mar y sean navegables por los buques de navegación marítima. Dichas reglas especiales deberán parecerse en todo lo posible a lo dispuesto en el presente Reglamento."
+            },
+            {
+              "letra": "C",
+              "texto": "Ninguna disposición del presente Reglamento impedirá la aplicación de reglas especiales, establecidas por la autoridad competente para las radas, puertos, ríos, lagos o aguas interiores que tengan comunicación con alta mar y sean navegables por los buques de navegación marítima. Dichas reglas especiales deberán coincidir en todo lo posible con lo dispuesto en el presente Reglamento."
+            },
+            {
+              "letra": "D",
+              "texto": "Ninguna disposición del presente Reglamento impedirá la aplicación de reglas especiales, establecidas por la autoridad local competente para las radas, puertos, ríos, lagos o aguas interiores que tengan comunicación con alta mar y sean navegables por los buques de navegación interior. Dichas reglas especiales deberán coincidir en todo lo posible con lo dispuesto en el presente"
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Teoría de la navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2247
+          }
+        },
+        {
+          "numero": 39,
+          "enunciado": "Elija la traducción adecuada: “A power-driven vessel of less than 12 meters in length may in lieu of the lights prescribed in paragraph (a) of this Rule exhibit an all-round white light and sidelights”.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Los buques autopropulsados de eslora inferior a 12 metros podrán exhibir, junto a las luces prescritas en el párrafo a) de esta Regla, una luz blanca todo horizonte y luces de costado."
+            },
+            {
+              "letra": "B",
+              "texto": "Los buques de propulsión mecánica de eslora inferior a 12 metros deberán exhibir, junto a las luces prescritas en el párrafo a) de esta Regla, una luz blanca todo horizonte y luces de costado."
+            },
+            {
+              "letra": "C",
+              "texto": "Los buques sin propulsión de eslora inferior a 12 metros podrán exhibir, junto a las luces prescritas en el párrafo a) de esta Regla, una luz blanca todo horizonte y luces de costado."
+            },
+            {
+              "letra": "D",
+              "texto": "Los buques de propulsión mecánica de eslora inferior a 12 metros podrán exhibir, en lugar de las luces prescritas en el párrafo a) de esta Regla, una luz blanca todo horizonte y luces de costado."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Teoría de la navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2276
+          }
+        },
+        {
+          "numero": 40,
+          "enunciado": "Elija la traducción adecuada: “Note: The user of this phrase should be fully aware of the implications of words such as “track”, “heading” and “course made good”.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Nota: El usuario de esta frase debe ser plenamente consciente del significado de expresiones tales como “trayectoria”, “rumbo actual” y “rumbo efectivo”."
+            },
+            {
+              "letra": "B",
+              "texto": "Nota: El usuario de esta frase debe ser plenamente consciente del significado de expresiones tales como “trayectoria”, “rumbo efectivo” y “rumbo peligroso”."
+            },
+            {
+              "letra": "C",
+              "texto": "Nota: El usuario de esta frase debe ser plenamente consciente del significado de expresiones tales como “trayectoria”, “rumbo de proa” y “rumbo efectivo”."
+            },
+            {
+              "letra": "D",
+              "texto": "Nota: El usuario de esta frase debe ser plenamente consciente del significado de expresiones tales como “trayectoria”, “demora” y “rumbo efectivo”."
+            }
+          ],
+          "respuesta_correcta": "SIN_RESPUESTA",
+          "tema": "Teoría de la navegación",
+          "pdf_source": {
+            "preguntas": "data/pdfs/preguntas/2021-02-RECREO_examenes.pdf",
+            "respuestas": "data/pdfs/respuestas/2021-02-RECREO_respuestas.pdf",
+            "linea_aprox": 2290
+          }
+        }
+      ]
+    }
+  ]
+}

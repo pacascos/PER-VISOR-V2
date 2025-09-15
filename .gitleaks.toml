@@ -1,0 +1,107 @@
+# GitLeaks configuration for PER maritime exam system
+# Detects secrets and sensitive information in git repositories
+
+title = "PER Exam System GitLeaks Config"
+
+[extend]
+# Extend default rules
+useDefault = true
+
+[[rules]]
+id = "openai-api-key"
+description = "OpenAI API Key"
+regex = '''sk-[a-zA-Z0-9]{48}'''
+keywords = [
+    "openai",
+    "api_key",
+    "OPENAI_API_KEY",
+]
+
+[[rules]]
+id = "postgres-connection-string"
+description = "PostgreSQL connection string with credentials"
+regex = '''postgresql://[a-zA-Z0-9_-]+:[a-zA-Z0-9_@#$%^&*()!-]+@[a-zA-Z0-9.-]+:[0-9]+/[a-zA-Z0-9_-]+'''
+keywords = [
+    "postgresql://",
+    "postgres://",
+]
+
+[[rules]]
+id = "redis-connection-string"
+description = "Redis connection string with credentials"
+regex = '''redis://[a-zA-Z0-9_-]*:[a-zA-Z0-9_@#$%^&*()!-]+@[a-zA-Z0-9.-]+:[0-9]+'''
+keywords = [
+    "redis://",
+]
+
+[[rules]]
+id = "jwt-secret"
+description = "JWT Secret Key"
+regex = '''['""][a-zA-Z0-9_-]{32,}['""]'''
+keywords = [
+    "jwt_secret",
+    "JWT_SECRET",
+    "secret_key",
+    "SECRET_KEY",
+]
+
+[[rules]]
+id = "database-password"
+description = "Database password in configuration"
+regex = '''(password|passwd|pwd)\s*[:=]\s*['""][^'"\s]+['""]'''
+keywords = [
+    "password",
+    "passwd",
+    "pwd",
+    "DB_PASSWORD",
+    "DATABASE_PASSWORD",
+]
+
+[[rules]]
+id = "api-key-general"
+description = "General API key pattern"
+regex = '''['""][a-zA-Z0-9_-]{20,}['""]'''
+keywords = [
+    "api_key",
+    "API_KEY",
+    "apikey",
+    "APIKEY",
+    "access_token",
+    "ACCESS_TOKEN",
+]
+
+# Allowlist for false positives
+[allowlist]
+description = "Allowlist for PER exam system"
+paths = [
+    '''config_example\.py''',
+    '''\.env\.example''',
+    '''README\.md''',
+    '''\.github/workflows/.*''',
+    '''tests/.*''',
+    '''docs/.*''',
+]
+
+commits = [
+    # Add commit hashes that contain secrets but are safe to ignore
+]
+
+regexes = [
+    # Example configurations or documentation
+    '''sk-fake[a-zA-Z0-9]{44}''',
+    '''postgresql://user:password@localhost:5432/database''',
+    '''redis://localhost:6379''',
+    '''your-secret-key-here''',
+    '''change-me-in-production''',
+    '''example-api-key-1234567890''',
+]
+
+# Global allowlist
+[[allowlist.regexTarget]]
+regex = '''(config_example|\.env\.example|test_|mock_|fake_|example_|demo_)'''
+paths = [
+    '''.*\.py''',
+    '''.*\.md''',
+    '''.*\.yml''',
+    '''.*\.yaml''',
+]

@@ -1,0 +1,37 @@
+{
+  "examenes_detectados": 6,
+  "total_preguntas": 0,
+  "total_respuestas": 72,
+  "detalle_examenes": [
+    {
+      "titulo": "PER Test 01 (normal)",
+      "preguntas": 0,
+      "primera_pregunta": null
+    },
+    {
+      "titulo": "PER Test 02 (normal)",
+      "preguntas": 0,
+      "primera_pregunta": null
+    },
+    {
+      "titulo": "PER Test 01 (liberado)",
+      "preguntas": 0,
+      "primera_pregunta": null
+    },
+    {
+      "titulo": "PER Test 02 (liberado)",
+      "preguntas": 0,
+      "primera_pregunta": null
+    },
+    {
+      "titulo": "PNB Test 02",
+      "preguntas": 0,
+      "primera_pregunta": null
+    },
+    {
+      "titulo": "PNB Test 03",
+      "preguntas": 0,
+      "primera_pregunta": null
+    }
+  ]
+}

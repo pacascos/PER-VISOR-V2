@@ -1,0 +1,665 @@
+{
+  "metadata": {
+    "fecha_generacion": "2025-09-09T16:50:36.766855",
+    "titulacion": "PNB",
+    "preguntas_solicitadas": 20,
+    "preguntas_incluidas": 20,
+    "filtros_aplicados": {
+      "temas_especificos": null,
+      "evitar_convocatorias": [
+        "2021-02-RECREO"
+      ],
+      "nivel_dificultad": null
+    },
+    "garantia_sin_duplicados": true
+  },
+  "estadisticas": {
+    "total_preguntas": 20,
+    "temas_incluidos": [
+      "Nomenclatura náutica",
+      "Elementos de amarre y fondeo",
+      "Reglamento (RIPA)",
+      "Balizamiento",
+      "Seguridad",
+      "Legislación"
+    ],
+    "convocatorias_origen": [
+      "2022-12-RECREO",
+      "2023-06-RECREO",
+      "2023-11-RECREO",
+      "2022-10-RECREO",
+      "2025-06-RECREO",
+      "2021-10-RECREO"
+    ],
+    "distribucion_por_tema": {
+      "Balizamiento": 2,
+      "Elementos de amarre y fondeo": 2,
+      "Legislación": 3,
+      "Nomenclatura náutica": 5,
+      "Reglamento (RIPA)": 6,
+      "Seguridad": 2
+    }
+  },
+  "preguntas": [
+    {
+      "numero": 1,
+      "enunciado": "El color de las Marcas Especiales es:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "De libre elección, pero que no se preste a confusión con las Marcas para ayuda a la navegación."
+        },
+        {
+          "letra": "B",
+          "texto": "Franjas verticales rojas y blancas."
+        },
+        {
+          "letra": "C",
+          "texto": "Franjas horizontales rojas y blancas."
+        },
+        {
+          "letra": "D",
+          "texto": "Amarillo."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Balizamiento",
+      "origen": {
+        "convocatoria": "2022-12-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 14,
+        "hash_pregunta": "9e45fb995656d2b4"
+      }
+    },
+    {
+      "numero": 2,
+      "enunciado": "La forma de las Marcas especiales es:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Esférica, también de castillete o espeque con una marca de tope esférica."
+        },
+        {
+          "letra": "B",
+          "texto": "De castillete o espeque."
+        },
+        {
+          "letra": "C",
+          "texto": "Ninguna. Solamente luz."
+        },
+        {
+          "letra": "D",
+          "texto": "De libre elección, pero que no se preste a confusión con las marcas para ayuda a la navegación."
+        }
+      ],
+      "respuesta_correcta": "D",
+      "tema": "Balizamiento",
+      "origen": {
+        "convocatoria": "2023-06-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 14,
+        "hash_pregunta": "1d41720223eeacbc"
+      }
+    },
+    {
+      "numero": 3,
+      "enunciado": "¿Cuál de las siguientes afirmaciones relativas al fondeo es FALSA?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "El tenedero es la superficie del fondo marino donde se afirma el ancla, siendo los mejores los de fango duro, arena fangosa y arena dura."
+        },
+        {
+          "letra": "B",
+          "texto": "El orinque es un cabo fino que se anuda a la cruz del ancla por un chicote y a un boyarín por el otro para poder levar y recuperar el ancla o señalizar la vertical del ancla en caso de no poder"
+        },
+        {
+          "letra": "C",
+          "texto": "Un barco bornea cuando da vueltas alrededor del ancla por acción del viento o la corriente."
+        },
+        {
+          "letra": "D",
+          "texto": "En la maniobra de levar ancla, se dará un poco atrás mientras cobramos elemento de fondeo hasta que el ancla se desclave del fondo, momento en el que tomaremos arrancada dando avante."
+        }
+      ],
+      "respuesta_correcta": "D",
+      "tema": "Elementos de amarre y fondeo",
+      "origen": {
+        "convocatoria": "2021-10-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 6,
+        "hash_pregunta": "3e7628e7a15f5d69"
+      }
+    },
+    {
+      "numero": 4,
+      "enunciado": "La línea de fondeo para una embarcación de 6 metros de eslora será de al menos:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "24 metros y con una longitud de tramo de cadena de al menos la eslora de la embarcación."
+        },
+        {
+          "letra": "B",
+          "texto": "Cinco veces la eslora y con una longitud de tramo de cadena de al menos 12 metros."
+        },
+        {
+          "letra": "C",
+          "texto": "24 metros y puede estar constituida toda de estacha."
+        },
+        {
+          "letra": "D",
+          "texto": "Cinco veces la eslora y puede estar constituida toda de estacha."
+        }
+      ],
+      "respuesta_correcta": "D",
+      "tema": "Elementos de amarre y fondeo",
+      "origen": {
+        "convocatoria": "2023-06-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 6,
+        "hash_pregunta": "ec3e7b6efe7bbfc5"
+      }
+    },
+    {
+      "numero": 5,
+      "enunciado": "Conforme al artículo 19 del Real Decreto 210/2004, de 6 de febrero, por el que se establece un sistema de seguimiento y de información sobre el tráfico marítimo, cuando la Administración marítima considere que, en caso de accidente o incidente, sea necesario alejar, reducir o eliminar un peligro grave e inminente, podrá:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Restringir los movimientos de la embarcación o imponerle un rumbo determinado. Esta exigencia exime de responsabilidad al propietario en lo que respecta a episodios de contaminación de su"
+        },
+        {
+          "letra": "B",
+          "texto": "Restringir los movimientos de la embarcación o imponerle un rumbo determinado. Esta exigencia no afecta a la responsabilidad del patrón en lo que respecta al gobierno seguro de su embarcación."
+        },
+        {
+          "letra": "C",
+          "texto": "Restringir los movimientos de la embarcación o imponerle un rumbo determinado. Esta exigencia exime de la responsabilidad al patrón en lo que respecta al gobierno seguro de su embarcación."
+        },
+        {
+          "letra": "D",
+          "texto": "Restringir los movimientos de la embarcación o imponerle un rumbo determinado. Esta exigencia exime de la responsabilidad al propietario en lo que respecta al gobierno seguro de su embarcación"
+        }
+      ],
+      "respuesta_correcta": "B",
+      "tema": "Legislación",
+      "origen": {
+        "convocatoria": "2021-10-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 12,
+        "hash_pregunta": "3355e85a8566027c"
+      }
+    },
+    {
+      "numero": 6,
+      "enunciado": "En un tramo de costa donde no está balizada la zona de baño, si usted se encuentra a menos de 50",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Podrá fondear con finalidad exclusiva de recreo y en esa zona deberá navegar a una velocidad no"
+        },
+        {
+          "letra": "B",
+          "texto": "No podrá continuar la navegación. Deberá fondear y avisar a los servicios de salvamento para que lo remolquen con seguridad."
+        },
+        {
+          "letra": "C",
+          "texto": "Deberá alejarse de la zona al menos 200 metros, debiendo navegar a una velocidad superior a 3 nudos, adoptando las precauciones necesarias."
+        },
+        {
+          "letra": "D",
+          "texto": "Está absolutamente prohibida la navegación a esa distancia, al poner en peligro la seguridad de la vida humana en la mar o de la navegación."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Legislación",
+      "origen": {
+        "convocatoria": "2022-12-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 12,
+        "hash_pregunta": "319d531ff4fb21db"
+      }
+    },
+    {
+      "numero": 7,
+      "enunciado": "El Código Internacional de Señales establece que el significado de la bandera «ALFA» izada aisladamente es:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Tengo un buzo sumergido. Manténgase alejado de mí y reduzca la velocidad."
+        },
+        {
+          "letra": "B",
+          "texto": "Tengo un buzo sumergido. Póngase en comunicación con su embarcación de apoyo."
+        },
+        {
+          "letra": "C",
+          "texto": "Tengo un buzo sumergido en problemas. Póngase en comunicación con Salvamento Marítimo."
+        },
+        {
+          "letra": "D",
+          "texto": "Manténgase alejado de mí, estoy maniobrando con dificultad porque hay buzo sumergido."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Legislación",
+      "origen": {
+        "convocatoria": "2023-06-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 12,
+        "hash_pregunta": "dc008435b3fe6240"
+      }
+    },
+    {
+      "numero": 8,
+      "enunciado": "Se dice que una hélice es dextrógira cuando:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Gira en el sentido de las agujas del reloj cuando la embarcación avanza."
+        },
+        {
+          "letra": "B",
+          "texto": "Gira en el sentido de las agujas del reloj cuando la embarcación retrocede."
+        },
+        {
+          "letra": "C",
+          "texto": "En marcha avante hace que la popa caiga a babor."
+        },
+        {
+          "letra": "D",
+          "texto": "En marcha atrás hace que la popa caiga a estribor."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Nomenclatura náutica",
+      "origen": {
+        "convocatoria": "2023-11-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 1,
+        "hash_pregunta": "1e9ad5a775102e39"
+      }
+    },
+    {
+      "numero": 9,
+      "enunciado": "Seleccione la afirmación CORRECTA respecto del equipo de fondeo:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Los eslabones de la cadena del ancla encajan en el tambor liso, llamado cabirón, que forma parte"
+        },
+        {
+          "letra": "B",
+          "texto": "El embrague es el mecanismo del molinete que sirve para separar el barbotén de la rueda lisa que"
+        },
+        {
+          "letra": "C",
+          "texto": "El freno tiene como misión el frenado del barbotén con una cinta, incidiendo sobre el eje horizontal del molinete."
+        },
+        {
+          "letra": "D",
+          "texto": "El molinete sólo se utiliza para levar el ancla, pero nunca para cazar cabos, escotas o drizas."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Nomenclatura náutica",
+      "origen": {
+        "convocatoria": "2022-10-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "01",
+        "numero_original": 2,
+        "hash_pregunta": "665744fb5e629b98"
+      }
+    },
+    {
+      "numero": 10,
+      "enunciado": "La altura del barco, medida entre la parte superior de la quilla y el canto alto del bao de la cubierta",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Opción A no disponible"
+        },
+        {
+          "letra": "B",
+          "texto": "Opción B no disponible"
+        },
+        {
+          "letra": "C",
+          "texto": "Opción C no disponible"
+        },
+        {
+          "letra": "D",
+          "texto": "Opción D no disponible"
+        }
+      ],
+      "respuesta_correcta": "B",
+      "tema": "Nomenclatura náutica",
+      "origen": {
+        "convocatoria": "2025-06-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 4,
+        "hash_pregunta": "79332fc26d48cb52"
+      }
+    },
+    {
+      "numero": 11,
+      "enunciado": "Cuando el ancla se encuentra suspendida lista para fondear, se dice que se encuentra:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Revirando."
+        },
+        {
+          "letra": "B",
+          "texto": "Flameando."
+        },
+        {
+          "letra": "C",
+          "texto": "A la pendura."
+        },
+        {
+          "letra": "D",
+          "texto": "Al garete. Elementos de amarre y fondeo."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Nomenclatura náutica",
+      "origen": {
+        "convocatoria": "2023-06-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "04",
+        "numero_original": 4,
+        "hash_pregunta": "c2afdb3d0812400e"
+      }
+    },
+    {
+      "numero": 12,
+      "enunciado": "Entre las partes básicas de un ancla se encuentran:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "La cruz, el mapa, la caña y el arganeo."
+        },
+        {
+          "letra": "B",
+          "texto": "La cruceta, la uña, la caña y el arganeo."
+        },
+        {
+          "letra": "C",
+          "texto": "La cruceta, el brazo, la caña y el ojo del arganeo."
+        },
+        {
+          "letra": "D",
+          "texto": "La cruz, el brazo, la caña y el rezón. Elementos de amarre y fondeo."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Nomenclatura náutica",
+      "origen": {
+        "convocatoria": "2021-10-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "04",
+        "numero_original": 4,
+        "hash_pregunta": "13ce3a1fa677baf1"
+      }
+    },
+    {
+      "numero": 13,
+      "enunciado": "De acuerdo con la Regla 17 del RIPA, “Maniobra del buque que «sigue a rumbo»”, cuando nuestro buque deba mantenerse apartado de la derrota de otro buque, y sea además evidente que realizamos estas maniobras para apartarnos de su derrota y eliminar el riesgo de abordaje, entonces este otro buque:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Mantendrá su rumbo y velocidad."
+        },
+        {
+          "letra": "B",
+          "texto": "Mantendrá su rumbo, pero variará su velocidad para intentar anticiparse a nuestras maniobras."
+        },
+        {
+          "letra": "C",
+          "texto": "Mantendrá su velocidad, pero variará su rumbo para intentar anticiparse a nuestras maniobras."
+        },
+        {
+          "letra": "D",
+          "texto": "Alterará tanto su rumbo como su velocidad para intentar anticiparse a nuestras maniobras."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Reglamento (RIPA)",
+      "origen": {
+        "convocatoria": "2023-06-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 19,
+        "hash_pregunta": "da2b94581c1f992c"
+      }
+    },
+    {
+      "numero": 14,
+      "enunciado": "En relación con la parte C del RIPA sobre “Luces y Marcas”, ¿cuál de los siguientes buques debe",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Opción A no disponible"
+        },
+        {
+          "letra": "B",
+          "texto": "Opción B no disponible"
+        },
+        {
+          "letra": "C",
+          "texto": "Opción C no disponible"
+        },
+        {
+          "letra": "D",
+          "texto": "Opción D no disponible"
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Reglamento (RIPA)",
+      "origen": {
+        "convocatoria": "2025-06-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 21,
+        "hash_pregunta": "6ad2571d7a9cbb1b"
+      }
+    },
+    {
+      "numero": 15,
+      "enunciado": "Según el Anexo IV del RIPA, ¿cómo podemos indicar la existencia de un peligro o la necesidad de ayuda?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Mediante el GNSS instalado a bordo, transmitiendo en el canal 70 de ondas hectométricas."
+        },
+        {
+          "letra": "B",
+          "texto": "Mediante la llamada selectiva digital, que se transmite en el canal 16 de ondas hectométricas."
+        },
+        {
+          "letra": "C",
+          "texto": "Mediante el GNSS instalado a bordo, transmitiendo en el canal 16 de ondas métricas."
+        },
+        {
+          "letra": "D",
+          "texto": "Mediante la llamada selectiva digital, que se transmite en el canal 70 de ondas métricas."
+        }
+      ],
+      "respuesta_correcta": "D",
+      "tema": "Reglamento (RIPA)",
+      "origen": {
+        "convocatoria": "2022-10-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "01",
+        "numero_original": 22,
+        "hash_pregunta": "09b939b14edae9ab"
+      }
+    },
+    {
+      "numero": 16,
+      "enunciado": "Según el Anexo IV, “Señales de peligro”, ¿cómo podemos indicar peligro y necesidad de ayuda?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Con una pitada larga."
+        },
+        {
+          "letra": "B",
+          "texto": "Con una pitada larga a intervalos que no excedan de un minuto."
+        },
+        {
+          "letra": "C",
+          "texto": "Con una serie de sonidos discontinuos producidos por cualquier aparato de señales de niebla."
+        },
+        {
+          "letra": "D",
+          "texto": "Con un sonido continuo producido por cualquier aparato de señales de niebla."
+        }
+      ],
+      "respuesta_correcta": "D",
+      "tema": "Reglamento (RIPA)",
+      "origen": {
+        "convocatoria": "2023-06-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 22,
+        "hash_pregunta": "6489a9ee33a790ea"
+      }
+    },
+    {
+      "numero": 17,
+      "enunciado": "Conforme a la Regla 3 del RIPA, “Definiciones generales”, una nave multimodal que",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Opción A no disponible"
+        },
+        {
+          "letra": "B",
+          "texto": "Opción B no disponible"
+        },
+        {
+          "letra": "C",
+          "texto": "Opción C no disponible"
+        },
+        {
+          "letra": "D",
+          "texto": "Opción D no disponible"
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Reglamento (RIPA)",
+      "origen": {
+        "convocatoria": "2025-06-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 26,
+        "hash_pregunta": "b3eb97a0a044cf44"
+      }
+    },
+    {
+      "numero": 18,
+      "enunciado": "De acuerdo con la Regla 34 del RIPA, “Señales de maniobra y advertencia”, indicaremos “estoy dando atrás” mediante:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Una pitada larga."
+        },
+        {
+          "letra": "B",
+          "texto": "Una pitada corta."
+        },
+        {
+          "letra": "C",
+          "texto": "Tres pitadas largas."
+        },
+        {
+          "letra": "D",
+          "texto": "Tres pitadas cortas."
+        }
+      ],
+      "respuesta_correcta": "D",
+      "tema": "Reglamento (RIPA)",
+      "origen": {
+        "convocatoria": "2023-06-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 27,
+        "hash_pregunta": "559974700ebddc89"
+      }
+    },
+    {
+      "numero": 19,
+      "enunciado": "¿Cuál de la siguientes es la maniobra de aproximación de Boutakow?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "En el momento en que la proa haya caído 70º, meter el timón a la banda contraria por la que haya caído el naufrago hasta navegar a un rumbo opuesto al inicio de la maniobra."
+        },
+        {
+          "letra": "B",
+          "texto": "En el momento en que la proa haya caído 70º, meter el timón a la banda por donde haya caído el naufrago hasta navegar a un rumbo opuesto al inicio de la maniobra."
+        },
+        {
+          "letra": "C",
+          "texto": "Meter el timón a la banda de caída del náufrago hasta que la proa haya caído 250°, en cuyo momento se pone el timón al medio y se para la máquina. El barco seguirá cayendo por inercia hasta"
+        },
+        {
+          "letra": "D",
+          "texto": "Meter el timón a la banda de caída más rápida hasta lograr 250° con respecto al rumbo primitivo, en cuyo momento se mete el timón a la banda opuesta hasta que falten 20° para estar al rumbo opuesto a la inicial; se deja el timón al medio y se para la máquina hasta alcanzar el rumbo opuesto."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Seguridad",
+      "origen": {
+        "convocatoria": "2022-10-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "01",
+        "numero_original": 10,
+        "hash_pregunta": "0657fab0a8d26c31"
+      }
+    },
+    {
+      "numero": 20,
+      "enunciado": "¿Cuál es el límite de temperatura corporal por debajo del cual aparece la hipotermia?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "36º C."
+        },
+        {
+          "letra": "B",
+          "texto": "35º C."
+        },
+        {
+          "letra": "C",
+          "texto": "33º C."
+        },
+        {
+          "letra": "D",
+          "texto": "32º C."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Seguridad",
+      "origen": {
+        "convocatoria": "2023-11-RECREO",
+        "titulacion_origen": "PNB",
+        "numero_test": "02",
+        "numero_original": 10,
+        "hash_pregunta": "ef912d1c5bc0fbfe"
+      }
+    }
+  ]
+}

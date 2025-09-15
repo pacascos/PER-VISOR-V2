@@ -1,0 +1,131 @@
+{
+  "estadisticas": {
+    "total_preguntas": 5364,
+    "preguntas_duplicadas": 4697,
+    "grupos_duplicados": 1922,
+    "grupos_unicos": 2589,
+    "porcentaje_duplicados": 87.56524981357197
+  },
+  "ejemplos_top_duplicados": [
+    {
+      "hash": "47cac923743bd2cd",
+      "apariciones": 8,
+      "convocatorias": [
+        "2021-07-RECREO",
+        "2021-12-RECREO"
+      ],
+      "titulaciones": [
+        "PER"
+      ],
+      "enunciado": "¿Qué es un espiche?"
+    },
+    {
+      "hash": "cee2fa267c918d41",
+      "apariciones": 6,
+      "convocatorias": [
+        "2024-11-RECREO",
+        "2025-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "enunciado": "Se define como adrizar al movimiento de la embarcación que consiste en:"
+    },
+    {
+      "hash": "5718e660f4d08f98",
+      "apariciones": 5,
+      "convocatorias": [
+        "2021-07-RECREO"
+      ],
+      "titulaciones": [
+        "PER"
+      ],
+      "enunciado": "Si disponemos de una carta en la que las latitudes aumentan hacia abajo y las longitudes aumentan hacia la izquierda, dicha carta representa una zona que se encuentra en:"
+    },
+    {
+      "hash": "c945249877a2c4c6",
+      "apariciones": 4,
+      "convocatorias": [
+        "2021-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "enunciado": "¿Qué nombre reciben las aberturas practicadas en el casco para que pueda salir el agua embarcada en la cubierta?"
+    },
+    {
+      "hash": "a68bf2970305d8be",
+      "apariciones": 4,
+      "convocatorias": [
+        "2021-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "enunciado": "La parte curvada trasera del costado que converge hacia popa se denomina:"
+    },
+    {
+      "hash": "086a78fe9691bd76",
+      "apariciones": 4,
+      "convocatorias": [
+        "2021-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "enunciado": "¿Dónde se afirman los cabos de amarre en tierra?"
+    },
+    {
+      "hash": "9028a0167ca5e926",
+      "apariciones": 4,
+      "convocatorias": [
+        "2021-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "enunciado": "La mena de un cabo es:"
+    },
+    {
+      "hash": "914574f5de741ade",
+      "apariciones": 4,
+      "convocatorias": [
+        "2021-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "enunciado": "Para recoger a una persona en el agua, lo más recomendable cuando se ve al náufrago es:"
+    },
+    {
+      "hash": "e3a624fedde90796",
+      "apariciones": 4,
+      "convocatorias": [
+        "2021-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "enunciado": "¿Cuál de las siguientes formas de realizar un remolque es recomendable en un río angosto o dentro de un puerto?"
+    },
+    {
+      "hash": "920cdc3d8703cd76",
+      "apariciones": 4,
+      "convocatorias": [
+        "2021-04-RECREO"
+      ],
+      "titulaciones": [
+        "PER",
+        "PNB"
+      ],
+      "enunciado": "Respecto a su estiba y conservación, las bengalas de mano deben:"
+    }
+  ]
+}

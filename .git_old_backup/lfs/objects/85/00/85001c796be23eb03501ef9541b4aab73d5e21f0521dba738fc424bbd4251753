@@ -1,0 +1,4379 @@
+{
+  "metadata": {
+    "fecha_procesamiento": "2025-09-08T14:40:56.703634",
+    "total_examenes": 6,
+    "total_preguntas": 180,
+    "include_respuestas": true,
+    "cobertura_respuestas": 47.77777777777778
+  },
+  "examenes": [
+    {
+      "titulacion": "PER",
+      "numero_test": "01",
+      "convocatoria": "junio_2025",
+      "tipo_examen": "PER_NORMAL",
+      "preguntas": [
+        {
+          "numero": 1,
+          "enunciado": "El arganeo es:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La pieza o argolla del ancla en la que se anuda el cabo o se afirma el grillete de la cadena."
+            },
+            {
+              "letra": "B",
+              "texto": "La pieza vertical del ancla que va desde la argolla al brazo."
+            },
+            {
+              "letra": "C",
+              "texto": "La parte del ancla que clava en el fondo marino."
+            },
+            {
+              "letra": "D",
+              "texto": "El brazo que sale en forma de cruz en la parte inferior del ancla."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 2,
+          "enunciado": "La mecha es:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El tubo dentro del cual gira el eje del timón."
+            },
+            {
+              "letra": "B",
+              "texto": "El eje del timón."
+            },
+            {
+              "letra": "C",
+              "texto": "El aparejo que se arma a cada lado de la caña del timón para gobernarlo con menos esfuerzo."
+            },
+            {
+              "letra": "D",
+              "texto": "La parte plana del timón que va sumergida."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 3,
+          "enunciado": "Se define como “escorar” al movimiento de la embarcación que consiste en:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Enderezarse o ponerse vertical."
+            },
+            {
+              "letra": "B",
+              "texto": "Inclinarse sobre uno de sus costados."
+            },
+            {
+              "letra": "C",
+              "texto": "Hundir la proa y levantar la popa."
+            },
+            {
+              "letra": "D",
+              "texto": "Hundir la popa y levantar la proa."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 4,
+          "enunciado": "¿Cuál de las siguientes definiciones es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El plano de crujía es aquel que divide la embarcación en la mitad de proa y en la mitad de popa."
+            },
+            {
+              "letra": "B",
+              "texto": "La obra muerta es la parte sumergida de la embarcación que se separa de la obra viva por el plano de flotación."
+            },
+            {
+              "letra": "C",
+              "texto": "La bañera es la cámara abierta a popa de la embarcación donde generalmente va instalada la caña o rueda del timón."
+            },
+            {
+              "letra": "D",
+              "texto": "Los portillos son aberturas practicadas en los costados de la embarcación que tienen por objeto la evacuación del agua embarcada en la cubierta. Elementos de amarre y fondeo."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 5,
+          "enunciado": "Una gaza es:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Un cabo que une y sujeta una boya a un ancla fondeada."
+            },
+            {
+              "letra": "B",
+              "texto": "Vuelta en forma de ojo que se hace con un cabo."
+            },
+            {
+              "letra": "C",
+              "texto": "Cualquiera de los dos extremos de un cabo."
+            },
+            {
+              "letra": "D",
+              "texto": "El arco o curvatura en un cabo cuando no está tirante o tenso. SUBDIRECCIÓN GENERAL DE SEGURIDAD, CONTAMINACIÓN E INSPECCIÓN MARÍTIMA ÁREA FUNCIONAL DE TITULACIONES DE RECREO"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 6,
+          "enunciado": "En relación con el fondeo, ¿cuál de las siguientes afirmaciones es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Al giro de una embarcación fondeada en torno al ancla, por efecto del viento o de la corriente, se le denomina garreo."
+            },
+            {
+              "letra": "B",
+              "texto": "Se deben tomar referencias a tierra para asegurarnos que el ancla no garrea y vigilar la sonda marcando un fondo mínimo con la alarma."
+            },
+            {
+              "letra": "C",
+              "texto": "De forma general, la longitud de cadena para un fondeo con mal tiempo no será superior a una o dos veces la sonda del lugar de fondeo."
+            },
+            {
+              "letra": "D",
+              "texto": "Se debe elegir siempre que sea posible un tenedero rocoso o con algas, para facilitar el agarre del ancla. Seguridad."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 7,
+          "enunciado": "En relación con las balsas salvavidas, ¿cuál de las siguientes afirmaciones es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Se debe volver a leer las instrucciones de la balsa antes de lanzarla."
+            },
+            {
+              "letra": "B",
+              "texto": "Sus revisiones periódicas serán realizadas sólo por el patrón de la embarcación, ya que su titulación le habilita para ello."
+            },
+            {
+              "letra": "C",
+              "texto": "Si dispone de zafa de liberación hidrostática no estibe la balsa en cubierta, para evitar que la humedad la libere accidentalmente."
+            },
+            {
+              "letra": "D",
+              "texto": "Sólo el patrón podrá destrincar y lanzar una balsa al mar, para evitar que pueda ser dañada por cualquier otro miembro de la tripulación."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 8,
+          "enunciado": "En caso de hombre al agua, para iniciar una maniobra de Boutakow ¿qué acción deberá realizar?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Vire momentáneamente 70º a la banda de la caída al agua."
+            },
+            {
+              "letra": "B",
+              "texto": "Vire momentáneamente 70º a la banda contraria de la caída al agua."
+            },
+            {
+              "letra": "C",
+              "texto": "Vire momentáneamente 180º a la banda de la caída al agua."
+            },
+            {
+              "letra": "D",
+              "texto": "Dé marcha atrás sin mover el timón hasta volver al punto de caída al agua."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 9,
+          "enunciado": "¿Cómo se debe actuar ante movimientos de cabezada excesivos cuando llevamos la mar por la proa?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Atravesándonos a la mar."
+            },
+            {
+              "letra": "B",
+              "texto": "Disminuyendo la velocidad y cambiando ligeramente el rumbo, ajustando ambos a las condiciones particulares del momento."
+            },
+            {
+              "letra": "C",
+              "texto": "Elevando el centro de gravedad del buque con pesos en cubierta."
+            },
+            {
+              "letra": "D",
+              "texto": "Aumentando la velocidad para cortar las olas."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 10,
+          "enunciado": "¿Cuál de los siguientes supuestos afecta negativamente a la estabilidad transversal?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El traslado de pesos desde la proa a la popa."
+            },
+            {
+              "letra": "B",
+              "texto": "El traslado de pesos desde la popa a la proa."
+            },
+            {
+              "letra": "C",
+              "texto": "La elevación de pesos a zonas superiores a la cubierta."
+            },
+            {
+              "letra": "D",
+              "texto": "La bajada de pesos a zonas inferiores a la cubierta. Legislación."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 11,
+          "enunciado": "¿A qué velocidad mínima debe navegar su embarcación para tener permitida la descarga de aguas",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 12,
+          "enunciado": "Las Zonas Especialmente Protegidas de Importancia para el Mediterráneo (ZEPIM) son:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Áreas en las que está prohibida la navegación para la protección de hábitats de especies en excedente."
+            },
+            {
+              "letra": "B",
+              "texto": "Reservas de biodiversidad que tienen un interés económico-industrial especial."
+            },
+            {
+              "letra": "C",
+              "texto": "Áreas protegidas y exclusivas para la pesca en el Mediterráneo."
+            },
+            {
+              "letra": "D",
+              "texto": "Zonas que albergan ecosistemas específicos de la zona mediterránea o hábitats de especies en peligro. Balizamiento."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 13,
+          "enunciado": "En relación con las Marcas de Peligro Aislado, indique cuál de las siguientes afirmaciones es",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 14,
+          "enunciado": "Navegando de noche cerca de la Isla de Sálvora, vemos por proa una luz verde en grupos de 2",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 15,
+          "enunciado": "Las Marcas de Aguas Navegables pueden:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Emplearse como una Ayuda a la Navegación Móvil (MatoN)."
+            },
+            {
+              "letra": "B",
+              "texto": "Incluir el uso de pictogramas para indicar su finalidad."
+            },
+            {
+              "letra": "C",
+              "texto": "Utilizarse para indicar la aproximación a un puerto."
+            },
+            {
+              "letra": "D",
+              "texto": "Indicar un nuevo peligro en las aguas de navegación."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 16,
+          "enunciado": "En relación con las Marcas Especiales, señale la opción CORRECTA.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Pueden ser amarillas, y si llevan luz debe ser de color distinto al de la marca."
+            },
+            {
+              "letra": "B",
+              "texto": "Sus luces pueden emplear alguno de los ritmos utilizados para las luces blancas."
+            },
+            {
+              "letra": "C",
+              "texto": "El uso de pictogramas no está autorizado para este tipo de marcas."
+            },
+            {
+              "letra": "D",
+              "texto": "Si tuviesen marca de tope sería una \"X\" amarilla."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 17,
+          "enunciado": "La marca de tope de una Marca Cardinal Este tiene conos superpuestos:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Con los vértices hacia arriba."
+            },
+            {
+              "letra": "B",
+              "texto": "Con los vértices hacia abajo."
+            },
+            {
+              "letra": "C",
+              "texto": "Opuestos por sus bases."
+            },
+            {
+              "letra": "D",
+              "texto": "Opuestos por sus vértices. Reglamento (RIPA)."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 18,
+          "enunciado": "En relación con la Regla 23 del RIPA, “Buques de propulsión mecánica en navegación”, ¿qué luces",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 19,
+          "enunciado": "De acuerdo con la Regla 9 del RIPA, “Canales angostos”, si nos aproximamos a un recodo, en",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 20,
+          "enunciado": "En relación con la Regla 26 de la parte C del RIPA sobre “Luces y Marcas”, si durante la navegación",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 21,
+          "enunciado": "De acuerdo con la Regla 6 del RIPA, ¿cuál de los siguientes factores NO se contempla",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 22,
+          "enunciado": "Según lo indicado en la Regla 37 del RIPA “Señales de peligro”, ¿cuál de las siguientes señales",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 23,
+          "enunciado": "En relación con las Reglas 12 y 17 de la sección II del RIPA, “Conducta de los buques que se",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 24,
+          "enunciado": "Conforme a la Regla 3 del RIPA, “Definiciones generales”, la palabra “buque” designa:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Toda clase de embarcación, incluidas las embarcaciones sin desplazamiento, las naves de vuelo rasante y los hidroaviones, utilizadas como medio de transporte sobre el agua."
+            },
+            {
+              "letra": "B",
+              "texto": "Toda clase de embarcación con o sin desplazamiento, pero en ningún caso los hidroaviones, que se utilice como medio de transporte en el agua."
+            },
+            {
+              "letra": "C",
+              "texto": "Únicamente las embarcaciones con desplazamiento que se utilicen como medio de transporte en el agua."
+            },
+            {
+              "letra": "D",
+              "texto": "Toda clase de embarcación con desplazamiento, que se utilice como medio de transporte en el agua, propulsada mecánicamente o a vela, quedando excluida todo tipo de embarcación de remo."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 25,
+          "enunciado": "Conforme a la Regla 18 del RIPA, “Obligaciones entre categorías de buques”, si nos encontramos",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 26,
+          "enunciado": "Si una embarcación de prácticos de 21 metros de eslora se va a desplazar, navegando por sus",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 27,
+          "enunciado": "Según lo indicado en la Regla 34 del RIPA “Señales y maniobra de emergencia”, si navegando",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 28,
+          "enunciado": "¿Cuáles son las tres fases de la curva de evolución en marcha avante?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Fase de deriva, fase variable y fase alterna."
+            },
+            {
+              "letra": "B",
+              "texto": "Fase de maniobra, fase variable y fase uniforme."
+            },
+            {
+              "letra": "C",
+              "texto": "Fase de maniobra, fase de abatimiento y fase alterna."
+            },
+            {
+              "letra": "D",
+              "texto": "Fase de deriva, fase de abatimiento y fase uniforme."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 29,
+          "enunciado": "Estamos atracados babor al muelle, con un viento que viene de tierra y nos entra por la amura de",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 30,
+          "enunciado": "En caso de abordaje, indique cuál de las siguientes afirmaciones es CORRECTA.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La responsabilidad recae siempre en la embarcación que navegue a mayor velocidad."
+            },
+            {
+              "letra": "B",
+              "texto": "La prioridad absoluta es elaborar parte amistoso y dar traslado de toda la información que figure en nuestro seguro, siempre que nos la solicite la parte contraria."
+            },
+            {
+              "letra": "C",
+              "texto": "Solamente en ciertos casos una vía de agua producirá un aumento del calado, por lo que no debe preocuparnos hasta haber completado el parte amistoso."
+            },
+            {
+              "letra": "D",
+              "texto": "La evaluación de las averías sufridas y asistencia a las personas que puedan encontrarse heridas debe realizarse a la mayor brevedad posible."
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 31,
+          "enunciado": "En relación con los accidentes personales a bordo, indique cuál de las siguientes afirmaciones es",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 32,
+          "enunciado": "Si se detecta a bordo un incendio originado en el tanque de combustible de la embarcación, ¿cuál de",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 33,
+          "enunciado": "El terral es un viento o brisa:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Nocturna, con dirección y sentido de tierra a mar."
+            },
+            {
+              "letra": "B",
+              "texto": "Diurna, con dirección y sentido de mar a tierra."
+            },
+            {
+              "letra": "C",
+              "texto": "Diurna, con dirección y sentido de tierra a mar."
+            },
+            {
+              "letra": "D",
+              "texto": "Nocturna, con dirección y sentido de mar a tierra."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 34,
+          "enunciado": "¿Cuáles son los puntos de referencia de la escala centígrada?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La temperatura de fusión del hielo y la temperatura de condensación del agua al nivel del mar."
+            },
+            {
+              "letra": "B",
+              "texto": "La temperatura de fusión del hielo y la temperatura de congelación del agua al nivel del mar."
+            },
+            {
+              "letra": "C",
+              "texto": "La temperatura de fusión del hielo y la temperatura de ebullición del agua al nivel del mar."
+            },
+            {
+              "letra": "D",
+              "texto": "La temperatura de fisión del hielo y la temperatura de condensación del agua al nivel del mar."
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 35,
+          "enunciado": "¿Es posible obtener la previsión meteorológica por VHF?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Sí, siempre y cuando ésta haya sido emitida en formato LSD en el canal 9 por un usuario con autorización emitida por la Comunidad Autónoma correspondiente."
+            },
+            {
+              "letra": "B",
+              "texto": "No, debe ser emitida en formato papel, a través de la AEMET."
+            },
+            {
+              "letra": "C",
+              "texto": "Sí, pero la transmisión debe ser emitida por un Centro de Salvamento Marítimo o Estación Radiocostera."
+            },
+            {
+              "letra": "D",
+              "texto": "Sí, pero para ser válida ésta debe ser recibida expresamente por NAVTEX."
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 36,
+          "enunciado": "El Fetch:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Se puede determinar empleando solamente la escala Beaufort ya que tienen el mismo sistema de medida (velocidad)."
+            },
+            {
+              "letra": "B",
+              "texto": "Es el número de horas que ha soplado el aire en una misma dirección."
+            },
+            {
+              "letra": "C",
+              "texto": "Es un incremento brusco en la intensidad del viento."
+            },
+            {
+              "letra": "D",
+              "texto": "Es la extensión o alcance que tienen el viento sobre la mar con una dirección y fuerza constantes. Teoría de la navegación."
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 37,
+          "enunciado": "¿Cuál es la definición correcta de paralelo?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Es un círculo menor paralelo al ecuador."
+            },
+            {
+              "letra": "B",
+              "texto": "Es un círculo máximo perpendicular al eje de la tierra."
+            },
+            {
+              "letra": "C",
+              "texto": "En un círculo máximo que pasa por los polos."
+            },
+            {
+              "letra": "D",
+              "texto": "En un círculo menor paralelo al eje de la tierra."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 38,
+          "enunciado": "La marcación se cuenta:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "A partir de la proa, de 0º a 360º en el sentido de las agujas del reloj o de 0º a 180º por cada banda."
+            },
+            {
+              "letra": "B",
+              "texto": "De 0º a 360º desde la proa en sentido contrario a las agujas del reloj, en cuyo caso su signo siempre es positivo."
+            },
+            {
+              "letra": "C",
+              "texto": "De 0º a 180º, por cada banda, a partir de la proa, considerándose positivas las tomadas por babor y negativas las tomadas por estribor."
+            },
+            {
+              "letra": "D",
+              "texto": "A partir del Norte, de 0º a 360º en el sentido de las agujas del reloj, teniendo la ventaja de que su signo siempre será positivo."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 39,
+          "enunciado": "En un determinado lugar, actualizando la declinación magnética que viene en la carta, nos da 11°NW",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 40,
+          "enunciado": "Al ángulo formado entre el Norte magnético y el Norte verdadero, se le denomina:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Desvío."
+            },
+            {
+              "letra": "B",
+              "texto": "Corrección total."
+            },
+            {
+              "letra": "C",
+              "texto": "Declinación magnética."
+            },
+            {
+              "letra": "D",
+              "texto": "Demora."
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 41,
+          "enunciado": "En general y para un punto dado en una latitud media, ¿cuáles de los siguientes efectos combinados",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 42,
+          "enunciado": "A Hrb= 09:00 nos encontramos situados al Sur verdadero de Isla Tarifa, cuando con nuestra aguja",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 43,
+          "enunciado": "Encontrándonos con nuestra embarcación en la oposición Isla Tarifa – Punta Alcázar, tomamos",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 44,
+          "enunciado": "A Hrb= 11:30, navegando con rumbo de aguja= 220º y un desvío= 3° (-), se toma simultáneamente",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 45,
+          "enunciado": "Hallar la sonda en el momento de la segunda bajamar, el día 23 de enero de 2025 en Algeciras, con",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        }
+      ]
+    },
+    {
+      "titulacion": "PER",
+      "numero_test": "02",
+      "convocatoria": "junio_2025",
+      "tipo_examen": "PER_NORMAL",
+      "preguntas": [
+        {
+          "numero": 1,
+          "enunciado": "El arganeo es:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La pieza o argolla del ancla en la que se anuda el cabo o se afirma el grillete de la cadena."
+            },
+            {
+              "letra": "B",
+              "texto": "La pieza vertical del ancla que va desde la argolla al brazo."
+            },
+            {
+              "letra": "C",
+              "texto": "La parte del ancla que clava en el fondo marino."
+            },
+            {
+              "letra": "D",
+              "texto": "El brazo que sale en forma de cruz en la parte inferior del ancla."
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 2,
+          "enunciado": "Se define como “escorar” al movimiento de la embarcación que consiste en:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Enderezarse o ponerse vertical."
+            },
+            {
+              "letra": "B",
+              "texto": "Inclinarse sobre uno de sus costados."
+            },
+            {
+              "letra": "C",
+              "texto": "Hundir la proa y levantar la popa."
+            },
+            {
+              "letra": "D",
+              "texto": "Hundir la popa y levantar la proa."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 3,
+          "enunciado": "¿Cuál de las siguientes definiciones es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El plano de crujía es aquel que divide la embarcación en la mitad de proa y en la mitad de popa."
+            },
+            {
+              "letra": "B",
+              "texto": "La obra muerta es la parte sumergida de la embarcación que se separa de la obra viva por el plano de flotación."
+            },
+            {
+              "letra": "C",
+              "texto": "La bañera es la cámara abierta a popa de la embarcación donde generalmente va instalada la caña o rueda del timón."
+            },
+            {
+              "letra": "D",
+              "texto": "Los portillos son aberturas practicadas en los costados de la embarcación que tienen por objeto la evacuación del agua embarcada en la cubierta."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 4,
+          "enunciado": "La mecha es:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El tubo dentro del cual gira el eje del timón."
+            },
+            {
+              "letra": "B",
+              "texto": "El eje del timón."
+            },
+            {
+              "letra": "C",
+              "texto": "El aparejo que se arma a cada lado de la caña del timón para gobernarlo con menos esfuerzo."
+            },
+            {
+              "letra": "D",
+              "texto": "La parte plana del timón que va sumergida. SUBDIRECCIÓN GENERAL DE SEGURIDAD, CONTAMINACIÓN E INSPECCIÓN MARÍTIMA ÁREA FUNCIONAL DE TITULACIONES DE RECREO Elementos de amarre y fondeo."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 5,
+          "enunciado": "En relación con el fondeo, ¿cuál de las siguientes afirmaciones es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Al giro de una embarcación fondeada en torno al ancla, por efecto del viento o de la corriente, se le denomina garreo."
+            },
+            {
+              "letra": "B",
+              "texto": "Se deben tomar referencias a tierra para asegurarnos que el ancla no garrea y vigilar la sonda marcando un fondo mínimo con la alarma."
+            },
+            {
+              "letra": "C",
+              "texto": "De forma general, la longitud de cadena para un fondeo con mal tiempo no será superior a una o dos veces la sonda del lugar de fondeo."
+            },
+            {
+              "letra": "D",
+              "texto": "Se debe elegir siempre que sea posible un tenedero rocoso o con algas, para facilitar el agarre del ancla."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 6,
+          "enunciado": "Una gaza es:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Un cabo que une y sujeta una boya a un ancla fondeada."
+            },
+            {
+              "letra": "B",
+              "texto": "Vuelta en forma de ojo que se hace con un cabo."
+            },
+            {
+              "letra": "C",
+              "texto": "Cualquiera de los dos extremos de un cabo."
+            },
+            {
+              "letra": "D",
+              "texto": "El arco o curvatura en un cabo cuando no está tirante o tenso. Seguridad."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 7,
+          "enunciado": "¿Cuál de los siguientes supuestos afecta negativamente a la estabilidad transversal?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El traslado de pesos desde la proa a la popa."
+            },
+            {
+              "letra": "B",
+              "texto": "El traslado de pesos desde la popa a la proa."
+            },
+            {
+              "letra": "C",
+              "texto": "La elevación de pesos a zonas superiores a la cubierta."
+            },
+            {
+              "letra": "D",
+              "texto": "La bajada de pesos a zonas inferiores a la cubierta."
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 8,
+          "enunciado": "En relación con las balsas salvavidas, ¿cuál de las siguientes afirmaciones es CORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Se debe volver a leer las instrucciones de la balsa antes de lanzarla."
+            },
+            {
+              "letra": "B",
+              "texto": "Sus revisiones periódicas serán realizadas sólo por el patrón de la embarcación, ya que su titulación le habilita para ello."
+            },
+            {
+              "letra": "C",
+              "texto": "Si dispone de zafa de liberación hidrostática no estibe la balsa en cubierta, para evitar que la humedad la libere accidentalmente."
+            },
+            {
+              "letra": "D",
+              "texto": "Sólo el patrón podrá destrincar y lanzar una balsa al mar, para evitar que pueda ser dañada por cualquier otro miembro de la tripulación."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 9,
+          "enunciado": "¿Cómo se debe actuar ante movimientos de cabezada excesivos cuando llevamos la mar por la proa?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Atravesándonos a la mar."
+            },
+            {
+              "letra": "B",
+              "texto": "Disminuyendo la velocidad y cambiando ligeramente el rumbo, ajustando ambos a las condiciones particulares del momento."
+            },
+            {
+              "letra": "C",
+              "texto": "Elevando el centro de gravedad del buque con pesos en cubierta."
+            },
+            {
+              "letra": "D",
+              "texto": "Aumentando la velocidad para cortar las olas."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 10,
+          "enunciado": "En caso de hombre al agua, para iniciar una maniobra de Boutakow ¿qué acción deberá realizar?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Vire momentáneamente 70º a la banda de la caída al agua."
+            },
+            {
+              "letra": "B",
+              "texto": "Vire momentáneamente 70º a la banda contraria de la caída al agua."
+            },
+            {
+              "letra": "C",
+              "texto": "Vire momentáneamente 180º a la banda de la caída al agua."
+            },
+            {
+              "letra": "D",
+              "texto": "Dé marcha atrás sin mover el timón hasta volver al punto de caída al agua. Legislación."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 11,
+          "enunciado": "¿A qué velocidad mínima debe navegar su embarcación para tener permitida la descarga de aguas",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 12,
+          "enunciado": "Las Zonas Especialmente Protegidas de Importancia para el Mediterráneo (ZEPIM) son:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Áreas en las que está prohibida la navegación para la protección de hábitats de especies en excedente."
+            },
+            {
+              "letra": "B",
+              "texto": "Reservas de biodiversidad que tienen un interés económico-industrial especial."
+            },
+            {
+              "letra": "C",
+              "texto": "Áreas protegidas y exclusivas para la pesca en el Mediterráneo."
+            },
+            {
+              "letra": "D",
+              "texto": "Zonas que albergan ecosistemas específicos de la zona mediterránea o hábitats de especies en peligro. Balizamiento."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 13,
+          "enunciado": "Navegando de noche cerca de la Isla de Sálvora, vemos por proa una luz verde en grupos de 2",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 14,
+          "enunciado": "En relación con las Marcas de Peligro Aislado, indique cuál de las siguientes afirmaciones es",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 15,
+          "enunciado": "En relación con las Marcas Especiales, señale la opción CORRECTA.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Pueden ser amarillas, y si llevan luz debe ser de color distinto al de la marca."
+            },
+            {
+              "letra": "B",
+              "texto": "Sus luces pueden emplear alguno de los ritmos utilizados para las luces blancas."
+            },
+            {
+              "letra": "C",
+              "texto": "El uso de pictogramas no está autorizado para este tipo de marcas."
+            },
+            {
+              "letra": "D",
+              "texto": "Si tuviesen marca de tope sería una \"X\" amarilla."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 16,
+          "enunciado": "La marca de tope de una Marca Cardinal Este tiene conos superpuestos:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Con los vértices hacia arriba."
+            },
+            {
+              "letra": "B",
+              "texto": "Con los vértices hacia abajo."
+            },
+            {
+              "letra": "C",
+              "texto": "Opuestos por sus bases."
+            },
+            {
+              "letra": "D",
+              "texto": "Opuestos por sus vértices."
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 17,
+          "enunciado": "Las Marcas de Aguas Navegables pueden:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Emplearse como una Ayuda a la Navegación Móvil (MatoN)."
+            },
+            {
+              "letra": "B",
+              "texto": "Incluir el uso de pictogramas para indicar su finalidad."
+            },
+            {
+              "letra": "C",
+              "texto": "Utilizarse para indicar la aproximación a un puerto."
+            },
+            {
+              "letra": "D",
+              "texto": "Indicar un nuevo peligro en las aguas de navegación. Reglamento (RIPA)."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 18,
+          "enunciado": "Conforme a la Regla 3 del RIPA, “Definiciones generales”, la palabra “buque” designa:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Toda clase de embarcación, incluidas las embarcaciones sin desplazamiento, las naves de vuelo rasante y los hidroaviones, utilizadas como medio de transporte sobre el agua."
+            },
+            {
+              "letra": "B",
+              "texto": "Toda clase de embarcación con o sin desplazamiento, pero en ningún caso los hidroaviones, que se utilice como medio de transporte en el agua."
+            },
+            {
+              "letra": "C",
+              "texto": "Únicamente las embarcaciones con desplazamiento que se utilicen como medio de transporte en el agua."
+            },
+            {
+              "letra": "D",
+              "texto": "Toda clase de embarcación con desplazamiento, que se utilice como medio de transporte en el agua, propulsada mecánicamente o a vela, quedando excluida todo tipo de embarcación de remo."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 19,
+          "enunciado": "En relación con la Regla 23 del RIPA, “Buques de propulsión mecánica en navegación”, ¿qué luces",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 20,
+          "enunciado": "De acuerdo con la Regla 6 del RIPA, ¿cuál de los siguientes factores NO se contempla",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 21,
+          "enunciado": "Si una embarcación de prácticos de 21 metros de eslora se va a desplazar, navegando por sus",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 22,
+          "enunciado": "En relación con las Reglas 12 y 17 de la sección II del RIPA, “Conducta de los buques que se",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 23,
+          "enunciado": "De acuerdo con la Regla 9 del RIPA, “Canales angostos”, si nos aproximamos a un recodo, en",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 24,
+          "enunciado": "Conforme a la Regla 18 del RIPA, “Obligaciones entre categorías de buques”, si nos encontramos",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 25,
+          "enunciado": "Según lo indicado en la Regla 34 del RIPA “Señales y maniobra de emergencia”, si navegando",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 26,
+          "enunciado": "Según lo indicado en la Regla 37 del RIPA “Señales de peligro”, ¿cuál de las siguientes señales",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 27,
+          "enunciado": "En relación con la Regla 26 de la parte C del RIPA sobre “Luces y Marcas”, si durante la navegación",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 28,
+          "enunciado": "Estamos atracados babor al muelle, con un viento que viene de tierra y nos entra por la amura de",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 29,
+          "enunciado": "¿Cuáles son las tres fases de la curva de evolución en marcha avante?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Fase de deriva, fase variable y fase alterna."
+            },
+            {
+              "letra": "B",
+              "texto": "Fase de maniobra, fase variable y fase uniforme."
+            },
+            {
+              "letra": "C",
+              "texto": "Fase de maniobra, fase de abatimiento y fase alterna."
+            },
+            {
+              "letra": "D",
+              "texto": "Fase de deriva, fase de abatimiento y fase uniforme. Emergencias en la mar."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 30,
+          "enunciado": "Si se detecta a bordo un incendio originado en el tanque de combustible de la embarcación, ¿cuál de",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 31,
+          "enunciado": "En relación con los accidentes personales a bordo, indique cuál de las siguientes afirmaciones es",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 32,
+          "enunciado": "En caso de abordaje, indique cuál de las siguientes afirmaciones es CORRECTA.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La responsabilidad recae siempre en la embarcación que navegue a mayor velocidad."
+            },
+            {
+              "letra": "B",
+              "texto": "La prioridad absoluta es elaborar parte amistoso y dar traslado de toda la información que figure en nuestro seguro, siempre que nos la solicite la parte contraria."
+            },
+            {
+              "letra": "C",
+              "texto": "Solamente en ciertos casos una vía de agua producirá un aumento del calado, por lo que no debe preocuparnos hasta haber completado el parte amistoso."
+            },
+            {
+              "letra": "D",
+              "texto": "La evaluación de las averías sufridas y asistencia a las personas que puedan encontrarse heridas debe realizarse a la mayor brevedad posible. Meteorología"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 33,
+          "enunciado": "¿Cuáles son los puntos de referencia de la escala centígrada?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La temperatura de fusión del hielo y la temperatura de condensación del agua al nivel del mar."
+            },
+            {
+              "letra": "B",
+              "texto": "La temperatura de fusión del hielo y la temperatura de congelación del agua al nivel del mar."
+            },
+            {
+              "letra": "C",
+              "texto": "La temperatura de fusión del hielo y la temperatura de ebullición del agua al nivel del mar."
+            },
+            {
+              "letra": "D",
+              "texto": "La temperatura de fisión del hielo y la temperatura de condensación del agua al nivel del mar."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 34,
+          "enunciado": "¿Es posible obtener la previsión meteorológica por VHF?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Sí, siempre y cuando ésta haya sido emitida en formato LSD en el canal 9 por un usuario con autorización emitida por la Comunidad Autónoma correspondiente."
+            },
+            {
+              "letra": "B",
+              "texto": "No, debe ser emitida en formato papel, a través de la AEMET."
+            },
+            {
+              "letra": "C",
+              "texto": "Sí, pero la transmisión debe ser emitida por un Centro de Salvamento Marítimo o Estación Radiocostera."
+            },
+            {
+              "letra": "D",
+              "texto": "Sí, pero para ser válida ésta debe ser recibida expresamente por NAVTEX."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 35,
+          "enunciado": "El terral es un viento o brisa:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Nocturna, con dirección y sentido de tierra a mar."
+            },
+            {
+              "letra": "B",
+              "texto": "Diurna, con dirección y sentido de mar a tierra."
+            },
+            {
+              "letra": "C",
+              "texto": "Diurna, con dirección y sentido de tierra a mar."
+            },
+            {
+              "letra": "D",
+              "texto": "Nocturna, con dirección y sentido de mar a tierra."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 36,
+          "enunciado": "El Fetch:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Se puede determinar empleando solamente la escala Beaufort ya que tienen el mismo sistema de medida (velocidad)."
+            },
+            {
+              "letra": "B",
+              "texto": "Es el número de horas que ha soplado el aire en una misma dirección."
+            },
+            {
+              "letra": "C",
+              "texto": "Es un incremento brusco en la intensidad del viento."
+            },
+            {
+              "letra": "D",
+              "texto": "Es la extensión o alcance que tienen el viento sobre la mar con una dirección y fuerza constantes. Teoría de la navegación."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 37,
+          "enunciado": "La marcación se cuenta:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "A partir de la proa, de 0º a 360º en el sentido de las agujas del reloj o de 0º a 180º por cada banda."
+            },
+            {
+              "letra": "B",
+              "texto": "De 0º a 360º desde la proa en sentido contrario a las agujas del reloj, en cuyo caso su signo siempre es positivo."
+            },
+            {
+              "letra": "C",
+              "texto": "De 0º a 180º, por cada banda, a partir de la proa, considerándose positivas las tomadas por babor y negativas las tomadas por estribor."
+            },
+            {
+              "letra": "D",
+              "texto": "A partir del Norte, de 0º a 360º en el sentido de las agujas del reloj, teniendo la ventaja de que su signo siempre será positivo."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 38,
+          "enunciado": "¿Cuál es la definición correcta de paralelo?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Es un círculo menor paralelo al ecuador."
+            },
+            {
+              "letra": "B",
+              "texto": "Es un círculo máximo perpendicular al eje de la tierra."
+            },
+            {
+              "letra": "C",
+              "texto": "En un círculo máximo que pasa por los polos."
+            },
+            {
+              "letra": "D",
+              "texto": "En un círculo menor paralelo al eje de la tierra."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 39,
+          "enunciado": "Al ángulo formado entre el Norte magnético y el Norte verdadero, se le denomina:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Desvío."
+            },
+            {
+              "letra": "B",
+              "texto": "Corrección total."
+            },
+            {
+              "letra": "C",
+              "texto": "Declinación magnética."
+            },
+            {
+              "letra": "D",
+              "texto": "Demora."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 40,
+          "enunciado": "En un determinado lugar, actualizando la declinación magnética que viene en la carta, nos da 11°NW",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 41,
+          "enunciado": "En general y para un punto dado en una latitud media, ¿cuáles de los siguientes efectos combinados",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 42,
+          "enunciado": "Encontrándonos con nuestra embarcación en la oposición Isla Tarifa – Punta Alcázar, tomamos",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 43,
+          "enunciado": "A Hrb= 11:30, navegando con rumbo de aguja= 220º y un desvío= 3° (-), se toma simultáneamente",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 44,
+          "enunciado": "A Hrb= 09:00 nos encontramos situados al Sur verdadero de Isla Tarifa, cuando con nuestra aguja",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 45,
+          "enunciado": "Hallar la sonda en el momento de la segunda bajamar, el día 23 de enero de 2025 en Algeciras, con",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        }
+      ]
+    },
+    {
+      "titulacion": "PER",
+      "numero_test": "01",
+      "convocatoria": "junio_2025",
+      "tipo_examen": "PER_LIBERADO",
+      "preguntas": [
+        {
+          "numero": 28,
+          "enunciado": "¿Cuáles son las tres fases de la curva de evolución en marcha avante?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Fase de deriva, fase variable y fase alterna."
+            },
+            {
+              "letra": "B",
+              "texto": "Fase de maniobra, fase variable y fase uniforme."
+            },
+            {
+              "letra": "C",
+              "texto": "Fase de maniobra, fase de abatimiento y fase alterna."
+            },
+            {
+              "letra": "D",
+              "texto": "Fase de deriva, fase de abatimiento y fase uniforme."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 29,
+          "enunciado": "Estamos atracados babor al muelle, con un viento que viene de tierra y nos entra por la amura de",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 30,
+          "enunciado": "En caso de abordaje, indique cuál de las siguientes afirmaciones es CORRECTA.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La responsabilidad recae siempre en la embarcación que navegue a mayor velocidad."
+            },
+            {
+              "letra": "B",
+              "texto": "La prioridad absoluta es elaborar parte amistoso y dar traslado de toda la información que figure en nuestro seguro, siempre que nos la solicite la parte contraria."
+            },
+            {
+              "letra": "C",
+              "texto": "Solamente en ciertos casos una vía de agua producirá un aumento del calado, por lo que no debe preocuparnos hasta haber completado el parte amistoso."
+            },
+            {
+              "letra": "D",
+              "texto": "La evaluación de las averías sufridas y asistencia a las personas que puedan encontrarse heridas debe realizarse a la mayor brevedad posible."
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 31,
+          "enunciado": "En relación con los accidentes personales a bordo, indique cuál de las siguientes afirmaciones es",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 32,
+          "enunciado": "Si se detecta a bordo un incendio originado en el tanque de combustible de la embarcación, ¿cuál de",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 33,
+          "enunciado": "El terral es un viento o brisa:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Nocturna, con dirección y sentido de tierra a mar."
+            },
+            {
+              "letra": "B",
+              "texto": "Diurna, con dirección y sentido de mar a tierra."
+            },
+            {
+              "letra": "C",
+              "texto": "Diurna, con dirección y sentido de tierra a mar."
+            },
+            {
+              "letra": "D",
+              "texto": "Nocturna, con dirección y sentido de mar a tierra."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 34,
+          "enunciado": "¿Cuáles son los puntos de referencia de la escala centígrada?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La temperatura de fusión del hielo y la temperatura de condensación del agua al nivel del mar."
+            },
+            {
+              "letra": "B",
+              "texto": "La temperatura de fusión del hielo y la temperatura de congelación del agua al nivel del mar."
+            },
+            {
+              "letra": "C",
+              "texto": "La temperatura de fusión del hielo y la temperatura de ebullición del agua al nivel del mar."
+            },
+            {
+              "letra": "D",
+              "texto": "La temperatura de fisión del hielo y la temperatura de condensación del agua al nivel del mar."
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 35,
+          "enunciado": "¿Es posible obtener la previsión meteorológica por VHF?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Sí, siempre y cuando ésta haya sido emitida en formato LSD en el canal 9 por un usuario con autorización emitida por la Comunidad Autónoma correspondiente."
+            },
+            {
+              "letra": "B",
+              "texto": "No, debe ser emitida en formato papel, a través de la AEMET."
+            },
+            {
+              "letra": "C",
+              "texto": "Sí, pero la transmisión debe ser emitida por un Centro de Salvamento Marítimo o Estación Radiocostera."
+            },
+            {
+              "letra": "D",
+              "texto": "Sí, pero para ser válida ésta debe ser recibida expresamente por NAVTEX."
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 36,
+          "enunciado": "El Fetch:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Se puede determinar empleando solamente la escala Beaufort ya que tienen el mismo sistema de medida (velocidad)."
+            },
+            {
+              "letra": "B",
+              "texto": "Es el número de horas que ha soplado el aire en una misma dirección."
+            },
+            {
+              "letra": "C",
+              "texto": "Es un incremento brusco en la intensidad del viento."
+            },
+            {
+              "letra": "D",
+              "texto": "Es la extensión o alcance que tienen el viento sobre la mar con una dirección y fuerza constantes. Teoría de la navegación."
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 37,
+          "enunciado": "¿Cuál es la definición correcta de paralelo?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Es un círculo menor paralelo al ecuador."
+            },
+            {
+              "letra": "B",
+              "texto": "Es un círculo máximo perpendicular al eje de la tierra."
+            },
+            {
+              "letra": "C",
+              "texto": "En un círculo máximo que pasa por los polos."
+            },
+            {
+              "letra": "D",
+              "texto": "En un círculo menor paralelo al eje de la tierra."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 38,
+          "enunciado": "La marcación se cuenta:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "A partir de la proa, de 0º a 360º en el sentido de las agujas del reloj o de 0º a 180º por cada banda."
+            },
+            {
+              "letra": "B",
+              "texto": "De 0º a 360º desde la proa en sentido contrario a las agujas del reloj, en cuyo caso su signo siempre es positivo."
+            },
+            {
+              "letra": "C",
+              "texto": "De 0º a 180º, por cada banda, a partir de la proa, considerándose positivas las tomadas por babor y negativas las tomadas por estribor."
+            },
+            {
+              "letra": "D",
+              "texto": "A partir del Norte, de 0º a 360º en el sentido de las agujas del reloj, teniendo la ventaja de que su signo siempre será positivo."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 39,
+          "enunciado": "En un determinado lugar, actualizando la declinación magnética que viene en la carta, nos da 11°NW",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 40,
+          "enunciado": "Al ángulo formado entre el Norte magnético y el Norte verdadero, se le denomina:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Desvío."
+            },
+            {
+              "letra": "B",
+              "texto": "Corrección total."
+            },
+            {
+              "letra": "C",
+              "texto": "Declinación magnética."
+            },
+            {
+              "letra": "D",
+              "texto": "Demora."
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 41,
+          "enunciado": "En general y para un punto dado en una latitud media, ¿cuáles de los siguientes efectos combinados",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 42,
+          "enunciado": "A Hrb= 09:00 nos encontramos situados al Sur verdadero de Isla Tarifa, cuando con nuestra aguja",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 43,
+          "enunciado": "Encontrándonos con nuestra embarcación en la oposición Isla Tarifa – Punta Alcázar, tomamos",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 44,
+          "enunciado": "A Hrb= 11:30, navegando con rumbo de aguja= 220º y un desvío= 3° (-), se toma simultáneamente",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 45,
+          "enunciado": "Hallar la sonda en el momento de la segunda bajamar, el día 23 de enero de 2025 en Algeciras, con",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        }
+      ]
+    },
+    {
+      "titulacion": "PER",
+      "numero_test": "02",
+      "convocatoria": "junio_2025",
+      "tipo_examen": "PER_LIBERADO",
+      "preguntas": [
+        {
+          "numero": 28,
+          "enunciado": "Estamos atracados babor al muelle, con un viento que viene de tierra y nos entra por la amura de",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 29,
+          "enunciado": "¿Cuáles son las tres fases de la curva de evolución en marcha avante?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Fase de deriva, fase variable y fase alterna."
+            },
+            {
+              "letra": "B",
+              "texto": "Fase de maniobra, fase variable y fase uniforme."
+            },
+            {
+              "letra": "C",
+              "texto": "Fase de maniobra, fase de abatimiento y fase alterna."
+            },
+            {
+              "letra": "D",
+              "texto": "Fase de deriva, fase de abatimiento y fase uniforme. Emergencias en la mar."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 30,
+          "enunciado": "Si se detecta a bordo un incendio originado en el tanque de combustible de la embarcación, ¿cuál de",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 31,
+          "enunciado": "En relación con los accidentes personales a bordo, indique cuál de las siguientes afirmaciones es",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 32,
+          "enunciado": "En caso de abordaje, indique cuál de las siguientes afirmaciones es CORRECTA.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La responsabilidad recae siempre en la embarcación que navegue a mayor velocidad."
+            },
+            {
+              "letra": "B",
+              "texto": "La prioridad absoluta es elaborar parte amistoso y dar traslado de toda la información que figure en nuestro seguro, siempre que nos la solicite la parte contraria."
+            },
+            {
+              "letra": "C",
+              "texto": "Solamente en ciertos casos una vía de agua producirá un aumento del calado, por lo que no debe preocuparnos hasta haber completado el parte amistoso."
+            },
+            {
+              "letra": "D",
+              "texto": "La evaluación de las averías sufridas y asistencia a las personas que puedan encontrarse heridas debe realizarse a la mayor brevedad posible. Meteorología"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 33,
+          "enunciado": "¿Cuáles son los puntos de referencia de la escala centígrada?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "La temperatura de fusión del hielo y la temperatura de condensación del agua al nivel del mar."
+            },
+            {
+              "letra": "B",
+              "texto": "La temperatura de fusión del hielo y la temperatura de congelación del agua al nivel del mar."
+            },
+            {
+              "letra": "C",
+              "texto": "La temperatura de fusión del hielo y la temperatura de ebullición del agua al nivel del mar."
+            },
+            {
+              "letra": "D",
+              "texto": "La temperatura de fisión del hielo y la temperatura de condensación del agua al nivel del mar."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 34,
+          "enunciado": "¿Es posible obtener la previsión meteorológica por VHF?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Sí, siempre y cuando ésta haya sido emitida en formato LSD en el canal 9 por un usuario con autorización emitida por la Comunidad Autónoma correspondiente."
+            },
+            {
+              "letra": "B",
+              "texto": "No, debe ser emitida en formato papel, a través de la AEMET."
+            },
+            {
+              "letra": "C",
+              "texto": "Sí, pero la transmisión debe ser emitida por un Centro de Salvamento Marítimo o Estación Radiocostera."
+            },
+            {
+              "letra": "D",
+              "texto": "Sí, pero para ser válida ésta debe ser recibida expresamente por NAVTEX."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 35,
+          "enunciado": "El terral es un viento o brisa:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Nocturna, con dirección y sentido de tierra a mar."
+            },
+            {
+              "letra": "B",
+              "texto": "Diurna, con dirección y sentido de mar a tierra."
+            },
+            {
+              "letra": "C",
+              "texto": "Diurna, con dirección y sentido de tierra a mar."
+            },
+            {
+              "letra": "D",
+              "texto": "Nocturna, con dirección y sentido de mar a tierra."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 36,
+          "enunciado": "El Fetch:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Se puede determinar empleando solamente la escala Beaufort ya que tienen el mismo sistema de medida (velocidad)."
+            },
+            {
+              "letra": "B",
+              "texto": "Es el número de horas que ha soplado el aire en una misma dirección."
+            },
+            {
+              "letra": "C",
+              "texto": "Es un incremento brusco en la intensidad del viento."
+            },
+            {
+              "letra": "D",
+              "texto": "Es la extensión o alcance que tienen el viento sobre la mar con una dirección y fuerza constantes. Teoría de la navegación."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 37,
+          "enunciado": "La marcación se cuenta:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "A partir de la proa, de 0º a 360º en el sentido de las agujas del reloj o de 0º a 180º por cada banda."
+            },
+            {
+              "letra": "B",
+              "texto": "De 0º a 360º desde la proa en sentido contrario a las agujas del reloj, en cuyo caso su signo siempre es positivo."
+            },
+            {
+              "letra": "C",
+              "texto": "De 0º a 180º, por cada banda, a partir de la proa, considerándose positivas las tomadas por babor y negativas las tomadas por estribor."
+            },
+            {
+              "letra": "D",
+              "texto": "A partir del Norte, de 0º a 360º en el sentido de las agujas del reloj, teniendo la ventaja de que su signo siempre será positivo."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 38,
+          "enunciado": "¿Cuál es la definición correcta de paralelo?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Es un círculo menor paralelo al ecuador."
+            },
+            {
+              "letra": "B",
+              "texto": "Es un círculo máximo perpendicular al eje de la tierra."
+            },
+            {
+              "letra": "C",
+              "texto": "En un círculo máximo que pasa por los polos."
+            },
+            {
+              "letra": "D",
+              "texto": "En un círculo menor paralelo al eje de la tierra."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 39,
+          "enunciado": "Al ángulo formado entre el Norte magnético y el Norte verdadero, se le denomina:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Desvío."
+            },
+            {
+              "letra": "B",
+              "texto": "Corrección total."
+            },
+            {
+              "letra": "C",
+              "texto": "Declinación magnética."
+            },
+            {
+              "letra": "D",
+              "texto": "Demora."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 40,
+          "enunciado": "En un determinado lugar, actualizando la declinación magnética que viene en la carta, nos da 11°NW",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 41,
+          "enunciado": "En general y para un punto dado en una latitud media, ¿cuáles de los siguientes efectos combinados",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 42,
+          "enunciado": "Encontrándonos con nuestra embarcación en la oposición Isla Tarifa – Punta Alcázar, tomamos",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 43,
+          "enunciado": "A Hrb= 11:30, navegando con rumbo de aguja= 220º y un desvío= 3° (-), se toma simultáneamente",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 44,
+          "enunciado": "A Hrb= 09:00 nos encontramos situados al Sur verdadero de Isla Tarifa, cuando con nuestra aguja",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 45,
+          "enunciado": "Hallar la sonda en el momento de la segunda bajamar, el día 23 de enero de 2025 en Algeciras, con",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        }
+      ]
+    },
+    {
+      "titulacion": "PNB",
+      "numero_test": "02",
+      "convocatoria": "junio_2025",
+      "tipo_examen": "PNB_NORMAL",
+      "preguntas": [
+        {
+          "numero": 1,
+          "enunciado": "En lo que respecta a los términos relacionados con el ancla y la maniobra de fondeo, indique cuál de",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 2,
+          "enunciado": "A la pieza cónica que recubre el núcleo de la hélice se la denomina:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Bocina."
+            },
+            {
+              "letra": "B",
+              "texto": "Capacete."
+            },
+            {
+              "letra": "C",
+              "texto": "Pala."
+            },
+            {
+              "letra": "D",
+              "texto": "Guardín."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 3,
+          "enunciado": "¿Qué son los baos?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Elementos estructurales transversales cuya parte inferior encaja en la quilla del buque y desde allí arrancan en dos ramas simétricas hacia babor y estribor."
+            },
+            {
+              "letra": "B",
+              "texto": "Elementos estructurales transversales que apoyan en las cabezas de las cuadernas y sirven de consolidación para sostener las cubiertas."
+            },
+            {
+              "letra": "C",
+              "texto": "Elementos estructurales longitudinales dispuestos de proa a popa por la parte inferior donde asientan las cuadernas."
+            },
+            {
+              "letra": "D",
+              "texto": "Prolongaciones verticales o inclinadas de la quilla en su parte de popa, donde generalmente se apoya el timón."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 4,
+          "enunciado": "La altura del barco, medida entre la parte superior de la quilla y el canto alto del bao de la cubierta",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 5,
+          "enunciado": "En general, la aproximación al lugar elegido de fondeo se realizará:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "A la mínima velocidad de gobierno y con el viento por la proa."
+            },
+            {
+              "letra": "B",
+              "texto": "A la mínima velocidad de gobierno y con el viento por la popa."
+            },
+            {
+              "letra": "C",
+              "texto": "A la máxima velocidad de gobierno y con el viento por la popa."
+            },
+            {
+              "letra": "D",
+              "texto": "A la máxima velocidad de gobierno y con el viento por la proa."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 6,
+          "enunciado": "La pieza que se ubica únicamente en el muelle y que sirve para encapillar la gaza de un cabo de",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 7,
+          "enunciado": "En relación con los chalecos salvavidas, ¿cuál de las siguientes afirmaciones es INCORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Se debe disponer, como mínimo, de un chaleco para cada persona."
+            },
+            {
+              "letra": "B",
+              "texto": "Todos los chalecos deben disponer de una luz, excepto cuando la embarcación realice exclusivamente navegación diurna en las zonas 4, 5, 6 y 7."
+            },
+            {
+              "letra": "C",
+              "texto": "En la zona 7 se debe llevar un chaleco adicional."
+            },
+            {
+              "letra": "D",
+              "texto": "Los menores deben disponer de un chaleco salvavidas a su medida."
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 8,
+          "enunciado": "En aguas someras:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El oleaje siempre se reduce, por lo que navegaremos con más seguridad."
+            },
+            {
+              "letra": "B",
+              "texto": "Es recomendable disminuir la velocidad."
+            },
+            {
+              "letra": "C",
+              "texto": "Aumenta la sonda, por lo que la embarcación es más maniobrable."
+            },
+            {
+              "letra": "D",
+              "texto": "Disminuye la resistencia a la propulsión."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 9,
+          "enunciado": "¿Cuál de las siguientes comprobaciones NO es necesaria realizar antes de salir a la mar?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Cerciorarse de que todos los grifos de fondo estén cerrados."
+            },
+            {
+              "letra": "B",
+              "texto": "Revisar la limpieza de los filtros de decantación."
+            },
+            {
+              "letra": "C",
+              "texto": "Verificar el nivel de combustible y que no existan fugas."
+            },
+            {
+              "letra": "D",
+              "texto": "Examinar el estado de los elementos de seguridad."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 10,
+          "enunciado": "Si ha solicitado un remolque a Salvamento Marítimo, señale la recomendación INCORRECTA.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Elija el punto o puntos más fuertes de su embarcación para hacer firme el cabo de remolque."
+            },
+            {
+              "letra": "B",
+              "texto": "Asegúrese de amarrar el cabo que le entreguen a los candeleros de la embarcación, mediante un nudo que no pueda ser deshecho bajo tensión."
+            },
+            {
+              "letra": "C",
+              "texto": "Colabore en todo momento con la tripulación del remolcador."
+            },
+            {
+              "letra": "D",
+              "texto": "Manténgase lejos del cabo o estacha de remolque mientras es remolcado. Legislación."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 11,
+          "enunciado": "Si navegando divisa una embarcación que exhibe la bandera ‘Alfa’ del Código Internacional de",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 12,
+          "enunciado": "En relación con la detención y fondeo de las embarcaciones dedicadas exclusivamente al recreo,",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 13,
+          "enunciado": "Arribando de noche al puerto deportivo El Astillero, vemos por proa una luz roja en grupos de 3",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 14,
+          "enunciado": "La marca de tope de una Marca de Peligro Aislado, si la tuviera, será:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Dos esferas negras, una encima de la otra."
+            },
+            {
+              "letra": "B",
+              "texto": "Tres esferas negras, una encima de la otra."
+            },
+            {
+              "letra": "C",
+              "texto": "Una esfera negra."
+            },
+            {
+              "letra": "D",
+              "texto": "Ninguna, en cualquier caso."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 15,
+          "enunciado": "¿Cuál es el color de una Marca Cardinal Este?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Negro con una ancha banda horizontal amarilla."
+            },
+            {
+              "letra": "B",
+              "texto": "Negro sobre amarillo."
+            },
+            {
+              "letra": "C",
+              "texto": "Amarillo sobre negro."
+            },
+            {
+              "letra": "D",
+              "texto": "Amarillo con una ancha banda horizontal negra."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 16,
+          "enunciado": "Si una Marca dispone de luz con ritmo isofase, con ocultación y destello largo cada 10 segundos o",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 17,
+          "enunciado": "Las Marcas Especiales:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Nunca señalan un nuevo peligro."
+            },
+            {
+              "letra": "B",
+              "texto": "Si tuviesen marca de tope, sería amarilla en forma de cruz vertical."
+            },
+            {
+              "letra": "C",
+              "texto": "Indican donde se encuentran las aguas más seguras de la zona en relación con un punto de interés."
+            },
+            {
+              "letra": "D",
+              "texto": "Nunca indican límites de áreas de anclaje. Reglamento (RIPA)."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 18,
+          "enunciado": "Según la Regla 10 del RIPA, “Dispositivos de separación del tráfico”, indique en cuál de los",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 19,
+          "enunciado": "Navegando observamos por nuestro costado de estribor un buque de propulsión mecánica cuyo",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 20,
+          "enunciado": "De acuerdo con la Regla 28 del RIPA, si nos encontramos navegando de día con nuestra",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 21,
+          "enunciado": "En relación con la parte C del RIPA sobre “Luces y Marcas”, ¿cuál de los siguientes buques debe",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 22,
+          "enunciado": "De acuerdo con la Regla 20 del RIPA, “Ámbito de aplicación de la Parte C. Luces y Marcas”,",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 23,
+          "enunciado": "De acuerdo con la Regla 27 del RIPA, si nos encontramos de noche navegando con nuestra",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 24,
+          "enunciado": "De conformidad con la Regla 17 del RIPA, “Maniobra del buque que sigue a rumbo”, señale la",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 25,
+          "enunciado": "Navegando por un canal angosto, tenemos intención de realizar una maniobra de adelantamiento por",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 26,
+          "enunciado": "Conforme a la Regla 3 del RIPA, “Definiciones generales”, una nave multimodal que",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 27,
+          "enunciado": "Navegando en las proximidades de la costa, dentro de una zona de visibilidad reducida, únicamente",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        }
+      ]
+    },
+    {
+      "titulacion": "PNB",
+      "numero_test": "03",
+      "convocatoria": "junio_2025",
+      "tipo_examen": "PNB_NORMAL",
+      "preguntas": [
+        {
+          "numero": 1,
+          "enunciado": "¿Qué son los baos?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Elementos estructurales transversales cuya parte inferior encaja en la quilla del buque y desde allí arrancan en dos ramas simétricas hacia babor y estribor."
+            },
+            {
+              "letra": "B",
+              "texto": "Elementos estructurales transversales que apoyan en las cabezas de las cuadernas y sirven de consolidación para sostener las cubiertas."
+            },
+            {
+              "letra": "C",
+              "texto": "Elementos estructurales longitudinales dispuestos de proa a popa por la parte inferior donde asientan las cuadernas."
+            },
+            {
+              "letra": "D",
+              "texto": "Prolongaciones verticales o inclinadas de la quilla en su parte de popa, donde generalmente se apoya el timón."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 2,
+          "enunciado": "En lo que respecta a los términos relacionados con el ancla y la maniobra de fondeo, indique cuál de",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 3,
+          "enunciado": "A la pieza cónica que recubre el núcleo de la hélice se la denomina:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Bocina."
+            },
+            {
+              "letra": "B",
+              "texto": "Capacete."
+            },
+            {
+              "letra": "C",
+              "texto": "Pala."
+            },
+            {
+              "letra": "D",
+              "texto": "Guardín."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 4,
+          "enunciado": "La altura del barco, medida entre la parte superior de la quilla y el canto alto del bao de la cubierta",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 5,
+          "enunciado": "La pieza que se ubica únicamente en el muelle y que sirve para encapillar la gaza de un cabo de",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 6,
+          "enunciado": "En general, la aproximación al lugar elegido de fondeo se realizará:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "A la mínima velocidad de gobierno y con el viento por la proa."
+            },
+            {
+              "letra": "B",
+              "texto": "A la mínima velocidad de gobierno y con el viento por la popa."
+            },
+            {
+              "letra": "C",
+              "texto": "A la máxima velocidad de gobierno y con el viento por la popa."
+            },
+            {
+              "letra": "D",
+              "texto": "A la máxima velocidad de gobierno y con el viento por la proa. Seguridad."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 7,
+          "enunciado": "¿Cuál de las siguientes comprobaciones NO es necesaria realizar antes de salir a la mar?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Cerciorarse de que todos los grifos de fondo estén cerrados."
+            },
+            {
+              "letra": "B",
+              "texto": "Revisar la limpieza de los filtros de decantación."
+            },
+            {
+              "letra": "C",
+              "texto": "Verificar el nivel de combustible y que no existan fugas."
+            },
+            {
+              "letra": "D",
+              "texto": "Examinar el estado de los elementos de seguridad."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 8,
+          "enunciado": "En aguas someras:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "El oleaje siempre se reduce, por lo que navegaremos con más seguridad."
+            },
+            {
+              "letra": "B",
+              "texto": "Es recomendable disminuir la velocidad."
+            },
+            {
+              "letra": "C",
+              "texto": "Aumenta la sonda, por lo que la embarcación es más maniobrable."
+            },
+            {
+              "letra": "D",
+              "texto": "Disminuye la resistencia a la propulsión."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 9,
+          "enunciado": "En relación con los chalecos salvavidas, ¿cuál de las siguientes afirmaciones es INCORRECTA?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Se debe disponer, como mínimo, de un chaleco para cada persona."
+            },
+            {
+              "letra": "B",
+              "texto": "Todos los chalecos deben disponer de una luz, excepto cuando la embarcación realice exclusivamente navegación diurna en las zonas 4, 5, 6 y 7."
+            },
+            {
+              "letra": "C",
+              "texto": "En la zona 7 se debe llevar un chaleco adicional."
+            },
+            {
+              "letra": "D",
+              "texto": "Los menores deben disponer de un chaleco salvavidas a su medida."
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 10,
+          "enunciado": "Si ha solicitado un remolque a Salvamento Marítimo, señale la recomendación INCORRECTA.",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Elija el punto o puntos más fuertes de su embarcación para hacer firme el cabo de remolque."
+            },
+            {
+              "letra": "B",
+              "texto": "Asegúrese de amarrar el cabo que le entreguen a los candeleros de la embarcación, mediante un nudo que no pueda ser deshecho bajo tensión."
+            },
+            {
+              "letra": "C",
+              "texto": "Colabore en todo momento con la tripulación del remolcador."
+            },
+            {
+              "letra": "D",
+              "texto": "Manténgase lejos del cabo o estacha de remolque mientras es remolcado. Legislación."
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 11,
+          "enunciado": "En relación con la detención y fondeo de las embarcaciones dedicadas exclusivamente al recreo,",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 12,
+          "enunciado": "Si navegando divisa una embarcación que exhibe la bandera ‘Alfa’ del Código Internacional de",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 13,
+          "enunciado": "Las Marcas Especiales:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Nunca señalan un nuevo peligro."
+            },
+            {
+              "letra": "B",
+              "texto": "Si tuviesen marca de tope, sería amarilla en forma de cruz vertical."
+            },
+            {
+              "letra": "C",
+              "texto": "Indican donde se encuentran las aguas más seguras de la zona en relación con un punto de interés."
+            },
+            {
+              "letra": "D",
+              "texto": "Nunca indican límites de áreas de anclaje."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 14,
+          "enunciado": "Si una Marca dispone de luz con ritmo isofase, con ocultación y destello largo cada 10 segundos o",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 15,
+          "enunciado": "¿Cuál es el color de una Marca Cardinal Este?",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Negro con una ancha banda horizontal amarilla."
+            },
+            {
+              "letra": "B",
+              "texto": "Negro sobre amarillo."
+            },
+            {
+              "letra": "C",
+              "texto": "Amarillo sobre negro."
+            },
+            {
+              "letra": "D",
+              "texto": "Amarillo con una ancha banda horizontal negra."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 16,
+          "enunciado": "Arribando de noche al puerto deportivo El Astillero, vemos por proa una luz roja en grupos de 3",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 17,
+          "enunciado": "La marca de tope de una Marca de Peligro Aislado, si la tuviera, será:",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Dos esferas negras, una encima de la otra."
+            },
+            {
+              "letra": "B",
+              "texto": "Tres esferas negras, una encima de la otra."
+            },
+            {
+              "letra": "C",
+              "texto": "Una esfera negra."
+            },
+            {
+              "letra": "D",
+              "texto": "Ninguna, en cualquier caso. Reglamento (RIPA)."
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 18,
+          "enunciado": "Conforme a la Regla 3 del RIPA, “Definiciones generales”, una nave multimodal que",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 19,
+          "enunciado": "Según la Regla 10 del RIPA, “Dispositivos de separación del tráfico”, indique en cuál de los",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 20,
+          "enunciado": "En relación con la parte C del RIPA sobre “Luces y Marcas”, ¿cuál de los siguientes buques debe",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 21,
+          "enunciado": "Navegando por un canal angosto, tenemos intención de realizar una maniobra de adelantamiento por",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 22,
+          "enunciado": "Navegando en las proximidades de la costa, dentro de una zona de visibilidad reducida, únicamente",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 23,
+          "enunciado": "De acuerdo con la Regla 20 del RIPA, “Ámbito de aplicación de la Parte C. Luces y Marcas”,",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "A",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 24,
+          "enunciado": "Navegando observamos por nuestro costado de estribor un buque de propulsión mecánica cuyo",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 25,
+          "enunciado": "De conformidad con la Regla 17 del RIPA, “Maniobra del buque que sigue a rumbo”, señale la",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "B",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 26,
+          "enunciado": "De acuerdo con la Regla 28 del RIPA, si nos encontramos navegando de día con nuestra",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "C",
+          "tema": "Sin clasificar"
+        },
+        {
+          "numero": 27,
+          "enunciado": "De acuerdo con la Regla 27 del RIPA, si nos encontramos de noche navegando con nuestra",
+          "opciones": [
+            {
+              "letra": "A",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "B",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "C",
+              "texto": "Opción no disponible"
+            },
+            {
+              "letra": "D",
+              "texto": "Opción no disponible"
+            }
+          ],
+          "respuesta_correcta": "D",
+          "tema": "Sin clasificar"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1458 @@
+{
+  "metadata": {
+    "fecha_generacion": "2025-09-09T16:50:36.765558",
+    "titulacion": "PER",
+    "preguntas_solicitadas": 45,
+    "preguntas_incluidas": 45,
+    "filtros_aplicados": {
+      "temas_especificos": null,
+      "evitar_convocatorias": null,
+      "nivel_dificultad": null
+    },
+    "garantia_sin_duplicados": true
+  },
+  "estadisticas": {
+    "total_preguntas": 45,
+    "temas_incluidos": [
+      "Teoría de la navegación",
+      "Nomenclatura náutica",
+      "Elementos de amarre y fondeo",
+      "Maniobra y navegación",
+      "Emergencias en la mar",
+      "Reglamento (RIPA)",
+      "Balizamiento",
+      "Seguridad",
+      "Meteorología",
+      "Carta de navegación",
+      "Legislación"
+    ],
+    "convocatorias_origen": [
+      "2024-11-RECREO",
+      "2024-04-RECREO",
+      "2025-04-RECREO",
+      "2022-12-RECREO",
+      "2021-07-RECREO",
+      "2022-06-RECREO",
+      "2023-11-RECREO",
+      "2023-04-RECREO",
+      "2022-04-RECREO",
+      "2021-04-RECREO",
+      "2024-06-RECREO",
+      "2021-12-RECREO"
+    ],
+    "distribucion_por_tema": {
+      "Balizamiento": 6,
+      "Carta de navegación": 2,
+      "Elementos de amarre y fondeo": 1,
+      "Emergencias en la mar": 1,
+      "Legislación": 3,
+      "Maniobra y navegación": 1,
+      "Meteorología": 6,
+      "Nomenclatura náutica": 8,
+      "Reglamento (RIPA)": 7,
+      "Seguridad": 4,
+      "Teoría de la navegación": 6
+    }
+  },
+  "preguntas": [
+    {
+      "numero": 1,
+      "enunciado": "¿Qué tipo de marcas están rodeadas de aguas seguras, pero no señalan ningún peligro?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Marcas de aguas navegables."
+        },
+        {
+          "letra": "B",
+          "texto": "Marcas especiales."
+        },
+        {
+          "letra": "C",
+          "texto": "Marcas de peligro aislado."
+        },
+        {
+          "letra": "D",
+          "texto": "Marcas cardinales."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Balizamiento",
+      "origen": {
+        "convocatoria": "2021-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "03",
+        "numero_original": 13,
+        "hash_pregunta": "9cfa4e1501dd0983"
+      }
+    },
+    {
+      "numero": 2,
+      "enunciado": "Las Marcas Cardinales siempre estarán pintadas:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Con bandas horizontales amarillas y negras."
+        },
+        {
+          "letra": "B",
+          "texto": "Con bandas horizontales verdes y rojas."
+        },
+        {
+          "letra": "C",
+          "texto": "Con franjas verticales amarillas y negras."
+        },
+        {
+          "letra": "D",
+          "texto": "Con bandas horizontales rojas y blancas."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Balizamiento",
+      "origen": {
+        "convocatoria": "2024-11-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 13,
+        "hash_pregunta": "5c45dbbcad952f95"
+      }
+    },
+    {
+      "numero": 3,
+      "enunciado": "¿Cuál es la marca de tope de la Marca Cardinal que nos indica aguas navegables en el cuadrante oeste?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Dos conos negros superpuestos con los vértices hacia arriba."
+        },
+        {
+          "letra": "B",
+          "texto": "Dos conos negros superpuestos opuestos por los vértices."
+        },
+        {
+          "letra": "C",
+          "texto": "Dos conos negros superpuestos opuestos por la base."
+        },
+        {
+          "letra": "D",
+          "texto": "Dos bolas negras superpuestas."
+        }
+      ],
+      "respuesta_correcta": "B",
+      "tema": "Balizamiento",
+      "origen": {
+        "convocatoria": "2021-07-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "02",
+        "numero_original": 13,
+        "hash_pregunta": "6070a5fd0c5f1a99"
+      }
+    },
+    {
+      "numero": 4,
+      "enunciado": "En relación con las Marcas Especiales, indique la afirmación CORRECTA.",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Su color es de libre elección, pero que no se preste a confusión con las marcas para ayuda a la"
+        },
+        {
+          "letra": "B",
+          "texto": "Pueden incluir un pictograma para indicar su objetivo, utilizando la simbología apropiada de la Organización Hidrográfica Internacional."
+        },
+        {
+          "letra": "C",
+          "texto": "Su marca de tope es amarilla en forma de cruz vertical."
+        },
+        {
+          "letra": "D",
+          "texto": "Su forma es de libre elección entre esférica, de castillete o espeque, pero siempre con una marca de tope en forma de cruz vertical."
+        }
+      ],
+      "respuesta_correcta": "D",
+      "tema": "Balizamiento",
+      "origen": {
+        "convocatoria": "2023-11-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 14,
+        "hash_pregunta": "c6f891994a6b6d9d"
+      }
+    },
+    {
+      "numero": 5,
+      "enunciado": "¿Por qué demoras verdaderas, tomadas desde el punto a balizar, está limitado el cuadrante Sur en las marcas del Sistema Cardinal?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "NW-NE."
+        },
+        {
+          "letra": "B",
+          "texto": "NE-SE."
+        },
+        {
+          "letra": "C",
+          "texto": "SE-SW."
+        },
+        {
+          "letra": "D",
+          "texto": "SW-NW."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Balizamiento",
+      "origen": {
+        "convocatoria": "2021-07-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 17,
+        "hash_pregunta": "6d5ec75aff397b15"
+      }
+    },
+    {
+      "numero": 6,
+      "enunciado": "Una Marca Lateral que indique canal principal a babor será:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Verde con una banda ancha horizontal roja."
+        },
+        {
+          "letra": "B",
+          "texto": "Verde con una luz verde centelleante rápida continua."
+        },
+        {
+          "letra": "C",
+          "texto": "Roja con una luz roja con ritmo de destello en grupos de 2+1."
+        },
+        {
+          "letra": "D",
+          "texto": "Roja con una banda ancha horizontal verde."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Balizamiento",
+      "origen": {
+        "convocatoria": "2024-11-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "02",
+        "numero_original": 17,
+        "hash_pregunta": "6e5f82da73890cc2"
+      }
+    },
+    {
+      "numero": 7,
+      "enunciado": "A Hrb: 10:00, navegando con un desvío de aguja de 3°(-) tomamos simultáneamente demora de aguja a Isla Tarifa = 074° y a Cabo Espartel = 176°. Situados, ponemos rumbo para pasar a 2 millas al Norte verdadero de Punta Cires, con una velocidad de máquinas de 5 nudos. Seguimos navegando, manteniendo rumbo y velocidad, hasta Hrb= 15:00, momento en el que damos rumbo a la boya cardinal Este en las inmediaciones de la Ensenada de Getares (Bahía de Algeciras) manteniendo la velocidad de máquinas de 5 nudos. Sabiendo que la declinación magnética en la zona para ese día es de 2°(E), se pide calcular la situación de estima a Hrb: 16:24.",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "l= 36° 03,8´N; L= 005° 24,9´W."
+        },
+        {
+          "letra": "B",
+          "texto": "l= 36° 03,2´N; L= 005° 22,8´W."
+        },
+        {
+          "letra": "C",
+          "texto": "l= 36° 05,0´N; L= 005° 24,6´W."
+        },
+        {
+          "letra": "D",
+          "texto": "l= 36° 05,4´N; L= 005° 23,6´W. una presión atmosférica de 998 mb y una sonda en la carta de 8,9 metros."
+        },
+        {
+          "letra": "A",
+          "texto": "9,32 metros."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Carta de navegación",
+      "origen": {
+        "convocatoria": "2024-11-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "03",
+        "numero_original": 42,
+        "hash_pregunta": "ff356e6dd973e693"
+      }
+    },
+    {
+      "numero": 8,
+      "enunciado": "Navegando en una zona de declinación magnéticas 1ºW, con Rumbo de aguja= 220º y desvío= 3º(+), a Hrb 09:00 tomamos marcación a Punta Europa=100º por estribor, distancia la faro= 3,4 millas. Situados, damos rumbo para pasar a 3 millas al Sur verdadero del Faro de Isla Tarifa. A Hrb 09:42 enmendamos el rumbo 10º a estribor. Puestos a rumbo, el desvío es 2º(+). Calcular la posición de nuestra embarcación cuando Punta Cires nos demora por nuestro través de babor, teniendo en cuenta que la velocidad de máquinas para todo el ejercicio es de 8 nudos.",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "l= 36º 00,3´N; L= 005º30,7´W."
+        },
+        {
+          "letra": "B",
+          "texto": "l= 36º 00,7´N; L= 005º28,9´W."
+        },
+        {
+          "letra": "C",
+          "texto": "l= 35º 59,4´N; L= 005º30,4´W."
+        },
+        {
+          "letra": "D",
+          "texto": "l= 35º 59,0´N; L= 005º31,2´W."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Carta de navegación",
+      "origen": {
+        "convocatoria": "2023-11-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "03",
+        "numero_original": 43,
+        "hash_pregunta": "5a258d0c452ce399"
+      }
+    },
+    {
+      "numero": 9,
+      "enunciado": "En relación con el fondeo, ¿cuál de las siguientes afirmaciones es CORRECTA?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Al giro de una embarcación fondeada en torno al ancla, por efecto del viento o de la corriente, se"
+        },
+        {
+          "letra": "B",
+          "texto": "En el momento de fondear se recomienda llevar una ligera arrancada atrás con objeto de que, al caer el ancla, la cadena se extienda correctamente en el fondo."
+        },
+        {
+          "letra": "C",
+          "texto": "De forma general, la longitud de cadena para un fondeo con mal tiempo no será superior a dos veces la sonda del lugar de fondeo."
+        },
+        {
+          "letra": "D",
+          "texto": "Los fondos de algas son los mejores tenederos."
+        }
+      ],
+      "respuesta_correcta": "B",
+      "tema": "Elementos de amarre y fondeo",
+      "origen": {
+        "convocatoria": "2024-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 5,
+        "hash_pregunta": "5c99eff2987f7a8c"
+      }
+    },
+    {
+      "numero": 10,
+      "enunciado": "La extinción de un fuego mediante la eliminación de la reacción en cadena se llama:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Sofocación."
+        },
+        {
+          "letra": "B",
+          "texto": "Inhibición."
+        },
+        {
+          "letra": "C",
+          "texto": "Refrigeración."
+        },
+        {
+          "letra": "D",
+          "texto": "Socaireación."
+        }
+      ],
+      "respuesta_correcta": "B",
+      "tema": "Emergencias en la mar",
+      "origen": {
+        "convocatoria": "2024-06-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 31,
+        "hash_pregunta": "b6e1f1faf85b4b42"
+      }
+    },
+    {
+      "numero": 11,
+      "enunciado": "Conforme a lo dispuesto en la Regla 4 del Anexo V del Convenio MARPOL, la descarga de basuras en el mar fuera de las zonas especiales solo se permitirá mientras el buque esté en ruta y tan lejos como sea posible de la tierra más próxima, pero:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "No se permitirá la descarga de productos avícolas introducidos, incluidas las aves o partes de aves, si dichos productos se han tratado para su esterilización."
+        },
+        {
+          "letra": "B",
+          "texto": "Sólo se podrá descargar materia plástica que se haya pasado por un desmenuzador o triturador, de manera que puedan pasar por cribas con mallas de una abertura máxima de 25 mm."
+        },
+        {
+          "letra": "C",
+          "texto": "Únicamente se permitirá la descarga de residuos de carga a menos de 12 millas marinas de la tierra más próxima cuando estos no puedan recuperarse mediante los métodos normalmente disponibles de descarga y no incluyan ninguna sustancia clasificada como perjudicial para el medio"
+        },
+        {
+          "letra": "D",
+          "texto": "En ningún caso se hará a menos de tres millas marinas de la tierra más próxima en el caso de desechos de alimentos que se hayan pasado por un desmenuzador o triturador, de manera que puedan pasar por cribas con mallas de una abertura máxima de 25 mm."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Legislación",
+      "origen": {
+        "convocatoria": "2023-11-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 11,
+        "hash_pregunta": "d721f828dcf55ad6"
+      }
+    },
+    {
+      "numero": 12,
+      "enunciado": "Fuera de las zonas especiales, la descarga en el mar de desechos de alimentos que hayan pasado por un desmenuzador o triturador se permite:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "A cualquier distancia de la tierra más próxima, siempre que los desechos puedan pasar por cribas con mallas de una abertura mínima de 50 mm."
+        },
+        {
+          "letra": "B",
+          "texto": "Estando la embarcación en ruta al menos a tres millas marinas de la tierra más próxima y siempre que los desechos puedan pasar por cribas con mallas de una abertura máxima de 25 mm."
+        },
+        {
+          "letra": "C",
+          "texto": "Si se realiza tan lejos como sea posible de la tierra más próxima, pero en ningún caso a menos de"
+        },
+        {
+          "letra": "D",
+          "texto": "Opción D no disponible"
+        }
+      ],
+      "respuesta_correcta": "B",
+      "tema": "Legislación",
+      "origen": {
+        "convocatoria": "2024-06-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "02",
+        "numero_original": 12,
+        "hash_pregunta": "d79e8378e54f8456"
+      }
+    },
+    {
+      "numero": 13,
+      "enunciado": "En los casos de infracciones por contaminación del medio marino producidas desde buques o embarcaciones de recreo:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "El patrón es responsable del pago de la multa que se imponga sólo en defecto del propietario o"
+        },
+        {
+          "letra": "B",
+          "texto": "Serán solidariamente responsables para el pago de la multa que se imponga, el naviero, el propietario, el asegurador de la responsabilidad civil y el capitán o patrón, quedando además todos ellos obligados solidariamente a reparar el daño causado."
+        },
+        {
+          "letra": "C",
+          "texto": "Serán responsables del pago de la multa el propietario o naviero y, subsidiariamente el asegurador de la responsabilidad civil. El patrón o capitán ejecutará a su costa las operaciones que, con carácter de urgencia, pudieran resultar necesarias para la preservación del medio marino."
+        },
+        {
+          "letra": "D",
+          "texto": "Será responsable del pago de la multa la persona física o jurídica propietaria de la embarcación y, subsidiariamente su capitán o patrón."
+        }
+      ],
+      "respuesta_correcta": "B",
+      "tema": "Legislación",
+      "origen": {
+        "convocatoria": "2022-06-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 12,
+        "hash_pregunta": "a4b6a3f58e971ff8"
+      }
+    },
+    {
+      "numero": 14,
+      "enunciado": "Si nos encontramos amarrados al muelle únicamente con el esprín de proa, el efecto que nos producirá en la embarcación si viramos el cabo será:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Atracar la proa, sin imprimir movimiento avante o atrás a la embarcación."
+        },
+        {
+          "letra": "B",
+          "texto": "Atracar la popa, desplazar la embarcación hacia avante y desatracar la proa."
+        },
+        {
+          "letra": "C",
+          "texto": "Atracar la proa, desplazar la embarcación hacia atrás y desatracar la popa."
+        },
+        {
+          "letra": "D",
+          "texto": "Atracar la proa, desplazar la embarcación hacia avante y desatracar la popa."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Maniobra y navegación",
+      "origen": {
+        "convocatoria": "2025-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "03",
+        "numero_original": 28,
+        "hash_pregunta": "391195920befa17c"
+      }
+    },
+    {
+      "numero": 15,
+      "enunciado": "El anemómetro es un instrumento para medir:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "La dirección del viento."
+        },
+        {
+          "letra": "B",
+          "texto": "La velocidad del viento."
+        },
+        {
+          "letra": "C",
+          "texto": "La velocidad de la embarcación."
+        },
+        {
+          "letra": "D",
+          "texto": "La velocidad de la corriente."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Meteorología",
+      "origen": {
+        "convocatoria": "2022-12-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "02",
+        "numero_original": 33,
+        "hash_pregunta": "99d25b2cc5cd5310"
+      }
+    },
+    {
+      "numero": 16,
+      "enunciado": "Navegando rumbo NE a una velocidad de 5 nudos por la Bahía de Santander con un viento real de proa de 5 nudos, el viento aparente será de una intensidad de:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "10 nudos."
+        },
+        {
+          "letra": "B",
+          "texto": "5 nudos."
+        },
+        {
+          "letra": "C",
+          "texto": "0 nudos."
+        },
+        {
+          "letra": "D",
+          "texto": "2 nudos."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Meteorología",
+      "origen": {
+        "convocatoria": "2022-06-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "03",
+        "numero_original": 35,
+        "hash_pregunta": "8edf03aea35581eb"
+      }
+    },
+    {
+      "numero": 17,
+      "enunciado": "En relación con las borrascas, ¿cuál de las siguientes afirmaciones es CORRECTA?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Es una región donde la presión atmosférica es más alta que la del aire circundante."
+        },
+        {
+          "letra": "B",
+          "texto": "El aire fluye hacia el interior de las borrascas y desciende desde allí, lo que produce formación de nubosidad y precipitaciones."
+        },
+        {
+          "letra": "C",
+          "texto": "A escala sinóptica el aire circula en torno a una depresión en sentido horario en el hemisferio"
+        },
+        {
+          "letra": "D",
+          "texto": "El proceso de formación de una borrasca se denomina ciclogénesis."
+        }
+      ],
+      "respuesta_correcta": "D",
+      "tema": "Meteorología",
+      "origen": {
+        "convocatoria": "2022-12-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 35,
+        "hash_pregunta": "df19412543d2be49"
+      }
+    },
+    {
+      "numero": 18,
+      "enunciado": "El terral es un viento o brisa:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Nocturna que tiene dirección desde tierra hacia el mar."
+        },
+        {
+          "letra": "B",
+          "texto": "Diurna que tiene dirección desde tierra hacia el mar."
+        },
+        {
+          "letra": "C",
+          "texto": "Diurna que tiene dirección desde el mar hacia tierra."
+        },
+        {
+          "letra": "D",
+          "texto": "Nocturna que tiene dirección desde el mar hacia tierra. Teoría de la navegación."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Meteorología",
+      "origen": {
+        "convocatoria": "2024-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "02",
+        "numero_original": 36,
+        "hash_pregunta": "a5c0fd8023fab931"
+      }
+    },
+    {
+      "numero": 19,
+      "enunciado": "El viento que sopla en las costas durante el día del mar hacia tierra se denomina:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Terral."
+        },
+        {
+          "letra": "B",
+          "texto": "Fetch."
+        },
+        {
+          "letra": "C",
+          "texto": "Virazón."
+        },
+        {
+          "letra": "D",
+          "texto": "Viento aparente. Teoría de la navegación."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Meteorología",
+      "origen": {
+        "convocatoria": "2021-12-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "02",
+        "numero_original": 36,
+        "hash_pregunta": "807d7e408d16b7f6"
+      }
+    },
+    {
+      "numero": 20,
+      "enunciado": "En relación con los anticiclones, ¿cuál de las siguientes afirmaciones es INCORRECTA?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Es una región donde la presión atmosférica es más baja que la del aire circundante."
+        },
+        {
+          "letra": "B",
+          "texto": "El aire desciende por el interior de los anticiclones y fluye hacia afuera desde ellos."
+        },
+        {
+          "letra": "C",
+          "texto": "La presión más alta se localiza siempre en el centro."
+        },
+        {
+          "letra": "D",
+          "texto": "Se llama también alta presión o, simplemente, alta. Teoría de la navegación."
+        }
+      ],
+      "respuesta_correcta": "B",
+      "tema": "Meteorología",
+      "origen": {
+        "convocatoria": "2022-12-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "02",
+        "numero_original": 36,
+        "hash_pregunta": "a8bdb1eae8fc8082"
+      }
+    },
+    {
+      "numero": 21,
+      "enunciado": "Las partes curvadas delanteras de los costados que convergen hacia proa se denominan:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Aletas."
+        },
+        {
+          "letra": "B",
+          "texto": "Lumbreras."
+        },
+        {
+          "letra": "C",
+          "texto": "Amuras."
+        },
+        {
+          "letra": "D",
+          "texto": "Sentinas."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Nomenclatura náutica",
+      "origen": {
+        "convocatoria": "2021-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "02",
+        "numero_original": 1,
+        "hash_pregunta": "410f2ab58650f2b7"
+      }
+    },
+    {
+      "numero": 22,
+      "enunciado": "Se define como adrizar al movimiento de la embarcación que consiste en:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Enderezarse o ponerse vertical."
+        },
+        {
+          "letra": "B",
+          "texto": "Inclinarse sobre uno de sus costados."
+        },
+        {
+          "letra": "C",
+          "texto": "Hundir la proa y levantar la popa."
+        },
+        {
+          "letra": "D",
+          "texto": "Hundir la popa y levantar la proa."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Nomenclatura náutica",
+      "origen": {
+        "convocatoria": "2024-11-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "04",
+        "numero_original": 1,
+        "hash_pregunta": "03e0d326aed13260"
+      }
+    },
+    {
+      "numero": 23,
+      "enunciado": "El desplazamiento máximo corresponde al:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Volumen de una embarcación cargada al máximo permitido."
+        },
+        {
+          "letra": "B",
+          "texto": "Volumen de una embarcación sin carga, combustible, lubricantes, lastre ni agua dulce."
+        },
+        {
+          "letra": "C",
+          "texto": "Peso del volumen de agua desplazado por la parte sumergida de una embarcación cargada al"
+        },
+        {
+          "letra": "D",
+          "texto": "Peso del volumen de agua desplazado por la parte sumergida de una embarcación sin carga, combustible, lubricantes, lastre ni agua dulce."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Nomenclatura náutica",
+      "origen": {
+        "convocatoria": "2023-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "03",
+        "numero_original": 1,
+        "hash_pregunta": "7448a70de994c63c"
+      }
+    },
+    {
+      "numero": 24,
+      "enunciado": "A la operación de arriar la línea de fondeo también nos podemos referir como:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Levar el ancla."
+        },
+        {
+          "letra": "B",
+          "texto": "Dejar el ancla a la pendura."
+        },
+        {
+          "letra": "C",
+          "texto": "Filar la cadena del ancla."
+        },
+        {
+          "letra": "D",
+          "texto": "Dejar clara el ancla."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Nomenclatura náutica",
+      "origen": {
+        "convocatoria": "2023-11-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "03",
+        "numero_original": 2,
+        "hash_pregunta": "ea8454b943b9a671"
+      }
+    },
+    {
+      "numero": 25,
+      "enunciado": "El viento en una embarcación:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Incide por sotavento."
+        },
+        {
+          "letra": "B",
+          "texto": "Ejerce su presión solamente sobre las velas y es lo que hace que la embarcación avance."
+        },
+        {
+          "letra": "C",
+          "texto": "Ejerce su presión sobre la obra muerta."
+        },
+        {
+          "letra": "D",
+          "texto": "Ejerce su presión sobre la obra viva de la embarcación."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Nomenclatura náutica",
+      "origen": {
+        "convocatoria": "2022-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "03",
+        "numero_original": 2,
+        "hash_pregunta": "caeaf3894193990e"
+      }
+    },
+    {
+      "numero": 26,
+      "enunciado": "La dirección perpendicular a la quilla o al costado es:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "El través."
+        },
+        {
+          "letra": "B",
+          "texto": "El plano de crujía."
+        },
+        {
+          "letra": "C",
+          "texto": "La aleta."
+        },
+        {
+          "letra": "D",
+          "texto": "La línea de costado."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Nomenclatura náutica",
+      "origen": {
+        "convocatoria": "2024-06-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 3,
+        "hash_pregunta": "b78f8e87d1bc5ef2"
+      }
+    },
+    {
+      "numero": 27,
+      "enunciado": "¿Cuál de las siguientes afirmaciones es CORRECTA si nos referimos a una hélice dextrógira?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "El número de palas que tiene unidas al núcleo es par."
+        },
+        {
+          "letra": "B",
+          "texto": "Si observamos la embarcación desde popa, dando atrás, la hélice gira en el sentido contrario a las"
+        },
+        {
+          "letra": "C",
+          "texto": "Si observamos la embarcación desde popa, dando avante, la hélice gira en el sentido contrario a las agujas del reloj."
+        },
+        {
+          "letra": "D",
+          "texto": "El capacete es plano para evitar cavitaciones en las palas. Elementos de amarre y fondeo."
+        }
+      ],
+      "respuesta_correcta": "B",
+      "tema": "Nomenclatura náutica",
+      "origen": {
+        "convocatoria": "2024-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "03",
+        "numero_original": 4,
+        "hash_pregunta": "a6f24d0c6feb27f8"
+      }
+    },
+    {
+      "numero": 28,
+      "enunciado": "¿Cuál de las siguientes definiciones se corresponde con “lumbrera”?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Ventana abierta en un techo o en la parte superior de una pared, generalmente con derrame hacia"
+        },
+        {
+          "letra": "B",
+          "texto": "Abertura estanca, generalmente redonda, que se encuentra en las cámaras o casco de la embarcación, para dar luz y ventilación."
+        },
+        {
+          "letra": "C",
+          "texto": "Escotilla, generalmente con cubierta de cristales, cuyo objeto casi único es proporcionar luz y ventilación a determinados lugares del buque y principalmente a las cámaras."
+        },
+        {
+          "letra": "D",
+          "texto": "Cada una de las aberturas que hay en las diversas cubiertas para el servicio del buque. Elementos de amarre y fondeo."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Nomenclatura náutica",
+      "origen": {
+        "convocatoria": "2021-12-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "06",
+        "numero_original": 4,
+        "hash_pregunta": "8e31005413b95ba2"
+      }
+    },
+    {
+      "numero": 29,
+      "enunciado": "Conforme a la Regla 6 del RIPA, “Velocidad de seguridad”, a la hora de determinar la velocidad de seguridad en un buque con un radar funcionando correctamente, se deberá tener en cuenta que:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "La escala que esté usando el radar puede imponer restricciones a la hora de detectar objetivos."
+        },
+        {
+          "letra": "B",
+          "texto": "El estado de la mar no influye en la detección de objetivos ya que la señal de alta frecuencia que emite el radar es electromagnética."
+        },
+        {
+          "letra": "C",
+          "texto": "Sin importar las características del radar, siempre detectará los pequeños objetos flotantes o embarcaciones pequeñas."
+        },
+        {
+          "letra": "D",
+          "texto": "De noche, la existencia de resplandor producido por las luces de tierra influirá en la detección del radar de otras embarcaciones."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Reglamento (RIPA)",
+      "origen": {
+        "convocatoria": "2024-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "04",
+        "numero_original": 20,
+        "hash_pregunta": "c58813ea34a94c2e"
+      }
+    },
+    {
+      "numero": 30,
+      "enunciado": "De acuerdo con la Regla 28 del RIPA, si observamos un buque exhibiendo en el lugar más visible, tres luces rojas todo horizonte en línea vertical o un cilindro, se tratará de:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Un buque sin gobierno."
+        },
+        {
+          "letra": "B",
+          "texto": "Un buque empujado por otro."
+        },
+        {
+          "letra": "C",
+          "texto": "Un buque empujando a otro."
+        },
+        {
+          "letra": "D",
+          "texto": "Un buque de propulsión mecánica restringido por su calado."
+        }
+      ],
+      "respuesta_correcta": "D",
+      "tema": "Reglamento (RIPA)",
+      "origen": {
+        "convocatoria": "2022-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 21,
+        "hash_pregunta": "b291b4b908ca9ade"
+      }
+    },
+    {
+      "numero": 31,
+      "enunciado": "Según la Regla 12 del RIPA, Buques de vela, si dos buques de vela se aproximan el uno al otro, con riesgo de abordaje, en general maniobrará el velero que:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Reciba el viento por estribor."
+        },
+        {
+          "letra": "B",
+          "texto": "Reciba el viento por popa."
+        },
+        {
+          "letra": "C",
+          "texto": "Reciba el viento por babor."
+        },
+        {
+          "letra": "D",
+          "texto": "Esté a sotavento cuando ambos reciban el viento por la misma banda."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Reglamento (RIPA)",
+      "origen": {
+        "convocatoria": "2023-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "02",
+        "numero_original": 22,
+        "hash_pregunta": "b7a17e4ecfd3bc80"
+      }
+    },
+    {
+      "numero": 32,
+      "enunciado": "Según la Regla 14 del RIPA, Situación de vuelta encontrada, en navegación nocturna, se considera que existe situación de vuelta encontrada cuando un buque vea a otro por:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Su proa viendo la luz de tope blanca y las luces de costado."
+        },
+        {
+          "letra": "B",
+          "texto": "Su popa viendo la luz de alcance."
+        },
+        {
+          "letra": "C",
+          "texto": "Su proa viendo la luz de alcance."
+        },
+        {
+          "letra": "D",
+          "texto": "Su proa viendo la luz de tope y únicamente una de las luces de costado."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Reglamento (RIPA)",
+      "origen": {
+        "convocatoria": "2023-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 22,
+        "hash_pregunta": "e6b8f8fa6e06777e"
+      }
+    },
+    {
+      "numero": 33,
+      "enunciado": "De acuerdo con la Regla 21 del RIPA, “Definiciones”, la “luz de remolque” es una luz:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Amarilla de las mismas características que la luz de alcance."
+        },
+        {
+          "letra": "B",
+          "texto": "Amarilla de las mismas características que la luz de tope."
+        },
+        {
+          "letra": "C",
+          "texto": "Blanca de las mismas características que la luz todo horizonte."
+        },
+        {
+          "letra": "D",
+          "texto": "Blanca que muestra luz centelleante."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Reglamento (RIPA)",
+      "origen": {
+        "convocatoria": "2022-12-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 23,
+        "hash_pregunta": "caf72d9b16ba4806"
+      }
+    },
+    {
+      "numero": 34,
+      "enunciado": "Señale la afirmación INCORRECTA. De acuerdo con la Regla 19 del RIPA, “Conducta de los buques en condiciones de visibilidad reducida”, salvo en los casos en que se haya comprobado que no existe riesgo de abordaje, todo buque que no pueda evitar una situación de aproximación excesiva con otro buque situado a proa de su través:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Reducirá su velocidad hasta la mínima de gobierno."
+        },
+        {
+          "letra": "B",
+          "texto": "Suprimirá su arrancada, si fuese necesario."
+        },
+        {
+          "letra": "C",
+          "texto": "Navegará con extremada precaución hasta que desaparezca el peligro de abordaje."
+        },
+        {
+          "letra": "D",
+          "texto": "Aumentará su velocidad hasta la máxima de gobierno para minimizar la aproximación excesiva y en ningún caso se quedará sin arrancada."
+        }
+      ],
+      "respuesta_correcta": "D",
+      "tema": "Reglamento (RIPA)",
+      "origen": {
+        "convocatoria": "2025-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "02",
+        "numero_original": 24,
+        "hash_pregunta": "44da5b3b239cefe4"
+      }
+    },
+    {
+      "numero": 35,
+      "enunciado": "Según la Regla 3 del RIPA, Definiciones generales, a los efectos de este Reglamento, excepto cuando se indique lo contrario:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "La expresión “buque con capacidad de maniobra restringida” incluirá los buques dedicados al lanzamiento o recuperación de aeronaves."
+        },
+        {
+          "letra": "B",
+          "texto": "La expresión “buque sin gobierno” significa todo buque que maniobre sin capitán."
+        },
+        {
+          "letra": "C",
+          "texto": "La expresión “buque dedicado a la pesca” significa todo buque que pesque con curricán u otro arte de pesca que no restrinja su maniobrabilidad."
+        },
+        {
+          "letra": "D",
+          "texto": "La expresión “buque con capacidad de maniobra restringida” significa todo buque que, debido a la naturaleza de su trabajo, tiene reducida su capacidad para maniobrar en la forma exigida por este Reglamento y, por consiguiente, puede apartarse de la derrota de otro buque."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Reglamento (RIPA)",
+      "origen": {
+        "convocatoria": "2023-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "02",
+        "numero_original": 24,
+        "hash_pregunta": "a02c41705119a9b5"
+      }
+    },
+    {
+      "numero": 36,
+      "enunciado": "¿A qué se refiere la expresión “a son de mar”?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "A correr el temporal en condiciones de mal tiempo."
+        },
+        {
+          "letra": "B",
+          "texto": "A capear el temporal en condiciones de mal tiempo."
+        },
+        {
+          "letra": "C",
+          "texto": "A navegar con la proa a la mar para evitar el vuelco del barco en condiciones de mal tiempo."
+        },
+        {
+          "letra": "D",
+          "texto": "A la estiba y trinca más adecuadas a bordo de los objetos, carga, aparejos, etc., para que no se muevan durante condiciones de mal tiempo."
+        }
+      ],
+      "respuesta_correcta": "D",
+      "tema": "Seguridad",
+      "origen": {
+        "convocatoria": "2022-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "03",
+        "numero_original": 8,
+        "hash_pregunta": "2cf085831b406474"
+      }
+    },
+    {
+      "numero": 37,
+      "enunciado": "La estabilidad estática de una embarcación depende de la posición simultánea de:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "El centro geométrico y la cota cero de la quilla de la embarcación."
+        },
+        {
+          "letra": "B",
+          "texto": "El centro de gravedad y el centro de carena de la embarcación."
+        },
+        {
+          "letra": "C",
+          "texto": "El centro de la flotación y el centro geométrico de la embarcación."
+        },
+        {
+          "letra": "D",
+          "texto": "El centro de gravedad de los pesos por encima de la cubierta y el centro de carena de la"
+        }
+      ],
+      "respuesta_correcta": "B",
+      "tema": "Seguridad",
+      "origen": {
+        "convocatoria": "2025-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 9,
+        "hash_pregunta": "0a9512814d91bd1a"
+      }
+    },
+    {
+      "numero": 38,
+      "enunciado": "Una embarcación tiene una buena estabilidad transversal, si tras ser apartada de su posición de equilibrio por una fuerza exterior momentánea:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Cabecea lentamente."
+        },
+        {
+          "letra": "B",
+          "texto": "Balancea lentamente."
+        },
+        {
+          "letra": "C",
+          "texto": "No se mueve."
+        },
+        {
+          "letra": "D",
+          "texto": "Balancea rápidamente."
+        }
+      ],
+      "respuesta_correcta": "D",
+      "tema": "Seguridad",
+      "origen": {
+        "convocatoria": "2021-12-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "02",
+        "numero_original": 10,
+        "hash_pregunta": "f3fa01fb3677587e"
+      }
+    },
+    {
+      "numero": 39,
+      "enunciado": "¿Qué sucede cuando de forma significativa aumentamos pesos en la cubierta de intemperie, situada por encima del centro de gravedad de la embarcación?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Que la estabilidad transversal se ve afectada de forma negativa."
+        },
+        {
+          "letra": "B",
+          "texto": "Que la estabilidad longitudinal mejora significativamente."
+        },
+        {
+          "letra": "C",
+          "texto": "Que aumenta la frecuencia del balance."
+        },
+        {
+          "letra": "D",
+          "texto": "Que aumenta el francobordo."
+        }
+      ],
+      "respuesta_correcta": "A",
+      "tema": "Seguridad",
+      "origen": {
+        "convocatoria": "2024-06-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 10,
+        "hash_pregunta": "dc0a1ae5d615ba83"
+      }
+    },
+    {
+      "numero": 40,
+      "enunciado": "La altura de la pleamar es la distancia vertical de la superficie del agua sobre:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Opción A no disponible"
+        },
+        {
+          "letra": "B",
+          "texto": "Opción B no disponible"
+        },
+        {
+          "letra": "C",
+          "texto": "Opción C no disponible"
+        },
+        {
+          "letra": "D",
+          "texto": "Opción D no disponible"
+        }
+      ],
+      "respuesta_correcta": "B",
+      "tema": "Teoría de la navegación",
+      "origen": {
+        "convocatoria": "2023-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "02",
+        "numero_original": 38,
+        "hash_pregunta": "8da28053a986d276"
+      }
+    },
+    {
+      "numero": 41,
+      "enunciado": "¿Cuál de las siguientes afirmaciones sobre la declinación magnética es CORRECTA?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "En cada lugar es diferente para cada barco ya que depende del rumbo."
+        },
+        {
+          "letra": "B",
+          "texto": "Permanece invariable en cada lugar."
+        },
+        {
+          "letra": "C",
+          "texto": "Las cartas náuticas incluyen la declinación magnética y su variación anual."
+        },
+        {
+          "letra": "D",
+          "texto": "Es el ángulo formado entre el norte verdadero y el meridiano geográfico."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Teoría de la navegación",
+      "origen": {
+        "convocatoria": "2021-07-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 39,
+        "hash_pregunta": "ab6ef607c14628a3"
+      }
+    },
+    {
+      "numero": 42,
+      "enunciado": "De las siguientes líneas de una carta náutica, ¿cuál NO se considera una línea de posición?",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Demora."
+        },
+        {
+          "letra": "B",
+          "texto": "Enfilación."
+        },
+        {
+          "letra": "C",
+          "texto": "Isóbara."
+        },
+        {
+          "letra": "D",
+          "texto": "Distancia."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Teoría de la navegación",
+      "origen": {
+        "convocatoria": "2021-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "03",
+        "numero_original": 39,
+        "hash_pregunta": "b7b7b607c709b3bb"
+      }
+    },
+    {
+      "numero": 43,
+      "enunciado": "Mirando a la costa visualizamos dos chimeneas altas en línea, que nos pueden servir como:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Una marcación."
+        },
+        {
+          "letra": "B",
+          "texto": "Una demora."
+        },
+        {
+          "letra": "C",
+          "texto": "Una enfilación."
+        },
+        {
+          "letra": "D",
+          "texto": "Un patrón de medida."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Teoría de la navegación",
+      "origen": {
+        "convocatoria": "2023-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "04",
+        "numero_original": 39,
+        "hash_pregunta": "ae861639e58129f6"
+      }
+    },
+    {
+      "numero": 44,
+      "enunciado": "Respecto de la declinación magnética, indique la afirmación INCORRECTA:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Es el ángulo que forma el meridiano magnético con el geográfico."
+        },
+        {
+          "letra": "B",
+          "texto": "Varía con el lugar."
+        },
+        {
+          "letra": "C",
+          "texto": "Se denomina también inclinación."
+        },
+        {
+          "letra": "D",
+          "texto": "Varía a lo largo del tiempo. Carta de navegación."
+        }
+      ],
+      "respuesta_correcta": "C",
+      "tema": "Teoría de la navegación",
+      "origen": {
+        "convocatoria": "2022-06-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "02",
+        "numero_original": 41,
+        "hash_pregunta": "e88f9d56fa284ebb"
+      }
+    },
+    {
+      "numero": 45,
+      "enunciado": "El aparato que, colocado sobre un compás magnético, se usa para tomar una demora recibe el nombre de:",
+      "opciones": [
+        {
+          "letra": "A",
+          "texto": "Giróscopo."
+        },
+        {
+          "letra": "B",
+          "texto": "Alidada."
+        },
+        {
+          "letra": "C",
+          "texto": "Pínula."
+        },
+        {
+          "letra": "D",
+          "texto": "Transportador. Carta de navegación."
+        }
+      ],
+      "respuesta_correcta": "B",
+      "tema": "Teoría de la navegación",
+      "origen": {
+        "convocatoria": "2024-04-RECREO",
+        "titulacion_origen": "PER",
+        "numero_test": "01",
+        "numero_original": 41,
+        "hash_pregunta": "9563c2824a7e100d"
+      }
+    }
+  ]
+}

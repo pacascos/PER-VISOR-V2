@@ -1,0 +1,59 @@
+{
+  "convocatoria": "2025-06-RECREO",
+  "fecha_procesado": "2025-09-08",
+  "examenes": [
+    {
+      "id": "2025-06-RECREO_PER_Test_01",
+      "titulation": "PER",
+      "test_code": "Test 01",
+      "exam_type": "normal",
+      "convocatoria_id": "2025-06-RECREO",
+      "questions": []
+    },
+    {
+      "id": "2025-06-RECREO_PER_Test_02",
+      "titulation": "PER",
+      "test_code": "Test 02",
+      "exam_type": "normal",
+      "convocatoria_id": "2025-06-RECREO",
+      "questions": []
+    },
+    {
+      "id": "2025-06-RECREO_PER_Test_01_liberado",
+      "titulation": "PER",
+      "test_code": "Test 01",
+      "exam_type": "liberado",
+      "convocatoria_id": "2025-06-RECREO",
+      "questions": []
+    },
+    {
+      "id": "2025-06-RECREO_PER_Test_02_liberado",
+      "titulation": "PER",
+      "test_code": "Test 02",
+      "exam_type": "liberado",
+      "convocatoria_id": "2025-06-RECREO",
+      "questions": []
+    },
+    {
+      "id": "2025-06-RECREO_PNB_Test_02",
+      "titulation": "PNB",
+      "test_code": "Test 02",
+      "exam_type": "normal",
+      "convocatoria_id": "2025-06-RECREO",
+      "questions": []
+    },
+    {
+      "id": "2025-06-RECREO_PNB_Test_03",
+      "titulation": "PNB",
+      "test_code": "Test 03",
+      "exam_type": "normal",
+      "convocatoria_id": "2025-06-RECREO",
+      "questions": []
+    }
+  ],
+  "stats": {
+    "total_examenes": 6,
+    "total_preguntas": 0,
+    "preguntas_con_respuestas": 0
+  }
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API PostgreSQL</title>
+</head>
+<body>
+    <h1>Test API PostgreSQL</h1>
+    <div id="result"></div>
+
+    <script>
+    async function testAPI() {
+        try {
+            console.log('🔄 Probando API...');
+            const response = await fetch('http://localhost:5001/examenes');
+
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('✅ Datos cargados:', data);
+            console.log('📊 Total exámenes:', data.count);
+            console.log('📋 Primer examen:', data.examenes[0]);
+
+            // Extraer convocatorias únicas
+            const convocatorias = [...new Set(data.examenes.map(e => e.convocatoria))].sort().reverse();
+            console.log('📅 Convocatorias únicas:', convocatorias);
+
+            document.getElementById('result').innerHTML = `
+                <h2>Resultado:</h2>
+                <p><strong>Total exámenes:</strong> ${data.count}</p>
+                <p><strong>Convocatorias encontradas:</strong> ${convocatorias.length}</p>
+                <ul>
+                    ${convocatorias.map(c => `<li>${c}</li>`).join('')}
+                </ul>
+            `;
+
+        } catch (error) {
+            console.error('❌ Error:', error);
+            document.getElementById('result').innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+        }
+    }
+
+    // Ejecutar al cargar la página
+    testAPI();
+    </script>
+</body>
+</html>

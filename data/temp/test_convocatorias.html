@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Convocatorias</title>
+</head>
+<body>
+    <h1>Test Filtro Convocatorias</h1>
+    <select id="filterConvocatoria">
+        <option value="all">Todas las convocatorias</option>
+    </select>
+    
+    <script>
+        async function testConvocatorias() {
+            try {
+                console.log('🔍 Cargando datos...');
+                const response = await fetch('data_unificado_con_duplicados.json');
+                const data = await response.json();
+                
+                console.log('📊 Datos cargados:', data);
+                console.log('📅 Convocatorias:', data.convocatorias ? 'EXISTS' : 'NOT EXISTS');
+                
+                if (data.convocatorias) {
+                    const convocatoriasKeys = Object.keys(data.convocatorias);
+                    console.log('📅 Convocatorias encontradas:', convocatoriasKeys.length, convocatoriasKeys);
+                    
+                    const select = document.getElementById('filterConvocatoria');
+                    select.innerHTML = '';
+                    
+                    // Añadir opción "Todas"
+                    const allOption = document.createElement('option');
+                    allOption.value = 'all';
+                    allOption.textContent = 'Todas las convocatorias';
+                    select.appendChild(allOption);
+                    
+                    // Añadir convocatorias
+                    convocatoriasKeys.forEach(key => {
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = data.convocatorias[key].descripcion;
+                        select.appendChild(option);
+                        console.log(`  - ${key}: ${data.convocatorias[key].descripcion}`);
+                    });
+                    
+                    console.log(`📅 Selector poblado con ${convocatoriasKeys.length} convocatorias`);
+                    console.log(`📅 Opciones en el select: ${select.options.length}`);
+                }
+            } catch (error) {
+                console.error('❌ Error:', error);
+            }
+        }
+        
+        // Ejecutar test cuando se carga la página
+        window.addEventListener('load', testConvocatorias);
+    </script>
+</body>
+</html>

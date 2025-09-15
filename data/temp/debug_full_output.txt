@@ -1,0 +1,4 @@
+  File "/Users/cascos/PER_Visor_Final/EXTRACTOR_VISION_FEBRERO_2021.py", line 241
+    not 'carta' in linea_opcion.lower()):
+                                        ^
+SyntaxError: invalid syntax

@@ -1,0 +1,75 @@
+name: 🚀 Deploy PER Visor
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Permite ejecución manual
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+      with:
+        lfs: true  # Soporte para Git LFS
+    
+    - name: 🐍 Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    
+    - name: 📦 Instalar dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: 🧪 Ejecutar tests (si existen)
+      run: |
+        if [ -f "tests/" ]; then
+          python -m pytest tests/ -v
+        else
+          echo "No hay tests configurados"
+        fi
+    
+    - name: 🔍 Verificar estructura de datos
+      run: |
+        python -c "
+        import json
+        import os
+        
+        # Verificar archivos JSON principales
+        archivos_importantes = [
+            'src/web/data_unificado.json',
+            'FINAL_100_PERCENT_CORREGIDO_v2.json'
+        ]
+        
+        for archivo in archivos_importantes:
+            if os.path.exists(archivo):
+                with open(archivo, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    print(f'✅ {archivo}: {len(data)} registros')
+            else:
+                print(f'⚠️ No encontrado: {archivo}')
+        "
+    
+    - name: 🌐 Desplegar a GitHub Pages (opcional)
+      if: github.ref == 'refs/heads/main'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./src/web
+        cname: per-visor.github.io  # Opcional: dominio personalizado
+    
+    - name: 📢 Notificación de éxito
+      if: success()
+      run: |
+        echo "🎉 ¡Despliegue exitoso!"
+        echo "📊 Estadísticas del proyecto:"
+        echo "- Archivos JSON: $(find . -name '*.json' | wc -l)"
+        echo "- Archivos Python: $(find . -name '*.py' | wc -l)"
+        echo "- Archivos PDF: $(find . -name '*.pdf' | wc -l)"

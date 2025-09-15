@@ -1,0 +1,162 @@
+# Docker ignore file for PER Maritime Exam System
+# Excludes unnecessary files from Docker build context
+
+# Git
+.git
+.gitignore
+.github/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+pytest.ini
+coverage.xml
+*.cover
+.hypothesis/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Configuration examples
+.env.example
+config_example.py
+
+# Local development
+.env
+.env.local
+.env.development
+.env.production
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Backups
+backups/
+*.bak
+*.backup
+
+# Data files (exclude from image)
+data/
+*.json
+*.csv
+*.xlsx
+*.pdf
+
+# Node modules (if any)
+node_modules/
+
+# Docker
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile.*
+
+# CI/CD
+.github/
+.travis.yml
+.circleci/
+.gitlab-ci.yml
+
+# Security
+*.pem
+*.key
+*.cert
+
+# Large files
+*.zip
+*.tar.gz
+*.rar
+
+# Python specific
+pip-log.txt
+pip-delete-this-directory.txt
+
+# PyCharm
+.idea/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# celery beat schedule file
+celerybeat-schedule
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/

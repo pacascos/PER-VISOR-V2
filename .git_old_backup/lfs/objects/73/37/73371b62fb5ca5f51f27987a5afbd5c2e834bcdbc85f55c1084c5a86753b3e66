@@ -1,0 +1,61 @@
+{
+  "id_explicacion": "exp_1757431619_becd22eb",
+  "hash_pregunta": "becd22ebc868717a",
+  "fecha_creacion": "2025-09-09 17:26:59.497916",
+  "llm_utilizado": "openai-gpt-4o-mini",
+  "version_prompt": "v2.0",
+  "tiempo_generacion": 9.914488077163696,
+  "coste_estimado": 3.7830000000000005e-07,
+  "resumen_pregunta": "Identificación de una pieza utilizada para manejar cadenas y cabos en un barco.",
+  "conceptos_clave": [],
+  "opciones_explicadas": [
+    {
+      "letra": "B",
+      "titulo": "Bita",
+      "definicion": "La bita es una estructura sólida que permite dar vueltas a las cadenas del ancla y amarras del buque, cumpliendo con la descripción dada.",
+      "razon_incorrecta": null,
+      "razon_correcta": "La bita es una estructura sólida que permite dar vueltas a las cadenas del ancla y amarras del buque, cumpliendo con la descripción dada.",
+      "puntos_clave": []
+    },
+    {
+      "letra": "A",
+      "titulo": "Noray",
+      "definicion": "Pieza de metal o madera, generalmente fija en el muelle, utilizada para amarrar embarcaciones.",
+      "razon_incorrecta": "El noray se utiliza para amarrar barcos en el muelle, no está diseñado para dar vueltas a cadenas o cabos en la cubierta.",
+      "razon_correcta": null,
+      "puntos_clave": []
+    },
+    {
+      "letra": "C",
+      "titulo": "Cornamusa",
+      "definicion": "Elemento de amarre que permite asegurar cabos mediante vueltas y nudos.",
+      "razon_incorrecta": "La cornamusa se utiliza para asegurar cabos, pero no es una estructura sólida como la bita para dar vueltas a cadenas.",
+      "razon_correcta": null,
+      "puntos_clave": []
+    },
+    {
+      "letra": "D",
+      "titulo": "Boya",
+      "definicion": "Flotador anclado que marca una posición en el agua o sirve como referencia.",
+      "razon_incorrecta": "La boya no tiene relación con la manipulación de cadenas o cabos en la cubierta de un barco.",
+      "razon_correcta": null,
+      "puntos_clave": []
+    }
+  ],
+  "conclusion": "La bita es esencial para la maniobra de anclas y cabos en un barco, mientras que las otras opciones cumplen funciones diferentes.",
+  "recursos_visuales": [
+    {
+      "tipo": "svg",
+      "descripcion": "Diagrama explicativo generado por IA",
+      "prompt_generacion": "<svg width='200' height='200' xmlns='http://www.w3.org/2000/svg'><rect x='80' y='150' width='40' height='30' fill='#8B4513'/><rect x='90' y='100' width='20' height='60' fill='#8B4513'/><line x1='100' y1='150' x2='100' y2='90' stroke='#000' stroke-width='2'/><text x='50' y='180' font-family='Arial' font-size='12' fill='#000'>Bita</text></svg>",
+      "url_imagen": null,
+      "texto_alternativo": "Diagrama que ilustra la respuesta correcta"
+    }
+  ],
+  "normativa_aplicable": [],
+  "temas_relacionados": [],
+  "nivel_dificultad": "Básico",
+  "revisado": false,
+  "calificacion_usuario": null,
+  "comentarios_mejora": []
+}

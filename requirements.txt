@@ -1,0 +1,45 @@
+# PER Visor Final - Dependencies
+# ==============================
+
+# Core dependencies
+pydantic>=2.0.0
+click>=8.0.0
+rich>=13.0.0
+pathlib-mate>=1.0.0
+
+# PDF processing (optimized from previous projects)
+pdfminer.six>=20221105
+PyMuPDF>=1.23.0  # Para OCR con tesseract
+Pillow>=10.0.0   # Para conversión de imágenes
+
+# OCR (para PDFs escaneados 2017-2019)
+pytesseract>=0.3.10
+
+# Web server para visor
+httpx>=0.24.0
+
+# Development
+pytest>=7.0.0
+pytest-cov>=4.0.0
+
+# Data handling
+python-dateutil>=2.8.0
+
+# AI/LLM para explicaciones inteligentes
+openai>=1.0.0
+python-dotenv>=1.0.0  # Para variables de entorno
+aiohttp>=3.8.0        # Para llamadas async
+
+# Flask API server dependencies
+flask>=2.3.0
+flask-cors>=4.0.0
+requests>=2.31.0
+
+# Database dependencies for Docker architecture
+asyncpg>=0.28.0       # PostgreSQL async driver
+psycopg2-binary>=2.9.0  # PostgreSQL sync driver
+redis>=5.0.0          # Redis cache
+
+# Additional utilities
+tqdm>=4.65.0          # Progress bars
+click>=8.1.0          # CLI framework (already included but ensuring version)

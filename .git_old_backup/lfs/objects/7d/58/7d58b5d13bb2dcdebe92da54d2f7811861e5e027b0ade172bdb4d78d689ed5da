@@ -1,0 +1,2072 @@
+{
+  "convocatoria": "2025-06-RECREO",
+  "fecha_procesado": "2025-09-08",
+  "examenes": [
+    {
+      "id": "2025-06-RECREO_PER_Test_01",
+      "titulation": "PER",
+      "test_code": "Test 01",
+      "exam_type": "normal",
+      "convocatoria_id": "2025-06-RECREO",
+      "questions": [
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q01",
+          "number": 1,
+          "text": "El arganeo es:",
+          "options": [
+            {
+              "text": "La pieza o argolla del ancla en la que se anuda el cabo o se afirma el grillete de la cadena.",
+              "is_correct": false
+            },
+            {
+              "text": "La pieza vertical del ancla que va desde la argolla al brazo.",
+              "is_correct": false
+            },
+            {
+              "text": "La parte del ancla que clava en el fondo marino.",
+              "is_correct": false
+            },
+            {
+              "text": "El brazo que sale en forma de cruz en la parte inferior del ancla.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q02",
+          "number": 2,
+          "text": "La mecha es:",
+          "options": [
+            {
+              "text": "El tubo dentro del cual gira el eje del timón.",
+              "is_correct": false
+            },
+            {
+              "text": "El eje del timón.",
+              "is_correct": false
+            },
+            {
+              "text": "El aparejo que se arma a cada lado de la caña del timón para gobernarlo con menos esfuerzo.",
+              "is_correct": false
+            },
+            {
+              "text": "La parte plana del timón que va sumergida.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q03",
+          "number": 3,
+          "text": "Se define como “escorar” al movimiento de la embarcación que consiste en:",
+          "options": [
+            {
+              "text": "Enderezarse o ponerse vertical.",
+              "is_correct": false
+            },
+            {
+              "text": "Inclinarse sobre uno de sus costados.",
+              "is_correct": false
+            },
+            {
+              "text": "Hundir la proa y levantar la popa.",
+              "is_correct": false
+            },
+            {
+              "text": "Hundir la popa y levantar la proa.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q04",
+          "number": 4,
+          "text": "¿Cuál de las siguientes definiciones es CORRECTA?",
+          "options": [
+            {
+              "text": "El plano de crujía es aquel que divide la embarcación en la mitad de proa y en la mitad de popa.",
+              "is_correct": false
+            },
+            {
+              "text": "La obra muerta es la parte sumergida de la embarcación que se separa de la obra viva por el plano de flotación.",
+              "is_correct": false
+            },
+            {
+              "text": "La bañera es la cámara abierta a popa de la embarcación donde generalmente va instalada la caña o rueda del timón.",
+              "is_correct": false
+            },
+            {
+              "text": "Los portillos son aberturas practicadas en los costados de la embarcación que tienen por objeto la evacuación del agua embarcada en la cubierta.  Elementos de amarre y fondeo.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q05",
+          "number": 5,
+          "text": "Una gaza es:",
+          "options": [
+            {
+              "text": "Un cabo que une y sujeta una boya a un ancla fondeada.",
+              "is_correct": false
+            },
+            {
+              "text": "Vuelta en forma de ojo que se hace con un cabo.",
+              "is_correct": false
+            },
+            {
+              "text": "Cualquiera de los dos extremos de un cabo.",
+              "is_correct": false
+            },
+            {
+              "text": "El arco o curvatura en un cabo cuando no está tirante o tenso.  SUBDIRECCIÓN GENERAL DE SEGURIDAD, CONTAMINACIÓN E INSPECCIÓN MARÍTIMA ÁREA FUNCIONAL DE TITULACIONES DE RECREO",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q06",
+          "number": 6,
+          "text": "En relación con el fondeo, ¿cuál de las siguientes afirmaciones es CORRECTA?",
+          "options": [
+            {
+              "text": "Al giro de una embarcación fondeada en torno al ancla, por efecto del viento o de la corriente, se le denomina garreo.",
+              "is_correct": false
+            },
+            {
+              "text": "Se deben tomar referencias a tierra para asegurarnos que el ancla no garrea y vigilar la sonda marcando un fondo mínimo con la alarma.",
+              "is_correct": false
+            },
+            {
+              "text": "De forma general, la longitud de cadena para un fondeo con mal tiempo no será superior a una o dos veces la sonda del lugar de fondeo.",
+              "is_correct": false
+            },
+            {
+              "text": "Se debe elegir siempre que sea posible un tenedero rocoso o con algas, para facilitar el agarre del ancla.  Seguridad.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q07",
+          "number": 7,
+          "text": "En relación con las balsas salvavidas, ¿cuál de las siguientes afirmaciones es CORRECTA?",
+          "options": [
+            {
+              "text": "Se debe volver a leer las instrucciones de la balsa antes de lanzarla.",
+              "is_correct": false
+            },
+            {
+              "text": "Sus revisiones periódicas serán realizadas sólo por el patrón de la embarcación, ya que su titulación le habilita para ello.",
+              "is_correct": false
+            },
+            {
+              "text": "Si dispone de zafa de liberación hidrostática no estibe la balsa en cubierta, para evitar que la humedad la libere accidentalmente.",
+              "is_correct": false
+            },
+            {
+              "text": "Sólo el patrón podrá destrincar y lanzar una balsa al mar, para evitar que pueda ser dañada por cualquier otro miembro de la tripulación.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q08",
+          "number": 8,
+          "text": "En caso de hombre al agua, para iniciar una maniobra de Boutakow ¿qué acción deberá realizar?",
+          "options": [
+            {
+              "text": "Vire momentáneamente 70º a la banda de la caída al agua.",
+              "is_correct": false
+            },
+            {
+              "text": "Vire momentáneamente 70º a la banda contraria de la caída al agua.",
+              "is_correct": false
+            },
+            {
+              "text": "Vire momentáneamente 180º a la banda de la caída al agua.",
+              "is_correct": false
+            },
+            {
+              "text": "Dé marcha atrás sin mover el timón hasta volver al punto de caída al agua.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q09",
+          "number": 9,
+          "text": "¿Cómo se debe actuar ante movimientos de cabezada excesivos cuando llevamos la mar por la proa?",
+          "options": [
+            {
+              "text": "Atravesándonos a la mar.",
+              "is_correct": false
+            },
+            {
+              "text": "Disminuyendo la velocidad y cambiando ligeramente el rumbo, ajustando ambos a las condiciones particulares del momento.",
+              "is_correct": false
+            },
+            {
+              "text": "Elevando el centro de gravedad del buque con pesos en cubierta.",
+              "is_correct": false
+            },
+            {
+              "text": "Aumentando la velocidad para cortar las olas.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q10",
+          "number": 10,
+          "text": "¿Cuál de los siguientes supuestos afecta negativamente a la estabilidad transversal?",
+          "options": [
+            {
+              "text": "El traslado de pesos desde la proa a la popa.",
+              "is_correct": false
+            },
+            {
+              "text": "El traslado de pesos desde la popa a la proa.",
+              "is_correct": false
+            },
+            {
+              "text": "La elevación de pesos a zonas superiores a la cubierta.",
+              "is_correct": false
+            },
+            {
+              "text": "La bajada de pesos a zonas inferiores a la cubierta. Legislación.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q12",
+          "number": 12,
+          "text": "Las Zonas Especialmente Protegidas de Importancia para el Mediterráneo (ZEPIM) son:",
+          "options": [
+            {
+              "text": "Áreas en las que está prohibida la navegación para la protección de hábitats de especies en excedente.",
+              "is_correct": false
+            },
+            {
+              "text": "Reservas de biodiversidad que tienen un interés económico-industrial especial.",
+              "is_correct": false
+            },
+            {
+              "text": "Áreas protegidas y exclusivas para la pesca en el Mediterráneo.",
+              "is_correct": false
+            },
+            {
+              "text": "Zonas que albergan ecosistemas específicos de la zona mediterránea o hábitats de especies en peligro.  Balizamiento.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q15",
+          "number": 15,
+          "text": "Las Marcas de Aguas Navegables pueden:",
+          "options": [
+            {
+              "text": "Emplearse como una Ayuda a la Navegación Móvil (MatoN).",
+              "is_correct": false
+            },
+            {
+              "text": "Incluir el uso de pictogramas para indicar su finalidad.",
+              "is_correct": false
+            },
+            {
+              "text": "Utilizarse para indicar la aproximación a un puerto.",
+              "is_correct": false
+            },
+            {
+              "text": "Indicar un nuevo peligro en las aguas de navegación.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q16",
+          "number": 16,
+          "text": "En relación con las Marcas Especiales, señale la opción CORRECTA.",
+          "options": [
+            {
+              "text": "Pueden ser amarillas, y si llevan luz debe ser de color distinto al de la marca.",
+              "is_correct": false
+            },
+            {
+              "text": "Sus luces pueden emplear alguno de los ritmos utilizados para las luces blancas.",
+              "is_correct": false
+            },
+            {
+              "text": "El uso de pictogramas no está autorizado para este tipo de marcas.",
+              "is_correct": false
+            },
+            {
+              "text": "Si tuviesen marca de tope sería una \"X\" amarilla.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q17",
+          "number": 17,
+          "text": "La marca de tope de una Marca Cardinal Este tiene conos superpuestos:",
+          "options": [
+            {
+              "text": "Con los vértices hacia arriba.",
+              "is_correct": false
+            },
+            {
+              "text": "Con los vértices hacia abajo.",
+              "is_correct": false
+            },
+            {
+              "text": "Opuestos por sus bases.",
+              "is_correct": false
+            },
+            {
+              "text": "Opuestos por sus vértices.  Reglamento (RIPA).",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q24",
+          "number": 24,
+          "text": "Conforme a la Regla 3 del RIPA, “Definiciones generales”, la palabra “buque” designa:",
+          "options": [
+            {
+              "text": "Toda clase de embarcación, incluidas las embarcaciones sin desplazamiento, las naves de vuelo rasante y los hidroaviones, utilizadas como medio de transporte sobre el agua.",
+              "is_correct": false
+            },
+            {
+              "text": "Toda clase de embarcación con o sin desplazamiento, pero en ningún caso los hidroaviones, que se utilice como medio de transporte en el agua.",
+              "is_correct": false
+            },
+            {
+              "text": "Únicamente las embarcaciones con desplazamiento que se utilicen como medio de transporte en el agua.",
+              "is_correct": false
+            },
+            {
+              "text": "Toda clase de embarcación con desplazamiento, que se utilice como medio de transporte en el agua, propulsada mecánicamente o a vela, quedando excluida todo tipo de embarcación de remo.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q28",
+          "number": 28,
+          "text": "¿Cuáles son las tres fases de la curva de evolución en marcha avante?",
+          "options": [
+            {
+              "text": "Fase de deriva, fase variable y fase alterna.",
+              "is_correct": false
+            },
+            {
+              "text": "Fase de maniobra, fase variable y fase uniforme.",
+              "is_correct": false
+            },
+            {
+              "text": "Fase de maniobra, fase de abatimiento y fase alterna.",
+              "is_correct": false
+            },
+            {
+              "text": "Fase de deriva, fase de abatimiento y fase uniforme.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q30",
+          "number": 30,
+          "text": "En caso de abordaje, indique cuál de las siguientes afirmaciones es CORRECTA.",
+          "options": [
+            {
+              "text": "La responsabilidad recae siempre en la embarcación que navegue a mayor velocidad.",
+              "is_correct": false
+            },
+            {
+              "text": "La prioridad absoluta es elaborar parte amistoso y dar traslado de toda la información que figure en nuestro seguro, siempre que nos la solicite la parte contraria.",
+              "is_correct": false
+            },
+            {
+              "text": "Solamente en ciertos casos una vía de agua producirá un aumento del calado, por lo que no debe preocuparnos hasta haber completado el parte amistoso.",
+              "is_correct": false
+            },
+            {
+              "text": "La evaluación de las averías sufridas y asistencia a las personas que puedan encontrarse heridas debe realizarse a la mayor brevedad posible.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q33",
+          "number": 33,
+          "text": "El terral es un viento o brisa:",
+          "options": [
+            {
+              "text": "Nocturna, con dirección y sentido de tierra a mar.",
+              "is_correct": false
+            },
+            {
+              "text": "Diurna, con dirección y sentido de mar a tierra.",
+              "is_correct": false
+            },
+            {
+              "text": "Diurna, con dirección y sentido de tierra a mar.",
+              "is_correct": false
+            },
+            {
+              "text": "Nocturna, con dirección y sentido de mar a tierra.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q34",
+          "number": 34,
+          "text": "¿Cuáles son los puntos de referencia de la escala centígrada?",
+          "options": [
+            {
+              "text": "La temperatura de fusión del hielo y la temperatura de condensación del agua al nivel del mar.",
+              "is_correct": false
+            },
+            {
+              "text": "La temperatura de fusión del hielo y la temperatura de congelación del agua al nivel del mar.",
+              "is_correct": false
+            },
+            {
+              "text": "La temperatura de fusión del hielo y la temperatura de ebullición del agua al nivel del mar.",
+              "is_correct": false
+            },
+            {
+              "text": "La temperatura de fisión del hielo y la temperatura de condensación del agua al nivel del mar.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q35",
+          "number": 35,
+          "text": "¿Es posible obtener la previsión meteorológica por VHF?",
+          "options": [
+            {
+              "text": "Sí, siempre y cuando ésta haya sido emitida en formato LSD en el canal 9 por un usuario con autorización emitida por la Comunidad Autónoma correspondiente.",
+              "is_correct": false
+            },
+            {
+              "text": "No, debe ser emitida en formato papel, a través de la AEMET.",
+              "is_correct": false
+            },
+            {
+              "text": "Sí, pero la transmisión debe ser emitida por un Centro de Salvamento Marítimo o Estación Radiocostera.",
+              "is_correct": false
+            },
+            {
+              "text": "Sí, pero para ser válida ésta debe ser recibida expresamente por NAVTEX.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q36",
+          "number": 36,
+          "text": "El Fetch:",
+          "options": [
+            {
+              "text": "Se puede determinar empleando solamente la escala Beaufort ya que tienen el mismo sistema de medida (velocidad).",
+              "is_correct": false
+            },
+            {
+              "text": "Es el número de horas que ha soplado el aire en una misma dirección.",
+              "is_correct": false
+            },
+            {
+              "text": "Es un incremento brusco en la intensidad del viento.",
+              "is_correct": false
+            },
+            {
+              "text": "Es la extensión o alcance que tienen el viento sobre la mar con una dirección y fuerza constantes.  Teoría de la navegación.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q37",
+          "number": 37,
+          "text": "¿Cuál es la definición correcta de paralelo?",
+          "options": [
+            {
+              "text": "Es un círculo menor paralelo al ecuador.",
+              "is_correct": false
+            },
+            {
+              "text": "Es un círculo máximo perpendicular al eje de la tierra.",
+              "is_correct": false
+            },
+            {
+              "text": "En un círculo máximo que pasa por los polos.",
+              "is_correct": false
+            },
+            {
+              "text": "En un círculo menor paralelo al eje de la tierra.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q38",
+          "number": 38,
+          "text": "La marcación se cuenta:",
+          "options": [
+            {
+              "text": "A partir de la proa, de 0º a 360º en el sentido de las agujas del reloj o de 0º a 180º por cada banda.",
+              "is_correct": false
+            },
+            {
+              "text": "De 0º a 360º desde la proa en sentido contrario a las agujas del reloj, en cuyo caso su signo siempre es positivo.",
+              "is_correct": false
+            },
+            {
+              "text": "De 0º a 180º, por cada banda, a partir de la proa, considerándose positivas las tomadas por babor y negativas las tomadas por estribor.",
+              "is_correct": false
+            },
+            {
+              "text": "A partir del Norte, de 0º a 360º en el sentido de las agujas del reloj, teniendo la ventaja de que su signo siempre será positivo.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_Q40",
+          "number": 40,
+          "text": "Al ángulo formado entre el Norte magnético y el Norte verdadero, se le denomina:",
+          "options": [
+            {
+              "text": "Desvío.",
+              "is_correct": false
+            },
+            {
+              "text": "Corrección total.",
+              "is_correct": false
+            },
+            {
+              "text": "Declinación magnética.",
+              "is_correct": false
+            },
+            {
+              "text": "Demora.",
+              "is_correct": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2025-06-RECREO_PER_Test_02",
+      "titulation": "PER",
+      "test_code": "Test 02",
+      "exam_type": "normal",
+      "convocatoria_id": "2025-06-RECREO",
+      "questions": [
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q01",
+          "number": 1,
+          "text": "El arganeo es:",
+          "options": [
+            {
+              "text": "La pieza o argolla del ancla en la que se anuda el cabo o se afirma el grillete de la cadena.",
+              "is_correct": false
+            },
+            {
+              "text": "La pieza vertical del ancla que va desde la argolla al brazo.",
+              "is_correct": false
+            },
+            {
+              "text": "La parte del ancla que clava en el fondo marino.",
+              "is_correct": false
+            },
+            {
+              "text": "El brazo que sale en forma de cruz en la parte inferior del ancla.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q02",
+          "number": 2,
+          "text": "Se define como “escorar” al movimiento de la embarcación que consiste en:",
+          "options": [
+            {
+              "text": "Enderezarse o ponerse vertical.",
+              "is_correct": false
+            },
+            {
+              "text": "Inclinarse sobre uno de sus costados.",
+              "is_correct": false
+            },
+            {
+              "text": "Hundir la proa y levantar la popa.",
+              "is_correct": false
+            },
+            {
+              "text": "Hundir la popa y levantar la proa.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q03",
+          "number": 3,
+          "text": "¿Cuál de las siguientes definiciones es CORRECTA?",
+          "options": [
+            {
+              "text": "El plano de crujía es aquel que divide la embarcación en la mitad de proa y en la mitad de popa.",
+              "is_correct": false
+            },
+            {
+              "text": "La obra muerta es la parte sumergida de la embarcación que se separa de la obra viva por el plano de flotación.",
+              "is_correct": false
+            },
+            {
+              "text": "La bañera es la cámara abierta a popa de la embarcación donde generalmente va instalada la caña o rueda del timón.",
+              "is_correct": false
+            },
+            {
+              "text": "Los portillos son aberturas practicadas en los costados de la embarcación que tienen por objeto la evacuación del agua embarcada en la cubierta.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q04",
+          "number": 4,
+          "text": "La mecha es:",
+          "options": [
+            {
+              "text": "El tubo dentro del cual gira el eje del timón.",
+              "is_correct": false
+            },
+            {
+              "text": "El eje del timón.",
+              "is_correct": false
+            },
+            {
+              "text": "El aparejo que se arma a cada lado de la caña del timón para gobernarlo con menos esfuerzo.",
+              "is_correct": false
+            },
+            {
+              "text": "La parte plana del timón que va sumergida.     SUBDIRECCIÓN GENERAL DE SEGURIDAD, CONTAMINACIÓN E INSPECCIÓN MARÍTIMA ÁREA FUNCIONAL DE TITULACIONES DE RECREO Elementos de amarre y fondeo.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q05",
+          "number": 5,
+          "text": "En relación con el fondeo, ¿cuál de las siguientes afirmaciones es CORRECTA?",
+          "options": [
+            {
+              "text": "Al giro de una embarcación fondeada en torno al ancla, por efecto del viento o de la corriente, se le denomina garreo.",
+              "is_correct": false
+            },
+            {
+              "text": "Se deben tomar referencias a tierra para asegurarnos que el ancla no garrea y vigilar la sonda marcando un fondo mínimo con la alarma.",
+              "is_correct": false
+            },
+            {
+              "text": "De forma general, la longitud de cadena para un fondeo con mal tiempo no será superior a una o dos veces la sonda del lugar de fondeo.",
+              "is_correct": false
+            },
+            {
+              "text": "Se debe elegir siempre que sea posible un tenedero rocoso o con algas, para facilitar el agarre del ancla.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q06",
+          "number": 6,
+          "text": "Una gaza es:",
+          "options": [
+            {
+              "text": "Un cabo que une y sujeta una boya a un ancla fondeada.",
+              "is_correct": false
+            },
+            {
+              "text": "Vuelta en forma de ojo que se hace con un cabo.",
+              "is_correct": false
+            },
+            {
+              "text": "Cualquiera de los dos extremos de un cabo.",
+              "is_correct": false
+            },
+            {
+              "text": "El arco o curvatura en un cabo cuando no está tirante o tenso.  Seguridad.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q07",
+          "number": 7,
+          "text": "¿Cuál de los siguientes supuestos afecta negativamente a la estabilidad transversal?",
+          "options": [
+            {
+              "text": "El traslado de pesos desde la proa a la popa.",
+              "is_correct": false
+            },
+            {
+              "text": "El traslado de pesos desde la popa a la proa.",
+              "is_correct": false
+            },
+            {
+              "text": "La elevación de pesos a zonas superiores a la cubierta.",
+              "is_correct": false
+            },
+            {
+              "text": "La bajada de pesos a zonas inferiores a la cubierta.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q08",
+          "number": 8,
+          "text": "En relación con las balsas salvavidas, ¿cuál de las siguientes afirmaciones es CORRECTA?",
+          "options": [
+            {
+              "text": "Se debe volver a leer las instrucciones de la balsa antes de lanzarla.",
+              "is_correct": false
+            },
+            {
+              "text": "Sus revisiones periódicas serán realizadas sólo por el patrón de la embarcación, ya que su titulación le habilita para ello.",
+              "is_correct": false
+            },
+            {
+              "text": "Si dispone de zafa de liberación hidrostática no estibe la balsa en cubierta, para evitar que la humedad la libere accidentalmente.",
+              "is_correct": false
+            },
+            {
+              "text": "Sólo el patrón podrá destrincar y lanzar una balsa al mar, para evitar que pueda ser dañada por cualquier otro miembro de la tripulación.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q09",
+          "number": 9,
+          "text": "¿Cómo se debe actuar ante movimientos de cabezada excesivos cuando llevamos la mar por la proa?",
+          "options": [
+            {
+              "text": "Atravesándonos a la mar.",
+              "is_correct": false
+            },
+            {
+              "text": "Disminuyendo la velocidad y cambiando ligeramente el rumbo, ajustando ambos a las condiciones particulares del momento.",
+              "is_correct": false
+            },
+            {
+              "text": "Elevando el centro de gravedad del buque con pesos en cubierta.",
+              "is_correct": false
+            },
+            {
+              "text": "Aumentando la velocidad para cortar las olas.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q10",
+          "number": 10,
+          "text": "En caso de hombre al agua, para iniciar una maniobra de Boutakow ¿qué acción deberá realizar?",
+          "options": [
+            {
+              "text": "Vire momentáneamente 70º a la banda de la caída al agua.",
+              "is_correct": false
+            },
+            {
+              "text": "Vire momentáneamente 70º a la banda contraria de la caída al agua.",
+              "is_correct": false
+            },
+            {
+              "text": "Vire momentáneamente 180º a la banda de la caída al agua.",
+              "is_correct": false
+            },
+            {
+              "text": "Dé marcha atrás sin mover el timón hasta volver al punto de caída al agua.  Legislación.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q12",
+          "number": 12,
+          "text": "Las Zonas Especialmente Protegidas de Importancia para el Mediterráneo (ZEPIM) son:",
+          "options": [
+            {
+              "text": "Áreas en las que está prohibida la navegación para la protección de hábitats de especies en excedente.",
+              "is_correct": false
+            },
+            {
+              "text": "Reservas de biodiversidad que tienen un interés económico-industrial especial.",
+              "is_correct": false
+            },
+            {
+              "text": "Áreas protegidas y exclusivas para la pesca en el Mediterráneo.",
+              "is_correct": false
+            },
+            {
+              "text": "Zonas que albergan ecosistemas específicos de la zona mediterránea o hábitats de especies en peligro.  Balizamiento.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q15",
+          "number": 15,
+          "text": "En relación con las Marcas Especiales, señale la opción CORRECTA.",
+          "options": [
+            {
+              "text": "Pueden ser amarillas, y si llevan luz debe ser de color distinto al de la marca.",
+              "is_correct": false
+            },
+            {
+              "text": "Sus luces pueden emplear alguno de los ritmos utilizados para las luces blancas.",
+              "is_correct": false
+            },
+            {
+              "text": "El uso de pictogramas no está autorizado para este tipo de marcas.",
+              "is_correct": false
+            },
+            {
+              "text": "Si tuviesen marca de tope sería una \"X\" amarilla.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q16",
+          "number": 16,
+          "text": "La marca de tope de una Marca Cardinal Este tiene conos superpuestos:",
+          "options": [
+            {
+              "text": "Con los vértices hacia arriba.",
+              "is_correct": false
+            },
+            {
+              "text": "Con los vértices hacia abajo.",
+              "is_correct": false
+            },
+            {
+              "text": "Opuestos por sus bases.",
+              "is_correct": false
+            },
+            {
+              "text": "Opuestos por sus vértices.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q17",
+          "number": 17,
+          "text": "Las Marcas de Aguas Navegables pueden:",
+          "options": [
+            {
+              "text": "Emplearse como una Ayuda a la Navegación Móvil (MatoN).",
+              "is_correct": false
+            },
+            {
+              "text": "Incluir el uso de pictogramas para indicar su finalidad.",
+              "is_correct": false
+            },
+            {
+              "text": "Utilizarse para indicar la aproximación a un puerto.",
+              "is_correct": false
+            },
+            {
+              "text": "Indicar un nuevo peligro en las aguas de navegación.  Reglamento (RIPA).",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q18",
+          "number": 18,
+          "text": "Conforme a la Regla 3 del RIPA, “Definiciones generales”, la palabra “buque” designa:",
+          "options": [
+            {
+              "text": "Toda clase de embarcación, incluidas las embarcaciones sin desplazamiento, las naves de vuelo rasante y los hidroaviones, utilizadas como medio de transporte sobre el agua.",
+              "is_correct": false
+            },
+            {
+              "text": "Toda clase de embarcación con o sin desplazamiento, pero en ningún caso los hidroaviones, que se utilice como medio de transporte en el agua.",
+              "is_correct": false
+            },
+            {
+              "text": "Únicamente las embarcaciones con desplazamiento que se utilicen como medio de transporte en el agua.",
+              "is_correct": false
+            },
+            {
+              "text": "Toda clase de embarcación con desplazamiento, que se utilice como medio de transporte en el agua, propulsada mecánicamente o a vela, quedando excluida todo tipo de embarcación de remo.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q29",
+          "number": 29,
+          "text": "¿Cuáles son las tres fases de la curva de evolución en marcha avante?",
+          "options": [
+            {
+              "text": "Fase de deriva, fase variable y fase alterna.",
+              "is_correct": false
+            },
+            {
+              "text": "Fase de maniobra, fase variable y fase uniforme.",
+              "is_correct": false
+            },
+            {
+              "text": "Fase de maniobra, fase de abatimiento y fase alterna.",
+              "is_correct": false
+            },
+            {
+              "text": "Fase de deriva, fase de abatimiento y fase uniforme.  Emergencias en la mar.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q32",
+          "number": 32,
+          "text": "En caso de abordaje, indique cuál de las siguientes afirmaciones es CORRECTA.",
+          "options": [
+            {
+              "text": "La responsabilidad recae siempre en la embarcación que navegue a mayor velocidad.",
+              "is_correct": false
+            },
+            {
+              "text": "La prioridad absoluta es elaborar parte amistoso y dar traslado de toda la información que figure en nuestro seguro, siempre que nos la solicite la parte contraria.",
+              "is_correct": false
+            },
+            {
+              "text": "Solamente en ciertos casos una vía de agua producirá un aumento del calado, por lo que no debe preocuparnos hasta haber completado el parte amistoso.",
+              "is_correct": false
+            },
+            {
+              "text": "La evaluación de las averías sufridas y asistencia a las personas que puedan encontrarse heridas debe realizarse a la mayor brevedad posible.  Meteorología",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q33",
+          "number": 33,
+          "text": "¿Cuáles son los puntos de referencia de la escala centígrada?",
+          "options": [
+            {
+              "text": "La temperatura de fusión del hielo y la temperatura de condensación del agua al nivel del mar.",
+              "is_correct": false
+            },
+            {
+              "text": "La temperatura de fusión del hielo y la temperatura de congelación del agua al nivel del mar.",
+              "is_correct": false
+            },
+            {
+              "text": "La temperatura de fusión del hielo y la temperatura de ebullición del agua al nivel del mar.",
+              "is_correct": false
+            },
+            {
+              "text": "La temperatura de fisión del hielo y la temperatura de condensación del agua al nivel del mar.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q34",
+          "number": 34,
+          "text": "¿Es posible obtener la previsión meteorológica por VHF?",
+          "options": [
+            {
+              "text": "Sí, siempre y cuando ésta haya sido emitida en formato LSD en el canal 9 por un usuario con autorización emitida por la Comunidad Autónoma correspondiente.",
+              "is_correct": false
+            },
+            {
+              "text": "No, debe ser emitida en formato papel, a través de la AEMET.",
+              "is_correct": false
+            },
+            {
+              "text": "Sí, pero la transmisión debe ser emitida por un Centro de Salvamento Marítimo o Estación Radiocostera.",
+              "is_correct": false
+            },
+            {
+              "text": "Sí, pero para ser válida ésta debe ser recibida expresamente por NAVTEX.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q35",
+          "number": 35,
+          "text": "El terral es un viento o brisa:",
+          "options": [
+            {
+              "text": "Nocturna, con dirección y sentido de tierra a mar.",
+              "is_correct": false
+            },
+            {
+              "text": "Diurna, con dirección y sentido de mar a tierra.",
+              "is_correct": false
+            },
+            {
+              "text": "Diurna, con dirección y sentido de tierra a mar.",
+              "is_correct": false
+            },
+            {
+              "text": "Nocturna, con dirección y sentido de mar a tierra.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q36",
+          "number": 36,
+          "text": "El Fetch:",
+          "options": [
+            {
+              "text": "Se puede determinar empleando solamente la escala Beaufort ya que tienen el mismo sistema de medida (velocidad).",
+              "is_correct": false
+            },
+            {
+              "text": "Es el número de horas que ha soplado el aire en una misma dirección.",
+              "is_correct": false
+            },
+            {
+              "text": "Es un incremento brusco en la intensidad del viento.",
+              "is_correct": false
+            },
+            {
+              "text": "Es la extensión o alcance que tienen el viento sobre la mar con una dirección y fuerza constantes.  Teoría de la navegación.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q37",
+          "number": 37,
+          "text": "La marcación se cuenta:",
+          "options": [
+            {
+              "text": "A partir de la proa, de 0º a 360º en el sentido de las agujas del reloj o de 0º a 180º por cada banda.",
+              "is_correct": false
+            },
+            {
+              "text": "De 0º a 360º desde la proa en sentido contrario a las agujas del reloj, en cuyo caso su signo siempre es positivo.",
+              "is_correct": false
+            },
+            {
+              "text": "De 0º a 180º, por cada banda, a partir de la proa, considerándose positivas las tomadas por babor y negativas las tomadas por estribor.",
+              "is_correct": false
+            },
+            {
+              "text": "A partir del Norte, de 0º a 360º en el sentido de las agujas del reloj, teniendo la ventaja de que su signo siempre será positivo.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q38",
+          "number": 38,
+          "text": "¿Cuál es la definición correcta de paralelo?",
+          "options": [
+            {
+              "text": "Es un círculo menor paralelo al ecuador.",
+              "is_correct": false
+            },
+            {
+              "text": "Es un círculo máximo perpendicular al eje de la tierra.",
+              "is_correct": false
+            },
+            {
+              "text": "En un círculo máximo que pasa por los polos.",
+              "is_correct": false
+            },
+            {
+              "text": "En un círculo menor paralelo al eje de la tierra.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_Q39",
+          "number": 39,
+          "text": "Al ángulo formado entre el Norte magnético y el Norte verdadero, se le denomina:",
+          "options": [
+            {
+              "text": "Desvío.",
+              "is_correct": false
+            },
+            {
+              "text": "Corrección total.",
+              "is_correct": false
+            },
+            {
+              "text": "Declinación magnética.",
+              "is_correct": false
+            },
+            {
+              "text": "Demora.",
+              "is_correct": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2025-06-RECREO_PER_Test_01_liberado",
+      "titulation": "PER",
+      "test_code": "Test 01",
+      "exam_type": "liberado",
+      "convocatoria_id": "2025-06-RECREO",
+      "questions": [
+        {
+          "id": "2025-06-RECREO_PER_Test_01_liberado_Q28",
+          "number": 28,
+          "text": "¿Cuáles son las tres fases de la curva de evolución en marcha avante?",
+          "options": [
+            {
+              "text": "Fase de deriva, fase variable y fase alterna.",
+              "is_correct": false
+            },
+            {
+              "text": "Fase de maniobra, fase variable y fase uniforme.",
+              "is_correct": true
+            },
+            {
+              "text": "Fase de maniobra, fase de abatimiento y fase alterna.",
+              "is_correct": false
+            },
+            {
+              "text": "Fase de deriva, fase de abatimiento y fase uniforme.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_liberado_Q30",
+          "number": 30,
+          "text": "En caso de abordaje, indique cuál de las siguientes afirmaciones es CORRECTA.",
+          "options": [
+            {
+              "text": "La responsabilidad recae siempre en la embarcación que navegue a mayor velocidad.",
+              "is_correct": false
+            },
+            {
+              "text": "La prioridad absoluta es elaborar parte amistoso y dar traslado de toda la información que figure en nuestro seguro, siempre que nos la solicite la parte contraria.",
+              "is_correct": false
+            },
+            {
+              "text": "Solamente en ciertos casos una vía de agua producirá un aumento del calado, por lo que no debe preocuparnos hasta haber completado el parte amistoso.",
+              "is_correct": false
+            },
+            {
+              "text": "La evaluación de las averías sufridas y asistencia a las personas que puedan encontrarse heridas debe realizarse a la mayor brevedad posible.",
+              "is_correct": true
+            }
+          ],
+          "correct_answer": "D"
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_liberado_Q33",
+          "number": 33,
+          "text": "El terral es un viento o brisa:",
+          "options": [
+            {
+              "text": "Nocturna, con dirección y sentido de tierra a mar.",
+              "is_correct": true
+            },
+            {
+              "text": "Diurna, con dirección y sentido de mar a tierra.",
+              "is_correct": false
+            },
+            {
+              "text": "Diurna, con dirección y sentido de tierra a mar.",
+              "is_correct": false
+            },
+            {
+              "text": "Nocturna, con dirección y sentido de mar a tierra.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_liberado_Q34",
+          "number": 34,
+          "text": "¿Cuáles son los puntos de referencia de la escala centígrada?",
+          "options": [
+            {
+              "text": "La temperatura de fusión del hielo y la temperatura de condensación del agua al nivel del mar.",
+              "is_correct": false
+            },
+            {
+              "text": "La temperatura de fusión del hielo y la temperatura de congelación del agua al nivel del mar.",
+              "is_correct": false
+            },
+            {
+              "text": "La temperatura de fusión del hielo y la temperatura de ebullición del agua al nivel del mar.",
+              "is_correct": true
+            },
+            {
+              "text": "La temperatura de fisión del hielo y la temperatura de condensación del agua al nivel del mar.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "C"
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_liberado_Q35",
+          "number": 35,
+          "text": "¿Es posible obtener la previsión meteorológica por VHF?",
+          "options": [
+            {
+              "text": "Sí, siempre y cuando ésta haya sido emitida en formato LSD en el canal 9 por un usuario con autorización emitida por la Comunidad Autónoma correspondiente.",
+              "is_correct": false
+            },
+            {
+              "text": "No, debe ser emitida en formato papel, a través de la AEMET.",
+              "is_correct": false
+            },
+            {
+              "text": "Sí, pero la transmisión debe ser emitida por un Centro de Salvamento Marítimo o Estación Radiocostera.",
+              "is_correct": true
+            },
+            {
+              "text": "Sí, pero para ser válida ésta debe ser recibida expresamente por NAVTEX.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "C"
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_liberado_Q36",
+          "number": 36,
+          "text": "El Fetch:",
+          "options": [
+            {
+              "text": "Se puede determinar empleando solamente la escala Beaufort ya que tienen el mismo sistema de medida (velocidad).",
+              "is_correct": false
+            },
+            {
+              "text": "Es el número de horas que ha soplado el aire en una misma dirección.",
+              "is_correct": false
+            },
+            {
+              "text": "Es un incremento brusco en la intensidad del viento.",
+              "is_correct": false
+            },
+            {
+              "text": "Es la extensión o alcance que tienen el viento sobre la mar con una dirección y fuerza constantes.  Teoría de la navegación.",
+              "is_correct": true
+            }
+          ],
+          "correct_answer": "D"
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_liberado_Q37",
+          "number": 37,
+          "text": "¿Cuál es la definición correcta de paralelo?",
+          "options": [
+            {
+              "text": "Es un círculo menor paralelo al ecuador.",
+              "is_correct": true
+            },
+            {
+              "text": "Es un círculo máximo perpendicular al eje de la tierra.",
+              "is_correct": false
+            },
+            {
+              "text": "En un círculo máximo que pasa por los polos.",
+              "is_correct": false
+            },
+            {
+              "text": "En un círculo menor paralelo al eje de la tierra.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_liberado_Q38",
+          "number": 38,
+          "text": "La marcación se cuenta:",
+          "options": [
+            {
+              "text": "A partir de la proa, de 0º a 360º en el sentido de las agujas del reloj o de 0º a 180º por cada banda.",
+              "is_correct": true
+            },
+            {
+              "text": "De 0º a 360º desde la proa en sentido contrario a las agujas del reloj, en cuyo caso su signo siempre es positivo.",
+              "is_correct": false
+            },
+            {
+              "text": "De 0º a 180º, por cada banda, a partir de la proa, considerándose positivas las tomadas por babor y negativas las tomadas por estribor.",
+              "is_correct": false
+            },
+            {
+              "text": "A partir del Norte, de 0º a 360º en el sentido de las agujas del reloj, teniendo la ventaja de que su signo siempre será positivo.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_01_liberado_Q40",
+          "number": 40,
+          "text": "Al ángulo formado entre el Norte magnético y el Norte verdadero, se le denomina:",
+          "options": [
+            {
+              "text": "Desvío.",
+              "is_correct": false
+            },
+            {
+              "text": "Corrección total.",
+              "is_correct": false
+            },
+            {
+              "text": "Declinación magnética.",
+              "is_correct": true
+            },
+            {
+              "text": "Demora.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "C"
+        }
+      ]
+    },
+    {
+      "id": "2025-06-RECREO_PER_Test_02_liberado",
+      "titulation": "PER",
+      "test_code": "Test 02",
+      "exam_type": "liberado",
+      "convocatoria_id": "2025-06-RECREO",
+      "questions": [
+        {
+          "id": "2025-06-RECREO_PER_Test_02_liberado_Q29",
+          "number": 29,
+          "text": "¿Cuáles son las tres fases de la curva de evolución en marcha avante?",
+          "options": [
+            {
+              "text": "Fase de deriva, fase variable y fase alterna.",
+              "is_correct": false
+            },
+            {
+              "text": "Fase de maniobra, fase variable y fase uniforme.",
+              "is_correct": false
+            },
+            {
+              "text": "Fase de maniobra, fase de abatimiento y fase alterna.",
+              "is_correct": false
+            },
+            {
+              "text": "Fase de deriva, fase de abatimiento y fase uniforme.  Emergencias en la mar.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_liberado_Q32",
+          "number": 32,
+          "text": "En caso de abordaje, indique cuál de las siguientes afirmaciones es CORRECTA.",
+          "options": [
+            {
+              "text": "La responsabilidad recae siempre en la embarcación que navegue a mayor velocidad.",
+              "is_correct": false
+            },
+            {
+              "text": "La prioridad absoluta es elaborar parte amistoso y dar traslado de toda la información que figure en nuestro seguro, siempre que nos la solicite la parte contraria.",
+              "is_correct": false
+            },
+            {
+              "text": "Solamente en ciertos casos una vía de agua producirá un aumento del calado, por lo que no debe preocuparnos hasta haber completado el parte amistoso.",
+              "is_correct": false
+            },
+            {
+              "text": "La evaluación de las averías sufridas y asistencia a las personas que puedan encontrarse heridas debe realizarse a la mayor brevedad posible.  Meteorología",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_liberado_Q33",
+          "number": 33,
+          "text": "¿Cuáles son los puntos de referencia de la escala centígrada?",
+          "options": [
+            {
+              "text": "La temperatura de fusión del hielo y la temperatura de condensación del agua al nivel del mar.",
+              "is_correct": false
+            },
+            {
+              "text": "La temperatura de fusión del hielo y la temperatura de congelación del agua al nivel del mar.",
+              "is_correct": false
+            },
+            {
+              "text": "La temperatura de fusión del hielo y la temperatura de ebullición del agua al nivel del mar.",
+              "is_correct": false
+            },
+            {
+              "text": "La temperatura de fisión del hielo y la temperatura de condensación del agua al nivel del mar.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_liberado_Q34",
+          "number": 34,
+          "text": "¿Es posible obtener la previsión meteorológica por VHF?",
+          "options": [
+            {
+              "text": "Sí, siempre y cuando ésta haya sido emitida en formato LSD en el canal 9 por un usuario con autorización emitida por la Comunidad Autónoma correspondiente.",
+              "is_correct": false
+            },
+            {
+              "text": "No, debe ser emitida en formato papel, a través de la AEMET.",
+              "is_correct": false
+            },
+            {
+              "text": "Sí, pero la transmisión debe ser emitida por un Centro de Salvamento Marítimo o Estación Radiocostera.",
+              "is_correct": false
+            },
+            {
+              "text": "Sí, pero para ser válida ésta debe ser recibida expresamente por NAVTEX.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_liberado_Q35",
+          "number": 35,
+          "text": "El terral es un viento o brisa:",
+          "options": [
+            {
+              "text": "Nocturna, con dirección y sentido de tierra a mar.",
+              "is_correct": false
+            },
+            {
+              "text": "Diurna, con dirección y sentido de mar a tierra.",
+              "is_correct": false
+            },
+            {
+              "text": "Diurna, con dirección y sentido de tierra a mar.",
+              "is_correct": false
+            },
+            {
+              "text": "Nocturna, con dirección y sentido de mar a tierra.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_liberado_Q36",
+          "number": 36,
+          "text": "El Fetch:",
+          "options": [
+            {
+              "text": "Se puede determinar empleando solamente la escala Beaufort ya que tienen el mismo sistema de medida (velocidad).",
+              "is_correct": false
+            },
+            {
+              "text": "Es el número de horas que ha soplado el aire en una misma dirección.",
+              "is_correct": false
+            },
+            {
+              "text": "Es un incremento brusco en la intensidad del viento.",
+              "is_correct": false
+            },
+            {
+              "text": "Es la extensión o alcance que tienen el viento sobre la mar con una dirección y fuerza constantes.  Teoría de la navegación.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_liberado_Q37",
+          "number": 37,
+          "text": "La marcación se cuenta:",
+          "options": [
+            {
+              "text": "A partir de la proa, de 0º a 360º en el sentido de las agujas del reloj o de 0º a 180º por cada banda.",
+              "is_correct": false
+            },
+            {
+              "text": "De 0º a 360º desde la proa en sentido contrario a las agujas del reloj, en cuyo caso su signo siempre es positivo.",
+              "is_correct": false
+            },
+            {
+              "text": "De 0º a 180º, por cada banda, a partir de la proa, considerándose positivas las tomadas por babor y negativas las tomadas por estribor.",
+              "is_correct": false
+            },
+            {
+              "text": "A partir del Norte, de 0º a 360º en el sentido de las agujas del reloj, teniendo la ventaja de que su signo siempre será positivo.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_liberado_Q38",
+          "number": 38,
+          "text": "¿Cuál es la definición correcta de paralelo?",
+          "options": [
+            {
+              "text": "Es un círculo menor paralelo al ecuador.",
+              "is_correct": false
+            },
+            {
+              "text": "Es un círculo máximo perpendicular al eje de la tierra.",
+              "is_correct": false
+            },
+            {
+              "text": "En un círculo máximo que pasa por los polos.",
+              "is_correct": false
+            },
+            {
+              "text": "En un círculo menor paralelo al eje de la tierra.",
+              "is_correct": false
+            }
+          ]
+        },
+        {
+          "id": "2025-06-RECREO_PER_Test_02_liberado_Q39",
+          "number": 39,
+          "text": "Al ángulo formado entre el Norte magnético y el Norte verdadero, se le denomina:",
+          "options": [
+            {
+              "text": "Desvío.",
+              "is_correct": false
+            },
+            {
+              "text": "Corrección total.",
+              "is_correct": false
+            },
+            {
+              "text": "Declinación magnética.",
+              "is_correct": false
+            },
+            {
+              "text": "Demora.",
+              "is_correct": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2025-06-RECREO_PNB_Test_02",
+      "titulation": "PNB",
+      "test_code": "Test 02",
+      "exam_type": "normal",
+      "convocatoria_id": "2025-06-RECREO",
+      "questions": [
+        {
+          "id": "2025-06-RECREO_PNB_Test_02_Q02",
+          "number": 2,
+          "text": "A la pieza cónica que recubre el núcleo de la hélice se la denomina:",
+          "options": [
+            {
+              "text": "Bocina.",
+              "is_correct": false
+            },
+            {
+              "text": "Capacete.",
+              "is_correct": true
+            },
+            {
+              "text": "Pala.",
+              "is_correct": false
+            },
+            {
+              "text": "Guardín.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_02_Q03",
+          "number": 3,
+          "text": "¿Qué son los baos?",
+          "options": [
+            {
+              "text": "Elementos estructurales transversales cuya parte inferior encaja en la quilla del buque y desde allí arrancan en dos ramas simétricas hacia babor y estribor.",
+              "is_correct": false
+            },
+            {
+              "text": "Elementos estructurales transversales que apoyan en las cabezas de las cuadernas y sirven de consolidación para sostener las cubiertas.",
+              "is_correct": true
+            },
+            {
+              "text": "Elementos estructurales longitudinales dispuestos de proa a popa por la parte inferior donde asientan las cuadernas.",
+              "is_correct": false
+            },
+            {
+              "text": "Prolongaciones verticales o inclinadas de la quilla en su parte de popa, donde generalmente se apoya el timón.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_02_Q05",
+          "number": 5,
+          "text": "En general, la aproximación al lugar elegido de fondeo se realizará:",
+          "options": [
+            {
+              "text": "A la mínima velocidad de gobierno y con el viento por la proa.",
+              "is_correct": true
+            },
+            {
+              "text": "A la mínima velocidad de gobierno y con el viento por la popa.",
+              "is_correct": false
+            },
+            {
+              "text": "A la máxima velocidad de gobierno y con el viento por la popa.",
+              "is_correct": false
+            },
+            {
+              "text": "A la máxima velocidad de gobierno y con el viento por la proa.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_02_Q07",
+          "number": 7,
+          "text": "En relación con los chalecos salvavidas, ¿cuál de las siguientes afirmaciones es INCORRECTA?",
+          "options": [
+            {
+              "text": "Se debe disponer, como mínimo, de un chaleco para cada persona.",
+              "is_correct": false
+            },
+            {
+              "text": "Todos los chalecos deben disponer de una luz, excepto cuando la embarcación realice exclusivamente navegación diurna en las zonas 4, 5, 6 y 7.",
+              "is_correct": false
+            },
+            {
+              "text": "En la zona 7 se debe llevar un chaleco adicional.",
+              "is_correct": true
+            },
+            {
+              "text": "Los menores deben disponer de un chaleco salvavidas a su medida.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "C"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_02_Q08",
+          "number": 8,
+          "text": "En aguas someras:",
+          "options": [
+            {
+              "text": "El oleaje siempre se reduce, por lo que navegaremos con más seguridad.",
+              "is_correct": false
+            },
+            {
+              "text": "Es recomendable disminuir la velocidad.",
+              "is_correct": true
+            },
+            {
+              "text": "Aumenta la sonda, por lo que la embarcación es más maniobrable.",
+              "is_correct": false
+            },
+            {
+              "text": "Disminuye la resistencia a la propulsión.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_02_Q09",
+          "number": 9,
+          "text": "¿Cuál de las siguientes comprobaciones NO es necesaria realizar antes de salir a la mar?",
+          "options": [
+            {
+              "text": "Cerciorarse de que todos los grifos de fondo estén cerrados.",
+              "is_correct": true
+            },
+            {
+              "text": "Revisar la limpieza de los filtros de decantación.",
+              "is_correct": false
+            },
+            {
+              "text": "Verificar el nivel de combustible y que no existan fugas.",
+              "is_correct": false
+            },
+            {
+              "text": "Examinar el estado de los elementos de seguridad.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_02_Q10",
+          "number": 10,
+          "text": "Si ha solicitado un remolque a Salvamento Marítimo, señale la recomendación INCORRECTA.",
+          "options": [
+            {
+              "text": "Elija el punto o puntos más fuertes de su embarcación para hacer firme el cabo de remolque.",
+              "is_correct": false
+            },
+            {
+              "text": "Asegúrese de amarrar el cabo que le entreguen a los candeleros de la embarcación, mediante un nudo que no pueda ser deshecho bajo tensión.",
+              "is_correct": true
+            },
+            {
+              "text": "Colabore en todo momento con la tripulación del remolcador.",
+              "is_correct": false
+            },
+            {
+              "text": "Manténgase lejos del cabo o estacha de remolque mientras es remolcado. Legislación.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_02_Q14",
+          "number": 14,
+          "text": "La marca de tope de una Marca de Peligro Aislado, si la tuviera, será:",
+          "options": [
+            {
+              "text": "Dos esferas negras, una encima de la otra.",
+              "is_correct": true
+            },
+            {
+              "text": "Tres esferas negras, una encima de la otra.",
+              "is_correct": false
+            },
+            {
+              "text": "Una esfera negra.",
+              "is_correct": false
+            },
+            {
+              "text": "Ninguna, en cualquier caso.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_02_Q15",
+          "number": 15,
+          "text": "¿Cuál es el color de una Marca Cardinal Este?",
+          "options": [
+            {
+              "text": "Negro con una ancha banda horizontal amarilla.",
+              "is_correct": true
+            },
+            {
+              "text": "Negro sobre amarillo.",
+              "is_correct": false
+            },
+            {
+              "text": "Amarillo sobre negro.",
+              "is_correct": false
+            },
+            {
+              "text": "Amarillo con una ancha banda horizontal negra.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_02_Q17",
+          "number": 17,
+          "text": "Las Marcas Especiales:",
+          "options": [
+            {
+              "text": "Nunca señalan un nuevo peligro.",
+              "is_correct": true
+            },
+            {
+              "text": "Si tuviesen marca de tope, sería amarilla en forma de cruz vertical.",
+              "is_correct": false
+            },
+            {
+              "text": "Indican donde se encuentran las aguas más seguras de la zona en relación con un punto de interés.",
+              "is_correct": false
+            },
+            {
+              "text": "Nunca indican límites de áreas de anclaje.  Reglamento (RIPA).",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "A"
+        }
+      ]
+    },
+    {
+      "id": "2025-06-RECREO_PNB_Test_03",
+      "titulation": "PNB",
+      "test_code": "Test 03",
+      "exam_type": "normal",
+      "convocatoria_id": "2025-06-RECREO",
+      "questions": [
+        {
+          "id": "2025-06-RECREO_PNB_Test_03_Q01",
+          "number": 1,
+          "text": "¿Qué son los baos?",
+          "options": [
+            {
+              "text": "Elementos estructurales transversales cuya parte inferior encaja en la quilla del buque y desde allí arrancan en dos ramas simétricas hacia babor y estribor.",
+              "is_correct": false
+            },
+            {
+              "text": "Elementos estructurales transversales que apoyan en las cabezas de las cuadernas y sirven de consolidación para sostener las cubiertas.",
+              "is_correct": true
+            },
+            {
+              "text": "Elementos estructurales longitudinales dispuestos de proa a popa por la parte inferior donde asientan las cuadernas.",
+              "is_correct": false
+            },
+            {
+              "text": "Prolongaciones verticales o inclinadas de la quilla en su parte de popa, donde generalmente se apoya el timón.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_03_Q03",
+          "number": 3,
+          "text": "A la pieza cónica que recubre el núcleo de la hélice se la denomina:",
+          "options": [
+            {
+              "text": "Bocina.",
+              "is_correct": false
+            },
+            {
+              "text": "Capacete.",
+              "is_correct": true
+            },
+            {
+              "text": "Pala.",
+              "is_correct": false
+            },
+            {
+              "text": "Guardín.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_03_Q06",
+          "number": 6,
+          "text": "En general, la aproximación al lugar elegido de fondeo se realizará:",
+          "options": [
+            {
+              "text": "A la mínima velocidad de gobierno y con el viento por la proa.",
+              "is_correct": true
+            },
+            {
+              "text": "A la mínima velocidad de gobierno y con el viento por la popa.",
+              "is_correct": false
+            },
+            {
+              "text": "A la máxima velocidad de gobierno y con el viento por la popa.",
+              "is_correct": false
+            },
+            {
+              "text": "A la máxima velocidad de gobierno y con el viento por la proa.  Seguridad.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_03_Q07",
+          "number": 7,
+          "text": "¿Cuál de las siguientes comprobaciones NO es necesaria realizar antes de salir a la mar?",
+          "options": [
+            {
+              "text": "Cerciorarse de que todos los grifos de fondo estén cerrados.",
+              "is_correct": true
+            },
+            {
+              "text": "Revisar la limpieza de los filtros de decantación.",
+              "is_correct": false
+            },
+            {
+              "text": "Verificar el nivel de combustible y que no existan fugas.",
+              "is_correct": false
+            },
+            {
+              "text": "Examinar el estado de los elementos de seguridad.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_03_Q08",
+          "number": 8,
+          "text": "En aguas someras:",
+          "options": [
+            {
+              "text": "El oleaje siempre se reduce, por lo que navegaremos con más seguridad.",
+              "is_correct": false
+            },
+            {
+              "text": "Es recomendable disminuir la velocidad.",
+              "is_correct": true
+            },
+            {
+              "text": "Aumenta la sonda, por lo que la embarcación es más maniobrable.",
+              "is_correct": false
+            },
+            {
+              "text": "Disminuye la resistencia a la propulsión.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_03_Q09",
+          "number": 9,
+          "text": "En relación con los chalecos salvavidas, ¿cuál de las siguientes afirmaciones es INCORRECTA?",
+          "options": [
+            {
+              "text": "Se debe disponer, como mínimo, de un chaleco para cada persona.",
+              "is_correct": false
+            },
+            {
+              "text": "Todos los chalecos deben disponer de una luz, excepto cuando la embarcación realice exclusivamente navegación diurna en las zonas 4, 5, 6 y 7.",
+              "is_correct": false
+            },
+            {
+              "text": "En la zona 7 se debe llevar un chaleco adicional.",
+              "is_correct": true
+            },
+            {
+              "text": "Los menores deben disponer de un chaleco salvavidas a su medida.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "C"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_03_Q10",
+          "number": 10,
+          "text": "Si ha solicitado un remolque a Salvamento Marítimo, señale la recomendación INCORRECTA.",
+          "options": [
+            {
+              "text": "Elija el punto o puntos más fuertes de su embarcación para hacer firme el cabo de remolque.",
+              "is_correct": false
+            },
+            {
+              "text": "Asegúrese de amarrar el cabo que le entreguen a los candeleros de la embarcación, mediante un nudo que no pueda ser deshecho bajo tensión.",
+              "is_correct": true
+            },
+            {
+              "text": "Colabore en todo momento con la tripulación del remolcador.",
+              "is_correct": false
+            },
+            {
+              "text": "Manténgase lejos del cabo o estacha de remolque mientras es remolcado. Legislación.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_03_Q13",
+          "number": 13,
+          "text": "Las Marcas Especiales:",
+          "options": [
+            {
+              "text": "Nunca señalan un nuevo peligro.",
+              "is_correct": true
+            },
+            {
+              "text": "Si tuviesen marca de tope, sería amarilla en forma de cruz vertical.",
+              "is_correct": false
+            },
+            {
+              "text": "Indican donde se encuentran las aguas más seguras de la zona en relación con un punto de interés.",
+              "is_correct": false
+            },
+            {
+              "text": "Nunca indican límites de áreas de anclaje.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_03_Q15",
+          "number": 15,
+          "text": "¿Cuál es el color de una Marca Cardinal Este?",
+          "options": [
+            {
+              "text": "Negro con una ancha banda horizontal amarilla.",
+              "is_correct": true
+            },
+            {
+              "text": "Negro sobre amarillo.",
+              "is_correct": false
+            },
+            {
+              "text": "Amarillo sobre negro.",
+              "is_correct": false
+            },
+            {
+              "text": "Amarillo con una ancha banda horizontal negra.",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "id": "2025-06-RECREO_PNB_Test_03_Q17",
+          "number": 17,
+          "text": "La marca de tope de una Marca de Peligro Aislado, si la tuviera, será:",
+          "options": [
+            {
+              "text": "Dos esferas negras, una encima de la otra.",
+              "is_correct": true
+            },
+            {
+              "text": "Tres esferas negras, una encima de la otra.",
+              "is_correct": false
+            },
+            {
+              "text": "Una esfera negra.",
+              "is_correct": false
+            },
+            {
+              "text": "Ninguna, en cualquier caso.  Reglamento (RIPA).",
+              "is_correct": false
+            }
+          ],
+          "correct_answer": "A"
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "total_examenes": 6,
+    "total_preguntas": 86,
+    "preguntas_con_respuestas": 29
+  }
+}

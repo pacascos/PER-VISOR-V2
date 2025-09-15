@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PER VISOR - Nueva Arquitectura 2.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .architecture-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #4FC3F7;
+        }
+        
+        .api-endpoint {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .api-endpoint:hover {
+            background: rgba(0,0,0,0.5);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-healthy { background: #4CAF50; }
+        .status-loading { background: #FF9800; }
+        .status-error { background: #F44336; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4FC3F7;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .json-preview {
+            background: #1a1a1a;
+            color: #4FC3F7;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .button {
+            background: #4FC3F7;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+            margin: 5px;
+        }
+        
+        .button:hover {
+            background: #29B6F6;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .comparison-table th {
+            background: rgba(255,255,255,0.1);
+            font-weight: bold;
+        }
+        
+        .old-version { color: #FF8A65; }
+        .new-version { color: #4FC3F7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 PER VISOR 2.0</h1>
+            <div class="subtitle">Nueva Arquitectura Moderna con Docker + PostgreSQL + Redis</div>
+            <div class="architecture-badge">
+                <span class="status-indicator status-healthy"></span>
+                Docker • PostgreSQL • Redis • Flask • Nginx
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- API Status -->
+            <div class="card">
+                <h3>📡 Estado de la API</h3>
+                <div id="api-status">
+                    <div class="api-endpoint" onclick="testEndpoint('/health')">
+                        <span class="status-indicator status-loading"></span>
+                        GET /health
+                    </div>
+                    <div class="api-endpoint" onclick="testEndpoint('/stats')">
+                        <span class="status-indicator status-loading"></span>
+                        GET /stats
+                    </div>
+                    <div class="api-endpoint" onclick="testEndpoint('/examenes')">
+                        <span class="status-indicator status-loading"></span>
+                        GET /examenes
+                    </div>
+                    <div class="api-endpoint" onclick="testEndpoint('/explicaciones')">
+                        <span class="status-indicator status-loading"></span>
+                        GET /explicaciones
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Stats -->
+            <div class="card">
+                <h3>📊 Estadísticas del Sistema</h3>
+                <div class="stats-grid" id="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="examenes-count">-</div>
+                        <div class="stat-label">Exámenes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="preguntas-count">-</div>
+                        <div class="stat-label">Preguntas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="explicaciones-count">-</div>
+                        <div class="stat-label">Explicaciones</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="opciones-count">-</div>
+                        <div class="stat-label">Opciones</div>
+                    </div>
+                </div>
+                <button class="button" onclick="loadStats()">🔄 Actualizar Estadísticas</button>
+            </div>
+
+            <!-- Version Comparison -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h3>⚖️ Comparación de Versiones</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Característica</th>
+                            <th class="old-version">Versión Antigua (JSON)</th>
+                            <th class="new-version">Nueva Versión (2.0)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Base de Datos</strong></td>
+                            <td class="old-version">Archivos JSON estáticos</td>
+                            <td class="new-version">PostgreSQL con índices optimizados</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cache</strong></td>
+                            <td class="old-version">Sin cache</td>
+                            <td class="new-version">Redis para explicaciones y consultas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Despliegue</strong></td>
+                            <td class="old-version">Servidores manuales</td>
+                            <td class="new-version">Docker Compose con 4 servicios</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Escalabilidad</strong></td>
+                            <td class="old-version">Limitada por archivos</td>
+                            <td class="new-version">Horizontal con conexiones concurrentes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Búsqueda</strong></td>
+                            <td class="old-version">Búsqueda básica en memoria</td>
+                            <td class="new-version">Full-text search con PostgreSQL</td>
+                        </tr>
+                        <tr>
+                            <td><strong>API</strong></td>
+                            <td class="old-version">Flask básico</td>
+                            <td class="new-version">RESTful API con health checks</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- API Response Preview -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h3>🔍 Previsualización de Respuestas API</h3>
+                <div>
+                    <button class="button" onclick="previewEndpoint('/stats')">Ver /stats</button>
+                    <button class="button" onclick="previewEndpoint('/examenes')">Ver /examenes</button>
+                    <button class="button" onclick="previewEndpoint('/explicaciones')">Ver /explicaciones</button>
+                </div>
+                <div class="json-preview" id="api-preview">
+                    Selecciona un endpoint para ver la respuesta JSON...
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>🎯 Acciones Rápidas</h3>
+            <button class="button" onclick="window.open('/', '_blank')">🔙 Versión Anterior (JSON)</button>
+            <button class="button" onclick="testAllEndpoints()">🧪 Probar Todos los Endpoints</button>
+            <button class="button" onclick="generateExplanation()">🤖 Generar Explicación de Prueba</button>
+            <button class="button" onclick="showDockerServices()">🐳 Estado Docker</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5001';
+        
+        async function testEndpoint(endpoint) {
+            const indicator = document.querySelector(`[onclick="testEndpoint('${endpoint}')"] .status-indicator`);
+            indicator.className = 'status-indicator status-loading';
+            
+            try {
+                const response = await fetch(API_BASE + endpoint);
+                if (response.ok) {
+                    indicator.className = 'status-indicator status-healthy';
+                } else {
+                    indicator.className = 'status-indicator status-error';
+                }
+            } catch (error) {
+                indicator.className = 'status-indicator status-error';
+                console.error('Error testing endpoint:', error);
+            }
+        }
+        
+        async function loadStats() {
+            try {
+                const response = await fetch(API_BASE + '/stats');
+                const data = await response.json();
+                
+                document.getElementById('examenes-count').textContent = data.stats.examenes;
+                document.getElementById('preguntas-count').textContent = data.stats.preguntas;
+                document.getElementById('explicaciones-count').textContent = data.stats.explicaciones;
+                document.getElementById('opciones-count').textContent = data.stats.opciones_respuesta;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+        
+        async function previewEndpoint(endpoint) {
+            const preview = document.getElementById('api-preview');
+            preview.textContent = 'Cargando...';
+            
+            try {
+                const response = await fetch(API_BASE + endpoint);
+                const data = await response.json();
+                preview.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                preview.textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        async function testAllEndpoints() {
+            const endpoints = ['/health', '/stats', '/examenes', '/explicaciones'];
+            for (const endpoint of endpoints) {
+                await testEndpoint(endpoint);
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+        }
+        
+        async function generateExplanation() {
+            try {
+                const response = await fetch(API_BASE + '/generar-explicacion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question_id: 'demo-question-1',
+                        texto_pregunta: 'Pregunta de demostración para la nueva arquitectura'
+                    })
+                });
+                const data = await response.json();
+                alert('Explicación generada: ' + data.explicacion);
+            } catch (error) {
+                alert('Error generando explicación: ' + error.message);
+            }
+        }
+        
+        function showDockerServices() {
+            alert('Servicios Docker activos:\\n\\n🐳 PostgreSQL - puerto 5432\\n🐳 Redis - puerto 6379\\n🐳 API Flask - puerto 5001\\n🐳 Nginx Web - puerto 8095');
+        }
+        
+        // Initialize page
+        window.onload = function() {
+            testAllEndpoints();
+            loadStats();
+        };
+    </script>
+</body>
+</html>

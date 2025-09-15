@@ -1,0 +1,24 @@
+{
+  "metadata": {
+    "fecha_generacion": "2025-09-09T16:50:36.767738",
+    "titulacion": "PER",
+    "preguntas_solicitadas": 0,
+    "preguntas_incluidas": 0,
+    "filtros_aplicados": {
+      "temas_especificos": [
+        "Navegación",
+        "Navegación y posicionamiento"
+      ],
+      "evitar_convocatorias": null,
+      "nivel_dificultad": null
+    },
+    "garantia_sin_duplicados": true
+  },
+  "estadisticas": {
+    "total_preguntas": 0,
+    "temas_incluidos": [],
+    "convocatorias_origen": [],
+    "distribucion_por_tema": {}
+  },
+  "preguntas": []
+}
