@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PER VISOR 2.0 - Nueva Arquitectura</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/x-icon" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Markdown parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="header-icon">⚓</div>
+                    <div>
+                        <h1 class="header-title">PER VISOR 2.0</h1>
+                        <p class="header-subtitle">Sistema de consulta de preguntas de examen PER</p>
+                    </div>
+                </div>
+                <div class="architecture-badge">Nueva Arquitectura</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <h3>Filtros de búsqueda</h3>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label for="filterTitulacion">Titulación:</label>
+                        <select class="form-select" id="filterTitulacion">
+                            <option value="all">Todas las titulaciones</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label for="filterConvocatoria">Convocatoria:</label>
+                        <select class="form-select" id="filterConvocatoria">
+                            <option value="all">Todas las convocatorias</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label for="filterTest">Test:</label>
+                        <select class="form-select" id="filterTest">
+                            <option value="all">Todos los tests</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label for="filterTema">Tema:</label>
+                        <select class="form-select" id="filterTema">
+                            <option value="all">Todos los temas</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-8">
+                    <div class="filter-group">
+                        <label for="searchInput">Buscar pregunta:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchInput"
+                                   placeholder="Buscar por texto de pregunta o ID...">
+                            <button class="btn btn-primary" id="searchBtn" type="button">
+                                🔍 Buscar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="filter-group">
+                        <label for="filterDuplicados">Mostrar duplicados:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="filterDuplicados" checked>
+                            <label class="form-check-label" for="filterDuplicados">
+                                Incluir preguntas duplicadas
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons mt-3">
+                <button class="btn btn-secondary" id="resetFilters">🔄 Limpiar filtros</button>
+                <button class="btn btn-info" id="statsBtn">📊 Ver estadísticas</button>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section mt-3">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalQuestions">-</div>
+                        <div class="stat-label">Preguntas totales</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalExams">-</div>
+                        <div class="stat-label">Exámenes</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number" id="filteredQuestions">-</div>
+                        <div class="stat-label">Preguntas filtradas</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number" id="questionsWithAnswers">-</div>
+                        <div class="stat-label">Con respuestas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Questions Container -->
+        <div id="questions-container" class="questions-container mt-4">
+            <!-- Questions will be loaded here -->
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-section mt-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <button class="btn btn-outline-primary" id="prevPageBtn" disabled>
+                    ← Anterior
+                </button>
+                <span id="pageInfo" class="page-info">Página 1 de 1</span>
+                <button class="btn btn-outline-primary" id="nextPageBtn" disabled>
+                    Siguiente →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Question Modal -->
+    <div class="modal fade" id="editQuestionModal" tabindex="-1" aria-labelledby="editQuestionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editQuestionModalLabel">Editar Pregunta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Edit form will be populated here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveChanges">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Import modular system -->
+    <script type="module" src="modules/api.js"></script>
+    <script type="module" src="modules/filters.js"></script>
+    <script type="module" src="modules/ui.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        // Initialize the viewer using the modular ExamViewer from script.js
+        let viewer;
+
+        window.onload = function() {
+            // Use ExamViewer from script.js which has all the filtering logic
+            viewer = new ExamViewer();
+
+            // Make it globally accessible for backward compatibility
+            window.examViewer = viewer;
+
+            // Event listener para el botón de guardar cambios
+            document.getElementById('saveChanges')?.addEventListener('click', () => {
+                if (viewer.saveQuestionChanges) {
+                    viewer.saveQuestionChanges();
+                }
+            });
+
+            // Event listener para el botón de añadir opción
+            document.addEventListener('click', (e) => {
+                if (e.target && e.target.id === 'addOptionBtn') {
+                    if (viewer.addOption) {
+                        viewer.addOption();
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>

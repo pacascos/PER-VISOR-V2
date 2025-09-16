@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:48879f4ce970b5200502e7c85ca8cd3ab205118ec523d52c12fd823b98b098be
-size 675
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(python3:*)",
+      "Bash(docker compose:*)",
+      "Bash(curl:*)",
+      "Bash(make:*)",
+      "Bash(npx:*)",
+      "Bash(POSTGRES_CONNECTION_STRING=\"postgresql://per_user:per_password_change_me@localhost:5432/per_exams\" npx @modelcontextprotocol/server-postgres)",
+      "Bash(docker exec:*)",
+      "Bash(POSTGRES_CONNECTION_STRING=\"postgresql://per_user:change_me_secure_password_123@localhost:5432/per_exams\" npx @modelcontextprotocol/server-postgres)",
+      "Bash(lsof:*)",
+      "Bash(git config:*)",
+      "Bash(gh repo view:*)",
+      "Bash(docker cp:*)",
+      "Bash(docker logs:*)",
+      "Bash(docker restart:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

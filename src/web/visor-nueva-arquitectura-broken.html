@@ -1,0 +1,3065 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PER VISOR 2.0 - Nueva Arquitectura</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/x-icon" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Markdown parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f1f5f9;
+            color: #1e293b;
+            line-height: 1.5;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #475569, #64748b);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .header-icon {
+            font-size: 2.5rem;
+        }
+        
+        .header-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .header-subtitle {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+        
+        .architecture-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            font-size: 0.85rem;
+        }
+        
+        /* Filters */
+        .filters-section {
+            background: white;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+        
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .search-input-group {
+            position: relative;
+        }
+        
+        /* Stats */
+        .stats-section {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .stats-card {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #3b82f6;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-weight: 600;
+            margin-top: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Question Cards */
+        .question-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* Estilos para pestañas del modal de edición */
+        .tab-container {
+            margin-bottom: 20px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .tab-button:hover {
+            color: #374151;
+            background-color: #f9fafb;
+        }
+
+        .tab-button.active {
+            color: #f87171;
+            border-bottom-color: #f87171;
+            background-color: #fef2f2;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .explanation-tab-content {
+            min-height: 200px;
+        }
+
+        .explanation-status {
+            margin-bottom: 15px;
+        }
+
+        .option-item-readonly {
+            padding: 8px 12px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-letter-readonly {
+            font-weight: bold;
+            margin-right: 10px;
+            color: #495057;
+        }
+
+        /* Estilos para opciones editables */
+        .options-container {
+            margin-bottom: 15px;
+        }
+
+        .option-edit {
+            margin-bottom: 10px;
+        }
+
+        .option-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .option-input-group input {
+            flex: 1;
+        }
+
+        .btn-remove-option {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-remove-option:hover {
+            background: #c82333;
+        }
+        
+        .question-id {
+            font-weight: 600;
+            color: #3b82f6;
+            font-size: 0.9rem;
+        }
+        
+        .question-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .badge-exam {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+        
+        .badge-topic {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .badge-answer {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .question-text {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .options-list {
+            display: grid;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .option-item:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        .option-item.correct {
+            border-color: #10b981;
+            background: #ecfdf5;
+        }
+        
+        .option-letter {
+            font-weight: 700;
+            margin-right: 0.75rem;
+            min-width: 1.5rem;
+            color: #374151;
+        }
+        
+        .option-text {
+            flex: 1;
+            color: #374151;
+        }
+        
+        .option-item.correct .option-letter {
+            color: #059669;
+        }
+        
+        .option-item.correct .option-text {
+            color: #059669;
+            font-weight: 500;
+        }
+        
+        .answer-section {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .answer-section h6 {
+            color: #0369a1;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .explanation-section {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .explanation-content {
+            white-space: pre-line;
+            line-height: 1.6;
+        }
+        
+        .explanation-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        
+        .explanation-meta {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        
+        /* Pagination */
+        .pagination-section {
+            margin: 2rem 0;
+        }
+        
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .loading-spinner {
+            text-align: center;
+        }
+        
+        /* Buttons */
+        .btn-generate-explanation {
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-generate-explanation:hover {
+            background: #7c3aed;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .stats-card {
+                gap: 1.5rem;
+            }
+            
+            .question-card {
+                padding: 1rem;
+            }
+        }
+        /* Estilos para el modal de explicación */
+        .markdown-content {
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .markdown-content h1 {
+            color: #2563eb;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 8px;
+            margin: 24px 0 16px 0;
+            font-size: 28px;
+        }
+
+        .markdown-content h2 {
+            color: #1e40af;
+            margin: 20px 0 12px 0;
+            font-size: 24px;
+        }
+
+        .markdown-content h3 {
+            color: #1d4ed8;
+            margin: 16px 0 8px 0;
+            font-size: 20px;
+        }
+
+        .markdown-content h6 {
+            color: #374151;
+            margin: 12px 0 6px 0;
+            font-weight: 600;
+        }
+
+        .markdown-content p {
+            margin: 8px 0;
+            text-align: justify;
+        }
+
+        .markdown-content ul, .markdown-content ol {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        .markdown-content li {
+            margin: 6px 0;
+        }
+
+        .markdown-content strong {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .markdown-content blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 16px;
+            margin: 16px 0;
+            background-color: #f8fafc;
+            font-style: italic;
+        }
+
+        .markdown-content code {
+            background-color: #f1f5f9;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+        }
+
+        .explanation-options {
+            display: grid;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .explanation-option {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background-color: #f9fafb;
+        }
+
+        .explanation-option.correct {
+            background-color: #dcfce7;
+            border-color: #16a34a;
+        }
+
+        .explanation-option-letter {
+            font-weight: bold;
+            min-width: 25px;
+            color: #374151;
+        }
+
+        .explanation-option.correct .explanation-option-letter {
+            color: #16a34a;
+        }
+
+        /* Estilos para área de upload */
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f8fafc;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background-color: #f1f5f9;
+        }
+
+        .upload-area.drag-over {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+            transform: scale(1.02);
+        }
+
+        .upload-area.paste-active {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+            animation: pulse-green 1s ease-in-out;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Animaciones para botones de explicación */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Estados de botones de explicación */
+        .btn-explanation-processing {
+            background: linear-gradient(135deg, #ffc107, #e0a800) !important;
+            color: #212529 !important;
+            cursor: wait !important;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-explanation-processing:disabled {
+            transform: none;
+            cursor: wait !important;
+            opacity: 1 !important;
+        }
+
+        .btn-explanation-processing::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .upload-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            opacity: 0.7;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        .upload-text strong {
+            color: #1e293b;
+        }
+
+        .upload-link {
+            color: #3b82f6;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .upload-formats {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Estilos para SVG container */
+        .svg-container {
+            max-width: 100%;
+            text-align: center;
+            margin: 16px 0;
+            padding: 16px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .svg-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Controles visuales */
+        .visual-controls {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-visual-control {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-visual-control:hover {
+            background-color: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .btn-visual-control.btn-primary {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-visual-control.btn-warning {
+            background-color: #f59e0b;
+            border-color: #f59e0b;
+            color: white;
+        }
+
+        .btn-visual-control.btn-success {
+            background-color: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="header-icon">🚀</div>
+                    <div>
+                        <h1 class="header-title">PER VISOR 2.0</h1>
+                        <p class="header-subtitle">Nueva Arquitectura con PostgreSQL + Docker + GPT-5</p>
+                    </div>
+                </div>
+                <div class="architecture-badge">
+                    <span class="status-indicator">🟢</span>
+                    PostgreSQL • Redis • Docker
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <!-- Filtros -->
+        <div class="filters-section">
+            <div class="row align-items-end">
+                <div class="col-md-2">
+                    <div class="filter-group">
+                        <label for="filterConvocatoria">📅 CONVOCATORIA</label>
+                        <select class="form-select" id="filterConvocatoria">
+                            <option value="all">Todas las convocatorias</option>
+                            <!-- Opciones cargadas dinámicamente desde PostgreSQL -->
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="filter-group">
+                        <label for="filterTitulacion">📚 TITULACIÓN</label>
+                        <select class="form-select" id="filterTitulacion">
+                            <option value="all">Patrón de Embarcaciones de Recreo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="filter-group">
+                        <label for="filterTest">📝 NÚMERO DE TEST</label>
+                        <select class="form-select" id="filterTest">
+                            <option value="all">Todos los tests</option>
+                            <!-- Opciones cargadas dinámicamente -->
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="filter-group">
+                        <label for="filterTema">🎯 TEMA</label>
+                        <select class="form-select" id="filterTema">
+                            <option value="all">Todos los temas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="filter-group">
+                        <label>&nbsp;</label>
+                        <div class="form-check" style="padding-top: 8px;">
+                            <input class="form-check-input" type="checkbox" id="filterDuplicados" checked>
+                            <label class="form-check-label" for="filterDuplicados">
+                                🔄 Con duplicados
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="filter-group">
+                        <label for="searchInput">🔍 BUSCAR POR ID</label>
+                        <div class="search-input-group">
+                            <input type="text" class="form-control" id="searchInput" 
+                                   placeholder="Ej: per_examen_001_001">
+                            <button class="search-clear" id="clearSearch" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #999; cursor: pointer;">×</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="searchBtn">🔍 BUSCAR</button>
+                        <button class="btn btn-secondary" id="clearFilters">LIMPIAR</button>
+                        <button class="btn btn-success" id="toggleAnswers">🙈 OCULTAR RESPUESTAS</button>
+                        <button class="btn btn-warning" id="autoExplain">🤖 EXPLICACIONES AUTO</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="stats-section">
+            <div class="stats-card">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalQuestions">-</div>
+                    <div class="stat-label">PREGUNTAS</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="filteredQuestions">-</div>
+                    <div class="stat-label">FILTRADAS</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalExams">-</div>
+                    <div class="stat-label">EXÁMENES</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="questionsWithAnswers">-</div>
+                    <div class="stat-label">CON RESPUESTAS</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="coveragePercentage">-</div>
+                    <div class="stat-label">COBERTURA</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preguntas -->
+        <div class="questions-container" id="questionsContainer">
+            <!-- Las preguntas se cargarán aquí dinámicamente -->
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination-section">
+            <nav aria-label="Paginación de preguntas">
+                <ul class="pagination justify-content-center" id="pagination">
+                    <!-- La paginación se generará dinámicamente -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Loading spinner -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-2">Cargando desde PostgreSQL...</p>
+        </div>
+    </div>
+
+    <!-- Modal de edición -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">✏️ Editar Pregunta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <!-- Sistema de pestañas -->
+                        <div class="tab-container">
+                            <div class="tab-buttons">
+                                <button type="button" class="tab-button active" data-tab="content">
+                                    📝 Contenido
+                                </button>
+                                <button type="button" class="tab-button" data-tab="answer">
+                                    ✅ Respuesta
+                                </button>
+                                <button type="button" class="tab-button" data-tab="metadata">
+                                    🏷️ Metadatos
+                                </button>
+                                <button type="button" class="tab-button" data-tab="explanation">
+                                    💡 Explicación
+                                </button>
+                            </div>
+
+                            <!-- Pestaña de Contenido -->
+                            <div class="tab-content active" id="tab-content">
+                                <div class="mb-3">
+                                    <label for="editTextoPregunta" class="form-label">📄 Texto de la pregunta:</label>
+                                    <textarea class="form-control" id="editTextoPregunta" rows="4" required>
+                                    </textarea>
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <small class="form-text text-muted">💡 Puedes editar el texto para corregir errores de importación</small>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" id="restoreOriginalText" onclick="viewer.restoreOriginalText()">
+                                            🔄 Restaurar Original
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">📝 Opciones de respuesta:</label>
+                                    <div id="editOptionsContainer" class="options-container">
+                                        <!-- Las opciones se cargarán dinámicamente -->
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" id="addOptionBtn">+ Añadir opción</button>
+                                </div>
+                            </div>
+
+                            <!-- Pestaña de Respuesta -->
+                            <div class="tab-content" id="tab-answer">
+                                <div class="mb-3">
+                                    <label for="editRespuesta" class="form-label">✅ Respuesta Correcta</label>
+                                    <select class="form-select" id="editRespuesta">
+                                        <option value="">Sin respuesta</option>
+                                        <option value="a">A</option>
+                                        <option value="b">B</option>
+                                        <option value="c">C</option>
+                                        <option value="d">D</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="editAnulada">
+                                    <label class="form-check-label" for="editAnulada">
+                                        ❌ Pregunta anulada
+                                    </label>
+                                    <small class="form-text text-muted">Si está marcada, todas las respuestas serán válidas</small>
+                                </div>
+                            </div>
+
+                            <!-- Pestaña de Metadatos -->
+                            <div class="tab-content" id="tab-metadata">
+                                <div class="mb-3">
+                                    <label for="editTema" class="form-label">📚 Categoría/Tema</label>
+                                    <select class="form-select" id="editTema">
+                                        <option value="">Sin categoría</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="editSubcategoria" class="form-label">🏷️ Subcategoría</label>
+                                    <input type="text" class="form-control" id="editSubcategoria" placeholder="Subcategoría opcional">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="editTitulacion" class="form-label">🎓 Titulación</label>
+                                    <input type="text" class="form-control" id="editTitulacion" readonly style="background-color: #f8f9fa;">
+                                    <small class="form-text text-muted">Solo lectura - No se puede modificar</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="editConvocatoria" class="form-label">📅 Convocatoria</label>
+                                    <input type="text" class="form-control" id="editConvocatoria" readonly style="background-color: #f8f9fa;">
+                                    <small class="form-text text-muted">Solo lectura - No se puede modificar</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="editNumero" class="form-label">🔢 Número de pregunta</label>
+                                    <input type="number" class="form-control" id="editNumero" readonly style="background-color: #f8f9fa;">
+                                    <small class="form-text text-muted">Solo lectura - No se puede modificar</small>
+                                </div>
+                            </div>
+
+                            <!-- Pestaña de Explicación -->
+                            <div class="tab-content" id="tab-explanation">
+                                <div class="explanation-tab-content">
+                                    <div class="explanation-status" id="explanationStatus">
+                                        <!-- Estado de la explicación se cargará aquí -->
+                                    </div>
+
+                                    <div class="explanation-actions" id="explanationActions">
+                                        <!-- Botones de acción se cargarán aquí -->
+                                    </div>
+
+                                    <div class="explanation-preview" id="explanationPreview">
+                                        <!-- Vista previa de la explicación se cargará aquí -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="editQuestionId">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveChanges">💾 Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Explicación -->
+    <div class="modal fade" id="explanationModal" tabindex="-1" aria-labelledby="explanationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="explanationModalLabel">💡 Explicación Inteligente GPT-5</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Información de la pregunta -->
+                    <div class="question-info mb-4 p-3 bg-light rounded">
+                        <h6 class="fw-bold mb-2">📝 Pregunta:</h6>
+                        <p id="explanationQuestionText" class="mb-3"></p>
+
+                        <!-- Imagen de la pregunta si existe -->
+                        <div id="explanationQuestionImage" class="mb-3" style="display: none;">
+                            <img id="explanationImg" src="" alt="Imagen de la pregunta" class="img-fluid rounded border">
+                        </div>
+
+                        <!-- Opciones de respuesta -->
+                        <div id="explanationOptions" class="mb-3"></div>
+
+                        <!-- Respuesta correcta -->
+                        <div id="explanationAnswer" class="alert alert-success" style="display: none;">
+                            <strong>✅ Respuesta correcta:</strong> <span id="correctAnswerText"></span>
+                        </div>
+                    </div>
+
+                    <!-- Imagen/SVG de la explicación (movido arriba) -->
+                    <div id="explanationVisualContent" class="mt-3 mb-4" style="display: none;">
+                        <h6 class="fw-bold mb-3">🎨 Recurso Visual:</h6>
+                        <div id="visualContainer" class="text-center">
+                            <!-- Aquí se mostrará imagen subida, imagen PNG o SVG -->
+                        </div>
+                        <div id="visualControls" class="mt-3 text-center">
+                            <!-- Solo botón de ver imagen completa en modo vista -->
+                        </div>
+                        <!-- Área de drag & drop (no usada en modo vista) -->
+                        <div id="uploadArea" class="upload-area mt-3" style="display: none;">
+                            <div class="upload-content">
+                                <div class="upload-icon">📁</div>
+                                <div class="upload-text">
+                                    <strong>Arrastra una imagen aquí</strong><br>
+                                    o <span class="upload-link">haz clic para seleccionar</span>
+                                </div>
+                                <div class="upload-formats">PNG, JPG, JPEG, GIF, WEBP (máx. 10MB)</div>
+                            </div>
+                        </div>
+                        <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
+                    </div>
+
+                    <!-- Contenido de la explicación (movido abajo) -->
+                    <div class="explanation-content">
+                        <h6 class="fw-bold mb-3">🧠 Explicación detallada:</h6>
+                        <div id="explanationContent" class="markdown-content"></div>
+                    </div>
+
+                    <!-- Metadatos -->
+                    <div class="mt-4 pt-3 border-top">
+                        <small class="text-muted">
+                            <span id="explanationMeta"></span>
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" id="editExplanationBtn">
+                        ✏️ Editar Explicación
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edición de Explicación -->
+    <div class="modal fade" id="editExplanationModal" tabindex="-1" aria-labelledby="editExplanationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editExplanationModalLabel">✏️ Editar Explicación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editExplanationForm">
+                        <div class="mb-3">
+                            <label for="editExplanationText" class="form-label">📝 Contenido de la Explicación (Markdown)</label>
+                            <textarea class="form-control" id="editExplanationText" rows="15"
+                                      placeholder="Escribe la explicación en formato Markdown..."></textarea>
+                            <div class="form-text">
+                                Puedes usar formato Markdown: **negrita**, *cursiva*, ## títulos, - listas, etc.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">👁️ Vista previa:</label>
+                            <div id="explanationPreview" class="border p-3 rounded bg-light markdown-content" style="min-height: 100px;">
+                                La vista previa aparecerá aquí...
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editImagePrompt" class="form-label">🎨 Prompt para Generador de Imágenes</label>
+                            <textarea class="form-control" id="editImagePrompt" rows="4" readonly
+                                      placeholder="Prompt para generar imágenes con herramientas externas como Midjourney, Stable Diffusion, etc."></textarea>
+                            <div class="form-text">
+                                <small class="text-muted">
+                                    💡 Copia este texto y úsalo en herramientas como Midjourney, DALL-E, o Stable Diffusion para generar una imagen técnica náutica.
+                                    <button type="button" class="btn btn-sm btn-outline-primary ms-2" onclick="navigator.clipboard.writeText(document.getElementById('editImagePrompt').value); alert('✅ Prompt copiado al portapapeles')">
+                                        📋 Copiar
+                                    </button>
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">🖼️ Gestión de Imágenes</label>
+                            <div id="editImageManagement" class="border p-3 rounded bg-light">
+                                <div id="editCurrentImage" class="mb-3">
+                                    <!-- Aquí se mostrará la imagen actual -->
+                                </div>
+                                <div id="editImageControls" class="d-flex gap-2 flex-wrap">
+                                    <!-- Aquí se mostrarán los controles de imagen -->
+                                </div>
+                                <div id="editUploadArea" class="mt-3" style="display: none;">
+                                    <div class="upload-drop-zone p-3 border border-dashed rounded text-center">
+                                        <p class="mb-2">📤 Arrastra una imagen aquí o haz clic para seleccionar</p>
+                                        <input type="file" id="editImageFileInput" accept="image/*" class="d-none">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('editImageFileInput').click()">
+                                            📁 Seleccionar Archivo
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="editExplanationQuestionId">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" id="previewExplanationBtn">
+                        👁️ Vista Previa
+                    </button>
+                    <button type="button" class="btn btn-warning" id="editRegenerateExplanationBtn">
+                        🔄 Regenerar Explicación
+                    </button>
+                    <button type="button" class="btn btn-danger" id="editDeleteExplanationBtn">
+                        🗑️ Borrar Explicación
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveExplanationBtn">
+                        💾 Guardar Explicación
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Import modular system -->
+    <script type="module" src="modules/api.js"></script>
+    <script type="module" src="modules/filters.js"></script>
+    <script type="module" src="modules/ui.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        // Configuration
+        const API_BASE = 'http://localhost:5001';
+
+        // Initialize viewer using ExamViewer from script.js when page loads
+        let viewer;
+
+        window.onload = function() {
+            // Use ExamViewer from script.js which has all the filtering logic
+            viewer = new ExamViewer();
+
+            // Make it globally accessible for backward compatibility
+            window.examViewer = viewer;
+
+            // Event listeners will be handled by ExamViewer
+        };
+
+        // Legacy PERViewer class removed - using ExamViewer from script.js instead
+        /*
+        class PERViewer {
+            constructor() {
+                this.examenes = [];
+                this.allQuestions = [];
+                this.filteredQuestions = [];
+                this.explicaciones = {};
+                this.currentPage = 1;
+                this.questionsPerPage = 10;
+                this.showAnswers = true;
+                this.autoExplain = false;
+                this.filters = {
+                    examId: '',
+                    convocatoria: '',
+                    tema: '',
+                    searchText: ''
+                };
+                this.init();
+            }
+            
+            async init() {
+                try {
+                    this.showLoading(true);
+                    await this.loadStats();
+                    await this.loadExplicaciones(); // Cargar explicaciones PRIMERO
+                    await this.loadExamenes();
+                    this.setupEventListeners();
+
+                    // Aplicar parámetros de URL si existen
+                    this.applyUrlParameters();
+
+                    this.showLoading(false);
+                } catch (error) {
+                    console.error('Error inicializando:', error);
+                    this.showError('Error cargando los datos: ' + error.message);
+                    this.showLoading(false);
+                }
+            }
+            
+            async loadStats() {
+                try {
+                    console.log('Cargando estadísticas...');
+                    const response = await fetch(API_BASE + '/stats');
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    const data = await response.json();
+                    console.log('Estadísticas cargadas:', data);
+                    
+                    document.getElementById('totalQuestions').textContent = data.stats.preguntas.toLocaleString();
+                    document.getElementById('totalExams').textContent = data.stats.examenes;
+                } catch (error) {
+                    console.error('Error loading stats:', error);
+                    // No mostrar error aquí para no interrumpir la carga
+                }
+            }
+            
+            async loadExamenes() {
+                try {
+                    console.log('🔄 Cargando exámenes desde PostgreSQL...');
+
+                    // Cargar exámenes desde PostgreSQL
+                    const response = await fetch(API_BASE + '/examenes');
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    this.examenes = data.examenes || [];
+
+                    console.log(`✅ Cargados ${this.examenes.length} exámenes desde PostgreSQL`);
+
+                    // Inicializar filtros con los exámenes cargados
+                    this.initializeFilters();
+
+                    // Cargar todas las preguntas desde PostgreSQL
+                    await this.loadAllQuestionsFromAllExams();
+
+                } catch (error) {
+                    console.error('Error en loadExamenes:', error);
+                    this.showError('Error cargando datos: ' + error.message);
+                }
+            }
+
+            async loadExplicaciones() {
+                try {
+                    console.log('🔄 Cargando explicaciones existentes...');
+                    const response = await fetch(API_BASE + '/explicaciones');
+                    const data = await response.json();
+
+                    console.log('📋 Explicaciones cargadas:', Object.keys(data).length);
+                    console.log('🔍 Primeras 3 IDs de explicaciones:', Object.keys(data).slice(0, 3));
+                    this.explicaciones = data;
+
+                } catch (error) {
+                    console.error('Error cargando explicaciones:', error);
+                    this.explicaciones = {};
+                }
+            }
+
+            async loadAllQuestionsFromAllExams() {
+                try {
+                    console.log('🔄 Cargando TODAS las preguntas desde PostgreSQL...');
+
+                    // Usar el endpoint PostgreSQL filtrado que incluye metadata
+                    const response = await fetch(API_BASE + '/preguntas-filtradas');
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+
+                    if (data.preguntas && Array.isArray(data.preguntas)) {
+                        this.allQuestions = data.preguntas;
+                        console.log(`✅ Cargadas ${this.allQuestions.length} preguntas desde PostgreSQL`);
+                        
+                        // Debug: Verificar que tenemos metadata completa
+                        if (this.allQuestions.length > 0) {
+                            const sampleQuestion = this.allQuestions[0];
+                            console.log('📋 Muestra de pregunta:', {
+                                id: sampleQuestion.id,
+                                exam_titulo: sampleQuestion.exam_titulo,
+                                exam_convocatoria: sampleQuestion.convocatoria,
+                                categoria: sampleQuestion.categoria
+                            });
+                            
+                            // Mostrar TODAS las convocatorias disponibles
+                            const convocatorias = [...new Set(this.allQuestions.map(q => q.convocatoria).filter(c => c))];
+                            console.log(`🎯 CONVOCATORIAS DISPONIBLES (${convocatorias.length}):`, convocatorias.sort());
+                        }
+                        
+                        // Actualizar filtros después de cargar los datos
+                        this.updateFiltersAfterDataLoad();
+                        
+                        // Aplicar filtros iniciales
+                        this.applyFilters();
+                        
+                    } else {
+                        throw new Error('No se recibieron preguntas válidas del servidor PostgreSQL');
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Error cargando preguntas:', error);
+                    this.showError('Error cargando preguntas: ' + error.message);
+                }
+            }
+
+            // Funciones de drag & drop y manejo de imágenes
+            handleDragOver(event) {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'copy';
+            }
+
+            handleDragEnter(event) {
+                event.preventDefault();
+                event.currentTarget.classList.add('drag-over');
+            }
+
+            handleDragLeave(event) {
+                event.currentTarget.classList.remove('drag-over');
+            }
+
+            handleDrop(event, questionId) {
+                event.preventDefault();
+                event.currentTarget.classList.remove('drag-over');
+
+                const files = event.dataTransfer.files;
+                if (files.length > 0) {
+                    this.uploadImage(files[0], questionId);
+                }
+            }
+
+            handleFileSelect(event, questionId) {
+                const file = event.target.files[0];
+                if (file) {
+                    this.uploadImage(file, questionId);
+                }
+            }
+
+            handlePaste(event, questionId) {
+                const items = event.clipboardData?.items;
+                if (!items) return;
+
+                for (let i = 0; i < items.length; i++) {
+                    const item = items[i];
+                    if (item.type.indexOf('image') === 0) {
+                        event.preventDefault();
+                        const file = item.getAsFile();
+                        if (file) {
+                            console.log('📤 Imagen pegada desde clipboard');
+
+                            // Añadir efecto visual
+                            const uploadArea = document.getElementById('uploadArea');
+                            if (uploadArea && uploadArea.style.display !== 'none') {
+                                uploadArea.classList.add('paste-active');
+                                setTimeout(() => {
+                                    uploadArea.classList.remove('paste-active');
+                                }, 1000);
+                            }
+
+                            this.uploadImage(file, questionId);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            async uploadImage(file, questionId) {
+                try {
+                    // Validar tipo de archivo
+                    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
+                    if (!allowedTypes.includes(file.type)) {
+                        alert('❌ Tipo de archivo no permitido. Use: PNG, JPG, JPEG, GIF, WEBP');
+                        return;
+                    }
+
+                    // Validar tamaño (máximo 10MB)
+                    const maxSize = 10 * 1024 * 1024; // 10MB
+                    if (file.size > maxSize) {
+                        alert('❌ Archivo demasiado grande. Máximo 10MB');
+                        return;
+                    }
+
+                    // Mostrar indicador de carga
+                    const uploadArea = document.getElementById('uploadArea');
+                    const originalContent = uploadArea.innerHTML;
+                    uploadArea.innerHTML = '<div class="upload-content"><div class="upload-icon">⏳</div><div class="upload-text"><strong>Subiendo imagen...</strong></div></div>';
+
+                    // Preparar FormData
+                    const formData = new FormData();
+                    formData.append('imagen', file);
+                    formData.append('question_id', questionId);
+
+                    // Subir imagen
+                    const response = await fetch(API_BASE + '/subir-imagen', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Actualizar explicación local
+                        this.explicaciones[questionId].image_uploaded_url = data.image_url;
+                        this.explicaciones[questionId].image_uploaded_at = new Date().toISOString();
+                        this.explicaciones[questionId].image_uploaded_filename = file.name;
+
+                        // Recargar contenido visual
+                        this.setupVisualContent(questionId, this.explicaciones[questionId]);
+
+                        console.log('✅ Imagen subida correctamente');
+                    } else {
+                        throw new Error(data.error || 'Error desconocido');
+                    }
+
+                } catch (error) {
+                    console.error('Error subiendo imagen:', error);
+                    alert(`❌ Error subiendo imagen: ${error.message}`);
+
+                    // Restaurar contenido original
+                    const uploadArea = document.getElementById('uploadArea');
+                    uploadArea.innerHTML = `
+                        <div class="upload-content">
+                            <div class="upload-icon">📁</div>
+                            <div class="upload-text">
+                                <strong>Arrastra una imagen aquí</strong><br>
+                                o <span class="upload-link">haz clic para seleccionar</span>
+                            </div>
+                            <div class="upload-formats">PNG, JPG, JPEG, GIF, WEBP (máx. 10MB)</div>
+                        </div>
+                    `;
+                }
+            }
+
+            showUploadArea(questionId) {
+                const uploadArea = document.getElementById('uploadArea');
+                uploadArea.style.display = uploadArea.style.display === 'none' ? 'block' : 'none';
+            }
+
+            viewFullImage(imageUrl) {
+                // Crear modal para ver imagen completa
+                const modal = document.createElement('div');
+                modal.className = 'modal fade show';
+                modal.style.display = 'block';
+                modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                modal.innerHTML = `
+                    <div class="modal-dialog modal-xl modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">🖼️ Imagen completa</h5>
+                                <button type="button" class="btn-close" onclick="this.closest('.modal').remove()"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <img src="${imageUrl}" class="img-fluid" alt="Imagen completa">
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            async generateImagePNG(questionId) {
+                try {
+                    const visualControls = document.getElementById('visualControls');
+                    const originalContent = visualControls.innerHTML;
+
+                    visualControls.innerHTML = '<div class="text-center"><div class="spinner-border spinner-border-sm" role="status"></div> Generando imagen PNG...</div>';
+
+                    const response = await fetch(API_BASE + '/generar-imagen-png', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ question_id: questionId })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Actualizar explicación local
+                        this.explicaciones[questionId].image_png_url = data.image_png_url;
+                        this.explicaciones[questionId].image_png_generated_at = new Date().toISOString();
+
+                        // Recargar contenido visual
+                        this.setupVisualContent(questionId, this.explicaciones[questionId]);
+
+                        console.log('✅ Imagen PNG generada correctamente');
+                    } else {
+                        throw new Error(data.error || 'Error desconocido');
+                    }
+
+                } catch (error) {
+                    console.error('Error generando imagen PNG:', error);
+                    alert(`❌ Error generando imagen PNG: ${error.message}`);
+                }
+            }
+
+            async revertToSVG(questionId) {
+                try {
+                    // Limpiar URLs de imágenes en explicación local
+                    const explanation = this.explicaciones[questionId];
+                    delete explanation.image_uploaded_url;
+                    delete explanation.image_uploaded_at;
+                    delete explanation.image_uploaded_filename;
+                    delete explanation.image_png_url;
+                    delete explanation.image_png_generated_at;
+
+                    // Recargar contenido visual
+                    this.setupVisualContent(questionId, explanation);
+
+                    console.log('✅ Vuelto al SVG original');
+                } catch (error) {
+                    console.error('Error revirtiendo a SVG:', error);
+                    alert(`❌ Error revirtiendo a SVG: ${error.message}`);
+                }
+            }
+
+
+            initializeFilters() {
+                // Inicializar filtros en cascada después de cargar las preguntas
+                // Los filtros se poblarán en updateFiltersAfterDataLoad()
+                
+                // Seleccionar PER por defecto en titulación
+                document.getElementById('filterTitulacion').value = 'all';
+            }
+            
+            updateFiltersAfterDataLoad() {
+                // Actualizar filtros basándose en los datos realmente cargados
+                this.populateConvocatorias();
+                this.populateTitulaciones();
+                this.updateTestFilter();
+                this.updateTemaFilter();
+            }
+            
+            populateConvocatorias() {
+                // Usar las convocatorias de las preguntas cargadas desde PostgreSQL
+                const convocatorias = [...new Set(this.allQuestions.map(q => q.convocatoria).filter(c => c))];
+                console.log('Convocatorias de preguntas cargadas:', convocatorias);
+                
+                // Ordenar por fecha descendente (más reciente primero)
+                const convocatoriasOrdenadas = convocatorias.sort((a, b) => {
+                    // Extraer año de la convocatoria (formato "2024-04" o "2024-abril")
+                    const getYear = (conv) => {
+                        const match = conv.match(/(\d{4})/);
+                        return match ? parseInt(match[1]) : 0;
+                    };
+                    
+                    const getMonth = (conv) => {
+                        const match = conv.match(/(\d{2})/) || conv.match(/(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)/);
+                        if (!match) return 0;
+                        
+                        const meses = {
+                            'enero': 1, 'febrero': 2, 'marzo': 3, 'abril': 4, 'mayo': 5, 'junio': 6,
+                            'julio': 7, 'agosto': 8, 'septiembre': 9, 'octubre': 10, 'noviembre': 11, 'diciembre': 12
+                        };
+                        
+                        return meses[match[1]] || parseInt(match[1]) || 0;
+                    };
+                    
+                    const yearA = getYear(a);
+                    const yearB = getYear(b);
+                    const monthA = getMonth(a);
+                    const monthB = getMonth(b);
+                    
+                    if (yearA !== yearB) return yearB - yearA; // Año descendente
+                    return monthB - monthA; // Mes descendente
+                });
+                
+                const convSelect = document.getElementById('filterConvocatoria');
+                convSelect.innerHTML = '<option value="all">Todas las convocatorias</option>';
+                
+                convocatoriasOrdenadas.forEach(conv => {
+                    const option = document.createElement('option');
+                    option.value = conv;
+                    option.textContent = conv;
+                    convSelect.appendChild(option);
+                });
+                
+                console.log(`Filtro convocatoria poblado con ${convocatoriasOrdenadas.length} opciones:`, convocatoriasOrdenadas);
+            }
+
+            populateTitulaciones() {
+                // Obtener tipos de examen únicos desde las preguntas
+                const tiposExamen = [...new Set(this.allQuestions.map(q => q.tipo_examen).filter(t => t))];
+
+                const titulacionSelect = document.getElementById('filterTitulacion');
+                titulacionSelect.innerHTML = '<option value="all">Todas las titulaciones</option>';
+
+                // Mapear tipos de examen a nombres descriptivos
+                const titulacionMapping = {
+                    'PNB_NORMAL': 'PNB - Patrón de Navegación Básica',
+                    'PER_NORMAL': 'PER - Patrón de Embarcaciones de Recreo',
+                    'PER_LIBERADO': 'PER Liberado (con PNB aprobado)',
+                    'PY_NORMAL': 'PY - Patrón de Yate',
+                    'CY_NORMAL': 'CY - Capitán de Yate'
+                };
+
+                // Ordenar titulaciones por jerarquía
+                const ordenJerarquico = ['PNB_NORMAL', 'PER_LIBERADO', 'PER_NORMAL', 'PY_NORMAL', 'CY_NORMAL'];
+                const tiposOrdenados = tiposExamen.sort((a, b) => {
+                    const indexA = ordenJerarquico.indexOf(a);
+                    const indexB = ordenJerarquico.indexOf(b);
+                    return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+                });
+
+                tiposOrdenados.forEach(tipo => {
+                    const option = document.createElement('option');
+                    option.value = tipo;
+                    option.textContent = titulacionMapping[tipo] || tipo;
+                    titulacionSelect.appendChild(option);
+                });
+
+                console.log(`Filtro titulación poblado con ${tiposOrdenados.length} opciones:`, tiposOrdenados);
+            }
+
+            updateTestFilter() {
+                const convocatoria = document.getElementById('filterConvocatoria').value;
+                const titulacion = document.getElementById('filterTitulacion').value;
+                
+                // Usar las preguntas cargadas en lugar de todos los exámenes
+                let preguntasToShow = this.allQuestions;
+                
+                // Filtrar por convocatoria
+                if (convocatoria && convocatoria !== 'all') {
+                    preguntasToShow = preguntasToShow.filter(q => q.convocatoria === convocatoria);
+                }
+
+                // Filtrar por titulación
+                if (titulacion && titulacion !== 'all') {
+                    preguntasToShow = preguntasToShow.filter(q => q.tipo_examen === titulacion);
+                }
+                
+                // Obtener combinaciones únicas de título + tipo_examen
+                const testCombinations = [...new Set(preguntasToShow.map(q => {
+                    if (!q.exam_titulo) return null;
+
+                    // Crear identificador único: titulo + tipo_examen
+                    const identifier = `${q.exam_titulo}|${q.tipo_examen}`;
+                    return identifier;
+                }).filter(t => t))];
+
+                console.log(`Tests disponibles para convocatoria ${convocatoria}:`, testCombinations);
+
+                const testSelect = document.getElementById('filterTest');
+                testSelect.innerHTML = '<option value="all">Todos los tests</option>';
+
+                testCombinations.forEach(testCombo => {
+                    const [titulo, tipoExamen] = testCombo.split('|');
+                    const option = document.createElement('option');
+                    option.value = testCombo;
+
+                    // Mostrar nombre descriptivo
+                    let displayName = titulo;
+                    if (tipoExamen === 'PER_LIBERADO') {
+                        displayName += ' (Liberado)';
+                    } else if (tipoExamen === 'PNB_NORMAL') {
+                        displayName = titulo.replace('PER ', 'PNB ');
+                    } else if (tipoExamen === 'PY_NORMAL') {
+                        displayName = titulo.replace('PER ', 'PY ');
+                    } else if (tipoExamen === 'CY_NORMAL') {
+                        displayName = titulo.replace('PER ', 'CY ');
+                    }
+
+                    option.textContent = displayName;
+                    testSelect.appendChild(option);
+                });
+                
+                console.log(`Filtro test poblado con ${testCombinations.length} opciones`);
+            }
+            
+            updateTemaFilter() {
+                // Los temas se actualizarán basado en las preguntas actuales
+                if (!this.allQuestions || this.allQuestions.length === 0) return;
+                
+                const temas = [...new Set(this.allQuestions.map(q => q.categoria).filter(t => t))];
+                const temaSelect = document.getElementById('filterTema');
+                temaSelect.innerHTML = '<option value="all">Todos los temas</option>';
+                
+                temas.forEach(tema => {
+                    const option = document.createElement('option');
+                    option.value = tema;
+                    option.textContent = tema;
+                    temaSelect.appendChild(option);
+                });
+                
+                console.log(`Temas disponibles: ${temas.length}`, temas);
+            }
+            
+            async loadAllQuestions() {
+                try {
+                    // Cargar todas las preguntas usando el endpoint de filtros sin parámetros
+                    const response = await fetch(API_BASE + '/preguntas-filtradas');
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.allQuestions = data.preguntas;
+                        this.filteredQuestions = [...this.allQuestions];
+                        this.currentPage = 1;
+                        
+                        this.populateTemas();
+                        this.updateStats();
+                        this.renderQuestions();
+                        this.renderPagination();
+                    }
+                    
+                } catch (error) {
+                    console.error('Error cargando todas las preguntas:', error);
+                    // Fallback: cargar primer examen
+                    if (this.examenes.length > 0) {
+                        await this.loadQuestionsForExam(this.examenes[0].id);
+                    }
+                }
+            }
+            
+            async loadQuestionsForExam(examId) {
+                try {
+                    const response = await fetch(API_BASE + '/preguntas/' + examId);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.allQuestions = data.preguntas;
+                        this.filteredQuestions = [...this.allQuestions];
+                        this.currentPage = 1;
+                        
+                        this.populateTemas();
+                        this.updateStats();
+                        this.renderQuestions();
+                        this.renderPagination();
+                    }
+                    
+                } catch (error) {
+                    console.error('Error cargando preguntas:', error);
+                }
+            }
+            
+            populateTemas() {
+                const temas = [...new Set(this.allQuestions.map(q => q.categoria).filter(t => t))];
+                const temaSelect = document.getElementById('filterTema');
+                temaSelect.innerHTML = '<option value="">Todos los temas</option>';
+                
+                temas.forEach(tema => {
+                    const option = document.createElement('option');
+                    option.value = tema;
+                    option.textContent = tema;
+                    temaSelect.appendChild(option);
+                });
+            }
+            
+            updateStats() {
+                document.getElementById('filteredQuestions').textContent = this.filteredQuestions.length.toLocaleString();
+            }
+            
+            renderQuestions() {
+                const container = document.getElementById('questionsContainer');
+                container.innerHTML = '';
+                
+                if (this.filteredQuestions.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-5">
+                            <p class="text-muted">No se encontraron preguntas con los filtros aplicados.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const start = (this.currentPage - 1) * this.questionsPerPage;
+                const end = start + this.questionsPerPage;
+                const questionsToShow = this.filteredQuestions.slice(start, end);
+                
+                questionsToShow.forEach((question, index) => {
+                    const card = this.createQuestionCard(question, start + index + 1);
+                    container.appendChild(card);
+                });
+                
+                this.updateStats();
+            }
+            
+            createQuestionCard(question, number) {
+                const card = document.createElement('div');
+                // Añadir clase 'anulada' si la pregunta está anulada
+                const isAnulada = question.anulada === true;
+                card.className = isAnulada ? 'question-card anulada' : 'question-card';
+                
+                const currentExam = this.examenes.find(e => e.id === question.exam_id);
+                
+                card.innerHTML = `
+                    <div class="question-header">
+                        <div style="flex: 1;">
+                            <div class="question-id">Pregunta ${number} • ${question.numero_pregunta || 'N/A'}</div>
+                            <div class="question-badges">
+                                <span class="badge badge-exam">${question.exam_titulo || currentExam?.titulo || 'Examen'}</span>
+                                ${question.categoria ? `<span class="badge badge-topic">${question.categoria}</span>` : ''}
+                                ${isAnulada ? `<span class="badge badge-warning">⚠️ ANULADA</span>` : (this.showAnswers ? `<span class="badge badge-answer">Respuesta: ${question.respuesta_correcta?.toUpperCase()}</span>` : '')}
+                            </div>
+                            <!-- DEBUG INFO - OCULTO -->
+                            <div class="debug-info" style="display: none; margin-top: 8px; font-size: 11px; color: #666; border: 1px solid #ddd; padding: 6px; border-radius: 4px; background-color: #f9f9f9;">
+                                <strong>🐛 DEBUG:</strong><br>
+                                <span><strong>ID:</strong> ${question.id}</span><br>
+                                <span><strong>Examen:</strong> ${question.exam_titulo || 'N/A'} (${question.convocatoria || 'N/A'} - ${question.tipo_examen || 'N/A'})</span><br>
+                                <span><strong>Pregunta #:</strong> ${question.numero_pregunta || 'N/A'}</span><br>
+                            </div>
+                        </div>
+                        <div class="question-actions">
+                            <button class="btn btn-outline-secondary btn-sm" onclick="viewer.editQuestion('${question.id}')" title="Editar pregunta">
+                                ✏️ Editar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="question-text">${question.texto_pregunta}</div>
+                    
+                    <div class="options-list">
+                        ${Object.entries(question.opciones || {}).map(([letra, texto]) => {
+                            const isCorrect = this.showAnswers && !isAnulada && letra.toLowerCase() === question.respuesta_correcta?.toLowerCase();
+                            return `
+                            <div class="option-item ${isCorrect ? 'correct' : ''}">
+                                <div class="option-letter">${letra.toUpperCase()})</div>
+                                <div class="option-text">${texto}</div>
+                            </div>`;
+                        }).join('')}
+                    </div>
+
+                    ${this.showAnswers ? `
+                        <div class="answer-section">
+                            ${isAnulada ? `
+                                <h6>⚠️ Pregunta Anulada</h6>
+                                <p><strong>ANULADA</strong> - Todas las respuestas son válidas</p>
+                            ` : `
+                                <h6>✅ Respuesta Correcta</h6>
+                                <p>La respuesta correcta es <strong>${question.respuesta_correcta?.toUpperCase()}</strong></p>
+                            `}
+                        </div>
+                    ` : ''}
+                    
+                    <div class="explanation-section" id="explanation-${question.id}">
+                        ${this.getExplanationHTML(question)}
+                    </div>
+                `;
+                
+                // Mostrar explicación automáticamente si está habilitado
+                if (this.autoExplain && this.showAnswers) {
+                    // Solo generar explicación si no existe ya
+                    const hasExplanation = this.explicaciones[question.id];
+                    if (!hasExplanation) {
+                        setTimeout(() => this.generateExplanation(question.id, true), 100);
+                    }
+                }
+                
+                return card;
+            }
+
+            getExplanationHTML(question) {
+                const hasExplanation = this.explicaciones[question.id];
+                console.log(`🔍 Pregunta ${question.id}: tiene explicación = ${!!hasExplanation}`);
+
+                if (hasExplanation) {
+                    return `
+                        <div class="explanation-header">
+                            <h6>💡 Explicación GPT-5</h6>
+                            <button class="btn btn-info btn-sm" onclick="viewer.showExplanationModal('${question.id}')">
+                                👁️ Ver Explicación
+                            </button>
+                            <button class="btn btn-warning btn-sm ms-2" onclick="viewer.generateExplanation('${question.id}')" title="Regenerar explicación">
+                                🔄 Regenerar
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="explanation-header">
+                            <h6>💡 Explicación GPT-5</h6>
+                            <button class="btn btn-primary btn-sm" onclick="viewer.generateExplanation('${question.id}')">
+                                🤖 Generar Explicación
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+
+            showExplanationModal(questionId) {
+                const question = this.allQuestions.find(q => q.id === questionId);
+                const explanation = this.explicaciones[questionId];
+
+                if (!question || !explanation) {
+                    alert('Explicación no disponible');
+                    return;
+                }
+
+                // Llenar la información de la pregunta
+                document.getElementById('explanationQuestionText').textContent = question.texto_pregunta || '';
+
+                // Mostrar imagen si existe
+                const imgContainer = document.getElementById('explanationQuestionImage');
+                const img = document.getElementById('explanationImg');
+                if (question.imagen) {
+                    img.src = question.imagen;
+                    imgContainer.style.display = 'block';
+                } else {
+                    imgContainer.style.display = 'none';
+                }
+
+                // Mostrar opciones
+                const optionsContainer = document.getElementById('explanationOptions');
+                if (question.opciones) {
+                    optionsContainer.innerHTML = '<h6 class="fw-bold mb-2">📋 Opciones:</h6><div class="explanation-options">' +
+                        Object.entries(question.opciones).map(([letra, texto]) => {
+                            const isCorrect = letra.toLowerCase() === question.respuesta_correcta?.toLowerCase();
+                            return `
+                                <div class="explanation-option ${isCorrect ? 'correct' : ''}">
+                                    <div class="explanation-option-letter">${letra.toUpperCase()})</div>
+                                    <div>${texto}</div>
+                                </div>
+                            `;
+                        }).join('') + '</div>';
+                } else {
+                    optionsContainer.innerHTML = '';
+                }
+
+                // Mostrar respuesta correcta
+                const answerContainer = document.getElementById('explanationAnswer');
+                const correctAnswerText = document.getElementById('correctAnswerText');
+                if (question.respuesta_correcta && !question.anulada) {
+                    correctAnswerText.textContent = `Opción ${question.respuesta_correcta.toUpperCase()}`;
+                    answerContainer.style.display = 'block';
+                    answerContainer.className = 'alert alert-success';
+                } else if (question.anulada) {
+                    correctAnswerText.textContent = 'PREGUNTA ANULADA - Todas las respuestas son válidas';
+                    answerContainer.style.display = 'block';
+                    answerContainer.className = 'alert alert-warning';
+                } else {
+                    answerContainer.style.display = 'none';
+                }
+
+                // Procesar markdown y mostrar explicación
+                const explanationContent = document.getElementById('explanationContent');
+                try {
+                    explanationContent.innerHTML = marked.parse(explanation.explicacion || '');
+                } catch (error) {
+                    console.error('Error procesando markdown:', error);
+                    explanationContent.innerHTML = `<pre>${explanation.explicacion || ''}</pre>`;
+                }
+
+                // Manejar contenido visual (imagen subida > imagen PNG > SVG)
+                this.setupVisualContent(questionId, explanation);
+
+                // Mostrar metadatos
+                const metaContainer = document.getElementById('explanationMeta');
+                const fechaFormatted = explanation.fecha ? new Date(explanation.fecha).toLocaleString('es-ES') : '';
+                metaContainer.innerHTML = `
+                    Generada: ${fechaFormatted} |
+                    Modelo: ${explanation.modelo || 'GPT-5'} |
+                    ID: ${questionId}
+                `;
+
+                // Configurar botones del modal
+                const editBtn = document.getElementById('editExplanationBtn');
+                editBtn.onclick = () => {
+                    this.editExplanation(questionId, explanation);
+                };
+
+                // Mostrar modal
+                const modal = new bootstrap.Modal(document.getElementById('explanationModal'));
+                modal.show();
+            }
+
+            setupVisualContent(questionId, explanation) {
+                const visualContentDiv = document.getElementById('explanationVisualContent');
+                const visualContainer = document.getElementById('visualContainer');
+                const visualControls = document.getElementById('visualControls');
+                const uploadArea = document.getElementById('uploadArea');
+
+                console.log('🔍 setupVisualContent called for:', questionId);
+                console.log('📋 Explanation data:', {
+                    hasImageUploaded: !!explanation.image_uploaded_url,
+                    hasImagePNG: !!explanation.image_png_url,
+                    hasSVG: !!explanation.svg_content,
+                    hasImagePrompt: !!explanation.image_prompt
+                });
+
+                let hasVisualContent = false;
+
+                // Prioridad: imagen subida > imagen PNG > SVG (según documentación del sistema anterior)
+                if (explanation.image_uploaded_url) {
+                    // Mostrar imagen subida
+                    visualContainer.innerHTML = `
+                        <img src="http://localhost:5001/${explanation.image_uploaded_url}"
+                             alt="Imagen personalizada"
+                             class="img-fluid rounded border"
+                             style="max-width: 100%; max-height: 500px;">
+                    `;
+
+                    visualControls.innerHTML = `
+                        <div class="visual-controls">
+                            <button class="btn-visual-control btn-primary" onclick="viewer.viewFullImage('http://localhost:5001/${explanation.image_uploaded_url}')">
+                                👁️ Ver imagen completa
+                            </button>
+                        </div>
+                        <small class="text-muted mt-2 d-block">
+                            📅 Imagen subida: ${explanation.image_uploaded_at ? new Date(explanation.image_uploaded_at).toLocaleString('es-ES') : 'N/A'}
+                        </small>
+                    `;
+                    hasVisualContent = true;
+
+                } else if (explanation.image_png_url) {
+                    // Mostrar imagen PNG generada
+                    visualContainer.innerHTML = `
+                        <img src="http://localhost:5001/${explanation.image_png_url}"
+                             alt="Imagen generada por IA"
+                             class="img-fluid rounded border"
+                             style="max-width: 100%; max-height: 500px;">
+                    `;
+
+                    visualControls.innerHTML = `
+                        <div class="visual-controls">
+                            <button class="btn-visual-control btn-primary" onclick="viewer.viewFullImage('http://localhost:5001/${explanation.image_png_url}')">
+                                👁️ Ver imagen completa
+                            </button>
+                        </div>
+                        <small class="text-muted mt-2 d-block">
+                            🎨 Imagen PNG generada: ${explanation.image_png_generated_at ? new Date(explanation.image_png_generated_at).toLocaleString('es-ES') : 'N/A'}
+                        </small>
+                    `;
+                    hasVisualContent = true;
+
+                } else if (explanation.svg_content) {
+                    // Mostrar SVG desde campos directos
+                    const svgContent = `<div class="svg-container">${explanation.svg_content}</div>`;
+
+                    if (svgContent) {
+                        visualContainer.innerHTML = svgContent;
+
+                        visualControls.innerHTML = `
+                            <div class="visual-controls">
+                                <!-- Solo visualización, sin controles de edición -->
+                            </div>
+                            <small class="text-muted mt-2 d-block">
+                                🎯 ${explanation.descripcion || 'Diagrama SVG generado por IA'}
+                            </small>
+                        `;
+                        hasVisualContent = true;
+                    }
+                } else if (explanation.image_prompt) {
+                    // No hay contenido visual, no mostrar controles en vista de solo lectura
+                    visualControls.innerHTML = `
+                        <div class="visual-controls">
+                            <small class="text-muted">
+                                💡 Esta explicación tiene un prompt para generar imágenes. Usa "✏️ Editar Explicación" para gestionar las imágenes.
+                            </small>
+                        </div>
+                    `;
+                    hasVisualContent = true;
+                }
+
+                // Configurar área de upload
+                this.setupUploadArea(questionId);
+
+                // Mostrar/ocultar sección visual
+                visualContentDiv.style.display = hasVisualContent ? 'block' : 'none';
+            }
+
+            setupUploadArea(questionId) {
+                const uploadArea = document.getElementById('uploadArea');
+                const fileInput = document.getElementById('imageFileInput');
+
+                // Eventos de drag & drop
+                uploadArea.addEventListener('dragover', this.handleDragOver.bind(this));
+                uploadArea.addEventListener('dragenter', this.handleDragEnter.bind(this));
+                uploadArea.addEventListener('dragleave', this.handleDragLeave.bind(this));
+                uploadArea.addEventListener('drop', (e) => this.handleDrop(e, questionId));
+                uploadArea.addEventListener('click', () => fileInput.click());
+
+                // Evento de selección de archivo
+                fileInput.addEventListener('change', (e) => this.handleFileSelect(e, questionId));
+
+                // Evento de paste global
+                document.addEventListener('paste', (e) => this.handlePaste(e, questionId));
+            }
+
+            async generateExplanation(questionId, isAutoMode = false) {
+                try {
+                    const question = this.allQuestions.find(q => q.id === questionId);
+                    if (!question) {
+                        console.warn('Pregunta no encontrada:', questionId);
+                        return;
+                    }
+                    
+                    // Verificar si ya existe explicación
+                    if (this.explicaciones[questionId]) {
+                        console.log('Explicación ya existe para:', questionId);
+                        return;
+                    }
+                    
+                    // Actualizar botón a estado de procesamiento
+                    this.updateExplanationButtonState(questionId, 'processing', isAutoMode);
+                    
+                    const response = await fetch(API_BASE + '/generar-explicacion', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            question_id: question.id,
+                            texto_pregunta: question.texto_pregunta,
+                            opciones: question.opciones,
+                            respuesta_correcta: question.respuesta_correcta
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Actualizar el cache de explicaciones
+                        this.explicaciones[questionId] = {
+                            explicacion: data.explicacion,
+                            fecha: new Date().toISOString(),
+                            modelo: data.modelo || 'GPT-5'
+                        };
+
+                        // Actualizar botón a estado completado
+                        this.updateExplanationButtonState(questionId, 'completed', isAutoMode);
+
+                        // Actualizar la interfaz completa de la sección de explicación
+                        const explanationSection = document.getElementById(`explanation-${questionId}`);
+                        if (explanationSection) {
+                            explanationSection.innerHTML = this.getExplanationHTML(question);
+                        }
+
+                        // Mostrar automáticamente la explicación en el modal solo si no es modo automático
+                        if (!isAutoMode) {
+                            setTimeout(() => {
+                                this.showExplanationModal(questionId);
+                            }, 100);
+                        }
+
+                    } else {
+                        // Actualizar botón a estado de error
+                        this.updateExplanationButtonState(questionId, 'error', isAutoMode);
+                        console.error('Error generando explicación:', data.error);
+                    }
+                    
+                } catch (error) {
+                    // Actualizar botón a estado de error
+                    this.updateExplanationButtonState(questionId, 'error', isAutoMode);
+                    console.error('Error generating explanation:', error);
+                    
+                    // En modo automático, no mostrar alertas para evitar interrupciones
+                    if (!isAutoMode) {
+                        console.error('Error generando explicación:', error.message);
+                    }
+                }
+            }
+
+            restoreOriginalText() {
+                if (this.backupOriginalText && this.currentEditingQuestionId) {
+                    const textArea = document.getElementById('editTextoPregunta');
+                    if (textArea) {
+                        textArea.value = this.backupOriginalText;
+                        console.log('🔄 Texto restaurado al original');
+                        alert('✅ Texto restaurado al original');
+                    }
+                } else {
+                    console.log('⚠️ No hay backup disponible');
+                    alert('⚠️ No hay texto original guardado');
+                }
+            }
+
+            updateExplanationButtonState(questionId, state, isAutoMode = false) {
+                const buttons = document.querySelectorAll(`[onclick*="'${questionId}'"]`);
+                
+                buttons.forEach(button => {
+                    if (button.classList.contains('btn') && button.textContent.includes('Explicación')) {
+                        switch (state) {
+                            case 'processing':
+                                button.innerHTML = isAutoMode ? '⏳ Auto-generando...' : '⏳ Generando...';
+                                button.disabled = true;
+                                button.style.cursor = 'wait';
+                                button.className = 'btn btn-warning btn-sm';
+                                button.style.animation = 'spin 1s linear infinite';
+                                break;
+                                
+                            case 'completed':
+                                button.innerHTML = '✅ Listo';
+                                button.disabled = false;
+                                button.style.cursor = 'pointer';
+                                button.style.animation = 'successPulse 0.5s ease-in-out';
+                                button.className = 'btn btn-success btn-sm';
+                                // Auto-transition a 'view' después de 2 segundos
+                                setTimeout(() => {
+                                    this.updateExplanationButtonState(questionId, 'view', isAutoMode);
+                                }, 2000);
+                                break;
+                                
+                            case 'view':
+                                button.innerHTML = '👁️ Ver Explicación';
+                                button.disabled = false;
+                                button.style.cursor = 'pointer';
+                                button.style.animation = 'none';
+                                button.className = 'btn btn-info btn-sm';
+                                break;
+                                
+                            case 'regenerate':
+                                button.innerHTML = '🔄 Regenerar';
+                                button.disabled = false;
+                                button.style.cursor = 'pointer';
+                                button.style.animation = 'none';
+                                button.className = 'btn btn-warning btn-sm';
+                                break;
+                                
+                            case 'error':
+                                button.innerHTML = '❌ Error - Reintentar';
+                                button.disabled = false;
+                                button.style.cursor = 'pointer';
+                                button.style.animation = 'none';
+                                button.className = 'btn btn-danger btn-sm';
+                                break;
+                                
+                            default:
+                                button.innerHTML = '🤖 Generar Explicación';
+                                button.disabled = false;
+                                button.style.cursor = 'pointer';
+                                button.style.animation = 'none';
+                                button.className = 'btn btn-primary btn-sm';
+                                break;
+                        }
+                    }
+                });
+            }
+
+            editExplanation(questionId, explanation) {
+                // Configurar modal de edición
+                document.getElementById('editExplanationText').value = explanation.explicacion || '';
+                document.getElementById('editExplanationQuestionId').value = questionId;
+                document.getElementById('editImagePrompt').value = explanation.image_prompt || 'No hay prompt de imagen generado para esta explicación.';
+
+                // Configurar gestión de imágenes en el modal de edición
+                // setupEditImageManagement pendiente de reimplementar
+
+                // Configurar eventos de botones
+                const previewBtn = document.getElementById('previewExplanationBtn');
+                const saveBtn = document.getElementById('saveExplanationBtn');
+                const regenerateBtn = document.getElementById('editRegenerateExplanationBtn');
+                const deleteBtn = document.getElementById('editDeleteExplanationBtn');
+
+                previewBtn.onclick = () => {
+                    const text = document.getElementById('editExplanationText').value;
+                    const previewDiv = document.getElementById('explanationPreview');
+                    try {
+                        previewDiv.innerHTML = marked.parse(text || 'Sin contenido...');
+                    } catch (error) {
+                        previewDiv.innerHTML = `<pre>${text}</pre>`;
+                    }
+                };
+
+                saveBtn.onclick = () => this.saveExplanationChanges(questionId);
+
+                regenerateBtn.onclick = () => {
+                    const editModal = bootstrap.Modal.getInstance(document.getElementById('editExplanationModal'));
+                    editModal.hide();
+                    this.generateExplanation(questionId);
+                };
+
+                deleteBtn.onclick = () => {
+                    this.deleteExplanation(questionId);
+                };
+
+                // Cerrar modal actual y abrir modal de edición
+                const currentModal = bootstrap.Modal.getInstance(document.getElementById('explanationModal'));
+                if (currentModal) currentModal.hide();
+
+                const editModal = new bootstrap.Modal(document.getElementById('editExplanationModal'));
+                editModal.show();
+            }
+
+            async saveExplanationChanges(questionId) {
+                try {
+                    const newText = document.getElementById('editExplanationText').value;
+
+                    if (!newText.trim()) {
+                        alert('❌ El contenido de la explicación no puede estar vacío');
+                        return;
+                    }
+
+                    const response = await fetch(API_BASE + '/guardar-explicacion', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            question_id: questionId,
+                            explicacion: newText
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Actualizar cache local
+                        this.explicaciones[questionId].explicacion = newText;
+
+                        // Cerrar modal de edición
+                        const editModal = bootstrap.Modal.getInstance(document.getElementById('editExplanationModal'));
+                        editModal.hide();
+
+                        // Recargar explicación en el listado
+                        this.renderQuestions();
+
+                        alert('✅ Explicación guardada correctamente');
+                    } else {
+                        throw new Error(data.error || 'Error desconocido');
+                    }
+
+                } catch (error) {
+                    console.error('Error guardando explicación:', error);
+                    alert(`❌ Error guardando explicación: ${error.message}`);
+                }
+            }
+
+            async deleteExplanation(questionId) {
+                if (!confirm('❓ ¿Estás seguro de que quieres borrar esta explicación? Esta acción no se puede deshacer.')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(API_BASE + '/borrar-explicacion', {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            question_id: questionId
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Eliminar del cache local
+                        delete this.explicaciones[questionId];
+
+                        // Cerrar modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('explanationModal'));
+                        if (modal) modal.hide();
+
+                        // Recargar explicación en el listado
+                        this.renderQuestions();
+
+                        alert('✅ Explicación borrada correctamente');
+                    } else {
+                        throw new Error(data.error || 'Error desconocido');
+                    }
+
+                } catch (error) {
+                    console.error('Error borrando explicación:', error);
+                    alert(`❌ Error borrando explicación: ${error.message}`);
+                }
+            }
+
+
+            renderPagination() {
+                const totalPages = Math.ceil(this.filteredQuestions.length / this.questionsPerPage);
+                const pagination = document.getElementById('pagination');
+                pagination.innerHTML = '';
+                
+                if (totalPages <= 1) return;
+                
+                // Botón anterior
+                const prevLi = document.createElement('li');
+                prevLi.className = `page-item ${this.currentPage === 1 ? 'disabled' : ''}`;
+                prevLi.innerHTML = `<a class="page-link" href="#" data-page="${this.currentPage - 1}">Anterior</a>`;
+                pagination.appendChild(prevLi);
+                
+                // Páginas
+                const startPage = Math.max(1, this.currentPage - 2);
+                const endPage = Math.min(totalPages, this.currentPage + 2);
+                
+                for (let page = startPage; page <= endPage; page++) {
+                    const li = document.createElement('li');
+                    li.className = `page-item ${page === this.currentPage ? 'active' : ''}`;
+                    li.innerHTML = `<a class="page-link" href="#" data-page="${page}">${page}</a>`;
+                    pagination.appendChild(li);
+                }
+                
+                // Botón siguiente
+                const nextLi = document.createElement('li');
+                nextLi.className = `page-item ${this.currentPage === totalPages ? 'disabled' : ''}`;
+                nextLi.innerHTML = `<a class="page-link" href="#" data-page="${this.currentPage + 1}">Siguiente</a>`;
+                pagination.appendChild(nextLi);
+                
+                // Event listeners para paginación
+                pagination.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (e.target.tagName === 'A' && !e.target.closest('.disabled')) {
+                        const page = parseInt(e.target.dataset.page);
+                        if (page > 0 && page <= totalPages) {
+                            this.currentPage = page;
+                            this.renderQuestions();
+                            this.renderPagination();
+                            window.scrollTo(0, 0);
+                        }
+                    }
+                });
+            }
+            
+            async applyFilters() {
+                const convocatoria = document.getElementById('filterConvocatoria').value;
+                const titulacion = document.getElementById('filterTitulacion').value;
+                const test = document.getElementById('filterTest').value;
+                const tema = document.getElementById('filterTema').value;
+                const searchText = document.getElementById('searchInput').value.trim();
+
+                console.log('Aplicando filtros:', { convocatoria, titulacion, test, tema, searchText });
+                console.log('Total preguntas disponibles:', this.allQuestions.length);
+                
+                // Debug: Mostrar una muestra de las preguntas para ver su estructura
+                if (this.allQuestions.length > 0) {
+                    const sampleQuestion = this.allQuestions[0];
+                    console.log('Muestra de pregunta:', {
+                        id: sampleQuestion.id,
+                        exam_convocatoria: sampleQuestion.exam_convocatoria,
+                        exam_titulo: sampleQuestion.exam_titulo,
+                        categoria: sampleQuestion.categoria
+                    });
+                    
+                    // Mostrar todas las convocatorias disponibles en las preguntas
+                    const convocatoriasEnPreguntas = [...new Set(this.allQuestions.map(q => q.exam_convocatoria).filter(c => c))];
+                    console.log('Convocatorias disponibles en preguntas:', convocatoriasEnPreguntas);
+                }
+                
+                try {
+                    // Filtrar las preguntas cargadas
+                    let filtered = [...this.allQuestions];
+                    
+                    console.log('Antes de filtros:', filtered.length);
+                    
+                    // Filtro por convocatoria
+                    if (convocatoria && convocatoria !== 'all') {
+                        console.log('Filtrando por convocatoria:', convocatoria);
+                        const beforeFilter = filtered.length;
+                        filtered = filtered.filter(q => {
+                            const match = q.convocatoria === convocatoria;
+                            if (!match && beforeFilter < 5) {
+                                console.log(`Pregunta ${q.id}: convocatoria="${q.convocatoria}" vs filtro="${convocatoria}"`);
+                            }
+                            return match;
+                        });
+                        console.log(`Después de filtro convocatoria: ${filtered.length} de ${beforeFilter}`);
+                    }
+
+                    // Filtro por titulación
+                    if (titulacion && titulacion !== 'all') {
+                        console.log('Filtrando por titulación:', titulacion);
+                        const beforeFilter = filtered.length;
+                        filtered = filtered.filter(q => q.tipo_examen === titulacion);
+                        console.log(`Después de filtro titulación: ${filtered.length} de ${beforeFilter}`);
+                    }
+
+                    // Filtro por test específico
+                    if (test && test !== 'all') {
+                        console.log('Filtrando por test:', test);
+                        const beforeFilter = filtered.length;
+
+                        // Descomponer el identificador compuesto
+                        const [tituloTest, tipoExamen] = test.split('|');
+
+                        filtered = filtered.filter(q => {
+                            return q.exam_titulo === tituloTest && q.tipo_examen === tipoExamen;
+                        });
+
+                        console.log(`Después de filtro test: ${filtered.length} de ${beforeFilter}`);
+                    }
+                    
+                    // Filtro por tema
+                    if (tema && tema !== 'all') {
+                        console.log('Filtrando por tema:', tema);
+                        const beforeFilter = filtered.length;
+                        filtered = filtered.filter(q => 
+                            q.categoria === tema || q.subcategoria === tema
+                        );
+                        console.log(`Después de filtro tema: ${filtered.length} de ${beforeFilter}`);
+                    }
+                    
+                    // Filtro por búsqueda de ID o texto
+                    if (searchText) {
+                        console.log('Filtrando por búsqueda:', searchText);
+                        const beforeFilter = filtered.length;
+                        const searchLower = searchText.toLowerCase();
+                        filtered = filtered.filter(q => 
+                            q.id.toLowerCase().includes(searchLower) ||
+                            q.texto_pregunta.toLowerCase().includes(searchLower) ||
+                            Object.values(q.opciones || {}).some(opt => 
+                                opt.toLowerCase().includes(searchLower)
+                            )
+                        );
+                        console.log(`Después de filtro búsqueda: ${filtered.length} de ${beforeFilter}`);
+                    }
+                    
+                    console.log(`RESULTADO FINAL: ${filtered.length} preguntas filtradas de ${this.allQuestions.length} totales`);
+                    
+                    this.filteredQuestions = filtered;
+                    this.currentPage = 1;
+                    
+                    this.updateStats();
+                    this.renderQuestions();
+                    this.renderPagination();
+                    this.updateTemaFilter(); // Actualizar temas basados en las preguntas filtradas
+                    
+                } catch (error) {
+                    console.error('Error aplicando filtros:', error);
+                    this.showError('Error aplicando filtros: ' + error.message);
+                }
+            }
+            
+            clearFilters() {
+                document.getElementById('filterConvocatoria').value = 'all';
+                document.getElementById('filterTitulacion').value = 'all';
+                document.getElementById('filterTest').value = 'all';
+                document.getElementById('filterTema').value = 'all';
+                document.getElementById('searchInput').value = '';
+                document.getElementById('filterDuplicados').checked = true;
+                
+                // Actualizar filtros en cascada
+                this.updateTestFilter();
+                this.updateTemaFilter();
+                
+                // Aplicar filtros (mostrará todas las preguntas)
+                this.applyFilters();
+            }
+            
+            setupEventListeners() {
+                document.getElementById('searchBtn').addEventListener('click', () => this.applyFilters());
+                document.getElementById('clearFilters').addEventListener('click', () => this.clearFilters());
+                
+                document.getElementById('toggleAnswers').addEventListener('click', (e) => {
+                    this.showAnswers = !this.showAnswers;
+                    e.target.textContent = this.showAnswers ? '🙈 OCULTAR RESPUESTAS' : '👁️ MOSTRAR RESPUESTAS';
+                    this.renderQuestions();
+                    this.renderPagination();
+                });
+                
+                document.getElementById('autoExplain').addEventListener('click', (e) => {
+                    this.autoExplain = !this.autoExplain;
+                    e.target.textContent = this.autoExplain ? '🤖 AUTO ON' : '🤖 AUTO OFF';
+                    if (this.autoExplain) {
+                        e.target.classList.remove('btn-warning');
+                        e.target.classList.add('btn-success');
+                    } else {
+                        e.target.classList.remove('btn-success');
+                        e.target.classList.add('btn-warning');
+                    }
+                });
+                
+                // Event listener para limpiar backup cuando se cierre el modal
+                document.getElementById('editModal').addEventListener('hidden.bs.modal', () => {
+                    this.backupOriginalText = null;
+                    this.currentEditingQuestionId = null;
+                    console.log('🧹 Backup limpiado al cerrar modal');
+                });
+
+                // Event listeners para filtros en cascada
+                document.getElementById('filterConvocatoria').addEventListener('change', () => {
+                    this.updateTestFilter();
+                    this.applyFilters();
+                });
+                document.getElementById('filterTitulacion').addEventListener('change', () => {
+                    this.updateTestFilter();
+                    this.applyFilters();
+                });
+                document.getElementById('filterTest').addEventListener('change', () => this.applyFilters());
+                document.getElementById('filterTema').addEventListener('change', () => this.applyFilters());
+                document.getElementById('filterDuplicados').addEventListener('change', () => this.applyFilters());
+                
+                // Botón X para limpiar búsqueda
+                document.getElementById('clearSearch').addEventListener('click', () => {
+                    document.getElementById('searchInput').value = '';
+                    this.applyFilters();
+                });
+                
+                // Buscar al presionar Enter
+                document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.applyFilters();
+                });
+            }
+            
+            showLoading(show) {
+                document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+            }
+            
+            showError(message) {
+                const container = document.getElementById('questionsContainer');
+                container.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <h5>❌ Error</h5>
+                        <p>${message}</p>
+                        <button class="btn btn-primary" onclick="location.reload()">🔄 Reintentar</button>
+                    </div>
+                `;
+            }
+
+            editQuestion(questionId) {
+                const question = this.allQuestions.find(q => q.id === questionId);
+                if (!question) {
+                    alert('❌ Error: No se encontró la pregunta');
+                    return;
+                }
+
+                // GUARDAR TEXTO ORIGINAL PARA BACKUP
+                const originalText = question.texto_pregunta || '';
+                this.backupOriginalText = originalText;
+                this.currentEditingQuestionId = questionId;
+                console.log('💾 Backup del texto original guardado:', originalText.substring(0, 100) + '...');
+
+                // Llenar el modal con los datos actuales
+                document.getElementById('editQuestionId').value = questionId;
+
+                // PESTAÑA DE CONTENIDO
+                // Texto de la pregunta (ahora editable)
+                document.getElementById('editTextoPregunta').value = originalText;
+
+                // Opciones de respuesta (editables)
+                const optionsContainer = document.getElementById('editOptionsContainer');
+                optionsContainer.innerHTML = '';
+
+                if (question.opciones) {
+                    let index = 0;
+                    Object.entries(question.opciones).forEach(([letra, texto]) => {
+                        const optionDiv = document.createElement('div');
+                        optionDiv.className = 'option-edit';
+                        optionDiv.setAttribute('data-index', index);
+                        optionDiv.innerHTML = `
+                            <label for="editOpcion${index}" class="form-label">Opción ${letra.toUpperCase()}:</label>
+                            <div class="option-input-group">
+                                <textarea class="form-control" id="editOpcion${index}" required rows="3">${texto}</textarea>
+                                ${Object.keys(question.opciones).length > 2 ?
+                                    `<button type="button" class="btn-remove-option" onclick="viewer.removeOption(${index})" title="Eliminar opción">×</button>` :
+                                    ''
+                                }
+                            </div>
+                        `;
+                        optionsContainer.appendChild(optionDiv);
+                        index++;
+                    });
+                }
+
+                // Actualizar el selector de respuesta correcta basado en las opciones cargadas
+                setTimeout(() => {
+                    this.updateAnswerSelector();
+                    document.getElementById('editRespuesta').value = question.respuesta_correcta || '';
+                }, 100);
+
+                // PESTAÑA DE RESPUESTA
+                document.getElementById('editAnulada').checked = question.anulada || false;
+
+                // PESTAÑA DE METADATOS
+                // Llenar categorías disponibles
+                const editTema = document.getElementById('editTema');
+                editTema.innerHTML = '<option value="">Sin categoría</option>';
+
+                const categorias = [...new Set(this.allQuestions.map(q => q.categoria).filter(c => c))];
+                categorias.forEach(categoria => {
+                    const option = document.createElement('option');
+                    option.value = categoria;
+                    option.textContent = categoria;
+                    option.selected = (categoria === question.categoria);
+                    editTema.appendChild(option);
+                });
+
+                // Otros campos de metadatos
+                document.getElementById('editSubcategoria').value = question.subcategoria || '';
+
+                // Obtener datos del examen
+                const currentExam = this.examenes.find(e => e.id === question.exam_id);
+                document.getElementById('editTitulacion').value = currentExam?.tipo_examen || '';
+                document.getElementById('editConvocatoria').value = currentExam?.convocatoria || '';
+                document.getElementById('editNumero').value = question.numero_pregunta || '';
+
+                // PESTAÑA DE EXPLICACIÓN
+                this.loadExplanationTab(questionId);
+
+                // Configurar eventos de pestañas
+                this.setupTabEvents();
+
+                // Mostrar el modal
+                const modal = new bootstrap.Modal(document.getElementById('editModal'));
+                modal.show();
+            }
+
+            setupTabEvents() {
+                const tabButtons = document.querySelectorAll('.tab-button');
+                const tabContents = document.querySelectorAll('.tab-content');
+
+                tabButtons.forEach(button => {
+                    // Remover eventos anteriores
+                    button.replaceWith(button.cloneNode(true));
+                });
+
+                // Volver a obtener los botones después del reemplazo
+                const newTabButtons = document.querySelectorAll('.tab-button');
+
+                newTabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const targetTab = button.getAttribute('data-tab');
+
+                        // Remover clase active de todos los botones y contenidos
+                        newTabButtons.forEach(btn => btn.classList.remove('active'));
+                        tabContents.forEach(content => content.classList.remove('active'));
+
+                        // Añadir clase active al botón y contenido seleccionados
+                        button.classList.add('active');
+                        const targetContent = document.getElementById(`tab-${targetTab}`);
+                        if (targetContent) {
+                            targetContent.classList.add('active');
+                        }
+                    });
+                });
+            }
+
+            loadExplanationTab(questionId) {
+                const explanationStatus = document.getElementById('explanationStatus');
+                const explanationActions = document.getElementById('explanationActions');
+                const explanationPreview = document.getElementById('explanationPreview');
+
+                const hasExplanation = this.explicaciones[questionId];
+
+                if (hasExplanation) {
+                    explanationStatus.innerHTML = `
+                        <div class="alert alert-success">
+                            <h6>📖 Explicación disponible</h6>
+                            <p>Esta pregunta tiene una explicación generada.</p>
+                            <small>Generada: ${new Date(hasExplanation.fecha).toLocaleDateString()}</small>
+                        </div>
+                    `;
+
+                    explanationActions.innerHTML = `
+                        <div class="d-flex gap-2 mb-3">
+                            <button type="button" class="btn btn-info btn-sm" onclick="viewer.toggleExplanationPreview('${questionId}')">
+                                👁️ Ver Explicación
+                            </button>
+                            <button type="button" class="btn btn-warning btn-sm" onclick="viewer.generateExplanation('${questionId}')">
+                                🔄 Regenerar
+                            </button>
+                        </div>
+                    `;
+
+                    explanationPreview.innerHTML = `
+                        <div class="explanation-content" id="modalExplanationContent-${questionId}" style="display: none;">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="explanation-text">${hasExplanation.explicacion}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    explanationStatus.innerHTML = `
+                        <div class="alert alert-info">
+                            <h6>💡 Sin explicación</h6>
+                            <p>Esta pregunta no tiene explicación generada.</p>
+                        </div>
+                    `;
+
+                    explanationActions.innerHTML = `
+                        <button type="button" class="btn btn-primary btn-sm" onclick="viewer.generateExplanation('${questionId}')">
+                            🤖 Generar Explicación
+                        </button>
+                    `;
+
+                    explanationPreview.innerHTML = `
+                        <p class="text-muted">No hay explicación disponible.</p>
+                    `;
+                }
+            }
+
+            toggleExplanationPreview(questionId) {
+                const content = document.getElementById(`modalExplanationContent-${questionId}`);
+                if (content) {
+                    const isVisible = content.style.display !== 'none';
+                    content.style.display = isVisible ? 'none' : 'block';
+                }
+            }
+
+            addOption() {
+                const container = document.getElementById('editOptionsContainer');
+                const currentCount = container.children.length;
+                const letter = String.fromCharCode(65 + currentCount); // A, B, C, D...
+
+                const newOption = document.createElement('div');
+                newOption.className = 'option-edit';
+                newOption.setAttribute('data-index', currentCount);
+                newOption.innerHTML = `
+                    <label for="editOpcion${currentCount}" class="form-label">Opción ${letter}:</label>
+                    <div class="option-input-group">
+                        <textarea class="form-control" id="editOpcion${currentCount}" required rows="3"></textarea>
+                        <button type="button" class="btn-remove-option" onclick="viewer.removeOption(${currentCount})" title="Eliminar opción">×</button>
+                    </div>
+                `;
+
+                container.appendChild(newOption);
+
+                // Actualizar el selector de respuesta correcta
+                this.updateAnswerSelector();
+            }
+
+            removeOption(index) {
+                const container = document.getElementById('editOptionsContainer');
+                const optionElement = container.querySelector(`[data-index="${index}"]`);
+
+                if (optionElement && container.children.length > 2) {
+                    optionElement.remove();
+
+                    // Reindexar los elementos restantes
+                    const remainingOptions = container.querySelectorAll('.option-edit');
+                    remainingOptions.forEach((option, newIndex) => {
+                        option.setAttribute('data-index', newIndex);
+                        const input = option.querySelector('textarea, input'); // Support both textarea and input
+                        const label = option.querySelector('label');
+                        const removeBtn = option.querySelector('.btn-remove-option');
+                        const letter = String.fromCharCode(65 + newIndex); // A, B, C, D...
+
+                        if (input) {
+                            input.id = `editOpcion${newIndex}`;
+                        }
+                        label.textContent = `Opción ${letter}:`;
+                        label.setAttribute('for', `editOpcion${newIndex}`);
+
+                        if (removeBtn) {
+                            removeBtn.setAttribute('onclick', `viewer.removeOption(${newIndex})`);
+                        }
+                    });
+
+                    // Actualizar el selector de respuesta correcta
+                    this.updateAnswerSelector();
+                }
+            }
+
+            updateAnswerSelector() {
+                const container = document.getElementById('editOptionsContainer');
+                const select = document.getElementById('editRespuesta');
+
+                if (!select || !container) return;
+
+                const currentValue = select.value;
+
+                // Limpiar opciones existentes
+                select.innerHTML = '<option value="">Sin respuesta</option>';
+
+                // Añadir nuevas opciones
+                const options = container.querySelectorAll('.option-edit');
+                options.forEach((option, index) => {
+                    const letter = String.fromCharCode(65 + index).toLowerCase();
+                    const input = option.querySelector('textarea, input'); // Support both textarea and input
+                    const text = input?.value || `Opción ${letter.toUpperCase()}`;
+
+                    const optionElement = document.createElement('option');
+                    optionElement.value = letter;
+                    optionElement.textContent = `${letter.toUpperCase()}) ${text.substring(0, 50)}${text.length > 50 ? '...' : ''}`;
+
+                    if (letter === currentValue) {
+                        optionElement.selected = true;
+                    }
+
+                    select.appendChild(optionElement);
+                });
+            }
+
+            async saveQuestionChanges() {
+                const questionId = document.getElementById('editQuestionId').value;
+                const textoPregunta = document.getElementById('editTextoPregunta').value;
+                const categoria = document.getElementById('editTema').value;
+                const subcategoria = document.getElementById('editSubcategoria').value;
+                const respuesta = document.getElementById('editRespuesta').value;
+                const anulada = document.getElementById('editAnulada').checked;
+
+                // Obtener nuevas opciones del DOM
+                const nuevasOpciones = {};
+                const container = document.getElementById('editOptionsContainer');
+                const optionElements = container.querySelectorAll('.option-edit');
+
+                optionElements.forEach((optionElement, index) => {
+                    const input = optionElement.querySelector('textarea, input');
+                    const letter = String.fromCharCode(97 + index); // a, b, c, d...
+                    if (input && input.value.trim()) {
+                        nuevasOpciones[letter] = input.value.trim();
+                    }
+                });
+
+                // Validar texto de la pregunta
+                if (!textoPregunta || textoPregunta.trim().length === 0) {
+                    alert('⚠️ El texto de la pregunta no puede estar vacío');
+                    return;
+                }
+
+                if (Object.keys(nuevasOpciones).length < 2) {
+                    alert('⚠️ Debe tener al menos 2 opciones de respuesta');
+                    return;
+                }
+
+                if (!respuesta && !anulada) {
+                    alert('⚠️ Debe seleccionar una respuesta correcta o marcar la pregunta como anulada');
+                    return;
+                }
+
+                try {
+                    console.log('Guardando cambios en la base de datos:', {
+                        questionId,
+                        textoPregunta,
+                        categoria,
+                        subcategoria,
+                        respuesta,
+                        anulada,
+                        opciones: nuevasOpciones
+                    });
+
+                    // Llamada real al API para guardar en PostgreSQL
+                    const response = await fetch(`${API_BASE}/preguntas/${questionId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            texto_pregunta: textoPregunta,
+                            categoria: categoria,
+                            subcategoria: subcategoria,
+                            respuesta_correcta: respuesta,
+                            anulada: anulada,
+                            opciones: nuevasOpciones
+                        })
+                    });
+
+                    const result = await response.json();
+                    console.log('📊 Respuesta del servidor:', result);
+
+                    if (result.success) {
+                        // Actualizar datos locales solo si el guardado fue exitoso
+                        const question = this.allQuestions.find(q => q.id === questionId);
+                        if (question) {
+                            question.texto_pregunta = textoPregunta;
+                            question.categoria = categoria;
+                            question.subcategoria = subcategoria;
+                            question.respuesta_correcta = respuesta;
+                            question.anulada = anulada;
+                            question.opciones = nuevasOpciones;
+
+                            // Actualizar también en filteredQuestions
+                            const filteredQuestion = this.filteredQuestions.find(q => q.id === questionId);
+                            if (filteredQuestion) {
+                                filteredQuestion.texto_pregunta = textoPregunta;
+                                filteredQuestion.categoria = categoria;
+                                filteredQuestion.subcategoria = subcategoria;
+                                filteredQuestion.respuesta_correcta = respuesta;
+                                filteredQuestion.anulada = anulada;
+                                filteredQuestion.opciones = nuevasOpciones;
+                            }
+
+                            // Re-renderizar preguntas
+                            this.renderQuestions();
+
+                            // Cerrar modal
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+                            modal.hide();
+
+                            // Limpiar backup
+                            this.backupOriginalText = null;
+                            this.currentEditingQuestionId = null;
+
+                            alert('✅ Cambios guardados correctamente en la base de datos');
+                        }
+                    } else {
+                        throw new Error(result.error || 'Error desconocido del servidor');
+                    }
+
+                } catch (error) {
+                    console.error('Error guardando cambios:', error);
+                    alert(`❌ Error al guardar los cambios: ${error.message}`);
+                }
+            }
+
+            applyUrlParameters() {
+                // Leer parámetros de la URL y aplicar filtros correspondientes
+                const urlParams = new URLSearchParams(window.location.search);
+
+                console.log('🔗 URL completa:', window.location.href);
+                console.log('🔗 Parámetros URL encontrados:', Object.fromEntries(urlParams));
+
+                // Aplicar filtros desde URL
+                if (urlParams.has('titulacion')) {
+                    const titulacionSelect = document.getElementById('filterTitulacion');
+                    if (titulacionSelect) titulacionSelect.value = urlParams.get('titulacion');
+                }
+
+                if (urlParams.has('convocatoria')) {
+                    const convocatoriaSelect = document.getElementById('filterConvocatoria');
+                    if (convocatoriaSelect) convocatoriaSelect.value = urlParams.get('convocatoria');
+                }
+
+                if (urlParams.has('tema')) {
+                    const temaSelect = document.getElementById('filterTema');
+                    if (temaSelect) temaSelect.value = urlParams.get('tema');
+                }
+
+                if (urlParams.has('search')) {
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput) {
+                        searchInput.value = urlParams.get('search');
+                        console.log('🔍 Filtro de búsqueda aplicado desde URL:', urlParams.get('search'));
+                    }
+                }
+
+                // Mostrar mensaje especial si viene del sistema de exámenes
+                if (urlParams.has('from_exam')) {
+                    setTimeout(() => {
+                        console.log('🎯 Mostrando pregunta específica del examen');
+                        // Agregar mensaje visual al UI
+                        const alertDiv = document.createElement('div');
+                        alertDiv.className = 'alert alert-info mt-3';
+                        alertDiv.innerHTML = '🎯 Mostrando pregunta específica del examen. Puedes ver la explicación y editarla si es necesario.';
+                        const container = document.querySelector('.container') || document.body;
+                        container.insertBefore(alertDiv, container.firstChild);
+
+                        // Remover después de 5 segundos
+                        setTimeout(() => alertDiv.remove(), 5000);
+                    }, 1000);
+                }
+
+                // Aplicar filtros después de establecer los valores
+                setTimeout(() => {
+                    console.log('🔗 Aplicando filtros desde URL...');
+                    this.applyFilters();
+                }, 100);
+
+                console.log('🔗 Parámetros URL aplicados');
+            }
+        }
+        */
+    </script>
+</body>
+</html>

@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c5f0508a876e52e93e6553511530c45a63c103a391e635a89d7cec99938b6c22
-size 467
+{
+  "name": "per_cloude",
+  "version": "1.0.0",
+  "description": "Sistema completo para visualización y gestión de exámenes náuticos con explicaciones inteligentes generadas por GPT-5.",
+  "main": "screenshot.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "playwright": "^1.55.0"
+  }
+}

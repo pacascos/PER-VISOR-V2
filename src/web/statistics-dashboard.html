@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Estadísticas - PER Sistema</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+            --border-radius: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark-color);
+        }
+
+        .stats-container {
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .stats-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .stats-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-subtitle {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .user-level {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-color), #7c3aed);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-right: 1rem;
+        }
+
+        .stat-icon.success { background: var(--success-color); }
+        .stat-icon.warning { background: var(--warning-color); }
+        .stat-icon.info { background: var(--info-color); }
+        .stat-icon.danger { background: var(--danger-color); }
+        .stat-icon.primary { background: var(--primary-color); }
+
+        .stat-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-description {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .progress-wrapper {
+            margin: 1rem 0;
+        }
+
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+            background: #e5e7eb;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(135deg, var(--success-color), #34d399);
+            transition: width 0.6s ease;
+            border-radius: 5px;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .achievement-badge {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .achievement-badge.unlocked {
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            color: var(--dark-color);
+        }
+
+        .achievement-badge.locked {
+            background: #f3f4f6;
+            color: #9ca3af;
+        }
+
+        .achievement-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .achievement-description {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 1rem;
+        }
+
+        .topic-mastery {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .topic-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .topic-info {
+            flex: 1;
+        }
+
+        .topic-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .topic-stats {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .topic-progress {
+            width: 100px;
+            margin: 0 1rem;
+        }
+
+        .topic-score {
+            font-weight: bold;
+            color: var(--success-color);
+        }
+
+        .recommendations {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .recommendation-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-item:hover {
+            background: #f8fafc;
+            transform: translateX(5px);
+        }
+
+        .recommendation-priority {
+            width: 8px;
+            height: 60px;
+            border-radius: 4px;
+            margin-right: 1rem;
+        }
+
+        .priority-high { background: var(--danger-color); }
+        .priority-medium { background: var(--warning-color); }
+        .priority-low { background: var(--success-color); }
+
+        .recommendation-content {
+            flex: 1;
+        }
+
+        .recommendation-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendation-description {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .btn-custom {
+            padding: 0.75rem 2rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary-custom {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary-custom {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary-custom:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+
+        .streak-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 1rem;
+        }
+
+        .streak-flame {
+            animation: flicker 1.5s infinite alternate;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .achievements-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .stats-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stats-container">
+        <!-- Header -->
+        <div class="stats-header">
+            <h1 class="stats-title">
+                <i class="fas fa-chart-line me-3"></i>
+                Dashboard de Estadísticas
+            </h1>
+            <p class="stats-subtitle">Seguimiento de tu progreso en el examen PER</p>
+
+            <div class="user-info-header">
+                <div class="user-level" id="userLevel">
+                    <i class="fas fa-star me-2"></i>
+                    <span id="levelText">Nivel 1</span>
+                </div>
+
+                <div class="streak-indicator" id="streakIndicator">
+                    <i class="fas fa-fire streak-flame"></i>
+                    <span id="streakText">0 días</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading-spinner">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Main Stats Grid -->
+        <div id="statsContent" class="d-none">
+            <div class="stats-grid">
+                <!-- Overall Performance -->
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-icon success">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-title">Rendimiento Global</div>
+                    </div>
+                    <div class="stat-value" id="overallScore">85%</div>
+                    <div class="stat-description">Puntuación promedio en todos los exámenes</div>
+                    <div class="progress-wrapper">
+                        <div class="progress">
+                            <div class="progress-bar" id="overallProgress" style="width: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exams Completed -->
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-icon info">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <div class="stat-title">Exámenes Completados</div>
+                    </div>
+                    <div class="stat-value" id="examsCompleted">12</div>
+                    <div class="stat-description">Total de exámenes realizados</div>
+                    <div class="progress-wrapper">
+                        <div class="progress">
+                            <div class="progress-bar" id="examProgress" style="width: 60%"></div>
+                        </div>
+                        <small class="text-muted">Meta: 20 exámenes</small>
+                    </div>
+                </div>
+
+                <!-- Study Time -->
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-icon warning">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-title">Tiempo de Estudio</div>
+                    </div>
+                    <div class="stat-value" id="studyTime">24h</div>
+                    <div class="stat-description">Tiempo total invertido estudiando</div>
+                    <div class="progress-wrapper">
+                        <div class="progress">
+                            <div class="progress-bar" id="timeProgress" style="width: 48%"></div>
+                        </div>
+                        <small class="text-muted">Meta: 50 horas</small>
+                    </div>
+                </div>
+
+                <!-- Weak Areas -->
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-icon danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-title">Áreas de Mejora</div>
+                    </div>
+                    <div class="stat-value" id="weakAreas">3</div>
+                    <div class="stat-description">Temas que requieren más práctica</div>
+                    <div id="weakAreasList" class="mt-2">
+                        <small class="badge bg-danger me-1">UT3 - Navegación</small>
+                        <small class="badge bg-warning me-1">UT7 - Meteorología</small>
+                        <small class="badge bg-warning me-1">UT9 - Comunicaciones</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Evolution Chart -->
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-icon primary">
+                        <i class="fas fa-chart-area"></i>
+                    </div>
+                    <div class="stat-title">Evolución del Rendimiento</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="evolutionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Topic Mastery -->
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-icon success">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="stat-title">Dominio por Temas</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Detailed Topic Progress -->
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-icon info">
+                        <i class="fas fa-list-check"></i>
+                    </div>
+                    <div class="stat-title">Progreso Detallado por UT</div>
+                </div>
+                <div class="topic-mastery" id="topicMastery">
+                    <!-- Topics will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Achievements -->
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-icon warning">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="stat-title">Logros Desbloqueados</div>
+                </div>
+                <div class="achievements-grid" id="achievementsGrid">
+                    <!-- Achievements will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div id="recommendationsSection" class="recommendations d-none">
+            <h3><i class="fas fa-lightbulb me-2"></i>Recomendaciones de Estudio</h3>
+            <div id="recommendationsList">
+                <!-- Recommendations will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Achievement Notification Modal -->
+        <div class="modal fade" id="achievementModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title">
+                            <i class="fas fa-trophy me-2"></i>
+                            ¡Nuevo Logro Desbloqueado!
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div id="achievementContent">
+                            <!-- Achievement content will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <button class="btn-custom btn-primary-custom" onclick="location.href='exam-system.html'">
+                <i class="fas fa-arrow-left me-2"></i>Volver al Sistema
+            </button>
+            <button class="btn-custom btn-secondary-custom" onclick="location.href='visor-nueva-arquitectura.html'">
+                <i class="fas fa-book me-2"></i>Banco de Preguntas
+            </button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Statistics Manager -->
+    <script src="statistics-manager.js"></script>
+
+    <script>
+        // Initialize statistics dashboard
+        let statisticsManager;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            statisticsManager = new StatisticsManager();
+            statisticsManager.initialize();
+        });
+    </script>
+</body>
+</html>

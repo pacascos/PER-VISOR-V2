@@ -1,0 +1,20 @@
+{
+  "name": "playwright-debug",
+  "command": "npx",
+  "args": ["@playwright/mcp@latest"],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "options": {
+    "browser": "chrome",
+    "headless": false,
+    "viewport-size": "1280,720",
+    "timeout-action": 10000,
+    "timeout-navigation": 30000,
+    "output-dir": "./debug-output",
+    "save-session": true,
+    "save-trace": true,
+    "allowed-origins": "localhost:8095;localhost:5001;127.0.0.1:8095;127.0.0.1:5001"
+  }
+}
+

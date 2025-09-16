@@ -58,7 +58,8 @@ class ExamSystem {
         });
 
         document.getElementById('viewStatsBtn').addEventListener('click', () => {
-            this.showPERStats();
+            // Redirect to new gamified statistics dashboard
+            window.location.href = 'statistics-dashboard.html';
         });
 
         // Exam navigation events
@@ -241,6 +242,7 @@ class ExamSystem {
                 this.currentQuestionIndex = 0;
                 this.userAnswers = {};
                 this.timeRemaining = 90 * 60; // Reset timer
+                this.examStartTime = new Date(); // Track exam start time for statistics
 
                 // Load exam questions details
                 await this.loadExamQuestions();
@@ -605,6 +607,9 @@ class ExamSystem {
         `;
 
         this.showResults();
+
+        // Save statistics data after displaying results
+        this.saveExamStatistics(results);
     }
 
     generateUTResultsHTML(utResults) {
@@ -790,6 +795,141 @@ class ExamSystem {
                 alertElement.remove();
             }
         }, 5000);
+    }
+
+    // Statistics Integration Methods
+    async saveExamStatistics(results) {
+        // Only save if user is authenticated
+        if (!this.authToken || !this.currentUser) {
+            console.log('No authenticated user, skipping statistics save');
+            return;
+        }
+
+        try {
+            // Calculate time taken in minutes
+            const timeMinutes = this.getExamDurationMinutes();
+
+            // Prepare topic results for API
+            const topicResults = {};
+            const utNames = this.getUTMapping();
+
+            // Convert UT results to API format
+            for (const [utNumber, utData] of Object.entries(results.utResults)) {
+                const utKey = `UT${utNumber}`;
+                topicResults[utKey] = {
+                    correct: utData.correct,
+                    total: utData.total,
+                    percentage: utData.total > 0 ? Math.round((utData.correct / utData.total) * 100) : 0,
+                    category_name: utNames[utNumber] || `UT${utNumber}`
+                };
+            }
+
+            // Prepare individual question attempts
+            const questionAttempts = [];
+            if (this.currentExam.questionDetails) {
+                this.currentExam.questionDetails.forEach(question => {
+                    const userAnswer = this.userAnswers[question.question_id];
+                    const isCorrect = userAnswer === question.respuesta_correcta;
+
+                    questionAttempts.push({
+                        question_id: question.question_id,
+                        user_answer: userAnswer || null,
+                        correct_answer: question.respuesta_correcta,
+                        is_correct: isCorrect,
+                        category: `UT${question.ut_number}`,
+                        time_spent_seconds: 0 // TODO: Track individual question time
+                    });
+                });
+            }
+
+            // Send statistics to API
+            const statisticsData = {
+                score: Math.round(results.percentage),
+                time_minutes: timeMinutes,
+                topic_results: topicResults,
+                question_attempts: questionAttempts,
+                passed: results.passed,
+                total_questions: results.totalQuestions,
+                questions_answered: results.totalAnswered,
+                exam_date: new Date().toISOString()
+            };
+
+            console.log('Saving exam statistics:', statisticsData);
+
+            const response = await fetch(`${this.API_BASE}/api/statistics/exam-completed`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.authToken}`
+                },
+                body: JSON.stringify(statisticsData)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('✅ Statistics saved successfully:', result);
+
+                // Show achievement notifications if any
+                if (result.new_achievements && result.new_achievements.length > 0) {
+                    this.showAchievementNotifications(result.new_achievements);
+                }
+
+                // Show XP gained
+                if (result.xp_earned > 0) {
+                    this.showXPNotification(result.xp_earned);
+                }
+            } else {
+                const error = await response.json();
+                console.error('❌ Error saving statistics:', error);
+            }
+
+        } catch (error) {
+            console.error('❌ Error in saveExamStatistics:', error);
+        }
+    }
+
+    getExamDurationMinutes() {
+        // Calculate exam duration from start time
+        if (this.examStartTime) {
+            const endTime = new Date();
+            const durationMs = endTime - this.examStartTime;
+            return Math.round(durationMs / (1000 * 60)); // Convert to minutes
+        }
+        return 90; // Default fallback
+    }
+
+    getUTMapping() {
+        return {
+            1: 'Nomenclatura náutica',
+            2: 'Elementos de amarre y fondeo',
+            3: 'Seguridad',
+            4: 'Legislación',
+            5: 'Balizamiento',
+            6: 'Reglamento RIPA',
+            7: 'Maniobra',
+            8: 'Emergencias en la mar',
+            9: 'Meteorología',
+            10: 'Teoría de la navegación',
+            11: 'Carta de navegación'
+        };
+    }
+
+    showAchievementNotifications(achievements) {
+        achievements.forEach((achievement, index) => {
+            setTimeout(() => {
+                this.showAlert(
+                    `🏆 ¡Nuevo logro desbloqueado! "${achievement.title}" (+${achievement.xp} XP)`,
+                    'success'
+                );
+            }, index * 2000); // Stagger notifications
+        });
+    }
+
+    showXPNotification(xpEarned) {
+        this.showAlert(
+            `⭐ ¡Ganaste ${xpEarned} XP en este examen!`,
+            'info'
+        );
     }
 }
 

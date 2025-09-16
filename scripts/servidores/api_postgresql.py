@@ -20,6 +20,9 @@ import jwt
 from datetime import datetime, timedelta
 import random
 
+# Import statistics API routes
+from statistics_api import register_statistics_routes
+
 # Configuración
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'your-api-key-here')
 # Usar DATABASE_URL si está disponible (formato de docker-compose)
@@ -55,6 +58,9 @@ logger = logging.getLogger(__name__)
 # Crear aplicación Flask
 app = Flask(__name__)
 CORS(app)
+
+# Register statistics routes
+register_statistics_routes(app)
 
 # Configuración de sesiones y JWT
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', secrets.token_hex(32))
