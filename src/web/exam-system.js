@@ -58,6 +58,10 @@ class ExamSystem {
             window.open('visor-nueva-arquitectura.html', '_blank');
         });
 
+        document.getElementById('generateTestExamBtn').addEventListener('click', () => {
+            this.generateTestExam();
+        });
+
         document.getElementById('viewStatsBtn').addEventListener('click', () => {
             // Redirect to new gamified statistics dashboard
             window.location.href = 'statistics-dashboard.html';
@@ -963,6 +967,83 @@ class ExamSystem {
             `⭐ ¡Ganaste ${xpEarned} XP en este examen!`,
             'info'
         );
+    }
+
+    // Test Exam Generation Methods
+    async generateTestExam() {
+        try {
+            this.showAlert('🧪 Generando examen de prueba con respuestas aleatorias...', 'info');
+            
+            // Generar un examen normal primero
+            const response = await fetch(`${this.API_BASE}/exams/generate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.authToken}`
+                },
+                body: JSON.stringify({
+                    exam_type: 'PER',
+                    total_questions: 45
+                })
+            });
+
+            if (response.ok) {
+                this.currentExam = await response.json();
+                this.currentQuestionIndex = 0;
+                this.userAnswers = {};
+                this.timeRemaining = 90 * 60; // 90 minutos
+                this.examStartTime = new Date();
+
+                // Cargar preguntas del examen
+                await this.loadExamQuestions();
+
+                // Generar respuestas aleatorias para todas las preguntas
+                this.generateRandomAnswers();
+
+                this.showExamInterface();
+                this.startTimer();
+                this.displayCurrentQuestion();
+                this.showAlert('🎲 Examen de prueba generado con respuestas aleatorias', 'success');
+            } else {
+                const data = await response.json();
+                this.showAlert(data.error || 'Error generando examen de prueba', 'danger');
+            }
+        } catch (error) {
+            console.error('Error generando examen de prueba:', error);
+            this.showAlert('Error de conexión generando examen de prueba', 'danger');
+        }
+    }
+
+    generateRandomAnswers() {
+        if (!this.currentExam || !this.currentExam.questionDetails) return;
+
+        const options = ['a', 'b', 'c', 'd'];
+        
+        this.currentExam.questionDetails.forEach(question => {
+            // Generar respuesta aleatoria
+            const randomAnswer = options[Math.floor(Math.random() * options.length)];
+            this.userAnswers[question.question_id] = randomAnswer;
+            
+            // Simular tiempo de respuesta (entre 10 y 60 segundos)
+            const timeSpent = Math.floor(Math.random() * 50) + 10;
+            
+            // Registrar en las estadísticas si el tracker está disponible
+            if (window.questionStatsTracker) {
+                const isCorrect = randomAnswer === question.respuesta_correcta;
+                
+                // Simular el proceso de respuesta
+                setTimeout(() => {
+                    window.questionStatsTracker.recordAnswerAttempt(
+                        question.question_id,
+                        randomAnswer,
+                        isCorrect,
+                        timeSpent * 1000 // Convertir a milisegundos
+                    );
+                }, Math.random() * 1000); // Simular delay aleatorio
+            }
+        });
+
+        console.log('🎲 Respuestas aleatorias generadas para', Object.keys(this.userAnswers).length, 'preguntas');
     }
 }
 
