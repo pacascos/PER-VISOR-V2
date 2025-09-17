@@ -301,7 +301,7 @@ class ExamSystem {
         }
 
         // Hide loading, show content
-        document.getElementById('questionLoading').classList.add('hidden');
+        document.getElementById('questionLoading').classList.remove('show');
         document.getElementById('questionContent').classList.remove('hidden');
 
         // Update question number and category
