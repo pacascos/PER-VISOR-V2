@@ -102,6 +102,33 @@
             flex-wrap: wrap;
         }
         
+        /* Estilos para botón de carga */
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            margin: auto;
+            border: 2px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        @keyframes spin {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
+        }
+        
         .search-input-group {
             position: relative;
         }
@@ -395,6 +422,122 @@
         .explanation-content {
             white-space: pre-line;
             line-height: 1.6;
+        }
+        
+        /* Estilos para el contenido de explicaciones en el modal */
+        #explanationContent {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #374151;
+            max-width: 100%;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+        
+        #explanationContent h1,
+        #explanationContent h2,
+        #explanationContent h3,
+        #explanationContent h4,
+        #explanationContent h5,
+        #explanationContent h6 {
+            color: #1e40af;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        #explanationContent h2 {
+            font-size: 18px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+        
+        #explanationContent h3 {
+            font-size: 16px;
+            color: #059669;
+        }
+        
+        #explanationContent p {
+            margin-bottom: 0.75rem;
+            text-align: justify;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        
+        #explanationContent ul,
+        #explanationContent ol {
+            margin-bottom: 0.75rem;
+            padding-left: 1.25rem;
+        }
+        
+        #explanationContent li {
+            margin-bottom: 0.25rem;
+            line-height: 1.4;
+        }
+        
+        #explanationContent strong {
+            color: #1e40af;
+            font-weight: 600;
+        }
+        
+        #explanationContent em {
+            color: #059669;
+            font-style: italic;
+        }
+        
+        #explanationContent code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        
+        #explanationContent pre {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+        
+        #explanationContent blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: #64748b;
+            font-style: italic;
+        }
+        
+        /* Limpiar espacios en blanco excesivos */
+        #explanationContent * {
+            margin-top: 0;
+        }
+        
+        #explanationContent h1:first-child,
+        #explanationContent h2:first-child,
+        #explanationContent h3:first-child,
+        #explanationContent p:first-child {
+            margin-top: 0;
+        }
+        
+        /* Eliminar espacios en blanco excesivos entre elementos */
+        #explanationContent br + br {
+            display: none;
+        }
+        
+        #explanationContent p:empty {
+            display: none;
+        }
+        
+        /* Mejorar el espaciado de elementos inline */
+        #explanationContent strong,
+        #explanationContent em {
+            margin: 0;
+            padding: 0;
         }
         
         .explanation-header {
@@ -860,9 +1003,9 @@
                             <div class="tab-content active" id="tab-content">
                                 <div class="mb-3">
                                     <label for="editTextoPregunta" class="form-label">📄 Texto de la pregunta:</label>
-                                    <textarea class="form-control" id="editTextoPregunta" rows="4" readonly style="background-color: #f8f9fa;">
+                                    <textarea class="form-control" id="editTextoPregunta" rows="4">
                                     </textarea>
-                                    <small class="form-text text-muted">Solo lectura - El texto de la pregunta no se puede modificar</small>
+                                    <small class="form-text text-muted">Puedes editar el texto de la pregunta</small>
                                 </div>
 
                                 <div class="mb-3">
@@ -1152,13 +1295,13 @@
             
             async loadStats() {
                 try {
-                    console.log('Cargando estadísticas...');
+                    // console.log('Cargando estadísticas...');
                     const response = await fetch(API_BASE + '/stats');
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
                     const data = await response.json();
-                    console.log('Estadísticas cargadas:', data);
+                    // console.log('Estadísticas cargadas:', data);
                     
                     document.getElementById('totalQuestions').textContent = data.stats.preguntas.toLocaleString();
                     document.getElementById('totalExams').textContent = data.stats.examenes;
@@ -1170,7 +1313,7 @@
             
             async loadExamenes() {
                 try {
-                    console.log('🔄 Cargando exámenes desde PostgreSQL...');
+                    // console.log('🔄 Cargando exámenes desde PostgreSQL...');
 
                     // Cargar exámenes desde PostgreSQL
                     const response = await fetch(API_BASE + '/examenes');
@@ -1181,7 +1324,7 @@
                     const data = await response.json();
                     this.examenes = data.examenes || [];
 
-                    console.log(`✅ Cargados ${this.examenes.length} exámenes desde PostgreSQL`);
+                    // console.log(`✅ Cargados ${this.examenes.length} exámenes desde PostgreSQL`);
 
                     // Inicializar filtros con los exámenes cargados
                     this.initializeFilters();
@@ -1233,7 +1376,7 @@
                             console.log('📋 Muestra de pregunta:', {
                                 id: sampleQuestion.id,
                                 exam_titulo: sampleQuestion.exam_titulo,
-                                exam_convocatoria: sampleQuestion.convocatoria,
+                                convocatoria: sampleQuestion.convocatoria,
                                 categoria: sampleQuestion.categoria
                             });
                             
@@ -1842,10 +1985,15 @@
             }
 
             showExplanationModal(questionId) {
+                console.log('🔍 showExplanationModal llamada con questionId:', questionId);
                 const question = this.allQuestions.find(q => q.id === questionId);
                 const explanation = this.explicaciones[questionId];
 
+                console.log('🔍 Question encontrada:', !!question);
+                console.log('🔍 Explanation encontrada:', !!explanation);
+
                 if (!question || !explanation) {
+                    console.error('❌ Explicación no disponible - question:', !!question, 'explanation:', !!explanation);
                     alert('Explicación no disponible');
                     return;
                 }
@@ -1898,10 +2046,35 @@
                 // Procesar markdown y mostrar explicación
                 const explanationContent = document.getElementById('explanationContent');
                 try {
-                    explanationContent.innerHTML = marked.parse(explanation.explicacion || '');
+                    // Configurar marked para mejor renderizado
+                    marked.setOptions({
+                        breaks: true,
+                        gfm: true,
+                        sanitize: false,
+                        smartLists: true,
+                        smartypants: false
+                    });
+                    
+                    // Limpiar y procesar el texto de forma más conservadora
+                    let cleanText = explanation.explicacion || '';
+                    
+                    // Limpieza básica sin ser demasiado agresiva
+                    cleanText = cleanText
+                        .replace(/\n\s*\n\s*\n+/g, '\n\n') // Reducir múltiples saltos de línea a máximo 2
+                        .replace(/^\s+|\s+$/g, '') // Eliminar espacios al inicio y final
+                        .replace(/\n\s+/g, '\n') // Eliminar espacios al inicio de líneas
+                        .replace(/\s+\n/g, '\n') // Eliminar espacios al final de líneas
+                        .replace(/\s{3,}/g, ' ') // Reducir múltiples espacios a uno solo (más conservador)
+                        .replace(/\n\s*[-*]\s+/g, '\n- ') // Normalizar listas
+                        .replace(/\n\s*\d+\.\s+/g, '\n1. ') // Normalizar listas numeradas
+                        .trim(); // Eliminar espacios al inicio y final
+                    
+                    // Procesar con marked
+                    const htmlContent = marked.parse(cleanText);
+                    explanationContent.innerHTML = htmlContent;
                 } catch (error) {
                     console.error('Error procesando markdown:', error);
-                    explanationContent.innerHTML = `<pre>${explanation.explicacion || ''}</pre>`;
+                    explanationContent.innerHTML = `<pre class="explanation-text">${explanation.explicacion || ''}</pre>`;
                 }
 
                 // Manejar contenido visual (imagen subida > imagen PNG > SVG)
@@ -1923,8 +2096,10 @@
                 };
 
                 // Mostrar modal
+                console.log('🎯 Mostrando modal de explicación...');
                 const modal = new bootstrap.Modal(document.getElementById('explanationModal'));
                 modal.show();
+                console.log('✅ Modal mostrado correctamente');
             }
 
             setupVisualContent(questionId, explanation) {
@@ -2044,11 +2219,30 @@
                 const question = this.allQuestions.find(q => q.id === questionId);
                 if (!question) return;
                 
+                // Encontrar el botón de generar explicación
+                const generateBtn = document.querySelector(`button[onclick="viewer.generateExplanation('${questionId}')"]`);
                 const explanationSection = document.getElementById(`explanation-${questionId}`);
                 const explanationContent = document.getElementById(`explanation-content-${questionId}`);
                 
+                // Mostrar estado de carga en el botón
+                if (generateBtn) {
+                    const originalText = generateBtn.innerHTML;
+                    generateBtn.innerHTML = '⏳ Generando...';
+                    generateBtn.disabled = true;
+                    generateBtn.classList.add('btn-loading');
+                }
+                
+                // Mostrar sección de explicación con estado de carga
                 explanationSection.style.display = 'block';
-                explanationContent.innerHTML = '🤖 Generando explicación inteligente...';
+                explanationContent.innerHTML = `
+                    <div class="text-center p-4">
+                        <div class="spinner-border text-primary mb-3" role="status">
+                            <span class="visually-hidden">Generando...</span>
+                        </div>
+                        <p class="mb-0">🤖 Generando explicación inteligente con GPT-5...</p>
+                        <small class="text-muted">Esto puede tomar unos segundos</small>
+                    </div>
+                `;
                 
                 try {
                     const response = await fetch(API_BASE + '/generar-explicacion', {
@@ -2076,18 +2270,34 @@
                         const explanationSection = document.getElementById(`explanation-${questionId}`);
                         explanationSection.innerHTML = this.getExplanationHTML(question);
 
-                        // Mostrar automáticamente la explicación nueva
-                        setTimeout(() => {
-                            this.toggleExplanation(questionId);
-                        }, 100);
+                        // Abrir el modal con la explicación generada
+                        console.log('🎯 Abriendo modal con explicación generada...');
+                        this.showExplanationModal(questionId, this.explicaciones[questionId]);
 
                     } else {
-                        explanationContent.innerHTML = '❌ Error generando explicación: ' + (data.error || 'Error desconocido');
+                        explanationContent.innerHTML = `
+                            <div class="alert alert-danger">
+                                <h6>❌ Error generando explicación</h6>
+                                <p class="mb-0">${data.error || 'Error desconocido'}</p>
+                            </div>
+                        `;
                     }
                     
                 } catch (error) {
-                    explanationContent.innerHTML = '❌ Error de conexión al generar explicación.';
+                    explanationContent.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h6>❌ Error de conexión</h6>
+                            <p class="mb-0">No se pudo conectar con el servidor para generar la explicación.</p>
+                        </div>
+                    `;
                     console.error('Error generating explanation:', error);
+                } finally {
+                    // Restaurar el botón
+                    if (generateBtn) {
+                        generateBtn.innerHTML = '🤖 Generar Explicación';
+                        generateBtn.disabled = false;
+                        generateBtn.classList.remove('btn-loading');
+                    }
                 }
             }
 
@@ -2277,13 +2487,13 @@
                     const sampleQuestion = this.allQuestions[0];
                     console.log('Muestra de pregunta:', {
                         id: sampleQuestion.id,
-                        exam_convocatoria: sampleQuestion.exam_convocatoria,
+                        convocatoria: sampleQuestion.convocatoria,
                         exam_titulo: sampleQuestion.exam_titulo,
                         categoria: sampleQuestion.categoria
                     });
                     
                     // Mostrar todas las convocatorias disponibles en las preguntas
-                    const convocatoriasEnPreguntas = [...new Set(this.allQuestions.map(q => q.exam_convocatoria).filter(c => c))];
+                    const convocatoriasEnPreguntas = [...new Set(this.allQuestions.map(q => q.convocatoria).filter(c => c))];
                     console.log('Convocatorias disponibles en preguntas:', convocatoriasEnPreguntas);
                 }
                 
@@ -2712,6 +2922,7 @@
 
             async saveQuestionChanges() {
                 const questionId = document.getElementById('editQuestionId').value;
+                const textoPregunta = document.getElementById('editTextoPregunta').value;
                 const categoria = document.getElementById('editTema').value;
                 const subcategoria = document.getElementById('editSubcategoria').value;
                 const respuesta = document.getElementById('editRespuesta').value;
@@ -2743,6 +2954,7 @@
                 try {
                     console.log('Guardando cambios en la base de datos:', {
                         questionId,
+                        textoPregunta,
                         categoria,
                         subcategoria,
                         respuesta,
@@ -2757,6 +2969,7 @@
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
+                            texto_pregunta: textoPregunta,
                             categoria: categoria,
                             subcategoria: subcategoria,
                             respuesta_correcta: respuesta,
@@ -2771,6 +2984,7 @@
                         // Actualizar datos locales solo si el guardado fue exitoso
                         const question = this.allQuestions.find(q => q.id === questionId);
                         if (question) {
+                            question.texto_pregunta = textoPregunta;
                             question.categoria = categoria;
                             question.subcategoria = subcategoria;
                             question.respuesta_correcta = respuesta;
@@ -2780,6 +2994,7 @@
                             // Actualizar también en filteredQuestions
                             const filteredQuestion = this.filteredQuestions.find(q => q.id === questionId);
                             if (filteredQuestion) {
+                                filteredQuestion.texto_pregunta = textoPregunta;
                                 filteredQuestion.categoria = categoria;
                                 filteredQuestion.subcategoria = subcategoria;
                                 filteredQuestion.respuesta_correcta = respuesta;

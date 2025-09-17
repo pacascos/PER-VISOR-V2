@@ -72,6 +72,8 @@ examenes_unificados_*.json
 # Logs y archivos de debug
 *.log
 debug.txt
+logs/
+.pids/
 
 # Archivos temporales de extracción
 imagenes_temp/

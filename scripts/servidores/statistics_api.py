@@ -154,7 +154,7 @@ def get_user_statistics(user_id, current_user_id):
                 time_taken_minutes,
                 completed_at,
                 question_count
-            FROM exams
+            FROM user_exams
             WHERE user_id = %s AND status = 'completed'
             ORDER BY completed_at DESC
             LIMIT 10
@@ -282,11 +282,12 @@ def record_exam_completion(current_user_id):
 
         # Create exam record
         cur.execute("""
-            INSERT INTO exams (user_id, score, time_taken_minutes, question_count, status, completed_at)
-            VALUES (%s, %s, %s, %s, 'completed', %s)
+            INSERT INTO user_exams (user_id, score, time_taken_minutes, total_questions, status, completed_at, score_percentage, passed)
+            VALUES (%s, %s, %s, %s, 'completed', %s, %s, %s)
             RETURNING id
         """, (current_user_id, data['score'], data['time_minutes'],
-              len(data['topic_results']), datetime.now()))
+              data.get('total_questions', 45), datetime.now(), 
+              data['score'], data.get('passed', False)))
 
         exam_id = cur.fetchone()['id']
 
@@ -371,7 +372,7 @@ def get_user_progress(user_id, current_user_id):
                 DATE(completed_at) as exam_date,
                 AVG(score) as avg_score,
                 COUNT(*) as exam_count
-            FROM exams
+            FROM user_exams
             WHERE user_id = %s AND status = 'completed'
             GROUP BY DATE(completed_at)
             ORDER BY exam_date ASC
@@ -388,7 +389,7 @@ def get_user_progress(user_id, current_user_id):
                     etp.category,
                     etp.percentage,
                     ROW_NUMBER() OVER (PARTITION BY etp.category ORDER BY e.completed_at DESC) as rn
-                FROM exams e
+                FROM user_exams e
                 JOIN exam_topic_performance etp ON e.id = etp.exam_id
                 WHERE e.user_id = %s AND e.status = 'completed'
             )

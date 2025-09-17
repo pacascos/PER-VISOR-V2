@@ -33,29 +33,6 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # Redis Cache
-  redis:
-    image: redis:7-alpine
-    container_name: per_redis
-    restart: unless-stopped
-    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
-    volumes:
-      - redis_data:/data
-      - ./config/redis.conf:/usr/local/etc/redis/redis.conf:ro
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - per_network
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   # Main API Application
   api:
@@ -72,8 +49,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_healthy
     environment:
       # Application
       APP_NAME: "PER Maritime Exam API"
@@ -87,10 +62,6 @@ services:
       DATABASE_MIN_CONNECTIONS: ${DB_MIN_CONNECTIONS:-5}
       DATABASE_MAX_CONNECTIONS: ${DB_MAX_CONNECTIONS:-20}
       
-      # Redis
-      REDIS_URL: redis://redis:6379/0
-      CACHE_PREFIX: "per_exam:"
-      
       # Authentication
       JWT_SECRET: ${JWT_SECRET:-change-this-super-secret-jwt-key-in-production}
       JWT_ALGORITHM: "HS256"
@@ -98,8 +69,8 @@ services:
       JWT_REFRESH_EXPIRE_DAYS: ${JWT_REFRESH_EXPIRE:-30}
       
       # OpenAI
-      OPENAI_API_KEY: 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
-      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5-2025-08-07}
       OPENAI_MAX_TOKENS: ${OPENAI_MAX_TOKENS:-2000}
       OPENAI_TEMPERATURE: ${OPENAI_TEMPERATURE:-0.3}
       
@@ -235,8 +206,6 @@ networks:
 # Volumes
 volumes:
   postgres_data:
-    driver: local
-  redis_data:
     driver: local
   prometheus_data:
     driver: local

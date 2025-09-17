@@ -16,7 +16,8 @@
       "Bash(gh repo view:*)",
       "Bash(docker cp:*)",
       "Bash(docker logs:*)",
-      "Bash(docker restart:*)"
+      "Bash(docker restart:*)",
+      "Bash(brew services:*)"
     ],
     "deny": [],
     "ask": []

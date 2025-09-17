@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 API Flask moderna para el sistema PER con PostgreSQL
-Arquitectura nueva: PostgreSQL + Redis + Docker + GPT-5
+Arquitectura nueva: PostgreSQL + Docker + GPT-5
 """
 
 import json
@@ -52,8 +52,11 @@ else:
     }
 
 # Configurar logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
+
+# Reducir logs de Werkzeug (Flask)
+logging.getLogger('werkzeug').setLevel(logging.WARNING)
 
 # Crear aplicación Flask
 app = Flask(__name__)
@@ -128,7 +131,7 @@ def get_examenes():
         cur.close()
         conn.close()
         
-        logger.info(f"✅ Devueltos {len(result)} exámenes desde PostgreSQL")
+        # logger.info(f"✅ Devueltos {len(result)} exámenes desde PostgreSQL")
         return jsonify({
             'success': True,
             'count': len(result),
@@ -192,7 +195,7 @@ def get_preguntas(exam_id):
         cur.close()
         conn.close()
         
-        logger.info(f"✅ Devueltas {len(result)} preguntas para examen {exam_id}")
+        # logger.info(f"✅ Devueltas {len(result)} preguntas para examen {exam_id}")
         return jsonify({
             'success': True,
             'exam_id': exam_id,
@@ -297,7 +300,7 @@ def get_preguntas_filtradas():
         cur.close()
         conn.close()
 
-        logger.info(f"✅ Filtradas {len(result)} preguntas con criterios: conv={convocatoria}, tema={tema}, text={search_text}")
+        # logger.info(f"✅ Filtradas {len(result)} preguntas con criterios: conv={convocatoria}, tema={tema}, text={search_text}")
         return jsonify({
             'success': True,
             'count': len(result),
@@ -387,7 +390,7 @@ def get_explicaciones():
         cur.close()
         conn.close()
         
-        logger.info(f"✅ Devueltas {len(result)} explicaciones desde PostgreSQL")
+        # logger.info(f"✅ Devueltas {len(result)} explicaciones desde PostgreSQL")
         return jsonify(result)
         
     except Exception as e:
@@ -424,7 +427,7 @@ def generar_explicacion():
         existing = cur.fetchone()
         
         if existing:
-            logger.info(f"✅ Explicación existente encontrada para pregunta {question_id}")
+            # logger.info(f"✅ Explicación existente encontrada para pregunta {question_id}")
             cur.close()
             conn.close()
             return jsonify({
@@ -472,7 +475,7 @@ def generar_explicacion():
         cur.close()
         conn.close()
         
-        logger.info(f"✅ Nueva explicación generada y guardada para pregunta {question_id}")
+        # logger.info(f"✅ Nueva explicación generada y guardada para pregunta {question_id}")
         return jsonify({
             'success': True,
             'question_id': question_id,
@@ -491,43 +494,27 @@ def generar_explicacion():
         }), 500
 
 def call_gpt5(prompt):
-    """Llama a GPT-5 usando requests (como en el test exitoso)"""
+    """Llama a GPT-5 usando el SDK de OpenAI"""
     if not OPENAI_API_KEY or OPENAI_API_KEY == 'your-api-key-here':
         logger.warning("❌ OPENAI_API_KEY no configurada")
         return None
 
-    url = 'https://api.openai.com/v1/responses'
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {OPENAI_API_KEY}'
-    }
-
-    request_body = {
-        'model': 'gpt-5-2025-08-07',
-        'input': prompt
-    }
-
-    logger.info("🚀 Llamando a GPT-5 desde API PostgreSQL")
-
     try:
-        response = requests.post(url, headers=headers, json=request_body, timeout=300)
-
-        if response.status_code == 200:
-            data = response.json()
-            # Extraer texto como en el test exitoso
-            text_content = data['output'][1]['content'][0]['text']
-            logger.info("✅ GPT-5 respondió correctamente")
-            return text_content
-        elif response.status_code == 401:
-            logger.error(f"❌ API Key inválida o expirada: {response.text}")
-            return None
-        else:
-            logger.error(f"❌ Error GPT-5: {response.status_code} - {response.text}")
-            return None
-
-    except requests.Timeout:
-        logger.error(f"❌ Timeout llamando a GPT-5 (300 segundos)")
-        return None
+        from openai import OpenAI
+        client = OpenAI(api_key=OPENAI_API_KEY)
+        
+        # logger.info("🚀 Llamando a GPT-5 desde API PostgreSQL")
+        
+        result = client.responses.create(
+            model="gpt-5",
+            input=prompt,
+            reasoning={"effort": "low"},
+            text={"verbosity": "low"}
+        )
+        
+        logger.info("✅ GPT-5 respondió correctamente")
+        return result.output_text
+        
     except Exception as e:
         logger.error(f"❌ Excepción llamando a GPT-5: {e}")
         return None
@@ -679,7 +666,7 @@ def get_stats():
             'system': 'PER Nueva Arquitectura',
             'version': '2.0.0',
             'database': 'PostgreSQL',
-            'cache': 'Redis',
+            'cache': 'Memory',
             'architecture': 'Docker',
             'stats': {
                 'examenes': total_exams,
@@ -1315,6 +1302,150 @@ def get_current_user():
         logger.error(f"Error obteniendo usuario actual: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
+@app.route('/api/failed-questions', methods=['GET'])
+@require_auth
+def get_failed_questions():
+    """Get failed questions for the current user"""
+    try:
+        user_id = request.current_user['user_id']
+        
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Get failed questions with exam details and topic information
+        cur.execute("""
+            SELECT 
+                q.id as question_id,
+                q.texto_pregunta,
+                q.categoria,
+                ua.selected_answer as user_answer,
+                q.respuesta_correcta as correct_answer,
+                ue.completed_at as exam_date,
+                ue.score_percentage,
+                eq.ut_category,
+                eq.ut_number
+            FROM user_answers ua
+            JOIN questions q ON ua.question_id = q.id
+            JOIN user_exams ue ON ua.user_exam_id = ue.id
+            LEFT JOIN exam_questions eq ON ua.question_id = eq.question_id AND ua.user_exam_id = eq.user_exam_id
+            WHERE ue.user_id = %s 
+            AND ua.is_correct = false
+            AND ue.status = 'completed'
+            ORDER BY q.categoria, ue.completed_at DESC
+            LIMIT 100
+        """, (user_id,))
+        
+        questions = cur.fetchall()
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'questions': [dict(q) for q in questions]
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting failed questions: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+
+@app.route('/api/user-stats', methods=['GET'])
+@require_auth
+def get_simple_user_stats():
+    """Get simple user statistics from user_exams table"""
+    try:
+        user_id = request.current_user['user_id']
+
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Get completed exams stats
+        cur.execute("""
+            SELECT
+                COUNT(*) as exams_completed,
+                SUM(total_questions) as total_questions,
+                SUM(correct_answers) as total_correct,
+                AVG(score_percentage) as avg_score,
+                SUM(duration_minutes) as total_time_minutes
+            FROM user_exams
+            WHERE user_id = %s AND status = 'completed'
+        """, (user_id,))
+
+        stats = cur.fetchone()
+
+        # Get recent exam history
+        cur.execute("""
+            SELECT
+                score_percentage as score,
+                duration_minutes as time_minutes,
+                completed_at as date
+            FROM user_exams
+            WHERE user_id = %s AND status = 'completed'
+            ORDER BY completed_at DESC
+            LIMIT 10
+        """, (user_id,))
+
+        recent_exams = cur.fetchall()
+
+        cur.close()
+        conn.close()
+
+        # Format response
+        if stats['exams_completed'] == 0:
+            return jsonify({
+                'level': 1,
+                'xp': 0,
+                'xp_to_next': 500,
+                'exams_completed': 0,
+                'total_questions': 0,
+                'correct_answers': 0,
+                'overall_score': 0,
+                'study_time_hours': 0,
+                'daily_streak': 0,
+                'longest_streak': 0,
+                'weak_topics': [],
+                'strong_topics': [],
+                'last_exam_date': None,
+                'topic_progress': {},
+                'exam_history': []
+            }), 200
+
+        # Calculate level based on XP
+        xp = int(stats['exams_completed']) * 50
+        level = 1 + (xp // 500)
+        xp_to_next = 500 - (xp % 500)
+
+        # Format exam history
+        exam_history = []
+        for exam in recent_exams:
+            exam_history.append({
+                'date': exam['date'].strftime('%Y-%m-%d') if exam['date'] else None,
+                'score': int(exam['score']) if exam['score'] else 0,
+                'time_minutes': int(exam['time_minutes']) if exam['time_minutes'] else 0
+            })
+
+        return jsonify({
+            'level': level,
+            'xp': xp,
+            'xp_to_next': xp_to_next,
+            'exams_completed': int(stats['exams_completed']),
+            'total_questions': int(stats['total_questions'] or 0),
+            'correct_answers': int(stats['total_correct'] or 0),
+            'overall_score': round(float(stats['avg_score'] or 0), 1),
+            'study_time_hours': round((stats['total_time_minutes'] or 0) / 60, 1),
+            'daily_streak': 1 if stats['exams_completed'] > 0 else 0,
+            'longest_streak': 1 if stats['exams_completed'] > 0 else 0,
+            'weak_topics': [],
+            'strong_topics': [],
+            'last_exam_date': recent_exams[0]['date'].isoformat() if recent_exams else None,
+            'topic_progress': {},
+            'exam_history': exam_history
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo estadísticas del usuario: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
 # ====================================
 # SISTEMA DE EXÁMENES
 # ====================================
@@ -1772,7 +1903,7 @@ def get_per_questions_stats():
 if __name__ == '__main__':
     logger.info("🚀 API PER Nueva Arquitectura iniciando...")
     logger.info("🔹 Base de datos: PostgreSQL")
-    logger.info("🔹 Cache: Redis") 
+    logger.info("🔹 Cache: Memory") 
     logger.info("🔹 Contenedores: Docker")
     logger.info("🔹 Puerto: 5001")
     logger.info("🌐 Endpoints disponibles:")
