@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Sistema de Estadísticas de Preguntas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test - Sistema de Estadísticas de Preguntas</h1>
+    
+    <div class="test-section">
+        <h2>1. Test de Conexión API</h2>
+        <button class="test-button" onclick="testAPIHealth()">Probar Health Check</button>
+        <div id="healthResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Test de CORS</h2>
+        <button class="test-button" onclick="testCORS()">Probar CORS</button>
+        <div id="corsResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Test de Endpoint Question-Attempt</h2>
+        <button class="test-button" onclick="testQuestionAttempt()">Probar Registro de Intento</button>
+        <div id="attemptResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Test de Estadísticas Generales</h2>
+        <button class="test-button" onclick="testGeneralStats()">Probar Estadísticas Generales</button>
+        <div id="statsResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Test de Rankings</h2>
+        <button class="test-button" onclick="testRankings()">Probar Rankings</button>
+        <div id="rankingsResult" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5001';
+
+        function logResult(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = message;
+            element.className = `result ${isError ? 'error' : 'success'}`;
+        }
+
+        async function testAPIHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                logResult('healthResult', `✅ API Health: ${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                logResult('healthResult', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        async function testCORS() {
+            try {
+                const response = await fetch(`${API_BASE}/question-attempt`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': 'http://localhost:8095',
+                        'Access-Control-Request-Method': 'POST',
+                        'Access-Control-Request-Headers': 'Content-Type'
+                    }
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                };
+                
+                logResult('corsResult', `✅ CORS Headers: ${JSON.stringify(corsHeaders, null, 2)}`);
+            } catch (error) {
+                logResult('corsResult', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        async function testQuestionAttempt() {
+            try {
+                // Generar UUIDs válidos para la prueba
+                const userId = crypto.randomUUID();
+                const questionId = crypto.randomUUID();
+                
+                const response = await fetch(`${API_BASE}/question-attempt`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Origin': 'http://localhost:8095'
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        question_id: questionId,
+                        user_answer: 'a',
+                        correct_answer: 'b',
+                        is_correct: false,
+                        time_spent_seconds: 30,
+                        category: 'Nomenclatura náutica',
+                        attempt_order: 1,
+                        session_type: 'exam'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    logResult('attemptResult', `✅ Intento registrado: ${JSON.stringify(data, null, 2)}`);
+                } else {
+                    logResult('attemptResult', `❌ Error: ${JSON.stringify(data, null, 2)}`, true);
+                }
+            } catch (error) {
+                logResult('attemptResult', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        async function testGeneralStats() {
+            try {
+                const response = await fetch(`${API_BASE}/question-stats/general`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    logResult('statsResult', `✅ Estadísticas: ${JSON.stringify(data, null, 2)}`);
+                } else {
+                    logResult('statsResult', `❌ Error: ${JSON.stringify(data, null, 2)}`, true);
+                }
+            } catch (error) {
+                logResult('statsResult', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        async function testRankings() {
+            try {
+                const response = await fetch(`${API_BASE}/question-stats/rankings/Nomenclatura náutica`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    logResult('rankingsResult', `✅ Rankings: ${JSON.stringify(data, null, 2)}`);
+                } else {
+                    logResult('rankingsResult', `❌ Error: ${JSON.stringify(data, null, 2)}`, true);
+                }
+            } catch (error) {
+                logResult('rankingsResult', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        // Ejecutar tests automáticamente al cargar
+        window.onload = function() {
+            testAPIHealth();
+        };
+    </script>
+</body>
+</html>
