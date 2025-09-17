@@ -1900,6 +1900,175 @@ def get_per_questions_stats():
         logger.error(f"Error obteniendo estadísticas de preguntas PER: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
+@app.route('/question-attempt', methods=['POST'])
+def record_question_attempt():
+    """Registrar intento de pregunta para estadísticas"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No se proporcionaron datos'}), 400
+
+        # Validar datos requeridos
+        required_fields = ['user_id', 'question_id', 'user_answer', 'correct_answer', 'is_correct']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({'error': f'Campo requerido faltante: {field}'}), 400
+
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        cur = conn.cursor()
+
+        # Insertar intento detallado
+        cur.execute("""
+            INSERT INTO question_attempt_details (
+                user_id, question_id, exam_id, user_answer, correct_answer,
+                is_correct, time_spent_seconds, category, attempt_order, session_type
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            data['user_id'],
+            data['question_id'],
+            data.get('exam_id'),
+            data['user_answer'],
+            data['correct_answer'],
+            data['is_correct'],
+            data.get('time_spent_seconds', 0),
+            data.get('category', 'Unknown'),
+            data.get('attempt_order', 1),
+            data.get('session_type', 'exam')
+        ))
+
+        # Actualizar estadísticas globales de la pregunta
+        cur.execute("SELECT update_question_global_stats(%s)", (data['question_id'],))
+
+        # Actualizar estadísticas del usuario para la pregunta
+        cur.execute("SELECT update_question_user_stats(%s, %s)", (data['user_id'], data['question_id']))
+
+        # Actualizar estadísticas por categoría
+        category = data.get('category', 'Unknown')
+        cur.execute("""
+            INSERT INTO question_category_stats (
+                question_id, category, total_appearances, total_correct_answers,
+                total_incorrect_answers, category_success_rate
+            ) VALUES (%s, %s, 1, %s, %s, %s)
+            ON CONFLICT (question_id, category) DO UPDATE SET
+                total_appearances = question_category_stats.total_appearances + 1,
+                total_correct_answers = question_category_stats.total_correct_answers + %s,
+                total_incorrect_answers = question_category_stats.total_incorrect_answers + %s,
+                category_success_rate = ROUND(
+                    (question_category_stats.total_correct_answers + %s) * 100.0 / 
+                    (question_category_stats.total_appearances + 1), 2
+                ),
+                updated_at = CURRENT_TIMESTAMP
+        """, (
+            data['question_id'], category,
+            1 if data['is_correct'] else 0,
+            0 if data['is_correct'] else 1,
+            100.0 if data['is_correct'] else 0.0,
+            1 if data['is_correct'] else 0,
+            0 if data['is_correct'] else 1,
+            1 if data['is_correct'] else 0
+        ))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        logger.info(f"✅ Intento de pregunta registrado: {data['question_id']} por usuario {data['user_id']}")
+        return jsonify({
+            'success': True,
+            'message': 'Intento de pregunta registrado correctamente'
+        })
+
+    except Exception as e:
+        logger.error(f"Error registrando intento de pregunta: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/question-stats/<question_id>', methods=['GET'])
+def get_question_stats(question_id):
+    """Obtener estadísticas de una pregunta específica"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # Obtener estadísticas globales
+        cur.execute("""
+            SELECT * FROM question_global_stats 
+            WHERE question_id = %s
+        """, (question_id,))
+        global_stats = cur.fetchone()
+
+        # Obtener estadísticas por categoría
+        cur.execute("""
+            SELECT * FROM question_category_stats 
+            WHERE question_id = %s
+            ORDER BY category
+        """, (question_id,))
+        category_stats = cur.fetchall()
+
+        # Obtener ranking de fallos
+        cur.execute("""
+            SELECT * FROM question_failure_rankings 
+            WHERE question_id = %s
+        """, (question_id,))
+        failure_rankings = cur.fetchall()
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'question_id': question_id,
+            'global_stats': dict(global_stats) if global_stats else None,
+            'category_stats': [dict(row) for row in category_stats],
+            'failure_rankings': [dict(row) for row in failure_rankings]
+        })
+
+    except Exception as e:
+        logger.error(f"Error obteniendo estadísticas de pregunta: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/question-stats/rankings/<category>', methods=['GET'])
+def get_question_rankings(category):
+    """Obtener rankings de preguntas más falladas por categoría"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # Obtener rankings de la categoría
+        cur.execute("""
+            SELECT 
+                qfr.*,
+                q.texto_pregunta,
+                q.respuesta_correcta
+            FROM question_failure_rankings qfr
+            JOIN questions q ON qfr.question_id = q.id
+            WHERE qfr.category = %s
+            ORDER BY qfr.ranking_position
+            LIMIT 50
+        """, (category,))
+        rankings = cur.fetchall()
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'category': category,
+            'rankings': [dict(row) for row in rankings]
+        })
+
+    except Exception as e:
+        logger.error(f"Error obteniendo rankings de categoría: {e}")
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     logger.info("🚀 API PER Nueva Arquitectura iniciando...")
     logger.info("🔹 Base de datos: PostgreSQL")
@@ -1919,6 +2088,10 @@ if __name__ == '__main__':
     logger.info("   - GET    /images/<filename>")
     logger.info("   - PUT    /preguntas/<question_id>")
     logger.info("   - GET    /stats")
+    logger.info("📊 Endpoints de estadísticas de preguntas:")
+    logger.info("   - POST   /question-attempt")
+    logger.info("   - GET    /question-stats/<question_id>")
+    logger.info("   - GET    /question-stats/rankings/<category>")
     logger.info("🔐 Endpoints de autenticación:")
     logger.info("   - POST   /auth/register")
     logger.info("   - POST   /auth/login")

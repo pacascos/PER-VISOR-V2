@@ -13,6 +13,7 @@ class ExamSystem {
         this.userAnswers = {};
         this.examTimer = null;
         this.timeRemaining = 90 * 60; // 90 minutos en segundos
+        this.questionStartTimes = {}; // Para rastrear tiempo por pregunta
 
         this.init();
     }
@@ -290,6 +291,15 @@ class ExamSystem {
             return;
         }
 
+        // Iniciar seguimiento de estadísticas de la pregunta
+        if (window.questionStatsTracker) {
+            window.questionStatsTracker.startQuestionTracking(question.question_id, {
+                categoria: question.ut_category,
+                respuesta_correcta: question.respuesta_correcta
+            });
+            this.questionStartTimes[question.question_id] = Date.now();
+        }
+
         // Hide loading, show content
         document.getElementById('questionLoading').classList.add('hidden');
         document.getElementById('questionContent').classList.remove('hidden');
@@ -343,6 +353,22 @@ class ExamSystem {
     saveAnswer(questionId, answer) {
         this.userAnswers[questionId] = answer;
         console.log('Answer saved:', questionId, answer);
+
+        // Registrar intento de respuesta para estadísticas
+        if (window.questionStatsTracker && this.questionStartTimes[questionId]) {
+            const question = this.currentExam.questionDetails.find(q => q.question_id === questionId);
+            if (question) {
+                const timeSpent = Date.now() - this.questionStartTimes[questionId];
+                const isCorrect = answer === question.respuesta_correcta;
+                
+                window.questionStatsTracker.recordAnswerAttempt(
+                    questionId, 
+                    answer, 
+                    isCorrect, 
+                    timeSpent
+                );
+            }
+        }
     }
 
     updateProgress() {
@@ -504,6 +530,13 @@ class ExamSystem {
         // Initialize UT counters
         for (let i = 1; i <= 11; i++) {
             utResults[i] = { correct: 0, total: 0, errors: 0 };
+        }
+
+        // Finalizar seguimiento de estadísticas
+        if (window.questionStatsTracker) {
+            this.currentExam.questionDetails.forEach(question => {
+                window.questionStatsTracker.endQuestionTracking(question.question_id);
+            });
         }
 
         // Calculate results

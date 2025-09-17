@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS question_global_stats (
 -- Rastrea el rendimiento individual de cada usuario en cada pregunta
 CREATE TABLE IF NOT EXISTS question_user_stats (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     question_id UUID NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
     total_attempts INTEGER DEFAULT 0, -- Total de intentos del usuario
     correct_attempts INTEGER DEFAULT 0, -- Intentos correctos del usuario
@@ -63,9 +63,9 @@ CREATE TABLE IF NOT EXISTS question_category_stats (
 -- Registro detallado de cada intento individual de pregunta
 CREATE TABLE IF NOT EXISTS question_attempt_details (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     question_id UUID NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
-    exam_id INTEGER REFERENCES exams(id) ON DELETE CASCADE, -- Referencia al examen si aplica
+    exam_id UUID REFERENCES exams(id) ON DELETE CASCADE, -- Referencia al examen si aplica
     user_answer CHAR(1) CHECK (user_answer IN ('a', 'b', 'c', 'd') OR user_answer IS NULL),
     correct_answer CHAR(1) NOT NULL CHECK (correct_answer IN ('a', 'b', 'c', 'd')),
     is_correct BOOLEAN NOT NULL,
@@ -264,7 +264,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Función para actualizar estadísticas de usuario para una pregunta
-CREATE OR REPLACE FUNCTION update_question_user_stats(p_user_id INTEGER, p_question_id UUID)
+CREATE OR REPLACE FUNCTION update_question_user_stats(p_user_id UUID, p_question_id UUID)
 RETURNS VOID AS $$
 DECLARE
     v_total_attempts INTEGER;
