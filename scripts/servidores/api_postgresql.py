@@ -2069,6 +2069,74 @@ def get_question_rankings(category):
         logger.error(f"Error obteniendo rankings de categoría: {e}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/question-stats/general', methods=['GET'])
+def get_general_question_stats():
+    """Obtener estadísticas generales de preguntas"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # Estadísticas generales
+        cur.execute("""
+            SELECT 
+                COUNT(DISTINCT question_id) as total_questions,
+                SUM(total_appearances) as total_attempts,
+                SUM(total_correct_answers) as total_correct,
+                SUM(total_incorrect_answers) as total_incorrect,
+                ROUND(AVG(success_rate), 2) as avg_success_rate,
+                ROUND(AVG(avg_time_spent_seconds), 2) as avg_time_seconds
+            FROM question_global_stats
+            WHERE total_appearances > 0
+        """)
+        general_stats = cur.fetchone()
+
+        # Pregunta más fallada
+        cur.execute("""
+            SELECT 
+                qgs.question_id,
+                q.texto_pregunta,
+                qgs.total_incorrect_answers,
+                qgs.failure_rate
+            FROM question_global_stats qgs
+            JOIN questions q ON qgs.question_id = q.id
+            WHERE qgs.total_appearances > 0
+            ORDER BY qgs.total_incorrect_answers DESC
+            LIMIT 1
+        """)
+        most_failed = cur.fetchone()
+
+        # Estadísticas por categoría
+        cur.execute("""
+            SELECT 
+                qcs.category,
+                COUNT(DISTINCT qcs.question_id) as questions_count,
+                SUM(qcs.total_appearances) as total_attempts,
+                SUM(qcs.total_correct_answers) as total_correct,
+                SUM(qcs.total_incorrect_answers) as total_incorrect,
+                ROUND(AVG(qcs.category_success_rate), 2) as avg_success_rate
+            FROM question_category_stats qcs
+            GROUP BY qcs.category
+            ORDER BY avg_success_rate ASC
+        """)
+        category_stats = cur.fetchall()
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'general_stats': dict(general_stats) if general_stats else {},
+            'most_failed_question': dict(most_failed) if most_failed else None,
+            'category_stats': [dict(row) for row in category_stats]
+        })
+
+    except Exception as e:
+        logger.error(f"Error obteniendo estadísticas generales: {e}")
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     logger.info("🚀 API PER Nueva Arquitectura iniciando...")
     logger.info("🔹 Base de datos: PostgreSQL")

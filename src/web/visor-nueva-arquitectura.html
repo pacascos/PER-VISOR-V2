@@ -48,6 +48,12 @@
             gap: 1rem;
         }
         
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
         .header-icon {
             font-size: 2.5rem;
         }
@@ -844,9 +850,14 @@
                         <p class="header-subtitle">Nueva Arquitectura con PostgreSQL + Docker + GPT-5</p>
                     </div>
                 </div>
-                <div class="architecture-badge">
-                    <span class="status-indicator">🟢</span>
-                    PostgreSQL • Redis • Docker
+                <div class="header-right">
+                    <div class="architecture-badge">
+                        <span class="status-indicator">🟢</span>
+                        PostgreSQL • Redis • Docker
+                    </div>
+                    <button class="btn btn-outline-light btn-sm ms-3" onclick="window.open('question-statistics-dashboard.html', '_blank')" title="Ver estadísticas de preguntas">
+                        <i class="fas fa-chart-line"></i> Estadísticas
+                    </button>
                 </div>
             </div>
         </div>
