@@ -60,7 +60,9 @@ logging.getLogger('werkzeug').setLevel(logging.WARNING)
 
 # Crear aplicación Flask
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=['http://localhost:8095', 'http://127.0.0.1:8095'], 
+     allow_headers=['Content-Type', 'Authorization'], 
+     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
 
 # Register statistics routes
 register_statistics_routes(app)
@@ -1900,8 +1902,15 @@ def get_per_questions_stats():
         logger.error(f"Error obteniendo estadísticas de preguntas PER: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/question-attempt', methods=['POST'])
+@app.route('/question-attempt', methods=['POST', 'OPTIONS'])
 def record_question_attempt():
+    if request.method == 'OPTIONS':
+        # Manejar petición preflight
+        response = jsonify({'message': 'OK'})
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:8095')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        return response
     """Registrar intento de pregunta para estadísticas"""
     try:
         data = request.get_json()
