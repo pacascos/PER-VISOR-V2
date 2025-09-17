@@ -1004,6 +1004,10 @@ class ExamSystem {
                 this.startTimer();
                 this.displayCurrentQuestion();
                 this.showAlert('🎲 Examen de prueba generado con respuestas aleatorias', 'success');
+                
+                // Iniciar simulación automática del usuario
+                this.startAutomaticUserSimulation();
+                
             } else {
                 const data = await response.json();
                 this.showAlert(data.error || 'Error generando examen de prueba', 'danger');
@@ -1015,26 +1019,48 @@ class ExamSystem {
     }
 
     generateRandomAnswers() {
-        if (!this.currentExam || !this.currentExam.questionDetails) return;
+        if (!this.currentExam) {
+            console.log('❌ No hay examen actual');
+            return;
+        }
+
+        console.log('🔍 Estructura del examen:', Object.keys(this.currentExam));
+        
+        // Buscar las preguntas en la estructura correcta
+        let questions = [];
+        if (this.currentExam.questions) {
+            questions = this.currentExam.questions;
+        } else if (this.currentExam.questionDetails) {
+            questions = this.currentExam.questionDetails;
+        } else {
+            console.log('❌ No se encontraron preguntas en el examen');
+            return;
+        }
+
+        console.log(`📝 Encontradas ${questions.length} preguntas`);
 
         const options = ['a', 'b', 'c', 'd'];
         
-        this.currentExam.questionDetails.forEach(question => {
+        questions.forEach((question, index) => {
             // Generar respuesta aleatoria
             const randomAnswer = options[Math.floor(Math.random() * options.length)];
-            this.userAnswers[question.question_id] = randomAnswer;
+            
+            // Usar el ID correcto de la pregunta
+            const questionId = question.question_id || question.id || `q_${index}`;
+            this.userAnswers[questionId] = randomAnswer;
             
             // Simular tiempo de respuesta (entre 10 y 60 segundos)
             const timeSpent = Math.floor(Math.random() * 50) + 10;
             
             // Registrar en las estadísticas si el tracker está disponible
             if (window.questionStatsTracker) {
-                const isCorrect = randomAnswer === question.respuesta_correcta;
+                const correctAnswer = question.respuesta_correcta || question.correct_answer;
+                const isCorrect = randomAnswer === correctAnswer;
                 
                 // Simular el proceso de respuesta
                 setTimeout(() => {
                     window.questionStatsTracker.recordAnswerAttempt(
-                        question.question_id,
+                        questionId,
                         randomAnswer,
                         isCorrect,
                         timeSpent * 1000 // Convertir a milisegundos
@@ -1044,6 +1070,76 @@ class ExamSystem {
         });
 
         console.log('🎲 Respuestas aleatorias generadas para', Object.keys(this.userAnswers).length, 'preguntas');
+        console.log('🎯 Muestra de respuestas:', Object.entries(this.userAnswers).slice(0, 5));
+    }
+
+    startAutomaticUserSimulation() {
+        console.log('🤖 Iniciando simulación automática del usuario...');
+        
+        // Simular el comportamiento del usuario navegando por todas las preguntas
+        this.simulateUserBehavior();
+    }
+
+    async simulateUserBehavior() {
+        if (!this.currentExam || !this.currentExam.questions) {
+            console.log('❌ No hay examen para simular');
+            return;
+        }
+
+        const totalQuestions = this.currentExam.questions.length;
+        console.log(`🎯 Simulando comportamiento para ${totalQuestions} preguntas`);
+
+        // Simular navegación por cada pregunta
+        for (let i = 0; i < totalQuestions; i++) {
+            // Ir a la pregunta actual
+            this.currentQuestionIndex = i;
+            this.displayCurrentQuestion();
+            
+            // Simular tiempo de lectura (2-5 segundos)
+            const readingTime = Math.random() * 3000 + 2000;
+            await this.sleep(readingTime);
+            
+            // Simular selección de respuesta
+            const question = this.currentExam.questions[i];
+            const questionId = question.question_id || question.id || `q_${i}`;
+            const userAnswer = this.userAnswers[questionId];
+            
+            if (userAnswer) {
+                // Simular clic en la opción seleccionada
+                this.simulateAnswerSelection(userAnswer);
+                
+                // Simular tiempo de confirmación (1-2 segundos)
+                const confirmationTime = Math.random() * 1000 + 1000;
+                await this.sleep(confirmationTime);
+            }
+            
+            // Simular pausa entre preguntas (1-3 segundos)
+            const pauseTime = Math.random() * 2000 + 1000;
+            await this.sleep(pauseTime);
+        }
+
+        // Al finalizar, simular clic en "Finalizar Examen"
+        console.log('🏁 Simulación completada, finalizando examen...');
+        await this.sleep(2000);
+        this.finishExam();
+    }
+
+    simulateAnswerSelection(answer) {
+        // Simular clic en la opción seleccionada
+        const optionElement = document.querySelector(`input[value="${answer}"]`);
+        if (optionElement) {
+            optionElement.checked = true;
+            optionElement.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        
+        // También actualizar el estado interno
+        const question = this.currentExam.questions[this.currentQuestionIndex];
+        const questionId = question.question_id || question.id || `q_${this.currentQuestionIndex}`;
+        this.saveAnswer(questionId, answer);
+    }
+
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }
 
