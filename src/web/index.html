@@ -3,204 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PER VISOR 2.0 - Nueva Arquitectura</title>
-    <script>
-        // Redirección automática al sistema de exámenes
-        window.location.href = 'exam-system.html';
-    </script>
-    
-    <!-- Favicon -->
+    <title>PER Sistema - Redirigiendo...</title>
+    <meta http-equiv="refresh" content="0; url=exam-system.html">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="apple-touch-icon" href="favicon.svg">
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20250910i">
-    
-    <!-- OpenAI moderna librería -->
-    <script type="module">
-        // Intentar importar OpenAI moderna si está disponible
-        try {
-            const { OpenAI } = await import('https://cdn.skypack.dev/openai');
-            window.OpenAI = OpenAI;
-            console.log('✅ OpenAI moderna cargada desde CDN');
-        } catch (error) {
-            console.log('⚠️ OpenAI moderna no disponible desde CDN:', error);
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            text-align: center;
         }
-    </script>
+        .redirect-message {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container-fluid">
-            <div class="header-content">
-                <div class="header-icon">🚢</div>
-                <div class="header-text">
-                    <h1 class="header-title">Visor de Exámenes Náuticos</h1>
-                    <p class="header-subtitle">Explora y estudia las preguntas de los exámenes oficiales de títulos náuticos</p>
-                </div>
-                <div class="header-actions">
-                    <a href="visor-nueva-arquitectura.html" class="btn btn-success me-2" title="Nueva Arquitectura 2.0">
-                        🚀 NUEVA ARQUITECTURA
-                    </a>
-                    <button id="debugToggle" class="debug-toggle-btn" title="Configuración y debug">
-                        ⚙️
-                    </button>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <div class="container-fluid main-container">
-        <!-- Filtros -->
-        <div class="filters-section">
-            <div class="row align-items-end">
-                <div class="col-md-2">
-                    <div class="filter-group">
-                        <label for="filterConvocatoria">📅 CONVOCATORIA</label>
-                        <select class="form-select" id="filterConvocatoria">
-                            <option value="all">Todas las convocatorias</option>
-                            <!-- Opciones cargadas dinámicamente desde JSON -->
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="filter-group">
-                        <label for="filterTitulacion">🎓 TITULACIÓN</label>
-                        <select class="form-select" id="filterTitulacion">
-                            <option value="all">Todas las titulaciones</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="filter-group">
-                        <label for="filterTest">📝 TEST</label>
-                        <select class="form-select" id="filterTest">
-                            <option value="all">Todos los tests</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="filter-group">
-                        <label for="filterTema">🎯 TEMA</label>
-                        <select class="form-select" id="filterTema">
-                            <option value="all">Todos los temas</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="filter-group">
-                        <label>&nbsp;</label>
-                        <div class="form-check" style="padding-top: 8px;">
-                            <input class="form-check-input" type="checkbox" id="filterDuplicados" checked>
-                            <label class="form-check-label" for="filterDuplicados">
-                                🔄 Con duplicados
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="filter-group">
-                        <label for="searchInput">🔍 BUSCAR POR ID</label>
-                        <div class="search-input-group">
-                            <input type="text" class="form-control" id="searchInput" 
-                                   placeholder="Ej: per_examen_001_001">
-                            <button class="search-clear" id="clearSearch">×</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="row mt-3">
-                <div class="col-12">
-                    <div class="action-buttons">
-                        <button class="btn btn-primary" id="searchBtn">🔍 BUSCAR</button>
-                        <button class="btn btn-secondary" id="clearFilters">LIMPIAR</button>
-                        <button class="btn btn-success" id="toggleAnswers">🙈 OCULTAR RESPUESTAS</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Estadísticas -->
-        <div class="stats-section">
-            <div class="stats-card">
-                <div class="stat-item">
-                    <div class="stat-value" id="totalQuestions">135</div>
-                    <div class="stat-label">PREGUNTAS</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="questionsWithAnswers">135</div>
-                    <div class="stat-label">CON RESPUESTA</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="coveragePercentage">100%</div>
-                    <div class="stat-label">COBERTURA</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Preguntas -->
-        <div class="questions-container" id="questionsContainer">
-            <!-- Las preguntas se cargarán aquí dinámicamente -->
-        </div>
-
-        <!-- Paginación -->
-        <div class="pagination-section">
-            <nav aria-label="Paginación de preguntas">
-                <ul class="pagination justify-content-center" id="pagination">
-                    <!-- La paginación se generará dinámicamente -->
-                </ul>
-            </nav>
-        </div>
+    <div class="redirect-message">
+        <h1>🚢 PER Sistema</h1>
+        <p>Redirigiendo al sistema de exámenes...</p>
+        <div class="spinner"></div>
+        <p><small>Si no eres redirigido automáticamente, <a href="exam-system.html">haz clic aquí</a></small></p>
     </div>
-
-    <!-- Modal de edición -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Editar Pregunta</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editForm">
-                        <div class="mb-3">
-                            <label for="editTema" class="form-label">Tema</label>
-                            <select class="form-select" id="editTema">
-                                <option value="">Sin tema</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editRespuesta" class="form-label">Respuesta Correcta</label>
-                            <select class="form-select" id="editRespuesta">
-                                <option value="">Sin respuesta</option>
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                                <option value="C">C</option>
-                                <option value="D">D</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="saveChanges">Guardar cambios</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Loading spinner -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Cargando...</span>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js?v=20250913d"></script>
+    
+    <script>
+        // Redirección inmediata como fallback
+        window.location.href = 'exam-system.html';
+    </script>
 </body>
 </html>
