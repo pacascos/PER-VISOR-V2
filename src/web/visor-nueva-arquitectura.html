@@ -1309,13 +1309,11 @@
             
             async loadStats() {
                 try {
-                    // console.log('Cargando estadísticas...');
                     const response = await fetch(API_BASE + '/stats');
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
                     const data = await response.json();
-                    // console.log('Estadísticas cargadas:', data);
                     
                     document.getElementById('totalQuestions').textContent = data.stats.preguntas.toLocaleString();
                     document.getElementById('totalExams').textContent = data.stats.examenes;
@@ -1327,7 +1325,6 @@
             
             async loadExamenes() {
                 try {
-                    // console.log('🔄 Cargando exámenes desde PostgreSQL...');
 
                     // Cargar exámenes desde PostgreSQL
                     const response = await fetch(API_BASE + '/examenes');
@@ -1338,7 +1335,6 @@
                     const data = await response.json();
                     this.examenes = data.examenes || [];
 
-                    // console.log(`✅ Cargados ${this.examenes.length} exámenes desde PostgreSQL`);
 
                     // Inicializar filtros con los exámenes cargados
                     this.initializeFilters();
@@ -1354,12 +1350,9 @@
 
             async loadExplicaciones() {
                 try {
-                    console.log('🔄 Cargando explicaciones existentes...');
                     const response = await fetch(API_BASE + '/explicaciones');
                     const data = await response.json();
 
-                    console.log('📋 Explicaciones cargadas:', Object.keys(data).length);
-                    console.log('🔍 Primeras 3 IDs de explicaciones:', Object.keys(data).slice(0, 3));
                     this.explicaciones = data;
 
                 } catch (error) {
@@ -1370,7 +1363,6 @@
 
             async loadAllQuestionsFromAllExams() {
                 try {
-                    console.log('🔄 Cargando TODAS las preguntas desde PostgreSQL...');
 
                     // Usar el endpoint PostgreSQL filtrado que incluye metadata
                     const response = await fetch(API_BASE + '/preguntas-filtradas');
@@ -1382,12 +1374,11 @@
 
                     if (data.preguntas && Array.isArray(data.preguntas)) {
                         this.allQuestions = data.preguntas;
-                        console.log(`✅ Cargadas ${this.allQuestions.length} preguntas desde PostgreSQL`);
                         
                         // Debug: Verificar que tenemos metadata completa
                         if (this.allQuestions.length > 0) {
                             const sampleQuestion = this.allQuestions[0];
-                            console.log('📋 Muestra de pregunta:', {
+                            console.log({
                                 id: sampleQuestion.id,
                                 exam_titulo: sampleQuestion.exam_titulo,
                                 convocatoria: sampleQuestion.convocatoria,
@@ -1396,7 +1387,6 @@
                             
                             // Mostrar TODAS las convocatorias disponibles
                             const convocatorias = [...new Set(this.allQuestions.map(q => q.convocatoria).filter(c => c))];
-                            console.log(`🎯 CONVOCATORIAS DISPONIBLES (${convocatorias.length}):`, convocatorias.sort());
                         }
                         
                         // Actualizar filtros después de cargar los datos
@@ -1457,7 +1447,6 @@
                         event.preventDefault();
                         const file = item.getAsFile();
                         if (file) {
-                            console.log('📤 Imagen pegada desde clipboard');
 
                             // Añadir efecto visual
                             const uploadArea = document.getElementById('uploadArea');
@@ -1518,7 +1507,6 @@
                         // Recargar contenido visual
                         this.setupVisualContent(questionId, this.explicaciones[questionId]);
 
-                        console.log('✅ Imagen subida correctamente');
                     } else {
                         throw new Error(data.error || 'Error desconocido');
                     }
@@ -1592,7 +1580,6 @@
                         // Recargar contenido visual
                         this.setupVisualContent(questionId, this.explicaciones[questionId]);
 
-                        console.log('✅ Imagen PNG generada correctamente');
                     } else {
                         throw new Error(data.error || 'Error desconocido');
                     }
@@ -1616,7 +1603,6 @@
                     // Recargar contenido visual
                     this.setupVisualContent(questionId, explanation);
 
-                    console.log('✅ Vuelto al SVG original');
                 } catch (error) {
                     console.error('Error revirtiendo a SVG:', error);
                     alert(`❌ Error revirtiendo a SVG: ${error.message}`);
@@ -1643,7 +1629,6 @@
             populateConvocatorias() {
                 // Usar las convocatorias de las preguntas cargadas desde PostgreSQL
                 const convocatorias = [...new Set(this.allQuestions.map(q => q.convocatoria).filter(c => c))];
-                console.log('Convocatorias de preguntas cargadas:', convocatorias);
                 
                 // Ordenar por fecha descendente (más reciente primero)
                 const convocatoriasOrdenadas = convocatorias.sort((a, b) => {
@@ -1684,7 +1669,6 @@
                     convSelect.appendChild(option);
                 });
                 
-                console.log(`Filtro convocatoria poblado con ${convocatoriasOrdenadas.length} opciones:`, convocatoriasOrdenadas);
             }
 
             populateTitulaciones() {
@@ -1718,7 +1702,6 @@
                     titulacionSelect.appendChild(option);
                 });
 
-                console.log(`Filtro titulación poblado con ${tiposOrdenados.length} opciones:`, tiposOrdenados);
             }
 
             updateTestFilter() {
@@ -1747,7 +1730,6 @@
                     return identifier;
                 }).filter(t => t))];
 
-                console.log(`Tests disponibles para convocatoria ${convocatoria}:`, testCombinations);
 
                 const testSelect = document.getElementById('filterTest');
                 testSelect.innerHTML = '<option value="all">Todos los tests</option>';
@@ -1773,7 +1755,6 @@
                     testSelect.appendChild(option);
                 });
                 
-                console.log(`Filtro test poblado con ${testCombinations.length} opciones`);
             }
             
             updateTemaFilter() {
@@ -1791,7 +1772,6 @@
                     temaSelect.appendChild(option);
                 });
                 
-                console.log(`Temas disponibles: ${temas.length}`, temas);
             }
             
             async loadAllQuestions() {
@@ -1955,7 +1935,6 @@
 
             getExplanationHTML(question) {
                 const hasExplanation = this.explicaciones[question.id];
-                console.log(`🔍 Pregunta ${question.id}: tiene explicación = ${!!hasExplanation}`);
 
                 if (hasExplanation) {
                     return `
@@ -1999,12 +1978,9 @@
             }
 
             showExplanationModal(questionId) {
-                console.log('🔍 showExplanationModal llamada con questionId:', questionId);
                 const question = this.allQuestions.find(q => q.id === questionId);
                 const explanation = this.explicaciones[questionId];
 
-                console.log('🔍 Question encontrada:', !!question);
-                console.log('🔍 Explanation encontrada:', !!explanation);
 
                 if (!question || !explanation) {
                     console.error('❌ Explicación no disponible - question:', !!question, 'explanation:', !!explanation);
@@ -2110,10 +2086,8 @@
                 };
 
                 // Mostrar modal
-                console.log('🎯 Mostrando modal de explicación...');
                 const modal = new bootstrap.Modal(document.getElementById('explanationModal'));
                 modal.show();
-                console.log('✅ Modal mostrado correctamente');
             }
 
             setupVisualContent(questionId, explanation) {
@@ -2122,8 +2096,7 @@
                 const visualControls = document.getElementById('visualControls');
                 const uploadArea = document.getElementById('uploadArea');
 
-                console.log('🔍 setupVisualContent called for:', questionId);
-                console.log('📋 Explanation data:', {
+                console.log({
                     hasImageUploaded: !!explanation.image_uploaded_url,
                     hasImagePNG: !!explanation.image_png_url,
                     hasSVG: !!explanation.svg_content,
@@ -2285,7 +2258,6 @@
                         explanationSection.innerHTML = this.getExplanationHTML(question);
 
                         // Abrir el modal con la explicación generada
-                        console.log('🎯 Abriendo modal con explicación generada...');
                         this.showExplanationModal(questionId, this.explicaciones[questionId]);
 
                     } else {
@@ -2493,13 +2465,11 @@
                 const tema = document.getElementById('filterTema').value;
                 const searchText = document.getElementById('searchInput').value.trim();
 
-                console.log('Aplicando filtros:', { convocatoria, titulacion, test, tema, searchText });
-                console.log('Total preguntas disponibles:', this.allQuestions.length);
                 
                 // Debug: Mostrar una muestra de las preguntas para ver su estructura
                 if (this.allQuestions.length > 0) {
                     const sampleQuestion = this.allQuestions[0];
-                    console.log('Muestra de pregunta:', {
+                    console.log({
                         id: sampleQuestion.id,
                         convocatoria: sampleQuestion.convocatoria,
                         exam_titulo: sampleQuestion.exam_titulo,
@@ -2508,40 +2478,32 @@
                     
                     // Mostrar todas las convocatorias disponibles en las preguntas
                     const convocatoriasEnPreguntas = [...new Set(this.allQuestions.map(q => q.convocatoria).filter(c => c))];
-                    console.log('Convocatorias disponibles en preguntas:', convocatoriasEnPreguntas);
                 }
                 
                 try {
                     // Filtrar las preguntas cargadas
                     let filtered = [...this.allQuestions];
                     
-                    console.log('Antes de filtros:', filtered.length);
                     
                     // Filtro por convocatoria
                     if (convocatoria && convocatoria !== 'all') {
-                        console.log('Filtrando por convocatoria:', convocatoria);
                         const beforeFilter = filtered.length;
                         filtered = filtered.filter(q => {
                             const match = q.convocatoria === convocatoria;
                             if (!match && beforeFilter < 5) {
-                                console.log(`Pregunta ${q.id}: convocatoria="${q.convocatoria}" vs filtro="${convocatoria}"`);
                             }
                             return match;
                         });
-                        console.log(`Después de filtro convocatoria: ${filtered.length} de ${beforeFilter}`);
                     }
 
                     // Filtro por titulación
                     if (titulacion && titulacion !== 'all') {
-                        console.log('Filtrando por titulación:', titulacion);
                         const beforeFilter = filtered.length;
                         filtered = filtered.filter(q => q.tipo_examen === titulacion);
-                        console.log(`Después de filtro titulación: ${filtered.length} de ${beforeFilter}`);
                     }
 
                     // Filtro por test específico
                     if (test && test !== 'all') {
-                        console.log('Filtrando por test:', test);
                         const beforeFilter = filtered.length;
 
                         // Descomponer el identificador compuesto
@@ -2551,22 +2513,18 @@
                             return q.exam_titulo === tituloTest && q.tipo_examen === tipoExamen;
                         });
 
-                        console.log(`Después de filtro test: ${filtered.length} de ${beforeFilter}`);
                     }
                     
                     // Filtro por tema
                     if (tema && tema !== 'all') {
-                        console.log('Filtrando por tema:', tema);
                         const beforeFilter = filtered.length;
                         filtered = filtered.filter(q => 
                             q.categoria === tema || q.subcategoria === tema
                         );
-                        console.log(`Después de filtro tema: ${filtered.length} de ${beforeFilter}`);
                     }
                     
                     // Filtro por búsqueda de ID o texto
                     if (searchText) {
-                        console.log('Filtrando por búsqueda:', searchText);
                         const beforeFilter = filtered.length;
                         const searchLower = searchText.toLowerCase();
                         filtered = filtered.filter(q => 
@@ -2576,10 +2534,8 @@
                                 opt.toLowerCase().includes(searchLower)
                             )
                         );
-                        console.log(`Después de filtro búsqueda: ${filtered.length} de ${beforeFilter}`);
                     }
                     
-                    console.log(`RESULTADO FINAL: ${filtered.length} preguntas filtradas de ${this.allQuestions.length} totales`);
                     
                     this.filteredQuestions = filtered;
                     this.currentPage = 1;
@@ -2966,7 +2922,7 @@
                 }
 
                 try {
-                    console.log('Guardando cambios en la base de datos:', {
+                    console.log({
                         questionId,
                         textoPregunta,
                         categoria,
