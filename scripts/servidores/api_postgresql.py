@@ -2114,16 +2114,22 @@ def get_question_rankings(category):
 
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
-        # Obtener rankings de la categoría
+        # Obtener rankings de la categoría desde question_global_stats
         cur.execute("""
             SELECT 
-                qfr.*,
+                qgs.question_id,
+                qgs.total_appearances,
+                qgs.total_incorrect_answers,
+                qgs.success_rate,
+                (100 - qgs.success_rate) as failure_rate,
                 q.texto_pregunta,
-                q.respuesta_correcta
-            FROM question_failure_rankings qfr
-            JOIN questions q ON qfr.question_id = q.id
-            WHERE qfr.category = %s
-            ORDER BY qfr.ranking_position
+                q.respuesta_correcta,
+                qgs.total_appearances as total_attempts,
+                %s as category
+            FROM question_global_stats qgs
+            JOIN questions q ON qgs.question_id = q.id
+            WHERE qgs.total_appearances > 0
+            ORDER BY qgs.total_incorrect_answers DESC, qgs.success_rate ASC
             LIMIT 50
         """, (category,))
         rankings = cur.fetchall()
