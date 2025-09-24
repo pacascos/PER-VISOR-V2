@@ -61,6 +61,7 @@ class QuestionStatisticsTracker {
         questionInfo.isCorrect = isCorrect;
         questionInfo.lastAttemptTime = Date.now();
 
+        console.log({
             userAnswer,
             isCorrect,
             timeSpent: questionInfo.timeSpent,
