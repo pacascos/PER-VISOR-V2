@@ -133,7 +133,10 @@ class StatisticsManager {
     async initialize() {
         try {
             await this.loadUserStatistics();
-            await this.renderDashboard();
+            // Solo renderizar si tenemos datos válidos del usuario
+            if (this.userStats && this.userId) {
+                await this.renderDashboard();
+            }
         } catch (error) {
             console.error('Error initializing statistics:', error);
             this.showError('Error cargando las estadísticas');
@@ -203,6 +206,7 @@ class StatisticsManager {
         const levelInfo = data.level_info || {};
         const insights = data.insights || {};
 
+        // Solo procesar si tenemos datos reales del usuario
         this.userStats = {
             level: levelInfo.level || 1,
             xp: levelInfo.xp || 0,
