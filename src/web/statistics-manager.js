@@ -144,8 +144,8 @@ class StatisticsManager {
         // Check if user is authenticated
         const authToken = this.getCurrentAuthToken();
         if (!this.userId || !authToken) {
-            console.warn('No authenticated user found, using demo data');
-            this.loadDemoData();
+            console.error('No authenticated user found');
+            this.showError('Usuario no autenticado. Por favor, inicia sesión.');
             return;
         }
 
@@ -194,8 +194,7 @@ class StatisticsManager {
 
         } catch (error) {
             console.error('Error loading real user statistics:', error);
-            console.warn('Falling back to demo data');
-            this.loadDemoData();
+            this.showError(`Error cargando estadísticas: ${error.message}`);
         }
     }
 
@@ -271,53 +270,6 @@ class StatisticsManager {
         return 'stable';
     }
 
-    loadDemoData() {
-        // Fallback demo data when no real data is available
-        this.userStats = {
-            level: 5,
-            xp: 2450,
-            xp_to_next: 550,
-            exams_completed: 12,
-            total_questions: 540,
-            correct_answers: 459,
-            overall_score: 85,
-            study_time_hours: 24,
-            daily_streak: 8,
-            longest_streak: 15,
-            weak_topics: ['UT3', 'UT7', 'UT9'],
-            strong_topics: ['UT1', 'UT2', 'UT4'],
-            last_exam_date: new Date('2025-01-14'),
-            created_at: new Date('2024-12-01')
-        };
-
-        this.userProgress = {
-            'UT1': { correct: 48, total: 50, percentage: 96, trend: 'up' },
-            'UT2': { correct: 44, total: 48, percentage: 92, trend: 'stable' },
-            'UT3': { correct: 35, total: 52, percentage: 67, trend: 'down' },
-            'UT4': { correct: 42, total: 45, percentage: 93, trend: 'up' },
-            'UT5': { correct: 38, total: 42, percentage: 90, trend: 'up' },
-            'UT6': { correct: 41, total: 46, percentage: 89, trend: 'stable' },
-            'UT7': { correct: 32, total: 48, percentage: 67, trend: 'down' },
-            'UT8': { correct: 39, total: 44, percentage: 89, trend: 'up' },
-            'UT9': { correct: 31, total: 47, percentage: 66, trend: 'down' },
-            'UT10': { correct: 43, total: 49, percentage: 88, trend: 'stable' },
-            'UT11': { correct: 40, total: 44, percentage: 91, trend: 'up' }
-        };
-
-        this.userAchievements = [
-            'first_exam', 'exam_master', 'week_streak', 'navigation_expert', 'night_owl'
-        ];
-
-        this.examHistory = [
-            { date: '2025-01-14', score: 87, time_minutes: 65 },
-            { date: '2025-01-12', score: 82, time_minutes: 72 },
-            { date: '2025-01-10', score: 89, time_minutes: 58 },
-            { date: '2025-01-08', score: 76, time_minutes: 80 },
-            { date: '2025-01-06', score: 91, time_minutes: 62 },
-            { date: '2025-01-04', score: 84, time_minutes: 68 },
-            { date: '2025-01-02', score: 79, time_minutes: 75 }
-        ];
-    }
 
     async renderDashboard() {
         // Hide loading state
@@ -612,7 +564,6 @@ class StatisticsManager {
     showAchievementDetail(achievement, isUnlocked) {
         const modal = new bootstrap.Modal(document.createElement('div'));
         // Implementation for achievement detail modal
-        console.log('Achievement detail:', achievement, isUnlocked);
     }
 
     showError(message) {
