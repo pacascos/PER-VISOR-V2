@@ -2104,6 +2104,45 @@ def get_question_stats(question_id):
         logger.error(f"Error obteniendo estadísticas de pregunta: {e}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/question-stats/test', methods=['GET'])
+def test_rankings():
+    """Endpoint de prueba para rankings"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        cur.execute("""
+            SELECT 
+                qgs.question_id,
+                qgs.total_appearances,
+                qgs.total_incorrect_answers,
+                qgs.success_rate,
+                (100 - qgs.success_rate) as failure_rate,
+                q.texto_pregunta,
+                qgs.total_appearances as total_attempts
+            FROM question_global_stats qgs
+            JOIN questions q ON qgs.question_id = q.id
+            WHERE qgs.total_appearances > 0
+            ORDER BY qgs.total_incorrect_answers DESC
+            LIMIT 5
+        """)
+        
+        rankings = cur.fetchall()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'rankings': [dict(row) for row in rankings],
+            'count': len(rankings)
+        })
+    except Exception as e:
+        logger.error(f"Error en test rankings: {e}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/question-stats/rankings/<category>', methods=['GET'])
 def get_question_rankings(category):
     """Obtener rankings de preguntas más falladas por categoría"""
