@@ -3,11 +3,9 @@
  */
 class StatisticsManager {
     constructor() {
-        console.log('📊 StatisticsManager constructor ejecutándose...');
         this.API_BASE = 'http://localhost:5001';
         this.userId = this.getCurrentUserId();
         this.charts = {};
-        console.log('📊 userId obtenido:', this.userId);
 
         // Achievement definitions
         this.achievements = {
@@ -115,25 +113,19 @@ class StatisticsManager {
     }
 
     getCurrentUserId() {
-        console.log('📊 getCurrentUserId ejecutándose...');
         // Get from localStorage or session (where exam system stores user info)
         const currentUser = localStorage.getItem('currentUser');
-        console.log('📊 currentUser en localStorage:', currentUser);
         
         if (currentUser) {
             try {
                 const userData = JSON.parse(currentUser);
-                const userId = userData.id || userData.user_id;
-                console.log('📊 userId encontrado en currentUser:', userId);
-                return userId;
+                return userData.id || userData.user_id;
             } catch (e) {
                 console.error('Error parsing currentUser:', e);
             }
         }
         
-        const fallbackUserId = localStorage.getItem('currentUserId');
-        console.log('📊 fallback currentUserId:', fallbackUserId);
-        return fallbackUserId || null;
+        return localStorage.getItem('currentUserId') || null;
     }
 
     getCurrentAuthToken() {
@@ -142,21 +134,11 @@ class StatisticsManager {
 
     async initialize() {
         try {
-            console.log('📊 Iniciando initialize...');
-            console.log('📊 userId inicial:', this.userId);
-            
             await this.loadUserStatistics();
-            
-            console.log('📊 Después de loadUserStatistics:');
-            console.log('📊 this.userStats:', this.userStats);
-            console.log('📊 this.userId:', this.userId);
             
             // Solo renderizar si tenemos datos válidos del usuario
             if (this.userStats && this.userId) {
-                console.log('📊 Condición cumplida, renderizando dashboard...');
                 await this.renderDashboard();
-            } else {
-                console.log('📊 Condición NO cumplida - userStats:', !!this.userStats, 'userId:', !!this.userId);
             }
         } catch (error) {
             console.error('Error initializing statistics:', error);
@@ -256,11 +238,6 @@ class StatisticsManager {
 
 
     async renderDashboard() {
-        console.log('📊 Iniciando renderDashboard...');
-        console.log('📊 userStats:', this.userStats);
-        console.log('📊 userProgress:', this.userProgress);
-        console.log('📊 examHistory:', this.examHistory);
-        
         // Hide loading state
         document.getElementById('loadingState').classList.add('d-none');
         document.getElementById('statsContent').classList.remove('d-none');
@@ -273,7 +250,6 @@ class StatisticsManager {
         this.updateMainStats();
 
         // Render charts
-        console.log('📊 Renderizando gráficos...');
         this.renderEvolutionChart();
         this.renderRadarChart();
 
@@ -286,8 +262,6 @@ class StatisticsManager {
 
         // Render recommendations
         this.renderRecommendations();
-        
-        console.log('📊 renderDashboard completado');
     }
 
     updateHeader() {
@@ -333,16 +307,10 @@ class StatisticsManager {
     }
 
     renderEvolutionChart() {
-        console.log('📊 Renderizando gráfico de evolución...');
-        console.log('📊 examHistory:', this.examHistory);
-        
         const ctx = document.getElementById('evolutionChart').getContext('2d');
 
         const dates = this.examHistory.map(exam => exam.date);
         const scores = this.examHistory.map(exam => exam.score);
-        
-        console.log('📊 dates:', dates);
-        console.log('📊 scores:', scores);
 
         try {
             this.charts.evolution = new Chart(ctx, {
@@ -383,21 +351,15 @@ class StatisticsManager {
             }
         });
         } catch (error) {
-            console.error('❌ Error renderizando gráfico de evolución:', error);
+            console.error('Error renderizando gráfico de evolución:', error);
         }
     }
 
     renderRadarChart() {
-        console.log('📊 Renderizando gráfico de radar...');
-        console.log('📊 userProgress:', this.userProgress);
-        
         const ctx = document.getElementById('radarChart').getContext('2d');
 
         const topicNames = Object.keys(this.userProgress);
         const topicScores = topicNames.map(topic => this.userProgress[topic].percentage);
-        
-        console.log('📊 topicNames:', topicNames);
-        console.log('📊 topicScores:', topicScores);
 
         try {
             this.charts.radar = new Chart(ctx, {
@@ -575,7 +537,6 @@ class StatisticsManager {
     }
 
     checkAchievements() {
-        console.log('🏆 Verificando logros...');
         const unlockedAchievements = [];
         
         Object.keys(this.achievements).forEach(achievementId => {
@@ -594,8 +555,7 @@ class StatisticsManager {
         });
         
         if (unlockedAchievements.length > 0) {
-            console.log(`🏆 Total de logros desbloqueados: ${this.userAchievements.length}`);
-            // Opcional: Mostrar notificación de nuevos logros
+            // Mostrar notificación de nuevos logros
             this.showAchievementNotification(unlockedAchievements);
         }
     }
