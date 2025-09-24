@@ -2104,7 +2104,7 @@ def get_question_stats(question_id):
         logger.error(f"Error obteniendo estadísticas de pregunta: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/question-stats/test', methods=['GET'])
+@app.route('/question-stats/test-rankings', methods=['GET'])
 def test_rankings():
     """Endpoint de prueba para rankings"""
     try:
