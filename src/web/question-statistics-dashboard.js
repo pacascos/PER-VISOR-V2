@@ -136,7 +136,7 @@ class QuestionStatisticsDashboard {
         }
 
         // Ordenar por failure_rate descendente
-        allRankings.sort((a, b) => b.failure_rate - a.failure_rate);
+        allRankings.sort((a, b) => parseFloat(b.failure_rate) - parseFloat(a.failure_rate));
         
         this.displayRankings(allRankings.slice(0, 20)); // Top 20 global
     }
@@ -175,7 +175,7 @@ class QuestionStatisticsDashboard {
         
         rankings.forEach((item, index) => {
             const position = index + 1;
-            const failureRate = item.failure_rate || 0;
+            const failureRate = parseFloat(item.failure_rate) || 0;
             const successRate = 100 - failureRate;
             
             html += `
