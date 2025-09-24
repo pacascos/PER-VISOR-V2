@@ -598,8 +598,13 @@
         let statisticsManager;
 
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DOMContentLoaded ejecutándose...');
+            console.log('🚀 Creando StatisticsManager...');
             statisticsManager = new StatisticsManager();
+            console.log('🚀 StatisticsManager creado:', statisticsManager);
+            console.log('🚀 Inicializando...');
             statisticsManager.initialize();
+            console.log('🚀 Inicialización completada');
         });
     </script>
 </body>
