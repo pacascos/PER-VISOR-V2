@@ -378,6 +378,17 @@
             100% { transform: rotate(360deg); }
         }
 
+        @keyframes slideIn {
+            0% { 
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% { 
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: 1fr;
@@ -594,18 +605,32 @@
     <script src="statistics-manager.js"></script>
 
     <script>
+        // Log básico para verificar que JavaScript funciona
+        console.log('🔥 JavaScript básico funcionando en statistics-dashboard.html');
+        console.log('🔥 Chart disponible:', typeof Chart !== 'undefined');
+        console.log('🔥 StatisticsManager disponible:', typeof StatisticsManager !== 'undefined');
+        console.log('🔥 Document ready state:', document.readyState);
         // Initialize statistics dashboard
         let statisticsManager;
 
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 DOMContentLoaded ejecutándose...');
+        function initializeDashboard() {
+            console.log('🚀 Inicializando dashboard...');
             console.log('🚀 Creando StatisticsManager...');
             statisticsManager = new StatisticsManager();
             console.log('🚀 StatisticsManager creado:', statisticsManager);
             console.log('🚀 Inicializando...');
             statisticsManager.initialize();
             console.log('🚀 Inicialización completada');
-        });
+        }
+
+        // Intentar inicializar inmediatamente si el DOM ya está listo
+        if (document.readyState === 'loading') {
+            console.log('🚀 DOM aún cargando, esperando DOMContentLoaded...');
+            document.addEventListener('DOMContentLoaded', initializeDashboard);
+        } else {
+            console.log('🚀 DOM ya está listo, inicializando inmediatamente...');
+            initializeDashboard();
+        }
     </script>
 </body>
 </html>

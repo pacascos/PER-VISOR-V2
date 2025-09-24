@@ -115,17 +115,25 @@ class StatisticsManager {
     }
 
     getCurrentUserId() {
+        console.log('📊 getCurrentUserId ejecutándose...');
         // Get from localStorage or session (where exam system stores user info)
         const currentUser = localStorage.getItem('currentUser');
+        console.log('📊 currentUser en localStorage:', currentUser);
+        
         if (currentUser) {
             try {
                 const userData = JSON.parse(currentUser);
-                return userData.id || userData.user_id;
+                const userId = userData.id || userData.user_id;
+                console.log('📊 userId encontrado en currentUser:', userId);
+                return userId;
             } catch (e) {
                 console.error('Error parsing currentUser:', e);
             }
         }
-        return localStorage.getItem('currentUserId') || null;
+        
+        const fallbackUserId = localStorage.getItem('currentUserId');
+        console.log('📊 fallback currentUserId:', fallbackUserId);
+        return fallbackUserId || null;
     }
 
     getCurrentAuthToken() {
@@ -272,7 +280,8 @@ class StatisticsManager {
         // Render topic progress
         this.renderTopicProgress();
 
-        // Render achievements
+        // Check and render achievements
+        this.checkAchievements();
         this.renderAchievements();
 
         // Render recommendations
@@ -335,21 +344,22 @@ class StatisticsManager {
         console.log('📊 dates:', dates);
         console.log('📊 scores:', scores);
 
-        this.charts.evolution = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: 'Puntuación (%)',
-                    data: scores,
-                    borderColor: '#4f46e5',
-                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 6,
-                    pointHoverRadius: 8
-                }]
-            },
+        try {
+            this.charts.evolution = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Puntuación (%)',
+                        data: scores,
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
@@ -372,6 +382,9 @@ class StatisticsManager {
                 }
             }
         });
+        } catch (error) {
+            console.error('❌ Error renderizando gráfico de evolución:', error);
+        }
     }
 
     renderRadarChart() {
@@ -386,7 +399,8 @@ class StatisticsManager {
         console.log('📊 topicNames:', topicNames);
         console.log('📊 topicScores:', topicScores);
 
-        this.charts.radar = new Chart(ctx, {
+        try {
+            this.charts.radar = new Chart(ctx, {
             type: 'radar',
             data: {
                 labels: topicNames,
@@ -423,6 +437,9 @@ class StatisticsManager {
                 }
             }
         });
+        } catch (error) {
+            console.error('❌ Error renderizando gráfico de radar:', error);
+        }
     }
 
     renderTopicProgress() {
@@ -555,6 +572,122 @@ class StatisticsManager {
         }
 
         return recommendations.slice(0, 5); // Limit to top 5 recommendations
+    }
+
+    checkAchievements() {
+        console.log('🏆 Verificando logros...');
+        const unlockedAchievements = [];
+        
+        Object.keys(this.achievements).forEach(achievementId => {
+            const achievement = this.achievements[achievementId];
+            const isUnlocked = this.evaluateAchievementCondition(achievement);
+            
+            if (isUnlocked && !this.userAchievements.includes(achievementId)) {
+                unlockedAchievements.push(achievement);
+                console.log(`🎉 ¡Logro desbloqueado! ${achievement.title}`);
+            }
+        });
+        
+        // Agregar nuevos logros desbloqueados
+        unlockedAchievements.forEach(achievement => {
+            this.userAchievements.push(achievement.id);
+        });
+        
+        if (unlockedAchievements.length > 0) {
+            console.log(`🏆 Total de logros desbloqueados: ${this.userAchievements.length}`);
+            // Opcional: Mostrar notificación de nuevos logros
+            this.showAchievementNotification(unlockedAchievements);
+        }
+    }
+
+    evaluateAchievementCondition(achievement) {
+        const condition = achievement.condition;
+        
+        switch (achievement.type) {
+            case 'progress':
+                return this.checkProgressCondition(condition);
+            case 'mastery':
+                return this.checkMasteryCondition(condition);
+            case 'streak':
+                return this.checkStreakCondition(condition);
+            case 'special':
+                return this.checkSpecialCondition(condition);
+            default:
+                return false;
+        }
+    }
+
+    checkProgressCondition(condition) {
+        if (condition.exams_completed && this.userStats) {
+            return this.userStats.exams_completed >= condition.exams_completed;
+        }
+        if (condition.perfect_score && this.examHistory) {
+            return this.examHistory.some(exam => exam.score >= 100);
+        }
+        return false;
+    }
+
+    checkMasteryCondition(condition) {
+        if (condition.topic_mastery && this.userProgress) {
+            for (const [topic, requiredScore] of Object.entries(condition.topic_mastery)) {
+                if (this.userProgress[topic] && this.userProgress[topic].percentage >= requiredScore) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    checkStreakCondition(condition) {
+        if (condition.daily_streak && this.userStats) {
+            return this.userStats.daily_streak >= condition.daily_streak;
+        }
+        return false;
+    }
+
+    checkSpecialCondition(condition) {
+        // Implementar lógica para logros especiales
+        // Por ahora, retornar false ya que necesitaríamos más datos
+        return false;
+    }
+
+    showAchievementNotification(achievements) {
+        // Crear notificación visual de nuevos logros
+        achievements.forEach(achievement => {
+            const notification = document.createElement('div');
+            notification.className = 'achievement-notification';
+            notification.innerHTML = `
+                <div class="achievement-notification-content">
+                    <i class="${achievement.icon}"></i>
+                    <div>
+                        <strong>¡Logro desbloqueado!</strong><br>
+                        ${achievement.title}<br>
+                        <small>+${achievement.xp} XP</small>
+                    </div>
+                </div>
+            `;
+            
+            // Agregar estilos
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remover después de 5 segundos
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        });
     }
 
     showAchievementDetail(achievement, isUnlocked) {
