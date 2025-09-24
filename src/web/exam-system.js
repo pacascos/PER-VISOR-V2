@@ -98,6 +98,9 @@ class ExamSystem {
                 if (response.ok) {
                     const data = await response.json();
                     this.currentUser = data.user;
+                    // Restaurar currentUserId para el tracker de estadísticas
+                    window.currentUserId = data.user.id;
+                    localStorage.setItem('currentUserId', data.user.id);
                     this.showDashboard();
                 } else {
                     this.clearAuth();
@@ -132,6 +135,9 @@ class ExamSystem {
                 this.authToken = data.token;
                 this.currentUser = data.user;
                 localStorage.setItem('authToken', this.authToken);
+                // Establecer currentUserId para el tracker de estadísticas
+                window.currentUserId = data.user.id;
+                localStorage.setItem('currentUserId', data.user.id);
                 this.showAlert('¡Login exitoso!', 'success');
                 this.showDashboard();
             } else {
@@ -163,6 +169,9 @@ class ExamSystem {
                 this.authToken = data.token;
                 this.currentUser = data.user;
                 localStorage.setItem('authToken', this.authToken);
+                // Establecer currentUserId para el tracker de estadísticas
+                window.currentUserId = data.user.id;
+                localStorage.setItem('currentUserId', data.user.id);
                 this.showAlert('¡Registro exitoso!', 'success');
                 this.showDashboard();
             } else {
@@ -184,6 +193,9 @@ class ExamSystem {
         this.authToken = null;
         this.currentUser = null;
         localStorage.removeItem('authToken');
+        // Limpiar currentUserId del tracker de estadísticas
+        window.currentUserId = null;
+        localStorage.removeItem('currentUserId');
     }
 
     // UI Navigation Methods
@@ -356,7 +368,6 @@ class ExamSystem {
 
     saveAnswer(questionId, answer) {
         this.userAnswers[questionId] = answer;
-        console.log('Answer saved:', questionId, answer);
 
         // Registrar intento de respuesta para estadísticas
         if (window.questionStatsTracker && this.questionStartTimes[questionId]) {
@@ -838,7 +849,6 @@ class ExamSystem {
     async saveExamStatistics(results) {
         // Only save if user is authenticated
         if (!this.authToken || !this.currentUser) {
-            console.log('No authenticated user, skipping statistics save');
             return;
         }
 
@@ -868,13 +878,18 @@ class ExamSystem {
                     const userAnswer = this.userAnswers[question.question_id];
                     const isCorrect = userAnswer === question.respuesta_correcta;
 
+                    // Calcular tiempo gastado en la pregunta
+                    const timeSpent = this.questionStartTimes[question.question_id] 
+                        ? Math.round((Date.now() - this.questionStartTimes[question.question_id]) / 1000)
+                        : 0;
+
                     questionAttempts.push({
                         question_id: question.question_id,
                         user_answer: userAnswer || null,
                         correct_answer: question.respuesta_correcta,
                         is_correct: isCorrect,
                         category: `UT${question.ut_number}`,
-                        time_spent_seconds: 0 // TODO: Track individual question time
+                        time_spent_seconds: timeSpent
                     });
                 });
             }
@@ -891,7 +906,6 @@ class ExamSystem {
                 exam_date: new Date().toISOString()
             };
 
-            console.log('Saving exam statistics:', statisticsData);
 
             const response = await fetch(`${this.API_BASE}/api/statistics/exam-completed`, {
                 method: 'POST',
@@ -904,7 +918,6 @@ class ExamSystem {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log('✅ Statistics saved successfully:', result);
 
                 // Show achievement notifications if any
                 if (result.new_achievements && result.new_achievements.length > 0) {
@@ -1020,11 +1033,9 @@ class ExamSystem {
 
     generateRandomAnswers() {
         if (!this.currentExam) {
-            console.log('❌ No hay examen actual');
             return;
         }
 
-        console.log('🔍 Estructura del examen:', Object.keys(this.currentExam));
         
         // Buscar las preguntas en la estructura correcta
         let questions = [];
@@ -1033,11 +1044,9 @@ class ExamSystem {
         } else if (this.currentExam.questionDetails) {
             questions = this.currentExam.questionDetails;
         } else {
-            console.log('❌ No se encontraron preguntas en el examen');
             return;
         }
 
-        console.log(`📝 Encontradas ${questions.length} preguntas`);
 
         const options = ['a', 'b', 'c', 'd'];
         
@@ -1069,12 +1078,9 @@ class ExamSystem {
             }
         });
 
-        console.log('🎲 Respuestas aleatorias generadas para', Object.keys(this.userAnswers).length, 'preguntas');
-        console.log('🎯 Muestra de respuestas:', Object.entries(this.userAnswers).slice(0, 5));
     }
 
     startAutomaticUserSimulation() {
-        console.log('🤖 Iniciando simulación automática del usuario...');
         
         // Simular el comportamiento del usuario navegando por todas las preguntas
         this.simulateUserBehavior();
@@ -1082,12 +1088,10 @@ class ExamSystem {
 
     async simulateUserBehavior() {
         if (!this.currentExam || !this.currentExam.questions) {
-            console.log('❌ No hay examen para simular');
             return;
         }
 
         const totalQuestions = this.currentExam.questions.length;
-        console.log(`🎯 Simulando comportamiento para ${totalQuestions} preguntas`);
 
         // Simular navegación por cada pregunta
         for (let i = 0; i < totalQuestions; i++) {
@@ -1119,7 +1123,6 @@ class ExamSystem {
         }
 
         // Al finalizar, simular clic en "Finalizar Examen"
-        console.log('🏁 Simulación completada, finalizando examen...');
         await this.sleep(2000);
         this.finishExam();
     }
