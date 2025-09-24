@@ -160,7 +160,7 @@ class StatisticsManager {
             };
 
             // Load user statistics
-            const statsResponse = await fetch(`${this.API_BASE}/api/statistics/user/${this.userId}`, {
+            const statsResponse = await fetch(`${this.API_BASE}/api/user-stats`, {
                 headers: headers
             });
 
@@ -171,29 +171,8 @@ class StatisticsManager {
                 throw new Error('Failed to load user statistics');
             }
 
-            // Load achievements
-            const achievementsResponse = await fetch(`${this.API_BASE}/api/statistics/achievements/${this.userId}`, {
-                headers: headers
-            });
-
-            if (achievementsResponse.ok) {
-                const achievementsData = await achievementsResponse.json();
-                this.userAchievements = achievementsData.unlocked.map(a => a.achievement_id);
-            } else {
-                this.userAchievements = [];
-            }
-
-            // Load progress data
-            const progressResponse = await fetch(`${this.API_BASE}/api/statistics/progress/${this.userId}`, {
-                headers: headers
-            });
-
-            if (progressResponse.ok) {
-                const progressData = await progressResponse.json();
-                this.processProgressData(progressData);
-            } else {
-                this.examHistory = [];
-            }
+            // Simplificar: usar solo los datos ya obtenidos del endpoint principal
+            this.userAchievements = []; // Por ahora, sin achievements específicos
 
         } catch (error) {
             console.error('Error loading real user statistics:', error);
@@ -202,49 +181,29 @@ class StatisticsManager {
     }
 
     processRealUserStats(data) {
-        const performance = data.performance || {};
-        const levelInfo = data.level_info || {};
-        const insights = data.insights || {};
-
-        // Solo procesar si tenemos datos reales del usuario
+        // El endpoint /api/user-stats devuelve datos directamente
         this.userStats = {
-            level: levelInfo.level || 1,
-            xp: levelInfo.xp || 0,
-            xp_to_next: levelInfo.xp_to_next || 500,
-            exams_completed: performance.exams_completed || 0,
-            total_questions: performance.total_questions || 0,
-            correct_answers: performance.correct_answers || 0,
-            overall_score: performance.overall_score || 0,
-            study_time_hours: performance.study_time_hours || 0,
-            daily_streak: performance.daily_streak || 0,
-            longest_streak: performance.longest_streak || 0,
-            weak_topics: insights.weak_topics || [],
-            strong_topics: insights.strong_topics || [],
-            last_exam_date: performance.last_exam_date ? new Date(performance.last_exam_date) : null,
-            created_at: data.user_info?.member_since ? new Date(data.user_info.member_since) : new Date()
+            level: data.level || 1,
+            xp: data.xp || 0,
+            xp_to_next: data.xp_to_next || 500,
+            exams_completed: data.exams_completed || 0,
+            total_questions: data.total_questions || 0,
+            correct_answers: data.correct_answers || 0,
+            overall_score: data.overall_score || 0,
+            study_time_hours: data.study_time_hours || 0,
+            daily_streak: data.daily_streak || 0,
+            longest_streak: data.longest_streak || 0,
+            weak_topics: data.weak_topics || [],
+            strong_topics: data.strong_topics || [],
+            last_exam_date: data.last_exam_date ? new Date(data.last_exam_date) : null,
+            created_at: new Date()
         };
 
-        // Process topic performance
-        this.userProgress = {};
-        if (data.topic_performance) {
-            data.topic_performance.forEach(topic => {
-                this.userProgress[topic.category] = {
-                    correct: topic.correct,
-                    total: topic.total,
-                    percentage: Math.round(topic.avg_percentage),
-                    trend: this.calculateTrend(topic.avg_percentage)
-                };
-            });
-        }
+        // Process topic performance (usando topic_progress del endpoint)
+        this.userProgress = data.topic_progress || {};
 
-        // Process recent exams
-        if (data.recent_exams) {
-            this.examHistory = data.recent_exams.map(exam => ({
-                date: exam.completed_at.split('T')[0], // Extract date part
-                score: exam.score,
-                time_minutes: exam.time_taken_minutes
-            }));
-        }
+        // Process exam history (usando exam_history del endpoint)
+        this.examHistory = data.exam_history || [];
     }
 
     processProgressData(data) {
