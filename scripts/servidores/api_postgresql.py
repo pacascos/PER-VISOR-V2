@@ -2171,6 +2171,131 @@ def get_question_rankings(category):
         logger.error(f"Error obteniendo rankings de categoría: {e}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/question-stats/user/<user_id>', methods=['GET'])
+def get_user_question_stats(user_id):
+    """Obtener estadísticas de preguntas para un usuario específico"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # Estadísticas del usuario específico
+        cur.execute("""
+            SELECT 
+                COUNT(DISTINCT question_id) as total_questions,
+                SUM(total_attempts) as total_attempts,
+                SUM(correct_attempts) as total_correct,
+                SUM(incorrect_attempts) as total_incorrect,
+                ROUND(AVG(user_success_rate), 2) as avg_success_rate,
+                ROUND(AVG(avg_time_spent_seconds), 2) as avg_time_seconds
+            FROM question_user_stats
+            WHERE user_id = %s
+        """, (user_id,))
+        
+        user_stats = cur.fetchone()
+
+        # Pregunta más fallada del usuario
+        cur.execute("""
+            SELECT 
+                qus.question_id,
+                q.texto_pregunta,
+                qus.total_attempts as total_incorrect_answers,
+                qus.user_success_rate as success_rate
+            FROM question_user_stats qus
+            JOIN questions q ON qus.question_id = q.id
+            WHERE qus.user_id = %s AND qus.total_attempts > 0
+            ORDER BY qus.incorrect_attempts DESC, qus.user_success_rate ASC
+            LIMIT 1
+        """, (user_id,))
+        
+        most_failed = cur.fetchone()
+
+        # Estadísticas por categoría del usuario
+        cur.execute("""
+            SELECT 
+                qcs.category,
+                COUNT(*) as questions_count,
+                SUM(qcs.total_appearances) as total_attempts,
+                SUM(qcs.total_correct_answers) as total_correct,
+                SUM(qcs.total_incorrect_answers) as total_incorrect,
+                ROUND(AVG(qcs.category_success_rate), 2) as avg_success_rate
+            FROM question_category_stats qcs
+            JOIN question_user_stats qus ON qcs.question_id = qus.question_id
+            WHERE qus.user_id = %s
+            GROUP BY qcs.category
+            ORDER BY avg_success_rate ASC
+        """, (user_id,))
+        
+        category_stats = cur.fetchall()
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'user_stats': dict(user_stats) if user_stats else {
+                'total_questions': 0,
+                'total_attempts': 0,
+                'total_correct': 0,
+                'total_incorrect': 0,
+                'avg_success_rate': 0,
+                'avg_time_seconds': 0
+            },
+            'most_failed_question': dict(most_failed) if most_failed else None,
+            'category_stats': [dict(row) for row in category_stats]
+        })
+
+    except Exception as e:
+        logger.error(f"Error obteniendo estadísticas del usuario: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/question-stats/user/<user_id>/rankings', methods=['GET'])
+def get_user_question_rankings(user_id):
+    """Obtener rankings de preguntas más falladas para un usuario específico"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # Rankings del usuario específico
+        cur.execute("""
+            SELECT 
+                qus.question_id,
+                qus.total_attempts,
+                qus.correct_attempts,
+                qus.incorrect_attempts,
+                qus.user_success_rate as success_rate,
+                (100 - qus.user_success_rate) as failure_rate,
+                q.texto_pregunta,
+                q.respuesta_correcta,
+                qus.total_attempts as total_attempts_display,
+                'Personal' as category
+            FROM question_user_stats qus
+            JOIN questions q ON qus.question_id = q.id
+            WHERE qus.user_id = %s AND qus.total_attempts > 0
+            ORDER BY qus.incorrect_attempts DESC, qus.user_success_rate ASC
+            LIMIT 50
+        """, (user_id,))
+        
+        rankings = cur.fetchall()
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'user_id': user_id,
+            'rankings': [dict(row) for row in rankings]
+        })
+
+    except Exception as e:
+        logger.error(f"Error obteniendo rankings del usuario: {e}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/question-stats/general', methods=['GET'])
 def get_general_question_stats():
     """Obtener estadísticas generales de preguntas"""

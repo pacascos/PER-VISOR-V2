@@ -60,6 +60,30 @@
             font-size: 1.1rem;
         }
 
+        .view-toggle-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-check-input {
+            width: 3rem;
+            height: 1.5rem;
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+
+        .form-check-input:checked {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .form-check-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-left: 10px;
+        }
+
         .stats-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -288,6 +312,16 @@
         <div class="header">
             <h1><i class="fas fa-chart-line"></i> Estadísticas de Preguntas</h1>
             <p>Análisis detallado del rendimiento de preguntas por categoría</p>
+            
+            <!-- Toggle de Vista -->
+            <div class="view-toggle-container">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="viewToggle">
+                    <label class="form-check-label" for="viewToggle" id="viewModeLabel">
+                        Vista Global
+                    </label>
+                </div>
+            </div>
         </div>
 
         <!-- Estadísticas generales -->

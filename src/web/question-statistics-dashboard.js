@@ -7,6 +7,8 @@ class QuestionStatisticsDashboard {
     constructor() {
         this.apiBase = window.API_BASE || 'http://localhost:5001';
         this.currentCategory = 'all';
+        this.viewMode = 'global'; // 'global' o 'personal'
+        this.currentUserId = null;
         this.rankingsData = {};
         this.charts = {};
         
@@ -25,6 +27,34 @@ class QuestionStatisticsDashboard {
                 this.selectCategory(e.target.dataset.category);
             });
         });
+
+        // Event listener para toggle de vista
+        const viewToggle = document.getElementById('viewToggle');
+        if (viewToggle) {
+            viewToggle.addEventListener('change', (e) => {
+                this.viewMode = e.target.checked ? 'personal' : 'global';
+                this.updateViewMode();
+                this.loadInitialData();
+            });
+        }
+
+        // Obtener currentUserId si está disponible
+        this.currentUserId = window.currentUserId || localStorage.getItem('currentUserId');
+    }
+
+    updateViewMode() {
+        const viewLabel = document.getElementById('viewModeLabel');
+        const titleElement = document.querySelector('.header h1');
+        
+        if (viewLabel) {
+            viewLabel.textContent = this.viewMode === 'personal' ? 'Vista Personal' : 'Vista Global';
+        }
+        
+        if (titleElement) {
+            titleElement.textContent = this.viewMode === 'personal' 
+                ? 'Mis Estadísticas de Preguntas' 
+                : 'Estadísticas de Preguntas';
+        }
     }
 
     selectCategory(category) {
@@ -50,7 +80,13 @@ class QuestionStatisticsDashboard {
 
     async loadGeneralStats() {
         try {
-            const response = await fetch(`${this.apiBase}/question-stats/general`);
+            let response;
+            
+            if (this.viewMode === 'personal' && this.currentUserId) {
+                response = await fetch(`${this.apiBase}/question-stats/user/${this.currentUserId}`);
+            } else {
+                response = await fetch(`${this.apiBase}/question-stats/general`);
+            }
             
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -59,20 +95,20 @@ class QuestionStatisticsDashboard {
             const data = await response.json();
             
             if (data.success) {
-                const stats = data.general_stats;
+                const stats = this.viewMode === 'personal' ? data.user_stats : data.general_stats;
                 const mostFailed = data.most_failed_question;
                 
                 this.updateGeneralStats({
                     totalQuestions: stats.total_questions || 0,
                     mostFailed: mostFailed ? mostFailed.total_incorrect_answers : 0,
-                    errorRate: stats.avg_success_rate ? `${(100 - stats.avg_success_rate).toFixed(1)}%` : '0%',
-                    avgTime: stats.avg_time_seconds ? `${Math.round(stats.avg_time_seconds)}s` : '0s'
+                    errorRate: stats.avg_success_rate ? `${(100 - parseFloat(stats.avg_success_rate)).toFixed(1)}%` : '0%',
+                    avgTime: stats.avg_time_seconds ? `${Math.round(parseFloat(stats.avg_time_seconds))}s` : '0s'
                 });
             } else {
                 throw new Error(data.error || 'Error desconocido');
             }
         } catch (error) {
-            console.error('Error cargando estadísticas generales:', error);
+            console.error('Error cargando estadísticas:', error);
             // Mostrar datos de ejemplo en caso de error
             this.updateGeneralStats({
                 totalQuestions: 0,
@@ -94,7 +130,9 @@ class QuestionStatisticsDashboard {
         try {
             this.showLoading();
             
-            if (this.currentCategory === 'all') {
+            if (this.viewMode === 'personal' && this.currentUserId) {
+                await this.loadPersonalRankings();
+            } else if (this.currentCategory === 'all') {
                 await this.loadAllCategoriesRankings();
             } else {
                 await this.loadCategoryRankings(this.currentCategory);
@@ -102,6 +140,22 @@ class QuestionStatisticsDashboard {
         } catch (error) {
             console.error('Error cargando rankings:', error);
             this.showError('Error cargando rankings de preguntas');
+        }
+    }
+
+    async loadPersonalRankings() {
+        try {
+            const response = await fetch(`${this.apiBase}/question-stats/user/${this.currentUserId}/rankings`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            this.displayRankings(data.rankings);
+        } catch (error) {
+            console.error(`Error cargando rankings personales:`, error);
+            this.showError('Error cargando tus estadísticas personales');
         }
     }
 
