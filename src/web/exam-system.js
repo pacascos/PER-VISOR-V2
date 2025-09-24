@@ -102,11 +102,10 @@ class ExamSystem {
                     window.currentUserId = data.user.id;
                     localStorage.setItem('currentUserId', data.user.id);
                     
-                    // Reinicializar el tracker con el usuario restaurado
-                    if (window.questionStatsTracker) {
-                        console.log('🔄 Reinicializando tracker con usuario restaurado:', data.user.id);
-                        window.questionStatsTracker = new QuestionStatisticsTracker();
-                        window.questionStatsTracker.startQuestionTracking();
+                    // Inicializar el tracker con el usuario restaurado
+                    if (window.initQuestionStatsTracker) {
+                        console.log('🔄 Inicializando tracker con usuario restaurado:', data.user.id);
+                        window.initQuestionStatsTracker();
                     }
                     
                     this.showDashboard();
@@ -147,11 +146,10 @@ class ExamSystem {
                 window.currentUserId = data.user.id;
                 localStorage.setItem('currentUserId', data.user.id);
                 
-                // Reinicializar el tracker con el nuevo usuario
-                if (window.questionStatsTracker) {
-                    console.log('🔄 Reinicializando tracker con usuario:', data.user.id);
-                    window.questionStatsTracker = new QuestionStatisticsTracker();
-                    window.questionStatsTracker.startQuestionTracking();
+                // Inicializar el tracker con el nuevo usuario
+                if (window.initQuestionStatsTracker) {
+                    console.log('🔄 Inicializando tracker con usuario:', data.user.id);
+                    window.initQuestionStatsTracker();
                 }
                 
                 this.showAlert('¡Login exitoso!', 'success');
@@ -189,11 +187,10 @@ class ExamSystem {
                 window.currentUserId = data.user.id;
                 localStorage.setItem('currentUserId', data.user.id);
                 
-                // Reinicializar el tracker con el nuevo usuario
-                if (window.questionStatsTracker) {
-                    console.log('🔄 Reinicializando tracker con usuario:', data.user.id);
-                    window.questionStatsTracker = new QuestionStatisticsTracker();
-                    window.questionStatsTracker.startQuestionTracking();
+                // Inicializar el tracker con el nuevo usuario
+                if (window.initQuestionStatsTracker) {
+                    console.log('🔄 Inicializando tracker con usuario:', data.user.id);
+                    window.initQuestionStatsTracker();
                 }
                 
                 this.showAlert('¡Registro exitoso!', 'success');

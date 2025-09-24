@@ -229,8 +229,14 @@ class QuestionStatisticsTracker {
     }
 }
 
-// Crear instancia global
-window.questionStatsTracker = new QuestionStatisticsTracker();
+// Inicialización manual del tracker (se llamará después de autenticación)
+window.initQuestionStatsTracker = function() {
+    if (!window.questionStatsTracker) {
+        window.questionStatsTracker = new QuestionStatisticsTracker();
+        window.questionStatsTracker.startQuestionTracking();
+        console.log('📊 Tracker de estadísticas inicializado');
+    }
+};
 
 // Exportar para uso en módulos
 if (typeof module !== 'undefined' && module.exports) {
