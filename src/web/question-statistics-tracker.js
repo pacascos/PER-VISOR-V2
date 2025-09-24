@@ -13,7 +13,6 @@ class QuestionStatisticsTracker {
         };
         this.isEnabled = true;
         
-        console.log('📊 Question Statistics Tracker inicializado');
     }
 
     /**
@@ -42,7 +41,6 @@ class QuestionStatisticsTracker {
 
         this.currentSession.questions.set(questionId, questionInfo);
         
-        console.log(`📊 Iniciando seguimiento de pregunta ${questionId}`, questionInfo);
     }
 
     /**
@@ -63,7 +61,6 @@ class QuestionStatisticsTracker {
         questionInfo.isCorrect = isCorrect;
         questionInfo.lastAttemptTime = Date.now();
 
-        console.log(`📊 Registrando intento para pregunta ${questionId}:`, {
             userAnswer,
             isCorrect,
             timeSpent: questionInfo.timeSpent,
@@ -86,7 +83,6 @@ class QuestionStatisticsTracker {
         questionInfo.endTime = Date.now();
         questionInfo.totalTime = questionInfo.endTime - questionInfo.startTime;
 
-        console.log(`📊 Finalizando seguimiento de pregunta ${questionId}`, questionInfo);
     }
 
     /**
@@ -94,8 +90,16 @@ class QuestionStatisticsTracker {
      */
     async sendQuestionAttempt(questionInfo) {
         try {
+            const userId = this.getCurrentUserId();
+            
+            // Si no hay usuario autenticado, no enviar estadísticas
+            if (!userId) {
+                console.log('📊 Tracker: Usuario no autenticado, omitiendo estadísticas');
+                return;
+            }
+            
             const attemptData = {
-                user_id: this.getCurrentUserId(),
+                user_id: userId,
                 question_id: questionInfo.questionId,
                 exam_id: questionInfo.examId,
                 user_answer: questionInfo.userAnswer,
@@ -107,7 +111,6 @@ class QuestionStatisticsTracker {
                 session_type: questionInfo.sessionType
             };
 
-            console.log('📤 Enviando intento de pregunta:', attemptData);
 
             const response = await fetch(`${this.apiBase}/question-attempt`, {
                 method: 'POST',
@@ -122,7 +125,6 @@ class QuestionStatisticsTracker {
             }
 
             const result = await response.json();
-            console.log('✅ Intento de pregunta registrado:', result);
 
         } catch (error) {
             console.error('❌ Error enviando intento de pregunta:', error);
@@ -160,8 +162,13 @@ class QuestionStatisticsTracker {
     getCurrentUserId() {
         // Intentar obtener el ID del usuario desde el contexto actual
         const userId = window.currentUserId || 
-                      localStorage.getItem('currentUserId') || 
-                      'anonymous';
+                      localStorage.getItem('currentUserId');
+        
+        // Si no hay usuario autenticado, no enviar estadísticas
+        if (!userId || userId === 'anonymous') {
+            return null;
+        }
+        
         return userId;
     }
 
@@ -170,7 +177,6 @@ class QuestionStatisticsTracker {
      */
     setEnabled(enabled) {
         this.isEnabled = enabled;
-        console.log(`📊 Question Statistics Tracker ${enabled ? 'habilitado' : 'deshabilitado'}`);
     }
 
     /**
@@ -201,7 +207,6 @@ class QuestionStatisticsTracker {
         this.currentSession.questions.clear();
         this.currentSession.sessionId = this.generateSessionId();
         this.currentSession.startTime = Date.now();
-        console.log('📊 Sesión de estadísticas limpiada');
     }
 
     /**
