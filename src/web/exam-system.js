@@ -101,6 +101,14 @@ class ExamSystem {
                     // Restaurar currentUserId para el tracker de estadísticas
                     window.currentUserId = data.user.id;
                     localStorage.setItem('currentUserId', data.user.id);
+                    
+                    // Reinicializar el tracker con el usuario restaurado
+                    if (window.questionStatsTracker) {
+                        console.log('🔄 Reinicializando tracker con usuario restaurado:', data.user.id);
+                        window.questionStatsTracker = new QuestionStatisticsTracker();
+                        window.questionStatsTracker.startQuestionTracking();
+                    }
+                    
                     this.showDashboard();
                 } else {
                     this.clearAuth();
@@ -138,6 +146,14 @@ class ExamSystem {
                 // Establecer currentUserId para el tracker de estadísticas
                 window.currentUserId = data.user.id;
                 localStorage.setItem('currentUserId', data.user.id);
+                
+                // Reinicializar el tracker con el nuevo usuario
+                if (window.questionStatsTracker) {
+                    console.log('🔄 Reinicializando tracker con usuario:', data.user.id);
+                    window.questionStatsTracker = new QuestionStatisticsTracker();
+                    window.questionStatsTracker.startQuestionTracking();
+                }
+                
                 this.showAlert('¡Login exitoso!', 'success');
                 this.showDashboard();
             } else {
@@ -172,6 +188,14 @@ class ExamSystem {
                 // Establecer currentUserId para el tracker de estadísticas
                 window.currentUserId = data.user.id;
                 localStorage.setItem('currentUserId', data.user.id);
+                
+                // Reinicializar el tracker con el nuevo usuario
+                if (window.questionStatsTracker) {
+                    console.log('🔄 Reinicializando tracker con usuario:', data.user.id);
+                    window.questionStatsTracker = new QuestionStatisticsTracker();
+                    window.questionStatsTracker.startQuestionTracking();
+                }
+                
                 this.showAlert('¡Registro exitoso!', 'success');
                 this.showDashboard();
             } else {
