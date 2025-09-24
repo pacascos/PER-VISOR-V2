@@ -58,8 +58,8 @@ class ExamSystem {
             window.open('visor-nueva-arquitectura.html', '_blank');
         });
 
-        document.getElementById('generateTestExamBtn').addEventListener('click', () => {
-            this.generateTestExam();
+        document.getElementById('viewQuestionStatsBtn').addEventListener('click', () => {
+            window.open('question-statistics-dashboard.html', '_blank');
         });
 
         document.getElementById('viewStatsBtn').addEventListener('click', () => {
@@ -105,7 +105,11 @@ class ExamSystem {
                     // Inicializar el tracker con el usuario restaurado
                     if (window.initQuestionStatsTracker) {
                         console.log('🔄 Inicializando tracker con usuario restaurado:', data.user.id);
-                        window.initQuestionStatsTracker();
+                        console.log('🔍 Debug - window.currentUserId:', window.currentUserId);
+                        console.log('🔍 Debug - localStorage:', localStorage.getItem('currentUserId'));
+                        setTimeout(() => {
+                            window.initQuestionStatsTracker();
+                        }, 200); // Delay para asegurar que todo esté establecido
                     }
                     
                     this.showDashboard();
@@ -146,10 +150,14 @@ class ExamSystem {
                 window.currentUserId = data.user.id;
                 localStorage.setItem('currentUserId', data.user.id);
                 
-                // Inicializar el tracker con el nuevo usuario
+                // Inicializar el tracker con el nuevo usuario (con delay para asegurar que currentUserId esté establecido)
                 if (window.initQuestionStatsTracker) {
                     console.log('🔄 Inicializando tracker con usuario:', data.user.id);
-                    window.initQuestionStatsTracker();
+                    console.log('🔍 Debug LOGIN - window.currentUserId:', window.currentUserId);
+                    console.log('🔍 Debug LOGIN - localStorage:', localStorage.getItem('currentUserId'));
+                    setTimeout(() => {
+                        window.initQuestionStatsTracker();
+                    }, 200);
                 }
                 
                 this.showAlert('¡Login exitoso!', 'success');
@@ -187,10 +195,14 @@ class ExamSystem {
                 window.currentUserId = data.user.id;
                 localStorage.setItem('currentUserId', data.user.id);
                 
-                // Inicializar el tracker con el nuevo usuario
+                // Inicializar el tracker con el nuevo usuario (con delay para asegurar que currentUserId esté establecido)
                 if (window.initQuestionStatsTracker) {
                     console.log('🔄 Inicializando tracker con usuario:', data.user.id);
-                    window.initQuestionStatsTracker();
+                    console.log('🔍 Debug LOGIN - window.currentUserId:', window.currentUserId);
+                    console.log('🔍 Debug LOGIN - localStorage:', localStorage.getItem('currentUserId'));
+                    setTimeout(() => {
+                        window.initQuestionStatsTracker();
+                    }, 200);
                 }
                 
                 this.showAlert('¡Registro exitoso!', 'success');
@@ -217,6 +229,12 @@ class ExamSystem {
         // Limpiar currentUserId del tracker de estadísticas
         window.currentUserId = null;
         localStorage.removeItem('currentUserId');
+
+        // Limpiar tracker de estadísticas al cerrar sesión
+        if (window.questionStatsTracker) {
+            delete window.questionStatsTracker;
+            console.log('🧹 Tracker de estadísticas limpiado al cerrar sesión');
+        }
     }
 
     // UI Navigation Methods
@@ -1003,168 +1021,7 @@ class ExamSystem {
         );
     }
 
-    // Test Exam Generation Methods
-    async generateTestExam() {
-        try {
-            this.showAlert('🧪 Generando examen de prueba con respuestas aleatorias...', 'info');
-            
-            // Generar un examen normal primero
-            const response = await fetch(`${this.API_BASE}/exams/generate`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.authToken}`
-                },
-                body: JSON.stringify({
-                    exam_type: 'PER',
-                    total_questions: 45
-                })
-            });
 
-            if (response.ok) {
-                this.currentExam = await response.json();
-                this.currentQuestionIndex = 0;
-                this.userAnswers = {};
-                this.timeRemaining = 90 * 60; // 90 minutos
-                this.examStartTime = new Date();
-
-                // Cargar preguntas del examen
-                await this.loadExamQuestions();
-
-                // Generar respuestas aleatorias para todas las preguntas
-                this.generateRandomAnswers();
-
-                this.showExamInterface();
-                this.startTimer();
-                this.displayCurrentQuestion();
-                this.showAlert('🎲 Examen de prueba generado con respuestas aleatorias', 'success');
-                
-                // Iniciar simulación automática del usuario
-                this.startAutomaticUserSimulation();
-                
-            } else {
-                const data = await response.json();
-                this.showAlert(data.error || 'Error generando examen de prueba', 'danger');
-            }
-        } catch (error) {
-            console.error('Error generando examen de prueba:', error);
-            this.showAlert('Error de conexión generando examen de prueba', 'danger');
-        }
-    }
-
-    generateRandomAnswers() {
-        if (!this.currentExam) {
-            return;
-        }
-
-        
-        // Buscar las preguntas en la estructura correcta
-        let questions = [];
-        if (this.currentExam.questions) {
-            questions = this.currentExam.questions;
-        } else if (this.currentExam.questionDetails) {
-            questions = this.currentExam.questionDetails;
-        } else {
-            return;
-        }
-
-
-        const options = ['a', 'b', 'c', 'd'];
-        
-        questions.forEach((question, index) => {
-            // Generar respuesta aleatoria
-            const randomAnswer = options[Math.floor(Math.random() * options.length)];
-            
-            // Usar el ID correcto de la pregunta
-            const questionId = question.question_id || question.id || `q_${index}`;
-            this.userAnswers[questionId] = randomAnswer;
-            
-            // Simular tiempo de respuesta (entre 10 y 60 segundos)
-            const timeSpent = Math.floor(Math.random() * 50) + 10;
-            
-            // Registrar en las estadísticas si el tracker está disponible
-            if (window.questionStatsTracker) {
-                const correctAnswer = question.respuesta_correcta || question.correct_answer;
-                const isCorrect = randomAnswer === correctAnswer;
-                
-                // Simular el proceso de respuesta
-                setTimeout(() => {
-                    window.questionStatsTracker.recordAnswerAttempt(
-                        questionId,
-                        randomAnswer,
-                        isCorrect,
-                        timeSpent * 1000 // Convertir a milisegundos
-                    );
-                }, Math.random() * 1000); // Simular delay aleatorio
-            }
-        });
-
-    }
-
-    startAutomaticUserSimulation() {
-        
-        // Simular el comportamiento del usuario navegando por todas las preguntas
-        this.simulateUserBehavior();
-    }
-
-    async simulateUserBehavior() {
-        if (!this.currentExam || !this.currentExam.questions) {
-            return;
-        }
-
-        const totalQuestions = this.currentExam.questions.length;
-
-        // Simular navegación por cada pregunta
-        for (let i = 0; i < totalQuestions; i++) {
-            // Ir a la pregunta actual
-            this.currentQuestionIndex = i;
-            this.displayCurrentQuestion();
-            
-            // Simular tiempo de lectura (2-5 segundos)
-            const readingTime = Math.random() * 3000 + 2000;
-            await this.sleep(readingTime);
-            
-            // Simular selección de respuesta
-            const question = this.currentExam.questions[i];
-            const questionId = question.question_id || question.id || `q_${i}`;
-            const userAnswer = this.userAnswers[questionId];
-            
-            if (userAnswer) {
-                // Simular clic en la opción seleccionada
-                this.simulateAnswerSelection(userAnswer);
-                
-                // Simular tiempo de confirmación (1-2 segundos)
-                const confirmationTime = Math.random() * 1000 + 1000;
-                await this.sleep(confirmationTime);
-            }
-            
-            // Simular pausa entre preguntas (1-3 segundos)
-            const pauseTime = Math.random() * 2000 + 1000;
-            await this.sleep(pauseTime);
-        }
-
-        // Al finalizar, simular clic en "Finalizar Examen"
-        await this.sleep(2000);
-        this.finishExam();
-    }
-
-    simulateAnswerSelection(answer) {
-        // Simular clic en la opción seleccionada
-        const optionElement = document.querySelector(`input[value="${answer}"]`);
-        if (optionElement) {
-            optionElement.checked = true;
-            optionElement.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-        
-        // También actualizar el estado interno
-        const question = this.currentExam.questions[this.currentQuestionIndex];
-        const questionId = question.question_id || question.id || `q_${this.currentQuestionIndex}`;
-        this.saveAnswer(questionId, answer);
-    }
-
-    sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
 }
 
 // Initialize the exam system when the page loads
