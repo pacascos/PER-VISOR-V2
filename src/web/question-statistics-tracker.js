@@ -95,11 +95,8 @@ class QuestionStatisticsTracker {
             
             // Si no hay usuario autenticado, no enviar estadísticas
             if (!userId) {
-                console.log('📊 Tracker: Usuario no autenticado, omitiendo estadísticas');
                 return;
             }
-            
-            console.log('📊 Tracker: Enviando estadísticas para usuario:', userId);
             
             const attemptData = {
                 user_id: userId,
@@ -168,12 +165,8 @@ class QuestionStatisticsTracker {
         const userId = window.currentUserId || 
                       localStorage.getItem('currentUserId');
         
-        // Debug: mostrar qué valor se está obteniendo
-        console.log('🔍 Tracker getCurrentUserId():', userId);
-        
         // Si no hay usuario autenticado, no enviar estadísticas
         if (!userId || userId === 'anonymous') {
-            console.log('📊 Tracker: Usuario no autenticado, omitiendo estadísticas');
             return null;
         }
         
