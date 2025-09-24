@@ -23,6 +23,19 @@ class QuestionStatisticsTracker {
     }
 
     /**
+     * Inicializar el tracker (sin parámetros)
+     */
+    initialize() {
+        this.isEnabled = true;
+        this.currentSession = {
+            sessionId: this.generateSessionId(),
+            startTime: Date.now(),
+            questions: new Map()
+        };
+        console.log('📊 Tracker inicializado y habilitado');
+    }
+
+    /**
      * Iniciar seguimiento de una pregunta
      */
     startQuestionTracking(questionId, questionData) {
@@ -233,7 +246,7 @@ class QuestionStatisticsTracker {
 window.initQuestionStatsTracker = function() {
     if (!window.questionStatsTracker) {
         window.questionStatsTracker = new QuestionStatisticsTracker();
-        window.questionStatsTracker.startQuestionTracking();
+        window.questionStatsTracker.initialize();
         console.log('📊 Tracker de estadísticas inicializado');
     }
 };
