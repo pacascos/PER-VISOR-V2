@@ -3,9 +3,11 @@
  */
 class StatisticsManager {
     constructor() {
+        console.log('📊 StatisticsManager constructor ejecutándose...');
         this.API_BASE = 'http://localhost:5001';
         this.userId = this.getCurrentUserId();
         this.charts = {};
+        console.log('📊 userId obtenido:', this.userId);
 
         // Achievement definitions
         this.achievements = {
@@ -132,10 +134,21 @@ class StatisticsManager {
 
     async initialize() {
         try {
+            console.log('📊 Iniciando initialize...');
+            console.log('📊 userId inicial:', this.userId);
+            
             await this.loadUserStatistics();
+            
+            console.log('📊 Después de loadUserStatistics:');
+            console.log('📊 this.userStats:', this.userStats);
+            console.log('📊 this.userId:', this.userId);
+            
             // Solo renderizar si tenemos datos válidos del usuario
             if (this.userStats && this.userId) {
+                console.log('📊 Condición cumplida, renderizando dashboard...');
                 await this.renderDashboard();
+            } else {
+                console.log('📊 Condición NO cumplida - userStats:', !!this.userStats, 'userId:', !!this.userId);
             }
         } catch (error) {
             console.error('Error initializing statistics:', error);
@@ -235,6 +248,11 @@ class StatisticsManager {
 
 
     async renderDashboard() {
+        console.log('📊 Iniciando renderDashboard...');
+        console.log('📊 userStats:', this.userStats);
+        console.log('📊 userProgress:', this.userProgress);
+        console.log('📊 examHistory:', this.examHistory);
+        
         // Hide loading state
         document.getElementById('loadingState').classList.add('d-none');
         document.getElementById('statsContent').classList.remove('d-none');
@@ -247,6 +265,7 @@ class StatisticsManager {
         this.updateMainStats();
 
         // Render charts
+        console.log('📊 Renderizando gráficos...');
         this.renderEvolutionChart();
         this.renderRadarChart();
 
@@ -258,6 +277,8 @@ class StatisticsManager {
 
         // Render recommendations
         this.renderRecommendations();
+        
+        console.log('📊 renderDashboard completado');
     }
 
     updateHeader() {
@@ -303,10 +324,16 @@ class StatisticsManager {
     }
 
     renderEvolutionChart() {
+        console.log('📊 Renderizando gráfico de evolución...');
+        console.log('📊 examHistory:', this.examHistory);
+        
         const ctx = document.getElementById('evolutionChart').getContext('2d');
 
         const dates = this.examHistory.map(exam => exam.date);
         const scores = this.examHistory.map(exam => exam.score);
+        
+        console.log('📊 dates:', dates);
+        console.log('📊 scores:', scores);
 
         this.charts.evolution = new Chart(ctx, {
             type: 'line',
@@ -348,10 +375,16 @@ class StatisticsManager {
     }
 
     renderRadarChart() {
+        console.log('📊 Renderizando gráfico de radar...');
+        console.log('📊 userProgress:', this.userProgress);
+        
         const ctx = document.getElementById('radarChart').getContext('2d');
 
         const topicNames = Object.keys(this.userProgress);
         const topicScores = topicNames.map(topic => this.userProgress[topic].percentage);
+        
+        console.log('📊 topicNames:', topicNames);
+        console.log('📊 topicScores:', topicScores);
 
         this.charts.radar = new Chart(ctx, {
             type: 'radar',
