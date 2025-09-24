@@ -1948,11 +1948,74 @@ def record_question_attempt():
             data.get('session_type', 'exam')
         ))
 
-        # Actualizar estadísticas globales de la pregunta
-        cur.execute("SELECT update_question_global_stats(%s)", (data['question_id'],))
+        # Actualizar estadísticas globales de la pregunta (lógica en Python)
+        cur.execute("""
+            INSERT INTO question_global_stats (
+                question_id, total_appearances, total_correct_answers, total_incorrect_answers,
+                success_rate, avg_time_spent_seconds, last_appeared_at
+            ) VALUES (%s, 1, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+            ON CONFLICT (question_id)
+            DO UPDATE SET
+                total_appearances = question_global_stats.total_appearances + 1,
+                total_correct_answers = question_global_stats.total_correct_answers + %s,
+                total_incorrect_answers = question_global_stats.total_incorrect_answers + %s,
+                success_rate = CASE 
+                    WHEN question_global_stats.total_appearances + 1 > 0 
+                    THEN ROUND((question_global_stats.total_correct_answers + %s) * 100.0 / (question_global_stats.total_appearances + 1), 2)
+                    ELSE 0
+                END,
+                avg_time_spent_seconds = ROUND(
+                    (question_global_stats.avg_time_spent_seconds * question_global_stats.total_appearances + %s) / 
+                    (question_global_stats.total_appearances + 1), 2
+                ),
+                last_appeared_at = CURRENT_TIMESTAMP,
+                updated_at = CURRENT_TIMESTAMP
+        """, (
+            data['question_id'],
+            1 if data['is_correct'] else 0,  # total_correct_answers inicial
+            0 if data['is_correct'] else 1,  # total_incorrect_answers inicial
+            100.0 if data['is_correct'] else 0.0,  # success_rate inicial
+            data.get('time_spent_seconds', 0),  # avg_time_spent_seconds inicial
+            1 if data['is_correct'] else 0,  # incremento correcto
+            0 if data['is_correct'] else 1,  # incremento incorrecto
+            1 if data['is_correct'] else 0,  # para cálculo de success_rate
+            data.get('time_spent_seconds', 0)  # tiempo para promedio
+        ))
 
-        # Actualizar estadísticas del usuario para la pregunta
-        cur.execute("SELECT update_question_user_stats(%s, %s)", (data['user_id'], data['question_id']))
+        # Actualizar estadísticas del usuario para la pregunta (lógica en Python)
+        cur.execute("""
+            INSERT INTO question_user_stats (
+                user_id, question_id, total_attempts, correct_attempts, incorrect_attempts,
+                user_success_rate, avg_time_spent_seconds, last_attempt_at
+            ) VALUES (%s, %s, 1, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+            ON CONFLICT (user_id, question_id)
+            DO UPDATE SET
+                total_attempts = question_user_stats.total_attempts + 1,
+                correct_attempts = question_user_stats.correct_attempts + %s,
+                incorrect_attempts = question_user_stats.incorrect_attempts + %s,
+                user_success_rate = CASE 
+                    WHEN question_user_stats.total_attempts + 1 > 0 
+                    THEN ROUND((question_user_stats.correct_attempts + %s) * 100.0 / (question_user_stats.total_attempts + 1), 2)
+                    ELSE 0
+                END,
+                avg_time_spent_seconds = ROUND(
+                    (question_user_stats.avg_time_spent_seconds * question_user_stats.total_attempts + %s) / 
+                    (question_user_stats.total_attempts + 1), 2
+                ),
+                last_attempt_at = CURRENT_TIMESTAMP,
+                updated_at = CURRENT_TIMESTAMP
+        """, (
+            data['user_id'],
+            data['question_id'],
+            1 if data['is_correct'] else 0,  # correct_attempts inicial
+            0 if data['is_correct'] else 1,  # incorrect_attempts inicial
+            100.0 if data['is_correct'] else 0.0,  # user_success_rate inicial
+            data.get('time_spent_seconds', 0),  # avg_time_spent_seconds inicial
+            1 if data['is_correct'] else 0,  # incremento correcto
+            0 if data['is_correct'] else 1,  # incremento incorrecto
+            1 if data['is_correct'] else 0,  # para cálculo de success_rate
+            data.get('time_spent_seconds', 0)  # tiempo para promedio
+        ))
 
         # Actualizar estadísticas por categoría
         category = data.get('category', 'Unknown')
@@ -2108,7 +2171,7 @@ def get_general_question_stats():
                 qgs.question_id,
                 q.texto_pregunta,
                 qgs.total_incorrect_answers,
-                qgs.failure_rate
+                qgs.success_rate
             FROM question_global_stats qgs
             JOIN questions q ON qgs.question_id = q.id
             WHERE qgs.total_appearances > 0
