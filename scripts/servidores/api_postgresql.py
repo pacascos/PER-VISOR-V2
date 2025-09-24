@@ -2104,9 +2104,9 @@ def get_question_stats(question_id):
         logger.error(f"Error obteniendo estadísticas de pregunta: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/question-stats/test-rankings', methods=['GET'])
-def test_rankings():
-    """Endpoint de prueba para rankings"""
+@app.route('/debug-rankings', methods=['GET'])
+def debug_rankings():
+    """Endpoint de debug para rankings"""
     try:
         conn = get_db_connection()
         if not conn:
@@ -2140,7 +2140,7 @@ def test_rankings():
             'count': len(rankings)
         })
     except Exception as e:
-        logger.error(f"Error en test rankings: {e}")
+        logger.error(f"Error en debug rankings: {e}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/question-stats/rankings/<category>', methods=['GET'])
