@@ -99,6 +99,8 @@ class QuestionStatisticsTracker {
                 return;
             }
             
+            console.log('📊 Tracker: Enviando estadísticas para usuario:', userId);
+            
             const attemptData = {
                 user_id: userId,
                 question_id: questionInfo.questionId,
@@ -162,11 +164,16 @@ class QuestionStatisticsTracker {
      */
     getCurrentUserId() {
         // Intentar obtener el ID del usuario desde el contexto actual
+        // Siempre verificar el valor actual, no usar caché
         const userId = window.currentUserId || 
                       localStorage.getItem('currentUserId');
         
+        // Debug: mostrar qué valor se está obteniendo
+        console.log('🔍 Tracker getCurrentUserId():', userId);
+        
         // Si no hay usuario autenticado, no enviar estadísticas
         if (!userId || userId === 'anonymous') {
+            console.log('📊 Tracker: Usuario no autenticado, omitiendo estadísticas');
             return null;
         }
         
