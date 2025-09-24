@@ -2108,6 +2108,7 @@ def get_question_stats(question_id):
 def get_question_rankings(category):
     """Obtener rankings de preguntas más falladas por categoría"""
     try:
+        logger.info(f"Solicitando rankings para categoría: {category}")
         conn = get_db_connection()
         if not conn:
             return jsonify({'error': 'Database connection failed'}), 500
@@ -2155,6 +2156,7 @@ def get_question_rankings(category):
                 LIMIT 50
             """, (category,))
         rankings = cur.fetchall()
+        logger.info(f"Rankings obtenidos: {len(rankings)} registros")
 
         cur.close()
         conn.close()
