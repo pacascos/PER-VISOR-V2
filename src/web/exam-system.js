@@ -319,6 +319,7 @@ class ExamSystem {
     async loadExamQuestions() {
         // Load detailed question data from the exam endpoint
         try {
+            console.log('🔍 Cargando preguntas del examen:', this.currentExam);
             const response = await fetch(`${this.API_BASE}/exams/${this.currentExam.exam_id}/questions`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`
@@ -327,13 +328,14 @@ class ExamSystem {
 
             if (response.ok) {
                 const data = await response.json();
+                console.log('✅ Preguntas cargadas:', data);
                 this.currentExam.questionDetails = data.questions;
             } else {
-                console.error('Error loading exam questions');
+                console.error('❌ Error loading exam questions:', response.status, response.statusText);
                 this.showAlert('Error cargando preguntas del examen', 'danger');
             }
         } catch (error) {
-            console.error('Error loading exam questions:', error);
+            console.error('❌ Error loading exam questions:', error);
             this.showAlert('Error de conexión cargando preguntas', 'danger');
         }
     }

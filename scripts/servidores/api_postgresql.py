@@ -1520,7 +1520,10 @@ def generate_exam():
             RETURNING id
         """, (user_id,))
 
-        exam_id = cur.fetchone()['id']
+        exam_result = cur.fetchone()
+        if not exam_result:
+            return jsonify({'error': 'Error creando examen'}), 500
+        exam_id = exam_result['id']
 
         # Generar preguntas por UT
         questions_selected = []
@@ -1530,55 +1533,29 @@ def generate_exam():
             ut_number = ut_config['ut_number']
             category_name = ut_config['category_name']
             questions_needed = ut_config['questions_per_exam']
+            
+            logger.info(f"🔍 Procesando UT{ut_number} ({category_name}): {questions_needed} preguntas necesarias")
 
             # TEMPORAL: Priorizar preguntas con respuestas incompletas (sin punto final)
             # TODO: Remover esta lógica cuando se hayan completado todas las respuestas
+            
+            # Obtener preguntas disponibles para esta UT solo de exámenes PER
             cur.execute("""
                 SELECT q.id FROM questions q
                 JOIN exams e ON q.exam_id = e.id
                 WHERE q.categoria = %s
                 AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
                 AND q.anulada = false
-                AND q.id IN (
-                    SELECT DISTINCT ao.question_id
-                    FROM answer_options ao
-                    WHERE ao.texto IS NOT NULL 
-                    AND ao.texto != '' 
-                    AND ao.texto NOT LIKE '%.'
-                )
                 ORDER BY RANDOM()
                 LIMIT %s
             """, (category_name, questions_needed))
 
             ut_questions = cur.fetchall()
-            questions_selected_count = len(ut_questions)
 
-            # Si no hay suficientes preguntas incompletas, completar con preguntas normales
-            if questions_selected_count < questions_needed:
-                remaining_needed = questions_needed - questions_selected_count
-                logger.info(f"📝 UT{ut_number} ({category_name}): {questions_selected_count} preguntas incompletas, completando con {remaining_needed} preguntas normales")
-                
-                # Obtener preguntas normales (excluyendo las ya seleccionadas)
-                selected_ids = [str(q['id']) for q in ut_questions]
-                placeholders = ','.join(['%s'] * len(selected_ids)) if selected_ids else 'NULL'
-                
-                cur.execute(f"""
-                    SELECT q.id FROM questions q
-                    JOIN exams e ON q.exam_id = e.id
-                    WHERE q.categoria = %s
-                    AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
-                    AND q.anulada = false
-                    AND q.id NOT IN ({placeholders if selected_ids else 'SELECT NULL WHERE FALSE'})
-                    ORDER BY RANDOM()
-                    LIMIT %s
-                """, ([category_name] + selected_ids + [remaining_needed]) if selected_ids else [category_name, remaining_needed])
-                
-                additional_questions = cur.fetchall()
-                ut_questions.extend(additional_questions)
-                
-                logger.info(f"✅ UT{ut_number} ({category_name}): Total {len(ut_questions)} preguntas seleccionadas")
+            if len(ut_questions) < questions_needed:
+                logger.warning(f"⚠️ Solo {len(ut_questions)} preguntas PER disponibles para UT{ut_number} ({category_name}), se necesitan {questions_needed}")
             else:
-                logger.info(f"✅ UT{ut_number} ({category_name}): {questions_selected_count} preguntas incompletas seleccionadas")
+                logger.info(f"✅ UT{ut_number} ({category_name}): {len(ut_questions)} preguntas seleccionadas")
 
             # Asignar preguntas al examen
             for question in ut_questions:
@@ -1612,6 +1589,9 @@ def generate_exam():
 
     except Exception as e:
         logger.error(f"Error generando examen: {e}")
+        logger.error(f"Tipo de error: {type(e).__name__}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
 @app.route('/exams/<exam_id>/questions', methods=['GET'])

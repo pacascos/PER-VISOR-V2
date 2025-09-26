@@ -40,11 +40,14 @@ async function testExamGeneration() {
         
         console.log('✅ Usuario autenticado correctamente');
         
-        // Hacer clic en "Nuevo Examen"
-        const newExamBtn = await page.locator('button, .btn').filter({ hasText: /nuevo examen|empezar examen/i }).first();
+        // Hacer clic en "Nuevo Examen" usando el ID específico
+        const newExamBtn = await page.locator('#startExamBtn');
         if (await newExamBtn.isVisible()) {
+            console.log('✅ Botón de nuevo examen encontrado');
             await newExamBtn.click();
             await page.waitForTimeout(5000);
+        } else {
+            console.log('❌ Botón de nuevo examen no encontrado');
         }
         
         // Verificar que se generó el examen
