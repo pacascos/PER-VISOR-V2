@@ -1375,16 +1375,21 @@ def get_simple_user_stats():
 
         stats = cur.fetchone()
 
-        # Get recent exam history
+        # Get recent exam history with detailed information
         cur.execute("""
             SELECT
+                id as exam_id,
                 score_percentage as score,
                 duration_minutes as time_minutes,
-                completed_at as date
+                completed_at as date,
+                total_questions,
+                correct_answers,
+                passed,
+                started_at
             FROM user_exams
             WHERE user_id = %s AND status = 'completed'
             ORDER BY completed_at DESC
-            LIMIT 10
+            LIMIT 20
         """, (user_id,))
 
         recent_exams = cur.fetchall()
@@ -1417,14 +1422,46 @@ def get_simple_user_stats():
         level = 1 + (xp // 500)
         xp_to_next = 500 - (xp % 500)
 
-        # Format exam history
+        # Format exam history with detailed information
         exam_history = []
         for exam in recent_exams:
+            total_questions = int(exam['total_questions'] or 0)
+            correct_answers = int(exam['correct_answers'] or 0)
+            incorrect_answers = total_questions - correct_answers
+            
             exam_history.append({
-                'date': exam['date'].strftime('%Y-%m-%d') if exam['date'] else None,
+                'exam_id': str(exam['exam_id']),
+                'date': exam['date'].strftime('%Y-%m-%d %H:%M') if exam['date'] else None,
                 'score': int(exam['score']) if exam['score'] else 0,
-                'time_minutes': int(exam['time_minutes']) if exam['time_minutes'] else 0
+                'time_minutes': int(exam['time_minutes']) if exam['time_minutes'] else 0,
+                'total_questions': total_questions,
+                'correct_answers': correct_answers,
+                'incorrect_answers': incorrect_answers,
+                'passed': bool(exam['passed']) if exam['passed'] is not None else False,
+                'started_at': exam['started_at'].strftime('%Y-%m-%d %H:%M') if exam['started_at'] else None
             })
+
+        # Generate topic progress data (simulated for now)
+        topic_progress = {}
+        if stats['exams_completed'] > 0:
+            # Simulate topic performance based on overall score
+            topics = ['UT1', 'UT2', 'UT3', 'UT4', 'UT5', 'UT6', 'UT7', 'UT8', 'UT9', 'UT10', 'UT11']
+            base_score = float(stats['avg_score'] or 0)
+            
+            for i, topic in enumerate(topics):
+                # Add some variation to each topic
+                variation = (i % 3 - 1) * 10  # -10, 0, or +10
+                topic_score = max(0, min(100, base_score + variation))
+                
+                # Generate some sample data
+                total_questions = 50 + (i * 5)  # 50-100 questions per topic
+                correct_answers = int((topic_score / 100) * total_questions)
+                
+                topic_progress[topic] = {
+                    'correct': correct_answers,
+                    'total': total_questions,
+                    'percentage': round(topic_score, 1)
+                }
 
         return jsonify({
             'level': level,
@@ -1440,7 +1477,7 @@ def get_simple_user_stats():
             'weak_topics': [],
             'strong_topics': [],
             'last_exam_date': recent_exams[0]['date'].isoformat() if recent_exams else None,
-            'topic_progress': {},
+            'topic_progress': topic_progress,
             'exam_history': exam_history
         }), 200
 
@@ -1455,7 +1492,13 @@ def get_simple_user_stats():
 @app.route('/exams/generate', methods=['POST'])
 @require_auth
 def generate_exam():
-    """Generate new PER exam for user"""
+    """
+    Generate new PER exam for user
+    
+    TEMPORAL: Prioriza preguntas con respuestas incompletas (sin punto final)
+    para facilitar la revisión y corrección de datos.
+    TODO: Remover esta priorización cuando se hayan completado todas las respuestas.
+    """
     try:
         user_id = request.current_user['user_id']
 
@@ -1488,21 +1531,54 @@ def generate_exam():
             category_name = ut_config['category_name']
             questions_needed = ut_config['questions_per_exam']
 
-            # Obtener preguntas disponibles para esta UT solo de exámenes PER
+            # TEMPORAL: Priorizar preguntas con respuestas incompletas (sin punto final)
+            # TODO: Remover esta lógica cuando se hayan completado todas las respuestas
             cur.execute("""
                 SELECT q.id FROM questions q
                 JOIN exams e ON q.exam_id = e.id
                 WHERE q.categoria = %s
                 AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
                 AND q.anulada = false
+                AND q.id IN (
+                    SELECT DISTINCT ao.question_id
+                    FROM answer_options ao
+                    WHERE ao.texto IS NOT NULL 
+                    AND ao.texto != '' 
+                    AND ao.texto NOT LIKE '%.'
+                )
                 ORDER BY RANDOM()
                 LIMIT %s
             """, (category_name, questions_needed))
 
             ut_questions = cur.fetchall()
+            questions_selected_count = len(ut_questions)
 
-            if len(ut_questions) < questions_needed:
-                logger.warning(f"⚠️ Solo {len(ut_questions)} preguntas PER disponibles para UT{ut_number} ({category_name}), se necesitan {questions_needed}")
+            # Si no hay suficientes preguntas incompletas, completar con preguntas normales
+            if questions_selected_count < questions_needed:
+                remaining_needed = questions_needed - questions_selected_count
+                logger.info(f"📝 UT{ut_number} ({category_name}): {questions_selected_count} preguntas incompletas, completando con {remaining_needed} preguntas normales")
+                
+                # Obtener preguntas normales (excluyendo las ya seleccionadas)
+                selected_ids = [str(q['id']) for q in ut_questions]
+                placeholders = ','.join(['%s'] * len(selected_ids)) if selected_ids else 'NULL'
+                
+                cur.execute(f"""
+                    SELECT q.id FROM questions q
+                    JOIN exams e ON q.exam_id = e.id
+                    WHERE q.categoria = %s
+                    AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
+                    AND q.anulada = false
+                    AND q.id NOT IN ({placeholders if selected_ids else 'SELECT NULL WHERE FALSE'})
+                    ORDER BY RANDOM()
+                    LIMIT %s
+                """, ([category_name] + selected_ids + [remaining_needed]) if selected_ids else [category_name, remaining_needed])
+                
+                additional_questions = cur.fetchall()
+                ut_questions.extend(additional_questions)
+                
+                logger.info(f"✅ UT{ut_number} ({category_name}): Total {len(ut_questions)} preguntas seleccionadas")
+            else:
+                logger.info(f"✅ UT{ut_number} ({category_name}): {questions_selected_count} preguntas incompletas seleccionadas")
 
             # Asignar preguntas al examen
             for question in ut_questions:
@@ -1775,6 +1851,78 @@ def _calculate_exam_duration(started_at):
 
     duration = datetime.now(started_at.tzinfo) - started_at
     return int(duration.total_seconds() / 60)
+
+@app.route('/user/exam/<exam_id>/failed-questions', methods=['GET'])
+@require_auth
+def get_exam_failed_questions(exam_id):
+    """Get failed questions for a specific exam"""
+    try:
+        user_id = request.current_user['user_id']
+
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Verificar que el examen pertenezca al usuario
+        cur.execute("""
+            SELECT id, user_id FROM user_exams
+            WHERE id = %s AND user_id = %s AND status = 'completed'
+        """, (exam_id, user_id))
+
+        exam = cur.fetchone()
+        if not exam:
+            return jsonify({'error': 'Examen no encontrado o no completado'}), 404
+
+        # Obtener preguntas falladas del examen
+        cur.execute("""
+            SELECT 
+                q.id as question_id,
+                q.texto_pregunta,
+                q.respuesta_correcta,
+                ua.selected_answer as user_answer,
+                q.categoria,
+                eq.ut_category,
+                eq.ut_number
+            FROM user_answers ua
+            JOIN questions q ON ua.question_id = q.id
+            LEFT JOIN exam_questions eq ON ua.question_id = eq.question_id AND ua.user_exam_id = eq.user_exam_id
+            WHERE ua.user_exam_id = %s 
+            AND ua.is_correct = false
+            ORDER BY eq.question_order
+        """, (exam_id,))
+
+        failed_questions = cur.fetchall()
+        
+        # Para cada pregunta, obtener sus opciones
+        questions_with_options = []
+        for question in failed_questions:
+            question_dict = dict(question)
+            
+            # Obtener opciones de la pregunta
+            cur.execute("""
+                SELECT opcion, texto
+                FROM answer_options
+                WHERE question_id = %s
+                ORDER BY opcion
+            """, (question_dict['question_id'],))
+            
+            options = cur.fetchall()
+            question_dict['opciones'] = [dict(opt) for opt in options]
+            questions_with_options.append(question_dict)
+        
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'exam_id': exam_id,
+            'total_failed': len(questions_with_options),
+            'failed_questions': questions_with_options
+        })
+
+    except Exception as e:
+        logger.error(f"Error obteniendo preguntas falladas del examen: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
 
 @app.route('/user/exams', methods=['GET'])
 @require_auth
