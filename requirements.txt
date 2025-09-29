@@ -40,6 +40,9 @@ PyJWT>=2.8.0              # JWT token handling
 asyncpg>=0.28.0       # PostgreSQL async driver
 psycopg2-binary>=2.9.0  # PostgreSQL sync driver
 
+# Google Cloud dependencies
+google-cloud-secret-manager>=2.16.0  # Para acceder a Secret Manager
+
 # Additional utilities
 tqdm>=4.65.0          # Progress bars
 click>=8.1.0          # CLI framework (already included but ensuring version)

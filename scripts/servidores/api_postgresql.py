@@ -18,10 +18,24 @@ import secrets
 from functools import wraps
 import jwt
 from datetime import datetime, timedelta
+from google.cloud import secretmanager
 import random
 
 # Import statistics API routes
 from statistics_api import register_statistics_routes
+
+def get_secret(secret_name, project_id="webpersonal-189221"):
+    """
+    Obtiene un secret desde Google Cloud Secret Manager
+    """
+    try:
+        client = secretmanager.SecretManagerServiceClient()
+        name = f"projects/{project_id}/secrets/{secret_name}/versions/latest"
+        response = client.access_secret_version(request={"name": name})
+        return response.payload.data.decode("UTF-8")
+    except Exception as e:
+        logging.error(f"Error obteniendo secret {secret_name}: {e}")
+        return None
 
 # Configuración
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'your-api-key-here')
@@ -54,13 +68,23 @@ if DATABASE_URL:
         else:
             raise ValueError(f"Invalid DATABASE_URL format: {DATABASE_URL}")
 else:
-    # Fallback a variables individuales
+    # Fallback a variables individuales o secrets
+    # Intentar obtener desde Secret Manager primero
+    db_password = get_secret('database-password')
+    db_user = get_secret('database-user')
+    
+    # Si no se puede obtener desde Secret Manager, usar variables de entorno
+    if not db_password:
+        db_password = os.getenv('DATABASE_PASSWORD', 'per_password_change_me')
+    if not db_user:
+        db_user = os.getenv('DATABASE_USER', 'per_user')
+    
     DB_CONFIG = {
         'host': os.getenv('DATABASE_HOST', 'localhost'),
         'port': int(os.getenv('DATABASE_PORT', 5432)),
         'database': os.getenv('DATABASE_NAME', 'per_exams'),
-        'user': os.getenv('DATABASE_USER', 'per_user'),
-        'password': os.getenv('DATABASE_PASSWORD', 'per_password_change_me')
+        'user': db_user,
+        'password': db_password
     }
 
 # Configurar logging
