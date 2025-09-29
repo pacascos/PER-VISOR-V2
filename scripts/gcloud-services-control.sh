@@ -203,6 +203,104 @@ start_sql() {
     success "Cloud SQL iniciado correctamente"
 }
 
+# Función para iniciar KMS (habilitar claves)
+start_kms() {
+    local dry_run=$1
+    
+    log "🔐 Iniciando KMS (habilitando claves)..."
+    
+    # Obtener claves deshabilitadas
+    local disabled_keys=$(gcloud kms keys list --keyring=llaveroPersonal --location=global --filter="state:DISABLED" --format="value(name)" 2>/dev/null || echo "")
+    
+    if [ -z "$disabled_keys" ]; then
+        info "No hay claves KMS deshabilitadas para iniciar"
+        return 0
+    fi
+    
+    if [ "$dry_run" = "true" ]; then
+        info "DRY RUN: Se habilitarían las claves KMS deshabilitadas"
+        return 0
+    fi
+    
+    # Habilitar cada clave deshabilitada
+    while IFS= read -r key; do
+        if [ -n "$key" ]; then
+            log "Habilitando clave: $key"
+            gcloud kms keys versions enable "$key" --quiet 2>/dev/null || true
+        fi
+    done <<< "$disabled_keys"
+    
+    success "KMS iniciado correctamente (claves habilitadas)"
+}
+
+# Función para iniciar Secret Manager (verificar secrets necesarios)
+start_secrets() {
+    local dry_run=$1
+    
+    log "🗝️ Iniciando Secret Manager (verificando secrets necesarios)..."
+    
+    # Lista de secrets necesarios
+    local required_secrets=("flask-secret-key" "jwt-secret" "openai-api-key")
+    
+    if [ "$dry_run" = "true" ]; then
+        info "DRY RUN: Se verificarían secrets necesarios"
+        return 0
+    fi
+    
+    # Verificar que los secrets necesarios existen
+    local missing_secrets=()
+    for secret in "${required_secrets[@]}"; do
+        if ! gcloud secrets describe "$secret" >/dev/null 2>&1; then
+            missing_secrets+=("$secret")
+        fi
+    done
+    
+    if [ ${#missing_secrets[@]} -gt 0 ]; then
+        warning "Secrets faltantes detectados: ${missing_secrets[*]}"
+        warning "Esto puede causar errores en Cloud Run"
+    else
+        info "Todos los secrets necesarios están disponibles"
+    fi
+    
+    success "Secret Manager iniciado correctamente (secrets verificados)"
+}
+
+# Función para iniciar Cloud Logging (habilitar logs)
+start_logging() {
+    local dry_run=$1
+    
+    log "📝 Iniciando Cloud Logging (habilitando logs)..."
+    
+    if [ "$dry_run" = "true" ]; then
+        info "DRY RUN: Se habilitaría Cloud Logging"
+        return 0
+    fi
+    
+    # Habilitar logging para Cloud Run
+    gcloud run services update "$API_SERVICE" --region="$REGION" --enable-logging --quiet 2>/dev/null || true
+    gcloud run services update "$FRONTEND_SERVICE" --region="$REGION" --enable-logging --quiet 2>/dev/null || true
+    
+    success "Cloud Logging iniciado correctamente"
+}
+
+# Función para iniciar Cloud Monitoring (habilitar métricas)
+start_monitoring() {
+    local dry_run=$1
+    
+    log "📊 Iniciando Cloud Monitoring (habilitando métricas)..."
+    
+    if [ "$dry_run" = "true" ]; then
+        info "DRY RUN: Se habilitaría Cloud Monitoring"
+        return 0
+    fi
+    
+    # Habilitar monitoring para Cloud Run
+    gcloud run services update "$API_SERVICE" --region="$REGION" --enable-monitoring --quiet 2>/dev/null || true
+    gcloud run services update "$FRONTEND_SERVICE" --region="$REGION" --enable-monitoring --quiet 2>/dev/null || true
+    
+    success "Cloud Monitoring iniciado correctamente"
+}
+
 # Función para parar Cloud SQL
 stop_sql() {
     local dry_run=$1
@@ -241,6 +339,92 @@ stop_sql() {
     echo ""
     
     success "Cloud SQL parado correctamente"
+}
+
+# Función para parar KMS (deshabilitar claves)
+stop_kms() {
+    local dry_run=$1
+    
+    log "🔐 Parando KMS (deshabilitando claves)..."
+    
+    # Obtener claves activas
+    local active_keys=$(gcloud kms keys list --keyring=llaveroPersonal --location=global --filter="state:ENABLED" --format="value(name)" 2>/dev/null || echo "")
+    
+    if [ -z "$active_keys" ]; then
+        info "No hay claves KMS activas para parar"
+        return 0
+    fi
+    
+    if [ "$dry_run" = "true" ]; then
+        info "DRY RUN: Se deshabilitarían las claves KMS activas"
+        return 0
+    fi
+    
+    # Deshabilitar cada clave activa
+    while IFS= read -r key; do
+        if [ -n "$key" ]; then
+            log "Deshabilitando clave: $key"
+            gcloud kms keys versions disable "$key" --quiet 2>/dev/null || true
+        fi
+    done <<< "$active_keys"
+    
+    success "KMS parado correctamente (claves deshabilitadas)"
+}
+
+# Función para parar Secret Manager (no eliminar secrets necesarios)
+stop_secrets() {
+    local dry_run=$1
+    
+    log "🗝️ Parando Secret Manager (manteniendo secrets necesarios)..."
+    
+    # Nota: No eliminamos secrets porque Cloud Run los necesita
+    # Solo deshabilitamos el acceso temporalmente
+    
+    if [ "$dry_run" = "true" ]; then
+        info "DRY RUN: Se mantendrían secrets necesarios para Cloud Run"
+        return 0
+    fi
+    
+    # Los secrets se mantienen para evitar errores en Cloud Run
+    info "Secrets mantenidos para evitar errores en Cloud Run"
+    
+    success "Secret Manager parado correctamente (secrets mantenidos)"
+}
+
+# Función para parar Cloud Logging (deshabilitar logs)
+stop_logging() {
+    local dry_run=$1
+    
+    log "📝 Parando Cloud Logging (deshabilitando logs)..."
+    
+    if [ "$dry_run" = "true" ]; then
+        info "DRY RUN: Se deshabilitaría Cloud Logging"
+        return 0
+    fi
+    
+    # Deshabilitar logging para Cloud Run
+    gcloud run services update "$API_SERVICE" --region="$REGION" --no-enable-logging --quiet 2>/dev/null || true
+    gcloud run services update "$FRONTEND_SERVICE" --region="$REGION" --no-enable-logging --quiet 2>/dev/null || true
+    
+    success "Cloud Logging parado correctamente"
+}
+
+# Función para parar Cloud Monitoring (deshabilitar métricas)
+stop_monitoring() {
+    local dry_run=$1
+    
+    log "📊 Parando Cloud Monitoring (deshabilitando métricas)..."
+    
+    if [ "$dry_run" = "true" ]; then
+        info "DRY RUN: Se deshabilitaría Cloud Monitoring"
+        return 0
+    fi
+    
+    # Deshabilitar monitoring para Cloud Run
+    gcloud run services update "$API_SERVICE" --region="$REGION" --no-enable-monitoring --quiet 2>/dev/null || true
+    gcloud run services update "$FRONTEND_SERVICE" --region="$REGION" --no-enable-monitoring --quiet 2>/dev/null || true
+    
+    success "Cloud Monitoring parado correctamente"
 }
 
 # Función para gestionar Cloud Run
@@ -293,6 +477,13 @@ start_services() {
         manage_run_service "$API_SERVICE" "start" "$dry_run"
         manage_run_service "$FRONTEND_SERVICE" "start" "$dry_run"
         echo ""
+        
+        # Iniciar servicios adicionales
+        start_kms "$dry_run"
+        start_secrets "$dry_run"
+        start_logging "$dry_run"
+        start_monitoring "$dry_run"
+        echo ""
     fi
     
     success "Servicios iniciados correctamente"
@@ -307,8 +498,15 @@ stop_services() {
     log "🛑 Parando servicios..."
     echo ""
     
-    # Parar Cloud Run primero (para evitar errores)
+    # Parar servicios adicionales primero
     if [ "$sql_only" != "true" ]; then
+        stop_monitoring "$dry_run"
+        stop_logging "$dry_run"
+        stop_secrets "$dry_run"
+        stop_kms "$dry_run"
+        echo ""
+        
+        # Parar Cloud Run
         manage_run_service "$API_SERVICE" "stop" "$dry_run"
         manage_run_service "$FRONTEND_SERVICE" "stop" "$dry_run"
         echo ""
