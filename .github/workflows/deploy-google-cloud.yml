@@ -223,11 +223,11 @@ jobs:
           --set-env-vars="${ENV_VARS}" \
           --quiet
 
-    - name: 🗄️ Aplicar migraciones de base de datos
+    - name: 🧪 Test conexión a base de datos
       run: |
-        echo "🗄️ Aplicando migraciones de base de datos..."
-        chmod +x scripts/apply-migrations.sh
-        ./scripts/apply-migrations.sh -e production
+        echo "🧪 Probando conexión a base de datos..."
+        chmod +x test-db-connection.sh
+        ./test-db-connection.sh
 
     - name: 🚀 Desplegar Frontend a Cloud Run
       run: |
