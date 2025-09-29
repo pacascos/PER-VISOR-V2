@@ -1071,7 +1071,17 @@ class ExamSystem {
 let examSystem;
 
 document.addEventListener('DOMContentLoaded', () => {
-    examSystem = new ExamSystem();
+    // Esperar a que la configuración esté lista
+    function waitForConfig() {
+        if (window.API_BASE && window.envConfig) {
+            console.log('✅ Configuración lista, inicializando exam-system...');
+            examSystem = new ExamSystem();
+        } else {
+            console.log('⏳ Esperando configuración...');
+            setTimeout(waitForConfig, 100);
+        }
+    }
+    waitForConfig();
 });
 
 // Export for global access

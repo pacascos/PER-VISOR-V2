@@ -1280,7 +1280,7 @@ def login_user():
 
         # Buscar usuario (por username o email)
         cur.execute("""
-            SELECT id, username, email, password_hash, created_at, last_login
+            SELECT id, username, email, password_hash, role, created_at, last_login
             FROM users
             WHERE username = %s OR email = %s
         """, (username, username))
@@ -1312,6 +1312,7 @@ def login_user():
                 'id': str(user['id']),
                 'username': user['username'],
                 'email': user['email'],
+                'role': user['role'],
                 'created_at': user['created_at'].isoformat() if user['created_at'] else None,
                 'last_login': user['last_login'].isoformat() if user['last_login'] else None
             },
