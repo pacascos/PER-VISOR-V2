@@ -78,8 +78,17 @@ jobs:
         echo "FRONTEND_IMAGE=europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/per-images/per-frontend:${BUILD_ID}" >> $GITHUB_ENV
         echo "🏷️ Build ID generado: ${BUILD_ID}"
 
+    - name: 🔍 Verificar secret de Google Cloud
+      run: |
+        if [ -z "${{ secrets.GCP_SA_KEY }}" ]; then
+          echo "❌ ERROR: El secret GCP_SA_KEY no está configurado"
+          echo "📝 Configura el secret en: Settings > Secrets and variables > Actions"
+          exit 1
+        fi
+        echo "✅ Secret GCP_SA_KEY encontrado"
+
     - name: 🔧 Configurar Google Cloud CLI
-      uses: google-github-actions/setup-gcloud@v2
+      uses: google-github-actions/setup-gcloud@v1
       with:
         project_id: ${{ env.PROJECT_ID }}
         service_account_key: ${{ secrets.GCP_SA_KEY }}
@@ -87,16 +96,34 @@ jobs:
 
     - name: 🐳 Configurar Docker
       run: |
-        gcloud auth configure-docker europe-west1-docker.pkg.dev
+        echo "🐳 Configurando autenticación Docker para Artifact Registry..."
+        gcloud auth configure-docker europe-west1-docker.pkg.dev --quiet
+        
+        # Verificar autenticación
+        echo "🔍 Verificando autenticación..."
+        gcloud auth list
+        echo "✅ Docker configurado correctamente"
 
     - name: 📦 Configurar Artifact Registry
       run: |
-        # Crear repositorio si no existe
-        gcloud artifacts repositories create per-images \
-          --repository-format=docker \
-          --location=${{ env.REGION }} \
-          --description="Imágenes Docker para PER Sistema" \
-          --quiet || echo "Repositorio ya existe"
+        echo "📦 Configurando Artifact Registry..."
+        
+        # Verificar si el repositorio existe
+        if gcloud artifacts repositories describe per-images --location=${{ env.REGION }} >/dev/null 2>&1; then
+          echo "✅ Repositorio 'per-images' ya existe"
+        else
+          echo "🏗️ Creando repositorio 'per-images'..."
+          gcloud artifacts repositories create per-images \
+            --repository-format=docker \
+            --location=${{ env.REGION }} \
+            --description="Imágenes Docker para PER Sistema" \
+            --quiet
+          echo "✅ Repositorio creado exitosamente"
+        fi
+        
+        # Listar repositorios para verificación
+        echo "📋 Repositorios disponibles:"
+        gcloud artifacts repositories list --location=${{ env.REGION }}
 
     - name: 🧹 Limpiar cache Docker
       run: |
@@ -110,16 +137,30 @@ jobs:
         SERVICE_NAME="per-api"
         
         echo "🏗️ Construyendo imagen del API: ${{ env.API_IMAGE }}"
+        echo "📁 Directorio de trabajo: $(pwd)"
+        echo "📋 Archivos disponibles:"
+        ls -la || true
+        
+        # Construir imagen con verbose output
         docker build \
           --platform linux/amd64 \
           --no-cache \
           --pull \
           -t ${{ env.API_IMAGE }} \
-          .
+          . || {
+            echo "❌ Error construyendo imagen del API"
+            exit 1
+          }
+        
+        echo "✅ Imagen del API construida exitosamente"
         
         echo "⬆️ Subiendo imagen del API..."
-        docker push ${{ env.API_IMAGE }}
+        docker push ${{ env.API_IMAGE }} || {
+          echo "❌ Error subiendo imagen del API"
+          exit 1
+        }
         
+        echo "✅ Imagen del API subida exitosamente"
         echo "SERVICE_NAME=${SERVICE_NAME}" >> $GITHUB_ENV
 
     - name: 🏗️ Construir y subir imagen del Frontend
@@ -127,17 +168,33 @@ jobs:
         SERVICE_NAME="per-frontend"
         
         echo "🏗️ Construyendo imagen del Frontend: ${{ env.FRONTEND_IMAGE }}"
+        echo "📋 Verificando frontend.Dockerfile..."
+        ls -la frontend.Dockerfile || {
+          echo "❌ Error: frontend.Dockerfile no encontrado"
+          exit 1
+        }
+        
+        # Construir imagen con verbose output
         docker build \
           --platform linux/amd64 \
           --no-cache \
           --pull \
           -f frontend.Dockerfile \
           -t ${{ env.FRONTEND_IMAGE }} \
-          .
+          . || {
+            echo "❌ Error construyendo imagen del Frontend"
+            exit 1
+          }
+        
+        echo "✅ Imagen del Frontend construida exitosamente"
         
         echo "⬆️ Subiendo imagen del Frontend..."
-        docker push ${{ env.FRONTEND_IMAGE }}
+        docker push ${{ env.FRONTEND_IMAGE }} || {
+          echo "❌ Error subiendo imagen del Frontend"
+          exit 1
+        }
         
+        echo "✅ Imagen del Frontend subida exitosamente"
         echo "FRONTEND_SERVICE_NAME=${SERVICE_NAME}" >> $GITHUB_ENV
 
     - name: 🚀 Desplegar API a Cloud Run
@@ -260,7 +317,19 @@ jobs:
         echo "🏷️ Build ID: ${{ env.BUILD_ID }}"
         echo "📝 Revisa los logs anteriores para más detalles"
         echo ""
+        echo "🔍 Posibles causas del fallo:"
+        echo "  1. Secret GCP_SA_KEY no configurado o inválido"
+        echo "  2. Permisos insuficientes en el service account"
+        echo "  3. Artifact Registry no configurado correctamente"
+        echo "  4. Error en la construcción de imágenes Docker"
+        echo "  5. Problemas de red o conectividad"
+        echo ""
         echo "🔍 Comandos de debug:"
         echo "  gcloud run services list --region=${{ env.REGION }}"
         echo "  gcloud run services logs read --region=${{ env.REGION }}"
+        echo "  gcloud artifacts repositories list --location=${{ env.REGION }}"
+        echo "  gcloud auth list"
+        echo ""
+        echo "📋 Verificar secret en GitHub:"
+        echo "  Settings > Secrets and variables > Actions > GCP_SA_KEY"
         echo ""
