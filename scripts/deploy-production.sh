@@ -125,12 +125,12 @@ log "🏗️ Construyendo imágenes Docker..."
 
 # Construir imagen del API
 log "📦 Construyendo imagen del API..."
-docker build -t ${API_IMAGE} . > /dev/null 2>&1
+docker build --platform linux/amd64 -t ${API_IMAGE} . > /dev/null 2>&1
 success "Imagen del API construida: ${API_IMAGE}"
 
 # Construir imagen del Frontend
 log "📦 Construyendo imagen del Frontend..."
-docker build -f frontend.Dockerfile -t ${FRONTEND_IMAGE} . > /dev/null 2>&1
+docker build --platform linux/amd64 -f frontend.Dockerfile -t ${FRONTEND_IMAGE} . > /dev/null 2>&1
 success "Imagen del Frontend construida: ${FRONTEND_IMAGE}"
 
 # =============================================================================

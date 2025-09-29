@@ -95,7 +95,7 @@ jobs:
         IMAGE="europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/per-images/per-api:${TAG}"
         
         echo "🏗️ Construyendo imagen: ${IMAGE}"
-        docker build -t ${IMAGE} .
+        docker build --platform linux/amd64 -t ${IMAGE} .
         
         echo "⬆️ Subiendo imagen..."
         docker push ${IMAGE}
@@ -112,7 +112,7 @@ jobs:
         IMAGE="europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/per-images/per-frontend:${TAG}"
         
         echo "🏗️ Construyendo imagen: ${IMAGE}"
-        docker build -f frontend.Dockerfile -t ${IMAGE} .
+        docker build --platform linux/amd64 -f frontend.Dockerfile -t ${IMAGE} .
         
         echo "⬆️ Subiendo imagen..."
         docker push ${IMAGE}
