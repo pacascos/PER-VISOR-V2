@@ -118,13 +118,13 @@ if [ "$ENVIRONMENT" = "local" ]; then
     }
     
 elif [ "$ENVIRONMENT" = "production" ]; then
-    # Configuración de producción
-    DB_HOST="35.240.119.73"  # IP de Cloud SQL
+    # Configuración de producción usando Cloud SQL Proxy
+    DB_HOST="/cloudsql/webpersonal-189221:europe-west1:per-db-instance"
     DB_PORT="5432"
     DB_NAME="per_exams"
     DB_USER="per_user"
     
-    log "🔗 Conectando a base de datos de producción..."
+    log "🔗 Conectando a base de datos de producción via Cloud SQL Proxy..."
     
     # Verificar que estamos autenticados en gcloud
     if ! gcloud auth list --filter=status:ACTIVE --format="value(account)" | grep -q .; then
@@ -137,13 +137,15 @@ elif [ "$ENVIRONMENT" = "production" ]; then
         error "No se pudo obtener la contraseña de la base de datos desde Secret Manager"
     fi
     
-    # Función para ejecutar comandos SQL en producción
+    # Función para ejecutar comandos SQL en producción usando Cloud SQL Proxy
     execute_sql() {
-        PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "$1" 2>/dev/null
+        echo "🔍 Ejecutando SQL: $1" >&2
+        PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "$1" 2>&1
     }
     
     execute_sql_file() {
-        PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -f "$1" 2>/dev/null
+        echo "🔍 Ejecutando archivo SQL: $1" >&2
+        PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -f "$1" 2>&1
     }
 fi
 
