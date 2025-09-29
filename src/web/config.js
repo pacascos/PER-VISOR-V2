@@ -52,14 +52,14 @@ class EnvironmentConfig {
                 };
                 break;
                 
-            case 'production':
-                this.config = {
-                    API_BASE: '/api',  // Relativa - nginx proxy
-                    FRONTEND_BASE: '', // Relativa - mismo dominio
-                    ENVIRONMENT_NAME: 'PRODUCCIÓN',
-                    ENVIRONMENT_COLOR: '#dc2626'
-                };
-                break;
+                   case 'production':
+                       this.config = {
+                           API_BASE: 'https://per-api-435987927843.europe-west1.run.app',  // Directa al API
+                           FRONTEND_BASE: '', // Relativa - mismo dominio
+                           ENVIRONMENT_NAME: 'PRODUCCIÓN',
+                           ENVIRONMENT_COLOR: '#dc2626'
+                       };
+                       break;
                 
             default:
                 // Fallback a desarrollo
