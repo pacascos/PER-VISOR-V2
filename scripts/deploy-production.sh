@@ -54,6 +54,17 @@ log "📋 Proyecto: ${PROJECT_ID}"
 log "🌍 Región: ${REGION}"
 
 # =============================================================================
+# ACTUALIZAR VERSIÓN
+# =============================================================================
+
+log "📝 Actualizando información de versión..."
+./scripts/update-version.sh production
+
+# Copiar archivo de versión al directorio web
+cp version.json src/web/
+success "Información de versión actualizada"
+
+# =============================================================================
 # VERIFICACIONES PREVIAS
 # =============================================================================
 

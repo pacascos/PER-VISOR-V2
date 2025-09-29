@@ -53,6 +53,50 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
+        /* Pie de página con versión */
+        .version-footer {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .version-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .version-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .version-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .version-badge.production {
+            background: rgba(220, 38, 38, 0.8);
+            color: white;
+        }
+
+        .version-badge.development {
+            background: rgba(5, 150, 105, 0.8);
+            color: white;
+        }
+
         .main-container {
             min-height: 100vh;
             display: flex;
@@ -560,6 +604,32 @@
                             <div class="action-description">Gestionar usuarios y estadísticas del sistema</div>
                         </div>
                     </div>
+
+                    <!-- Pie de página con información de versión -->
+                    <div class="version-footer" id="versionFooter" style="display: none;">
+                        <div class="version-info">
+                            <div class="version-item">
+                                <i class="fas fa-tag"></i>
+                                <span>Versión:</span>
+                                <span class="version-badge" id="versionBadge">1.0.1</span>
+                            </div>
+                            <div class="version-item">
+                                <i class="fas fa-code-branch"></i>
+                                <span>Commit:</span>
+                                <span id="commitHash">9865bd9</span>
+                            </div>
+                            <div class="version-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>Build:</span>
+                                <span id="buildDate">2025-01-29-1637</span>
+                            </div>
+                            <div class="version-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Desplegado:</span>
+                                <span id="deployedAt">2025-01-29T14:37:03Z</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Exam Interface -->
@@ -651,6 +721,35 @@
                 indicator.style.borderLeft = `3px solid ${window.ENVIRONMENT_COLOR}`;
             }
         });
+    </script>
+
+    <!-- Cargar información de versión -->
+    <script>
+        async function loadVersionInfo() {
+            try {
+                const response = await fetch('version.json');
+                const versionData = await response.json();
+                
+                // Actualizar elementos del pie de página
+                document.getElementById('versionBadge').textContent = versionData.version;
+                document.getElementById('versionBadge').className = `version-badge ${versionData.environment}`;
+                document.getElementById('commitHash').textContent = versionData.commit;
+                document.getElementById('buildDate').textContent = versionData.build;
+                document.getElementById('deployedAt').textContent = versionData.deployed_at;
+                
+                // Mostrar el pie de página
+                document.getElementById('versionFooter').style.display = 'block';
+                
+                console.log('📋 Información de versión cargada:', versionData);
+            } catch (error) {
+                console.warn('⚠️ No se pudo cargar la información de versión:', error);
+                // Mostrar versión por defecto
+                document.getElementById('versionFooter').style.display = 'block';
+            }
+        }
+
+        // Cargar versión cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', loadVersionInfo);
     </script>
 </body>
 </html>

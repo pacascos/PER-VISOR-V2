@@ -58,6 +58,14 @@ jobs:
         ls -la frontend.Dockerfile || exit 1
         echo "✅ Archivos críticos encontrados"
 
+    - name: 📝 Actualizar información de versión
+      run: |
+        echo "📝 Actualizando información de versión..."
+        chmod +x scripts/update-version.sh
+        ./scripts/update-version.sh production
+        cp version.json src/web/
+        echo "✅ Información de versión actualizada"
+
     - name: 🔧 Configurar Google Cloud CLI
       uses: google-github-actions/setup-gcloud@v2
       with:
