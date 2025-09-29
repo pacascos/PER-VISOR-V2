@@ -349,6 +349,26 @@ show_costs() {
     echo "  - Coste por GB transferido: ~\$0.10/GB"
     echo ""
     
+    echo -e "${YELLOW}🔐 KMS (Key Management Service):${NC}"
+    echo "  - Coste por clave activa: ~\$0.06/mes"
+    echo "  - Coste por operación: ~\$0.03/10,000 operaciones"
+    echo ""
+    
+    echo -e "${YELLOW}🗝️ Secret Manager:${NC}"
+    echo "  - Coste por secret: ~\$0.06/mes"
+    echo "  - Coste por acceso: ~\$0.03/10,000 accesos"
+    echo ""
+    
+    echo -e "${YELLOW}📝 Cloud Logging:${NC}"
+    echo "  - Coste por GB de logs: ~\$0.50/GB/mes"
+    echo "  - Coste por GB transferido: ~\$0.12/GB"
+    echo ""
+    
+    echo -e "${YELLOW}📊 Cloud Monitoring:${NC}"
+    echo "  - Coste por métrica: ~\$0.258/millón de puntos/mes"
+    echo "  - Coste por dashboard: ~\$0.15/dashboard/mes"
+    echo ""
+    
     echo -e "${GREEN}💡 Consejos para ahorrar:${NC}"
     echo "  - Parar Cloud SQL cuando no se use (ahorro: ~\$25-50/mes)"
     echo "  - Cloud Run se escala a 0 automáticamente sin tráfico"
@@ -375,6 +395,28 @@ show_costs() {
     else
         echo -e "  ${GREEN}✅ Cloud Run:${NC} Sin costes (escalado a 0)"
     fi
+    
+    # KMS
+    local kms_keys=$(gcloud kms keys list --keyring=llaveroPersonal --location=global --format="value(name)" 2>/dev/null | wc -l)
+    if [ "$kms_keys" -gt 0 ]; then
+        echo -e "  ${YELLOW}💰 KMS:${NC} Generando costes (~\$0.06/mes por clave)"
+    else
+        echo -e "  ${GREEN}✅ KMS:${NC} Sin costes (sin claves activas)"
+    fi
+    
+    # Secret Manager
+    local secrets_count=$(gcloud secrets list --format="value(name)" 2>/dev/null | wc -l)
+    if [ "$secrets_count" -gt 0 ]; then
+        echo -e "  ${YELLOW}💰 Secret Manager:${NC} Generando costes (~\$0.06/mes por secret)"
+    else
+        echo -e "  ${GREEN}✅ Secret Manager:${NC} Sin costes (sin secrets)"
+    fi
+    
+    # Cloud Logging (estimación)
+    echo -e "  ${YELLOW}💰 Cloud Logging:${NC} Puede generar costes con logs (~\$0.50/GB/mes)"
+    
+    # Cloud Monitoring (estimación)
+    echo -e "  ${YELLOW}💰 Cloud Monitoring:${NC} Puede generar costes con métricas (~\$0.258/millón/mes)"
     
     echo ""
 }
