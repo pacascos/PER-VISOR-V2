@@ -63,3 +63,30 @@ install:  ## 📦 Instalar dependencias
 
 test:  ## 🧪 Ejecutar tests (si existen)
 	@if [ -d "tests" ]; then python -m pytest tests/ -v; else echo "No hay tests configurados"; fi
+
+backup:  ## 💾 Crear backup completo de la base de datos
+	@echo "🔄 Creando backup completo de la base de datos..."
+	@./scripts/backup.sh
+
+restore:  ## 🔄 Restaurar desde backup (uso: make restore FILE=backup.sql)
+	@if [ -z "$(FILE)" ]; then \
+		echo "❌ Error: Especifica el archivo de backup"; \
+		echo "💡 Uso: make restore FILE=backup_completo_20250916_155823.sql"; \
+		echo ""; \
+		echo "📄 Archivos de backup disponibles:"; \
+		ls -la backups/*.sql 2>/dev/null || echo "  No hay backups disponibles"; \
+		exit 1; \
+	fi
+	@echo "🔄 Restaurando desde backup: $(FILE)"
+	@./scripts/restore.sh $(FILE)
+
+list-backups:  ## 📋 Listar todos los backups disponibles
+	@echo "📄 BACKUPS DISPONIBLES"
+	@echo "===================="
+	@if [ -d "backups" ]; then \
+		ls -la backups/*.sql 2>/dev/null | while read line; do \
+			echo "📄 $$line"; \
+		done; \
+	else \
+		echo "❌ No se encontró el directorio de backups"; \
+	fi

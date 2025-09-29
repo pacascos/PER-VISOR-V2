@@ -5,14 +5,20 @@
 
 class QuestionStatisticsTracker {
     constructor() {
-        this.apiBase = window.API_BASE || 'http://localhost:5001';
+        // GUARDIAN: Detectar cuándo se crea un tracker
+        console.log('🚨 CONSTRUCTOR DE TRACKER LLAMADO');
+        console.log('🚨 Stack trace:', new Error().stack);
+        console.log('🚨 window.currentUserId al momento de creación:', window.currentUserId);
+        console.log('🚨 localStorage al momento de creación:', localStorage.getItem('currentUserId'));
+
+        this.apiBase = window.API_BASE || 'https://per-api-435987927843.europe-west1.run.app';
         this.currentSession = {
             sessionId: this.generateSessionId(),
             startTime: Date.now(),
             questions: new Map() // questionId -> { startTime, attempts, etc. }
         };
         this.isEnabled = true;
-        
+
     }
 
     /**
@@ -105,9 +111,18 @@ class QuestionStatisticsTracker {
     async sendQuestionAttempt(questionInfo) {
         try {
             const userId = this.getCurrentUserId();
-            
+
             // Si no hay usuario autenticado, no enviar estadísticas
             if (!userId) {
+                console.warn('⚠️ No se puede enviar estadísticas: usuario no autenticado');
+                return;
+            }
+
+            // Validación adicional para detectar el bug
+            if (userId === 'anonymous') {
+                console.error('❌ ERROR CRÍTICO: Tracker está enviando "anonymous" como user_id');
+                console.error('window.currentUserId:', window.currentUserId);
+                console.error('localStorage currentUserId:', localStorage.getItem('currentUserId'));
                 return;
             }
             
@@ -244,12 +259,41 @@ class QuestionStatisticsTracker {
 
 // Inicialización manual del tracker (se llamará después de autenticación)
 window.initQuestionStatsTracker = function() {
-    if (!window.questionStatsTracker) {
-        window.questionStatsTracker = new QuestionStatisticsTracker();
-        window.questionStatsTracker.initialize();
-        console.log('📊 Tracker de estadísticas inicializado');
+    console.log('🚀 initQuestionStatsTracker() llamada');
+    const currentUserId = window.currentUserId || localStorage.getItem('currentUserId');
+    console.log('🔍 currentUserId obtenido:', currentUserId);
+    console.log('🔍 window.currentUserId:', window.currentUserId);
+    console.log('🔍 localStorage.currentUserId:', localStorage.getItem('currentUserId'));
+
+    if (!currentUserId || currentUserId === 'anonymous') {
+        console.log('⚠️ No se puede inicializar tracker: usuario no autenticado');
+        // Asegurar que no hay tracker sin usuario autenticado
+        if (window.questionStatsTracker) {
+            delete window.questionStatsTracker;
+        }
+        return;
     }
+
+    // SIEMPRE recrear el tracker para garantizar datos frescos
+    if (window.questionStatsTracker) {
+        console.log('🗑️ Eliminando tracker anterior');
+        delete window.questionStatsTracker;
+    }
+
+    console.log('🔨 Creando nuevo tracker...');
+    window.questionStatsTracker = new QuestionStatisticsTracker();
+    window.questionStatsTracker.initialize();
+    console.log('✅ Tracker de estadísticas inicializado/reinicializado para usuario:', currentUserId);
 };
+
+// GUARDIAN: Limpiar cualquier tracker existente al cargar la página
+if (typeof window !== 'undefined') {
+    console.log('🧹 Limpiando tracker al cargar página');
+    if (window.questionStatsTracker) {
+        console.log('🗑️ Eliminando tracker existente al cargar página');
+        delete window.questionStatsTracker;
+    }
+}
 
 // Exportar para uso en módulos
 if (typeof module !== 'undefined' && module.exports) {

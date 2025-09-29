@@ -32,10 +32,23 @@ Before any database modifications or testing:
 
 ### Backup and Restore Commands
 ```bash
+# Create complete backup (RECOMMENDED)
+make backup
+# or directly:
+./scripts/backup.sh
+
 # Create backup before testing
 ./scripts/backup_before_test.sh
 
-# Restore from backup if needed
+# Restore from backup
+make restore FILE=backup_completo_20250928_232240.sql
+# or directly:
+./scripts/restore.sh backup_completo_20250928_232240.sql
+
+# List available backups
+make list-backups
+
+# Manual commands (alternatives)
 docker exec -i per_postgres psql -U per_user -d per_exams < backups/backup_file.sql
 ```
 

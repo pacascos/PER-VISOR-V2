@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard de Estadísticas - PER Sistema</title>
 
+    <!-- Favicon dinámico -->
+    <link rel="icon" type="image/svg+xml" href="" id="dynamic-favicon">
+    <script>
+        // Detectar entorno y configurar favicon
+        const isProduction = window.location.hostname === 'bancotest.com';
+        document.getElementById('dynamic-favicon').href = isProduction ? 'favicon-prod.svg' : 'favicon.svg';
+    </script>
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -55,6 +63,45 @@
             padding: 2rem;
             margin-bottom: 2rem;
             text-align: center;
+        }
+
+        .top-navigation {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1rem 2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-btn-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .nav-btn-secondary {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
         }
 
         .stats-title {
@@ -207,6 +254,123 @@
             opacity: 0.8;
         }
 
+        .exam-history-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .exam-history-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 12px;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+
+        .exam-history-item.passed {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border-left-color: #10b981;
+        }
+
+        .exam-history-item.failed {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+            border-left-color: #ef4444;
+        }
+
+        .exam-history-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .exam-date {
+            flex: 0 0 140px;
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 0.9rem;
+        }
+
+        .exam-status {
+            flex: 0 0 100px;
+            text-align: center;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.passed {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-badge.failed {
+            background: #ef4444;
+            color: white;
+        }
+
+        .exam-score {
+            flex: 0 0 80px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .exam-score.passed {
+            color: #10b981;
+        }
+
+        .exam-score.failed {
+            color: #ef4444;
+        }
+
+        .exam-details {
+            flex: 1;
+            margin-left: 1rem;
+        }
+
+        .exam-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .exam-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .exam-stat i {
+            width: 14px;
+        }
+
+        .exam-actions .btn {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.75rem;
+        }
+
+        .failed-question-item {
+            border-left: 4px solid #ef4444 !important;
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .option-item {
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .option-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
         .chart-container {
             position: relative;
             height: 300px;
@@ -299,42 +463,6 @@
             font-size: 0.9rem;
         }
 
-        .nav-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .btn-custom {
-            padding: 0.75rem 2rem;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary-custom {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary-custom:hover {
-            background: #4338ca;
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary-custom {
-            background: #6b7280;
-            color: white;
-        }
-
-        .btn-secondary-custom:hover {
-            background: #4b5563;
-            transform: translateY(-2px);
-        }
 
         .streak-indicator {
             display: inline-flex;
@@ -401,11 +529,50 @@
             .stats-title {
                 font-size: 2rem;
             }
+
+            .top-navigation {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .top-navigation h2 {
+                order: -1;
+                margin-bottom: 0.5rem;
+            }
+
+            .exam-history-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .exam-date, .exam-status, .exam-score, .exam-details {
+                flex: none;
+                width: 100%;
+            }
+
+            .exam-stats {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
 <body>
     <div class="stats-container">
+        <!-- Top Navigation -->
+        <div class="top-navigation">
+            <button class="nav-btn nav-btn-primary" onclick="location.href='exam-system.html'">
+                <i class="fas fa-arrow-left me-2"></i>Volver al Sistema
+            </button>
+            <h2 class="mb-0" style="color: var(--primary-color); font-weight: 600;">
+                <i class="fas fa-chart-line me-2"></i>Dashboard de Estadísticas
+            </h2>
+            <button class="nav-btn nav-btn-secondary" onclick="location.href='visor-nueva-arquitectura.html'">
+                <i class="fas fa-book me-2"></i>Banco de Preguntas
+            </button>
+        </div>
+
         <!-- Header -->
         <div class="stats-header">
             <h1 class="stats-title">
@@ -545,6 +712,19 @@
                 </div>
             </div>
 
+            <!-- Exam History -->
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-icon primary">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div class="stat-title">Historial de Exámenes</div>
+                </div>
+                <div class="exam-history-container" id="examHistoryContainer">
+                    <!-- Exam history will be loaded here -->
+                </div>
+            </div>
+
             <!-- Achievements -->
             <div class="stat-card">
                 <div class="stat-card-header">
@@ -587,15 +767,6 @@
             </div>
         </div>
 
-        <!-- Navigation Buttons -->
-        <div class="nav-buttons">
-            <button class="btn-custom btn-primary-custom" onclick="location.href='exam-system.html'">
-                <i class="fas fa-arrow-left me-2"></i>Volver al Sistema
-            </button>
-            <button class="btn-custom btn-secondary-custom" onclick="location.href='visor-nueva-arquitectura.html'">
-                <i class="fas fa-book me-2"></i>Banco de Preguntas
-            </button>
-        </div>
     </div>
 
     <!-- Bootstrap JS -->
@@ -610,6 +781,9 @@
         function initializeDashboard() {
             statisticsManager = new StatisticsManager();
             statisticsManager.initialize();
+            
+            // Hacer el manager disponible globalmente para los botones
+            window.statisticsManager = statisticsManager;
         }
 
         // Intentar inicializar inmediatamente si el DOM ya está listo

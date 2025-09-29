@@ -10,7 +10,6 @@
     <script>
     async function testAPI() {
         try {
-            console.log('🔄 Probando API...');
             const response = await fetch('http://localhost:5001/examenes');
 
             if (!response.ok) {
@@ -18,13 +17,9 @@
             }
 
             const data = await response.json();
-            console.log('✅ Datos cargados:', data);
-            console.log('📊 Total exámenes:', data.count);
-            console.log('📋 Primer examen:', data.examenes[0]);
 
             // Extraer convocatorias únicas
             const convocatorias = [...new Set(data.examenes.map(e => e.convocatoria))].sort().reverse();
-            console.log('📅 Convocatorias únicas:', convocatorias);
 
             document.getElementById('result').innerHTML = `
                 <h2>Resultado:</h2>

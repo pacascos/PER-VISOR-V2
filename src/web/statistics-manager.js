@@ -3,7 +3,7 @@
  */
 class StatisticsManager {
     constructor() {
-        this.API_BASE = 'http://localhost:5001';
+        this.API_BASE = 'https://per-api-435987927843.europe-west1.run.app';
         this.userId = this.getCurrentUserId();
         this.charts = {};
 
@@ -260,6 +260,9 @@ class StatisticsManager {
         this.checkAchievements();
         this.renderAchievements();
 
+        // Render exam history
+        this.renderExamHistory();
+
         // Render recommendations
         this.renderRecommendations();
     }
@@ -464,6 +467,76 @@ class StatisticsManager {
         });
     }
 
+    renderExamHistory() {
+        const examHistoryContainer = document.getElementById('examHistoryContainer');
+        if (!examHistoryContainer || !this.examHistory || this.examHistory.length === 0) {
+            if (examHistoryContainer) {
+                examHistoryContainer.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #6b7280;">
+                        <i class="fas fa-clipboard-list" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p>No hay exámenes completados aún</p>
+                    </div>
+                `;
+            }
+            return;
+        }
+
+        examHistoryContainer.innerHTML = '';
+
+        this.examHistory.forEach(exam => {
+            const examElement = document.createElement('div');
+            examElement.className = `exam-history-item ${exam.passed ? 'passed' : 'failed'}`;
+            
+            const statusText = exam.passed ? 'Aprobado' : 'Suspenso';
+            const statusClass = exam.passed ? 'passed' : 'failed';
+            
+            examElement.innerHTML = `
+                <div class="exam-date">
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    ${exam.date || 'Fecha no disponible'}
+                </div>
+                
+                <div class="exam-status">
+                    <span class="status-badge ${statusClass}">${statusText}</span>
+                </div>
+                
+                <div class="exam-score ${statusClass}">
+                    ${exam.score}%
+                </div>
+                
+                <div class="exam-details">
+                    <div class="exam-stats">
+                        <div class="exam-stat">
+                            <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                            <span>${exam.correct_answers || 0} correctas</span>
+                        </div>
+                        <div class="exam-stat">
+                            <i class="fas fa-times-circle" style="color: #ef4444;"></i>
+                            <span>${exam.incorrect_answers || 0} fallos</span>
+                        </div>
+                        <div class="exam-stat">
+                            <i class="fas fa-clock" style="color: #6b7280;"></i>
+                            <span>${exam.time_minutes || 0} min</span>
+                        </div>
+                        <div class="exam-stat">
+                            <i class="fas fa-list-ol" style="color: #6b7280;"></i>
+                            <span>${exam.total_questions || 0} preguntas</span>
+                        </div>
+                    </div>
+                    ${exam.incorrect_answers > 0 ? `
+                        <div class="exam-actions" style="margin-top: 0.75rem;">
+                            <button class="btn btn-sm btn-outline-danger" onclick="window.statisticsManager.viewFailedQuestions('${exam.exam_id}')">
+                                <i class="fas fa-eye me-1"></i>Ver ${exam.incorrect_answers} Fallos
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            examHistoryContainer.appendChild(examElement);
+        });
+    }
+
     renderRecommendations() {
         const container = document.getElementById('recommendationsList');
         container.innerHTML = '';
@@ -654,6 +727,50 @@ class StatisticsManager {
         const modal = new bootstrap.Modal(document.createElement('div'));
         // Implementation for achievement detail modal
     }
+
+    async viewFailedQuestions(examId) {
+        try {
+            console.log('🔍 Obteniendo preguntas falladas del examen:', examId);
+
+            // Obtener preguntas falladas del examen
+            const response = await fetch(`${this.API_BASE}/user/exam/${examId}/failed-questions`, {
+                headers: {
+                    'Authorization': `Bearer ${this.getCurrentAuthToken()}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            
+            if (data.success && data.failed_questions.length > 0) {
+                // Extraer IDs de las preguntas falladas
+                const failedQuestionIds = data.failed_questions.map(q => q.question_id);
+                
+                // Guardar el filtro en localStorage para que el banco de preguntas lo use
+                localStorage.setItem('failedQuestionsFilter', JSON.stringify({
+                    examId: examId,
+                    questionIds: failedQuestionIds,
+                    examDate: data.failed_questions[0].exam_date || new Date().toISOString(),
+                    totalFailed: data.total_failed
+                }));
+                
+                console.log('🔍 Redirigiendo al banco de preguntas con', failedQuestionIds.length, 'preguntas falladas');
+                
+                // Redirigir al banco de preguntas
+                window.location.href = 'visor-nueva-arquitectura.html?filter=failed_questions';
+            } else {
+                this.showError('No se encontraron preguntas falladas para este examen');
+            }
+
+        } catch (error) {
+            console.error('❌ Error obteniendo preguntas falladas:', error);
+            this.showError(`Error cargando preguntas falladas: ${error.message}`);
+        }
+    }
+
 
     showError(message) {
         const errorDiv = document.createElement('div');

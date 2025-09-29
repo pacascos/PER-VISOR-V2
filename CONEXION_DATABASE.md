@@ -176,14 +176,25 @@ docker exec -it per_postgres psql -U per_user -d per_exams -c "SELECT COUNT(*) F
 
 ### Backup y Restore
 ```bash
-# Crear backup
-docker exec per_postgres pg_dump -U per_user -d per_exams > backup_$(date +%Y%m%d).sql
+# Crear backup completo (RECOMENDADO)
+make backup
+# o directamente:
+./scripts/backup.sh
 
-# Restaurar backup
-cat backup_file.sql | docker exec -i per_postgres psql -U per_user -d per_exams
-
-# Usar script de backup automatizado
+# Crear backup antes de pruebas
 ./scripts/backup_before_test.sh
+
+# Restaurar desde backup
+make restore FILE=backup_completo_20250928_232240.sql
+# o directamente:
+./scripts/restore.sh backup_completo_20250928_232240.sql
+
+# Listar backups disponibles
+make list-backups
+
+# Comandos manuales (alternativos)
+docker exec per_postgres pg_dump -U per_user -d per_exams > backup_$(date +%Y%m%d).sql
+cat backup_file.sql | docker exec -i per_postgres psql -U per_user -d per_exams
 ```
 
 ## ⚠️ Solución de Problemas

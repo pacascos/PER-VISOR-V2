@@ -30,6 +30,8 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL:
     # Parsear DATABASE_URL postgresql://user:password@host:port/database
     import re
+    
+    # Intentar formato estándar primero
     match = re.match(r'postgresql://([^:]+):([^@]+)@([^:]+):(\d+)/(.+)', DATABASE_URL)
     if match:
         DB_CONFIG = {
@@ -40,7 +42,17 @@ if DATABASE_URL:
             'password': match.group(2)
         }
     else:
-        raise ValueError("Invalid DATABASE_URL format")
+        # Intentar formato Cloud SQL con socket Unix
+        match = re.match(r'postgresql://([^:]+):([^@]+)@/([^?]+)\?host=(.+)', DATABASE_URL)
+        if match:
+            DB_CONFIG = {
+                'host': match.group(4),  # Socket path
+                'database': match.group(3),
+                'user': match.group(1),
+                'password': match.group(2)
+            }
+        else:
+            raise ValueError(f"Invalid DATABASE_URL format: {DATABASE_URL}")
 else:
     # Fallback a variables individuales
     DB_CONFIG = {
@@ -60,7 +72,7 @@ logging.getLogger('werkzeug').setLevel(logging.WARNING)
 
 # Crear aplicación Flask
 app = Flask(__name__)
-CORS(app, origins=['http://localhost:8095', 'http://127.0.0.1:8095'], 
+CORS(app, origins=['http://localhost:8095', 'http://127.0.0.1:8095', 'https://per-frontend-435987927843.europe-west1.run.app', 'https://bancotest.com'], 
      allow_headers=['Content-Type', 'Authorization'], 
      methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
 
@@ -637,6 +649,11 @@ Para resolver este problema, verifica la configuración de la API de GPT-5.""",
             'diagram_svg': None,
             'image_prompt': None
         }
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Health check endpoint for Cloud Run"""
+    return jsonify({'status': 'healthy', 'timestamp': datetime.now().isoformat()}), 200
 
 @app.route('/stats')
 def get_stats():
@@ -1529,43 +1546,97 @@ def generate_exam():
         questions_selected = []
         question_order = 1
 
-        for ut_config in ut_configs:
+        logger.info(f"🔍 DEBUG ut_configs: {ut_configs}, len: {len(ut_configs) if ut_configs else 'None'}")
+
+        for i, ut_config in enumerate(ut_configs):
+            logger.info(f"🔍 DEBUG ut_config[{i}]: {ut_config}, type: {type(ut_config)}")
             ut_number = ut_config['ut_number']
             category_name = ut_config['category_name']
             questions_needed = ut_config['questions_per_exam']
             
+            # TEMPORAL: Priorización de preguntas con respuestas incompletas - IMPLEMENTACIÓN CUIDADOSA
             logger.info(f"🔍 Procesando UT{ut_number} ({category_name}): {questions_needed} preguntas necesarias")
 
-            # TEMPORAL: Priorizar preguntas con respuestas incompletas (sin punto final)
-            # TODO: Remover esta lógica cuando se hayan completado todas las respuestas
-            
-            # Obtener preguntas disponibles para esta UT solo de exámenes PER
+            # DEBUG: Verificar valores de entrada
+            logger.info(f"🔍 DEBUG - category_name: '{category_name}' (type: {type(category_name)})")
+            logger.info(f"🔍 DEBUG - questions_needed: {questions_needed} (type: {type(questions_needed)})")
+
+            # PASO 1: Obtener TODAS las preguntas disponibles de la categoría
+            logger.info(f"🔍 PASO 1: Obteniendo todas las preguntas de '{category_name}'")
+
             cur.execute("""
                 SELECT q.id FROM questions q
                 JOIN exams e ON q.exam_id = e.id
                 WHERE q.categoria = %s
                 AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
                 AND q.anulada = false
-                ORDER BY RANDOM()
-                LIMIT %s
-            """, (category_name, questions_needed))
+            """, (category_name,))
 
-            ut_questions = cur.fetchall()
+            all_questions = cur.fetchall()
+            logger.info(f"✅ PASO 1: {len(all_questions)} preguntas totales encontradas")
 
-            if len(ut_questions) < questions_needed:
-                logger.warning(f"⚠️ Solo {len(ut_questions)} preguntas PER disponibles para UT{ut_number} ({category_name}), se necesitan {questions_needed}")
-            else:
+            # PASO 2: Identificar cuáles son incompletas (sin punto final)
+            logger.info(f"🔍 PASO 2: Identificando preguntas incompletas...")
+
+            # Convertir a lista de IDs para consulta más sencilla
+            if all_questions:
+                question_ids = [str(q[0]) for q in all_questions]
+                question_ids_str = "'" + "','".join(question_ids) + "'"
+
+                logger.info(f"🔍 DEBUG - Consultando opciones para {len(question_ids)} preguntas")
+
+                # Consulta directa sin parámetros problemáticos
+                incomplete_query = f"""
+                    SELECT DISTINCT ao.question_id
+                    FROM answer_options ao
+                    WHERE ao.question_id IN ({question_ids_str})
+                    AND ao.texto IS NOT NULL
+                    AND ao.texto != ''
+                    AND ao.texto NOT LIKE '%.'
+                """
+
+                cur.execute(incomplete_query)
+                incomplete_question_ids = cur.fetchall()
+                incomplete_ids_set = {str(row[0]) for row in incomplete_question_ids}
+
+                logger.info(f"✅ PASO 2: {len(incomplete_ids_set)} preguntas incompletas identificadas")
+
+                # PASO 3: Priorizar - incompletas primero, luego completas
+                prioritized_questions = []
+
+                # Añadir preguntas incompletas primero
+                for q in all_questions:
+                    if str(q[0]) in incomplete_ids_set:
+                        prioritized_questions.append(q)
+
+                # Añadir preguntas completas después
+                for q in all_questions:
+                    if str(q[0]) not in incomplete_ids_set:
+                        prioritized_questions.append(q)
+
+                # Seleccionar las primeras N preguntas (priorizadas)
+                ut_questions = prioritized_questions[:questions_needed]
+
+                incomplete_count = sum(1 for q in ut_questions if str(q[0]) in incomplete_ids_set)
+                complete_count = len(ut_questions) - incomplete_count
+
                 logger.info(f"✅ UT{ut_number} ({category_name}): {len(ut_questions)} preguntas seleccionadas")
+                logger.info(f"📝 - Incompletas priorizadas: {incomplete_count}")
+                logger.info(f"📝 - Completas añadidas: {complete_count}")
+
+            else:
+                ut_questions = []
+                logger.warning(f"⚠️ No se encontraron preguntas para {category_name}")
 
             # Asignar preguntas al examen
             for question in ut_questions:
                 cur.execute("""
                     INSERT INTO exam_questions (user_exam_id, question_id, question_order, ut_category, ut_number)
                     VALUES (%s, %s, %s, %s, %s)
-                """, (exam_id, question['id'], question_order, category_name, ut_number))
+                """, (exam_id, question[0], question_order, category_name, ut_number))
 
                 questions_selected.append({
-                    'question_id': str(question['id']),
+                    'question_id': str(question[0]),
                     'order': question_order,
                     'ut_number': ut_number,
                     'ut_category': category_name
@@ -2522,4 +2593,5 @@ if __name__ == '__main__':
     logger.info("🎯 Endpoints de exámenes:")
     logger.info("   - POST   /exams/generate")
     
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    port = int(os.getenv('PORT', 5001))
+    app.run(host='0.0.0.0', port=port, debug=False)
