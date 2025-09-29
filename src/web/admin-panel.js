@@ -139,6 +139,7 @@ class AdminPanel {
                             <th>Email</th>
                             <th>Rol</th>
                             <th>Estado</th>
+                            <th>Fecha Registro</th>
                             <th>Exámenes</th>
                             <th>Último Acceso</th>
                             <th>Acciones</th>
@@ -163,6 +164,10 @@ class AdminPanel {
             ? new Date(user.last_login).toLocaleDateString('es-ES')
             : 'Nunca';
         
+        const registrationDate = user.registration_date 
+            ? new Date(user.registration_date).toLocaleDateString('es-ES')
+            : 'N/A';
+        
         const examRate = user.total_exams > 0 
             ? `${user.passed_exams}/${user.total_exams} (${Math.round((user.passed_exams / user.total_exams) * 100)}%)`
             : '0/0 (0%)';
@@ -184,6 +189,9 @@ class AdminPanel {
                     <span class="${statusClass}">
                         <i class="fas fa-circle"></i> ${statusText}
                     </span>
+                </td>
+                <td>
+                    <small>${registrationDate}</small>
                 </td>
                 <td>
                     <small>${examRate}</small>

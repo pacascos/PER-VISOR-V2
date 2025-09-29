@@ -1,12 +1,12 @@
 # =============================================================================
-# 🚀 DESPLIEGUE AUTOMATIZADO A GOOGLE CLOUD
+# 🚀 DESPLIEGUE ROBUSTO A GOOGLE CLOUD
 # =============================================================================
 # Fecha de creación: 2025-01-29
-# Versión: 1.0
-# Descripción: Despliegue automático a Google Cloud Run basado en ramas
+# Versión: 2.0 - ROBUSTO
+# Descripción: Despliegue automático robusto que garantiza regeneración completa
 # =============================================================================
 
-name: 🚀 Deploy to Google Cloud
+name: 🚀 Deploy to Google Cloud (Robust)
 
 on:
   push:
@@ -30,6 +30,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         lfs: true
+        fetch-depth: 0  # Obtener todo el historial para versionado
 
     - name: 🐍 Configurar Python
       uses: actions/setup-python@v4
@@ -67,6 +68,16 @@ jobs:
         cp version.json src/web/
         echo "✅ Información de versión actualizada"
 
+    - name: 🏷️ Generar Build ID único
+      run: |
+        # Generar timestamp único para evitar cache
+        TIMESTAMP=$(date +%Y%m%d%H%M%S)
+        BUILD_ID="${TIMESTAMP}-$(git rev-parse --short HEAD)"
+        echo "BUILD_ID=${BUILD_ID}" >> $GITHUB_ENV
+        echo "API_IMAGE=europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/per-images/per-api:${BUILD_ID}" >> $GITHUB_ENV
+        echo "FRONTEND_IMAGE=europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/per-images/per-frontend:${BUILD_ID}" >> $GITHUB_ENV
+        echo "🏷️ Build ID generado: ${BUILD_ID}"
+
     - name: 🔧 Configurar Google Cloud CLI
       uses: google-github-actions/setup-gcloud@v2
       with:
@@ -87,38 +98,46 @@ jobs:
           --description="Imágenes Docker para PER Sistema" \
           --quiet || echo "Repositorio ya existe"
 
+    - name: 🧹 Limpiar cache Docker
+      run: |
+        echo "🧹 Limpiando cache Docker..."
+        docker system prune -f || true
+        docker builder prune -f || true
+        echo "✅ Cache limpiado"
+
     - name: 🏗️ Construir y subir imagen del API
       run: |
-        # Solo producción (main)
-        TAG="latest"
         SERVICE_NAME="per-api"
         
-        IMAGE="europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/per-images/per-api:${TAG}"
+        echo "🏗️ Construyendo imagen del API: ${{ env.API_IMAGE }}"
+        docker build \
+          --platform linux/amd64 \
+          --no-cache \
+          --pull \
+          -t ${{ env.API_IMAGE }} \
+          .
         
-        echo "🏗️ Construyendo imagen: ${IMAGE}"
-        docker build --platform linux/amd64 -t ${IMAGE} .
+        echo "⬆️ Subiendo imagen del API..."
+        docker push ${{ env.API_IMAGE }}
         
-        echo "⬆️ Subiendo imagen..."
-        docker push ${IMAGE}
-        
-        echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
         echo "SERVICE_NAME=${SERVICE_NAME}" >> $GITHUB_ENV
 
     - name: 🏗️ Construir y subir imagen del Frontend
       run: |
-        # Solo producción (main)
-        TAG="latest"
         SERVICE_NAME="per-frontend"
         
-        IMAGE="europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/per-images/per-frontend:${TAG}"
+        echo "🏗️ Construyendo imagen del Frontend: ${{ env.FRONTEND_IMAGE }}"
+        docker build \
+          --platform linux/amd64 \
+          --no-cache \
+          --pull \
+          -f frontend.Dockerfile \
+          -t ${{ env.FRONTEND_IMAGE }} \
+          .
         
-        echo "🏗️ Construyendo imagen: ${IMAGE}"
-        docker build --platform linux/amd64 -f frontend.Dockerfile -t ${IMAGE} .
+        echo "⬆️ Subiendo imagen del Frontend..."
+        docker push ${{ env.FRONTEND_IMAGE }}
         
-        echo "⬆️ Subiendo imagen..."
-        docker push ${IMAGE}
-        
-        echo "FRONTEND_IMAGE=${IMAGE}" >> $GITHUB_ENV
         echo "FRONTEND_SERVICE_NAME=${SERVICE_NAME}" >> $GITHUB_ENV
 
     - name: 🚀 Desplegar API a Cloud Run
@@ -128,11 +147,11 @@ jobs:
         CPU="1000m"
         CONCURRENCY="100"
         MAX_INSTANCES="10"
-        ENV_VARS="FLASK_ENV=production"
+        ENV_VARS="FLASK_ENV=production,BUILD_ID=${{ env.BUILD_ID }}"
         
         echo "🚀 Desplegando API: ${{ env.SERVICE_NAME }}"
         gcloud run deploy ${{ env.SERVICE_NAME }} \
-          --image=${{ env.IMAGE }} \
+          --image=${{ env.API_IMAGE }} \
           --platform=managed \
           --region=${{ env.REGION }} \
           --allow-unauthenticated \
@@ -144,6 +163,12 @@ jobs:
           --set-env-vars="${ENV_VARS}" \
           --quiet
 
+    - name: 🗄️ Aplicar migraciones de base de datos
+      run: |
+        echo "🗄️ Aplicando migraciones de base de datos..."
+        chmod +x scripts/apply-migrations.sh
+        ./scripts/apply-migrations.sh -e production
+
     - name: 🚀 Desplegar Frontend a Cloud Run
       run: |
         # Configuración para producción
@@ -151,6 +176,7 @@ jobs:
         CPU="1000m"
         CONCURRENCY="1000"
         MAX_INSTANCES="5"
+        ENV_VARS="BUILD_ID=${{ env.BUILD_ID }}"
         
         echo "🌐 Desplegando Frontend: ${{ env.FRONTEND_SERVICE_NAME }}"
         gcloud run deploy ${{ env.FRONTEND_SERVICE_NAME }} \
@@ -162,6 +188,7 @@ jobs:
           --cpu=${CPU} \
           --concurrency=${CONCURRENCY} \
           --max-instances=${MAX_INSTANCES} \
+          --set-env-vars="${ENV_VARS}" \
           --quiet
 
     - name: 🔗 Obtener URLs de los servicios
@@ -179,41 +206,58 @@ jobs:
       run: |
         echo "🔍 Verificando que los servicios están funcionando..."
         
+        # Esperar un poco para que los servicios estén listos
+        sleep 10
+        
         # Verificar API
         echo "🔍 Probando API..."
-        curl -f "${{ env.API_URL }}/health" || echo "⚠️ API health check falló"
+        if curl -f -s "${{ env.API_URL }}/health" > /dev/null; then
+          echo "✅ API funcionando correctamente"
+        else
+          echo "⚠️ API health check falló"
+        fi
         
         # Verificar Frontend
         echo "🔍 Probando Frontend..."
-        curl -f "${{ env.FRONTEND_URL }}" || echo "⚠️ Frontend check falló"
+        if curl -f -s "${{ env.FRONTEND_URL }}" > /dev/null; then
+          echo "✅ Frontend funcionando correctamente"
+        else
+          echo "⚠️ Frontend check falló"
+        fi
 
     - name: 📢 Notificación de éxito
       if: success()
       run: |
-        echo "🎉 ¡DESPLIEGUE COMPLETADO EXITOSAMENTE!"
-        echo "=========================================="
+        echo "🎉 ¡DESPLIEGUE ROBUSTO COMPLETADO EXITOSAMENTE!"
+        echo "================================================"
         echo ""
         echo "🌿 Rama: ${{ github.ref_name }}"
+        echo "🏷️ Build ID: ${{ env.BUILD_ID }}"
         echo "🔗 API URL: ${{ env.API_URL }}"
         echo "🌐 Frontend URL: ${{ env.FRONTEND_URL }}"
         echo ""
         echo "📋 Servicios desplegados:"
-        echo "  - ${{ env.SERVICE_NAME }} (API)"
-        echo "  - ${{ env.FRONTEND_SERVICE_NAME }} (Frontend)"
+        echo "  - ${{ env.SERVICE_NAME }} (API) - Imagen: ${{ env.API_IMAGE }}"
+        echo "  - ${{ env.FRONTEND_SERVICE_NAME }} (Frontend) - Imagen: ${{ env.FRONTEND_IMAGE }}"
         echo ""
         echo "🔍 Comandos útiles:"
         echo "  Ver logs API: gcloud run services logs read ${{ env.SERVICE_NAME }} --region=${{ env.REGION }}"
         echo "  Ver logs Frontend: gcloud run services logs read ${{ env.FRONTEND_SERVICE_NAME }} --region=${{ env.REGION }}"
         echo "  Listar servicios: gcloud run services list --region=${{ env.REGION }}"
         echo ""
+        echo "🧹 Para limpiar imágenes antiguas:"
+        echo "  gcloud artifacts docker images delete ${{ env.API_IMAGE }} --quiet"
+        echo "  gcloud artifacts docker images delete ${{ env.FRONTEND_IMAGE }} --quiet"
+        echo ""
 
     - name: ❌ Notificación de fallo
       if: failure()
       run: |
-        echo "❌ ¡DESPLIEGUE FALLÓ!"
-        echo "===================="
+        echo "❌ ¡DESPLIEGUE ROBUSTO FALLÓ!"
+        echo "============================="
         echo ""
         echo "🌿 Rama: ${{ github.ref_name }}"
+        echo "🏷️ Build ID: ${{ env.BUILD_ID }}"
         echo "📝 Revisa los logs anteriores para más detalles"
         echo ""
         echo "🔍 Comandos de debug:"

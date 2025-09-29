@@ -694,6 +694,7 @@ def health_check():
     """Health check endpoint for Cloud Run"""
     return jsonify({'status': 'healthy', 'timestamp': datetime.now().isoformat()}), 200
 
+
 @app.route('/stats')
 def get_stats():
     """Obtener estadísticas del sistema desde PostgreSQL"""
@@ -1379,7 +1380,7 @@ def get_all_users():
         cur.execute("""
             SELECT 
                 id, username, email, role, is_active, 
-                created_at, last_login,
+                created_at, last_login, registration_date,
                 (SELECT COUNT(*) FROM user_exams WHERE user_id = users.id) as total_exams,
                 (SELECT COUNT(*) FROM user_exams WHERE user_id = users.id AND passed = true) as passed_exams
             FROM users 
@@ -1399,6 +1400,7 @@ def get_all_users():
                 'is_active': user['is_active'],
                 'created_at': user['created_at'].isoformat() if user['created_at'] else None,
                 'last_login': user['last_login'].isoformat() if user['last_login'] else None,
+                'registration_date': user['registration_date'].isoformat() if user['registration_date'] else None,
                 'total_exams': user['total_exams'],
                 'passed_exams': user['passed_exams']
             })
@@ -1453,7 +1455,7 @@ def create_user():
         cur.execute("""
             INSERT INTO users (username, email, password_hash, role, is_active)
             VALUES (%s, %s, %s, %s, true)
-            RETURNING id, username, email, role, created_at
+            RETURNING id, username, email, role, created_at, registration_date
         """, (username, email, password_hash, role))
         
         new_user = cur.fetchone()
@@ -1466,7 +1468,8 @@ def create_user():
                 'username': new_user['username'],
                 'email': new_user['email'],
                 'role': new_user['role'],
-                'created_at': new_user['created_at'].isoformat()
+                'created_at': new_user['created_at'].isoformat(),
+                'registration_date': new_user['registration_date'].isoformat() if new_user['registration_date'] else None
             }
         }), 201
         
@@ -1488,7 +1491,7 @@ def update_user(user_id):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         
         # Verificar que el usuario existe
-        cur.execute("SELECT id, username, email, role FROM users WHERE id = %s", (user_id,))
+        cur.execute("SELECT id, username, email, role, registration_date FROM users WHERE id = %s", (user_id,))
         user = cur.fetchone()
         
         if not user:
@@ -1543,6 +1546,7 @@ def update_user(user_id):
                 'email': updated_user['email'],
                 'role': updated_user['role'],
                 'is_active': updated_user['is_active'],
+                'registration_date': updated_user['registration_date'].isoformat() if updated_user['registration_date'] else None,
                 'updated_at': updated_user['updated_at'].isoformat()
             }
         }), 200
