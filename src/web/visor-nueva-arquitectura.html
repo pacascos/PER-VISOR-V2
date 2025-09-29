@@ -3078,7 +3078,17 @@
         // Inicializar aplicación
         let viewer;
         window.onload = function() {
-            viewer = new PERViewer();
+            // Esperar a que la configuración esté lista
+            function waitForConfig() {
+                if (window.API_BASE && window.envConfig) {
+                    console.log('✅ Configuración lista, inicializando visor...');
+                    viewer = new PERViewer();
+                } else {
+                    console.log('⏳ Esperando configuración...');
+                    setTimeout(waitForConfig, 100);
+                }
+            }
+            waitForConfig();
 
             // Event listener para el botón de guardar cambios
             document.getElementById('saveChanges').addEventListener('click', () => {
