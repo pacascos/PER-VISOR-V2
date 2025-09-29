@@ -1,9 +1,9 @@
 {
-  "version": "1.0.1",
-  "build": "2025-09-29-1637",
-  "commit": "9865bd9",
+  "version": "1.0.2",
+  "build": "2025-09-29-1641",
+  "commit": "83fae74",
   "environment": "production",
-  "deployed_at": "2025-09-29T14:37:03Z",
+  "deployed_at": "2025-09-29T14:41:11Z",
   "features": [
     "Sistema de roles de usuario",
     "Panel de administración", 
