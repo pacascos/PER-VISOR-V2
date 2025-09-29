@@ -4,7 +4,7 @@
 class StatisticsManager {
     constructor() {
         // Usar configuración de entorno automática
-        this.API_BASE = window.API_BASE || 'http://localhost:5001'; // Fallback por seguridad
+        this.API_BASE = window.API_BASE || '/api'; // Fallback por seguridad
         this.userId = this.getCurrentUserId();
         this.charts = {};
 
@@ -164,7 +164,7 @@ class StatisticsManager {
             };
 
             // Load user statistics
-            const statsResponse = await fetch(`${this.API_BASE}/api/user-stats`, {
+            const statsResponse = await fetch(`${this.API_BASE}/user-stats`, {
                 headers: headers
             });
 

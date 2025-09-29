@@ -6,7 +6,7 @@
 class AdminPanel {
     constructor() {
         // Usar configuración de entorno automática
-        this.API_BASE = window.API_BASE || 'http://localhost:5001'; // Fallback por seguridad
+        this.API_BASE = window.API_BASE || '/api'; // Fallback por seguridad
         this.token = localStorage.getItem('authToken');
         this.currentUser = null;
         

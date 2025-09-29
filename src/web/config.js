@@ -36,8 +36,8 @@ class EnvironmentConfig {
         switch (this.environment) {
             case 'development':
                 this.config = {
-                    API_BASE: 'http://localhost:5001',
-                    FRONTEND_BASE: 'http://localhost:8095',
+                    API_BASE: '/api',  // Relativa - nginx proxy
+                    FRONTEND_BASE: '', // Relativa - mismo dominio
                     ENVIRONMENT_NAME: 'DESARROLLO',
                     ENVIRONMENT_COLOR: '#059669'
                 };
@@ -54,8 +54,8 @@ class EnvironmentConfig {
                 
             case 'production':
                 this.config = {
-                    API_BASE: 'https://per-api-435987927843.europe-west1.run.app',
-                    FRONTEND_BASE: 'https://bancotest.com',
+                    API_BASE: '/api',  // Relativa - nginx proxy
+                    FRONTEND_BASE: '', // Relativa - mismo dominio
                     ENVIRONMENT_NAME: 'PRODUCCIÓN',
                     ENVIRONMENT_COLOR: '#dc2626'
                 };
@@ -64,8 +64,8 @@ class EnvironmentConfig {
             default:
                 // Fallback a desarrollo
                 this.config = {
-                    API_BASE: 'http://localhost:5001',
-                    FRONTEND_BASE: 'http://localhost:8095',
+                    API_BASE: '/api',  // Relativa - nginx proxy
+                    FRONTEND_BASE: '', // Relativa - mismo dominio
                     ENVIRONMENT_NAME: 'DESARROLLO',
                     ENVIRONMENT_COLOR: '#059669'
                 };

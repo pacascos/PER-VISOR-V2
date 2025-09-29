@@ -74,7 +74,8 @@ logging.getLogger('werkzeug').setLevel(logging.WARNING)
 app = Flask(__name__)
 CORS(app, origins=['http://localhost:8095', 'http://127.0.0.1:8095', 'https://per-frontend-435987927843.europe-west1.run.app', 'https://bancotest.com'], 
      allow_headers=['Content-Type', 'Authorization'], 
-     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
+     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+     supports_credentials=True)
 
 # Register statistics routes
 register_statistics_routes(app)

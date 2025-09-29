@@ -5,7 +5,7 @@
 
 class QuestionStatisticsDashboard {
     constructor() {
-        this.apiBase = window.API_BASE || 'http://localhost:5001'; // Fallback por seguridad
+        this.apiBase = window.API_BASE || '/api'; // Fallback por seguridad
         this.currentCategory = 'all';
         this.viewMode = 'global'; // 'global' o 'personal'
         this.currentUserId = null;
