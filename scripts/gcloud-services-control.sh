@@ -107,6 +107,14 @@ get_run_status() {
     echo "$status"
 }
 
+# Función para obtener configuración de escalado de Cloud Run
+get_run_scaling() {
+    local service=$1
+    local min_instances=$(gcloud run services describe "$service" --region="$REGION" --format="value(spec.template.metadata.annotations.autoscaling\.knative\.dev/minScale)" 2>/dev/null || echo "0")
+    local max_instances=$(gcloud run services describe "$service" --region="$REGION" --format="value(spec.template.metadata.annotations.autoscaling\.knative\.dev/maxScale)" 2>/dev/null || echo "1")
+    echo "${min_instances}-${max_instances}"
+}
+
 # Función para mostrar estado de servicios
 show_status() {
     log "📊 Estado actual de los servicios:"
@@ -124,20 +132,30 @@ show_status() {
     
     # Cloud Run API
     local api_status=$(get_run_status "$API_SERVICE")
+    local api_scaling=$(get_run_scaling "$API_SERVICE")
     if [ "$api_status" = "NOT_FOUND" ]; then
         echo -e "  ${RED}❌ API Service:${NC} Servicio no encontrado"
     elif [ "$api_status" = "True" ]; then
-        echo -e "  ${GREEN}✅ API Service:${NC} Ejecutándose"
+        if [ "$api_scaling" = "0-1" ]; then
+            echo -e "  ${YELLOW}⏸️  API Service:${NC} Parado (escalado a 0, disponible bajo demanda)"
+        else
+            echo -e "  ${GREEN}✅ API Service:${NC} Ejecutándose (escalado: $api_scaling)"
+        fi
     else
         echo -e "  ${YELLOW}⚠️  API Service:${NC} $api_status"
     fi
     
     # Cloud Run Frontend
     local frontend_status=$(get_run_status "$FRONTEND_SERVICE")
+    local frontend_scaling=$(get_run_scaling "$FRONTEND_SERVICE")
     if [ "$frontend_status" = "NOT_FOUND" ]; then
         echo -e "  ${RED}❌ Frontend Service:${NC} Servicio no encontrado"
     elif [ "$frontend_status" = "True" ]; then
-        echo -e "  ${GREEN}✅ Frontend Service:${NC} Ejecutándose"
+        if [ "$frontend_scaling" = "0-1" ]; then
+            echo -e "  ${YELLOW}⏸️  Frontend Service:${NC} Parado (escalado a 0, disponible bajo demanda)"
+        else
+            echo -e "  ${GREEN}✅ Frontend Service:${NC} Ejecutándose (escalado: $frontend_scaling)"
+        fi
     else
         echo -e "  ${YELLOW}⚠️  Frontend Service:${NC} $frontend_status"
     fi
@@ -169,7 +187,18 @@ start_sql() {
     
     # Esperar a que esté listo
     log "⏳ Esperando a que Cloud SQL esté listo..."
-    gcloud sql instances describe "$SQL_INSTANCE" --format="value(state)" --filter="state:RUNNABLE" --timeout=300
+    local timeout=300
+    local elapsed=0
+    while [ $elapsed -lt $timeout ]; do
+        local current_status=$(gcloud sql instances describe "$SQL_INSTANCE" --format="value(state)" 2>/dev/null || echo "UNKNOWN")
+        if [ "$current_status" = "RUNNABLE" ]; then
+            break
+        fi
+        sleep 10
+        elapsed=$((elapsed + 10))
+        echo -n "."
+    done
+    echo ""
     
     success "Cloud SQL iniciado correctamente"
 }
@@ -198,7 +227,18 @@ stop_sql() {
     
     # Esperar a que esté parado
     log "⏳ Esperando a que Cloud SQL se pare..."
-    gcloud sql instances describe "$SQL_INSTANCE" --format="value(state)" --filter="state:STOPPED" --timeout=300
+    local timeout=300
+    local elapsed=0
+    while [ $elapsed -lt $timeout ]; do
+        local current_status=$(gcloud sql instances describe "$SQL_INSTANCE" --format="value(state)" 2>/dev/null || echo "UNKNOWN")
+        if [ "$current_status" = "STOPPED" ]; then
+            break
+        fi
+        sleep 10
+        elapsed=$((elapsed + 10))
+        echo -n "."
+    done
+    echo ""
     
     success "Cloud SQL parado correctamente"
 }
@@ -209,7 +249,7 @@ manage_run_service() {
     local action=$2
     local dry_run=$3
     
-    log "🚀 ${action^} Cloud Run service: $service"
+    log "🚀 $(echo $action | tr '[:lower:]' '[:upper:]') Cloud Run service: $service"
     
     local current_status=$(get_run_status "$service")
     
@@ -226,8 +266,8 @@ manage_run_service() {
         # Para Cloud Run, "iniciar" significa escalar a 1 instancia
         gcloud run services update "$service" --region="$REGION" --min-instances=1 --max-instances=10 --quiet
     elif [ "$action" = "stop" ]; then
-        # Para Cloud Run, "parar" significa escalar a 0 instancias
-        gcloud run services update "$service" --region="$REGION" --min-instances=0 --max-instances=0 --quiet
+        # Para Cloud Run, "parar" significa escalar a 0 instancias mínimas con timeout bajo
+        gcloud run services update "$service" --region="$REGION" --min-instances=0 --max-instances=1 --timeout=30 --quiet
     fi
     
     success "Servicio $service ${action}do correctamente"
