@@ -40,7 +40,7 @@ warning() {
 # =============================================================================
 
 # Obtener la rama actual
-CURRENT_BRANCH=$(git branch --show-current)
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 log "🌿 Rama actual: ${CURRENT_BRANCH}"
 
