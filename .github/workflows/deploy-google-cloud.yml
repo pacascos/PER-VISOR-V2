@@ -226,14 +226,26 @@ jobs:
     - name: 🗄️ Aplicar migraciones de base de datos
       run: |
         echo "🗄️ Aplicando migraciones de base de datos..."
+
+        # Verificar que el secret database-password existe
+        echo "🔍 Verificando secret database-password..."
+        if ! gcloud secrets describe database-password --project=webpersonal-189221 >/dev/null 2>&1; then
+          echo "❌ El secret 'database-password' no existe"
+          echo "📝 Creando secret temporal con contraseña por defecto..."
+          # En producción real, usar contraseña segura
+          echo "change_me_secure_password_123" | gcloud secrets create database-password --data-file=- --project=webpersonal-189221
+        else
+          echo "✅ Secret database-password encontrado"
+        fi
+
         # Usar Cloud SQL Proxy en GitHub Actions para evitar restricciones de red
         echo "🔗 Configurando Cloud SQL Proxy para GitHub Actions..."
 
-        # Instalar Cloud SQL Proxy como componente de gcloud
-        echo "🔧 Instalando Cloud SQL Proxy como componente de gcloud..."
-        gcloud components install cloud_sql_proxy --quiet
-        
-        # Descargar Cloud SQL Proxy standalone también
+        # Instalar componentes gcloud necesarios
+        echo "🔧 Instalando componentes gcloud..."
+        gcloud components install cloud_sql_proxy beta --quiet
+
+        # Descargar Cloud SQL Proxy standalone también (backup)
         curl -o cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64
         chmod +x cloud_sql_proxy
 

@@ -131,12 +131,20 @@ elif [ "$ENVIRONMENT" = "production" ]; then
         error "No estás autenticado en gcloud. Ejecuta: gcloud auth login"
     fi
 
+    # Obtener contraseña desde Secret Manager
+    log "🔐 Obteniendo contraseña desde Secret Manager..."
+    DB_PASSWORD=$(gcloud secrets versions access latest --secret="database-password" --project="${PROJECT_ID}" 2>/dev/null || echo "")
+    if [ -z "$DB_PASSWORD" ]; then
+        error "No se pudo obtener la contraseña de la base de datos desde Secret Manager (secret: database-password)"
+    fi
+    success "Contraseña obtenida desde Secret Manager"
+
     # Función para ejecutar comandos SQL en producción usando Cloud SQL Proxy
     execute_sql() {
         echo "🔍 Ejecutando SQL: $1" >&2
         PGPASSWORD="$DB_PASSWORD" echo "$1" | gcloud beta sql connect per-db-instance --user=per_user --database=per_exams --project=${PROJECT_ID} 2>&1
     }
-    
+
     execute_sql_file() {
         echo "🔍 Ejecutando archivo SQL: $1" >&2
         PGPASSWORD="$DB_PASSWORD" gcloud beta sql connect per-db-instance --user=per_user --database=per_exams --project=${PROJECT_ID} < "$1" 2>&1
