@@ -11,7 +11,7 @@ class QuestionStatisticsTracker {
         console.log('🚨 window.currentUserId al momento de creación:', window.currentUserId);
         console.log('🚨 localStorage al momento de creación:', localStorage.getItem('currentUserId'));
 
-        this.apiBase = window.API_BASE || 'https://per-api-435987927843.europe-west1.run.app';
+        this.apiBase = window.API_BASE || '/api'; // Fallback por seguridad
         this.currentSession = {
             sessionId: this.generateSessionId(),
             startTime: Date.now(),

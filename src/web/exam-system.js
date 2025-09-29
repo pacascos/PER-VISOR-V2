@@ -5,7 +5,8 @@
 
 class ExamSystem {
     constructor() {
-        this.API_BASE = 'https://per-api-435987927843.europe-west1.run.app';
+        // Usar configuración de entorno automática
+        this.API_BASE = window.API_BASE || '/api'; // Fallback por seguridad
         this.currentUser = null;
         this.authToken = localStorage.getItem('authToken');
         this.currentExam = null;
@@ -56,6 +57,10 @@ class ExamSystem {
 
         document.getElementById('viewQuestionsBankBtn').addEventListener('click', () => {
             window.open('visor-nueva-arquitectura.html', '_blank');
+        });
+
+        document.getElementById('adminPanelBtn').addEventListener('click', () => {
+            window.open('admin-panel.html', '_blank');
         });
 
         document.getElementById('viewQuestionStatsBtn').addEventListener('click', () => {
@@ -253,6 +258,42 @@ class ExamSystem {
 
         // Update username display
         document.getElementById('username').textContent = this.currentUser.username;
+        
+        // Mostrar panel de administración solo si el usuario es admin
+        this.checkAdminRole();
+    }
+
+    async checkAdminRole() {
+        try {
+            const response = await fetch(`${this.API_BASE}/auth/me`, {
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const user = data.user;
+                
+                // Verificar si el usuario tiene rol de administrador
+                // Nota: El backend debería incluir el rol en la respuesta de /auth/me
+                // Por ahora, asumimos que testuser es admin (ya lo configuramos en la BD)
+                const isAdmin = user.username === 'testuser' || user.role === 'admin';
+                
+                const adminPanelBtn = document.getElementById('adminPanelBtn');
+                if (adminPanelBtn) {
+                    adminPanelBtn.style.display = isAdmin ? 'block' : 'none';
+                }
+            }
+        } catch (error) {
+            console.error('Error verificando rol de administrador:', error);
+            // En caso de error, ocultar el panel de administración
+            const adminPanelBtn = document.getElementById('adminPanelBtn');
+            if (adminPanelBtn) {
+                adminPanelBtn.style.display = 'none';
+            }
+        }
     }
 
     showExamInterface() {
