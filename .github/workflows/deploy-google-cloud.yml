@@ -227,6 +227,11 @@ jobs:
       run: |
         echo "🗄️ Aplicando migraciones de base de datos..."
 
+        # Instalar PostgreSQL client para usar psql
+        echo "📦 Instalando PostgreSQL client..."
+        sudo apt-get update -qq
+        sudo apt-get install -y postgresql-client
+
         # Verificar que el secret database-password existe
         echo "🔍 Verificando secret database-password..."
         if ! gcloud secrets describe database-password --project=webpersonal-189221 >/dev/null 2>&1; then
@@ -241,20 +246,30 @@ jobs:
         # Usar Cloud SQL Proxy en GitHub Actions para evitar restricciones de red
         echo "🔗 Configurando Cloud SQL Proxy para GitHub Actions..."
 
-        # Instalar componentes gcloud necesarios
-        echo "🔧 Instalando componentes gcloud..."
-        gcloud components install cloud_sql_proxy beta --quiet
+        # Instalar componente cloud_sql_proxy
+        echo "🔧 Instalando Cloud SQL Proxy..."
+        gcloud components install cloud_sql_proxy --quiet
 
         # Descargar Cloud SQL Proxy standalone también (backup)
         curl -o cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64
         chmod +x cloud_sql_proxy
 
         # Iniciar proxy en background
+        echo "🚀 Iniciando Cloud SQL Proxy..."
         ./cloud_sql_proxy -instances=webpersonal-189221:europe-west1:per-db-instance=tcp:5432 &
         PROXY_PID=$!
 
         # Esperar que esté listo
-        sleep 10
+        echo "⏳ Esperando que Cloud SQL Proxy esté listo..."
+        sleep 15
+
+        # Verificar que el proxy está corriendo
+        if ! lsof -Pi :5432 -sTCP:LISTEN -t >/dev/null 2>&1; then
+          echo "❌ Cloud SQL Proxy no está corriendo en puerto 5432"
+          exit 1
+        else
+          echo "✅ Cloud SQL Proxy corriendo en puerto 5432"
+        fi
 
         # Aplicar migraciones
         echo "🚀 Aplicando migraciones de base de datos..."
@@ -262,6 +277,7 @@ jobs:
         ./scripts/apply-migrations.sh -e production
 
         # Limpiar
+        echo "🧹 Limpiando Cloud SQL Proxy..."
         kill $PROXY_PID || true
 
     - name: 🚀 Desplegar Frontend a Cloud Run

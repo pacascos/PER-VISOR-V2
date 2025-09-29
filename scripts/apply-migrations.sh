@@ -139,15 +139,19 @@ elif [ "$ENVIRONMENT" = "production" ]; then
     fi
     success "Contraseña obtenida desde Secret Manager"
 
-    # Función para ejecutar comandos SQL en producción usando Cloud SQL Proxy
+    # Función para ejecutar comandos SQL usando psql directamente con Cloud SQL Proxy
     execute_sql() {
         echo "🔍 Ejecutando SQL: $1" >&2
-        PGPASSWORD="$DB_PASSWORD" echo "$1" | gcloud beta sql connect per-db-instance --user=per_user --database=per_exams --project=${PROJECT_ID} 2>&1
+
+        # Usar el proxy local que ya está corriendo en puerto 5432 desde GitHub Actions
+        PGPASSWORD="$DB_PASSWORD" psql -h 127.0.0.1 -p 5432 -U per_user -d per_exams -c "$1" 2>&1
     }
 
     execute_sql_file() {
         echo "🔍 Ejecutando archivo SQL: $1" >&2
-        PGPASSWORD="$DB_PASSWORD" gcloud beta sql connect per-db-instance --user=per_user --database=per_exams --project=${PROJECT_ID} < "$1" 2>&1
+
+        # Usar el proxy local que ya está corriendo en puerto 5432 desde GitHub Actions
+        PGPASSWORD="$DB_PASSWORD" psql -h 127.0.0.1 -p 5432 -U per_user -d per_exams -f "$1" 2>&1
     }
 fi
 
