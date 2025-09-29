@@ -229,7 +229,11 @@ jobs:
         # Usar Cloud SQL Proxy en GitHub Actions para evitar restricciones de red
         echo "🔗 Configurando Cloud SQL Proxy para GitHub Actions..."
 
-        # Descargar Cloud SQL Proxy
+        # Instalar Cloud SQL Proxy como componente de gcloud
+        echo "🔧 Instalando Cloud SQL Proxy como componente de gcloud..."
+        gcloud components install cloud_sql_proxy --quiet
+        
+        # Descargar Cloud SQL Proxy standalone también
         curl -o cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64
         chmod +x cloud_sql_proxy
 
