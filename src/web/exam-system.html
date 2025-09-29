@@ -11,6 +11,10 @@
         // Detectar entorno y configurar favicon
         const isProduction = window.location.hostname === 'bancotest.com';
         document.getElementById('dynamic-favicon').href = isProduction ? 'favicon-prod.svg' : 'favicon.svg';
+        
+        // Configurar indicador de entorno
+        window.ENVIRONMENT = isProduction ? 'PRODUCCIÓN' : 'DESARROLLO';
+        window.ENVIRONMENT_COLOR = isProduction ? '#dc2626' : '#059669';
     </script>
 
     <!-- Bootstrap CSS -->
@@ -31,6 +35,22 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: #333;
+        }
+
+        /* Indicador de entorno */
+        .environment-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .main-container {
@@ -425,6 +445,9 @@
     </style>
 </head>
 <body>
+    <!-- Indicador de entorno -->
+    <div class="environment-indicator" id="env-indicator"></div>
+    
     <div class="main-container">
         <div class="exam-card">
             <div class="exam-header">
@@ -607,5 +630,16 @@
 
     <!-- Exam System JS -->
     <script src="exam-system.js"></script>
+
+    <!-- Configurar indicador de entorno -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const indicator = document.getElementById('env-indicator');
+            if (indicator && window.ENVIRONMENT) {
+                indicator.textContent = window.ENVIRONMENT;
+                indicator.style.borderLeft = `3px solid ${window.ENVIRONMENT_COLOR}`;
+            }
+        });
+    </script>
 </body>
 </html>
