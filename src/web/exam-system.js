@@ -5,7 +5,8 @@
 
 class ExamSystem {
     constructor() {
-        this.API_BASE = 'https://per-api-435987927843.europe-west1.run.app';
+        // Usar configuración de entorno automática
+        this.API_BASE = window.API_BASE || 'http://localhost:5001'; // Fallback por seguridad
         this.currentUser = null;
         this.authToken = localStorage.getItem('authToken');
         this.currentExam = null;

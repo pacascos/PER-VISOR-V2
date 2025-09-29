@@ -1445,7 +1445,7 @@ def create_user():
             return jsonify({'error': 'Username o email ya existe'}), 400
         
         # Hash de la contraseña
-        password_hash = hashlib.sha256(password.encode()).hexdigest()
+        password_hash = hash_password(password)
         
         # Crear usuario
         cur.execute("""
@@ -1517,7 +1517,7 @@ def update_user(user_id):
             values.append(data['is_active'])
         
         if 'password' in data and data['password']:
-            password_hash = hashlib.sha256(data['password'].encode()).hexdigest()
+            password_hash = hash_password(data['password'])
             updates.append("password_hash = %s")
             values.append(password_hash)
         

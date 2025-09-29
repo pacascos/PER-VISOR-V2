@@ -5,7 +5,7 @@
 
 class QuestionStatisticsDashboard {
     constructor() {
-        this.apiBase = window.API_BASE || 'https://per-api-435987927843.europe-west1.run.app';
+        this.apiBase = window.API_BASE || 'http://localhost:5001'; // Fallback por seguridad
         this.currentCategory = 'all';
         this.viewMode = 'global'; // 'global' o 'personal'
         this.currentUserId = null;
