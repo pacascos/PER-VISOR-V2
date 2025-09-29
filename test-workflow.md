@@ -2,3 +2,4 @@
 # Test workflow con secret corregido Mon Sep 29 19:13:25 CEST 2025
 # Test workflow con permisos corregidos Mon Sep 29 19:18:21 CEST 2025
 # Test workflow con Secret Manager permissions Mon Sep 29 19:23:57 CEST 2025
+# Test workflow con secret database-password creado Mon Sep 29 19:30:28 CEST 2025
