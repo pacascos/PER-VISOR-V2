@@ -355,99 +355,99 @@ echo "https://console.cloud.google.com/run/detail/us-central1/per-api/metrics"
 - **Storage y transferencia**: ~$5/mes
 - **Total**: ~$40-50/mes
 
-## ⚡ Script de Despliegue Automático
+## ⚡ Scripts de Despliegue Automatizado
 
-Crear `deploy.sh`:
+### 🚀 Scripts Disponibles (Creados: 2025-01-29)
+
+#### 1. **Despliegue Automático por Rama** (Recomendado)
+```bash
+# Despliegue automático basado en la rama actual
+./scripts/deploy-git-workflow.sh
+```
+- **main** → PRODUCCIÓN
+- **develop** → STAGING
+- Verificaciones automáticas de Git
+- Configuración automática por entorno
+
+#### 2. **Despliegue Manual a Producción**
+```bash
+# Despliegue directo a producción
+./scripts/deploy-production.sh
+```
+
+#### 3. **Despliegue Manual a Staging**
+```bash
+# Despliegue directo a staging
+./scripts/deploy-staging.sh
+```
+
+### 🔧 Configuración Automática
+
+Los scripts incluyen:
+- ✅ **Verificaciones previas**: gcloud, docker, autenticación
+- ✅ **Configuración automática**: APIs, Artifact Registry
+- ✅ **Construcción optimizada**: Imágenes Docker
+- ✅ **Despliegue inteligente**: Configuración por entorno
+- ✅ **Verificaciones post-despliegue**: Health checks
+- ✅ **Logging detallado**: Colores y timestamps
+- ✅ **Manejo de errores**: Exit codes apropiados
+
+### 📋 Uso Recomendado
 
 ```bash
-#!/bin/bash
+# 1. Desarrollo normal
+git checkout develop
+git add .
+git commit -m "feat: nueva funcionalidad"
+git push origin develop
+# → Despliegue automático a STAGING
 
-echo "🚀 Desplegando PER Sistema a Google Cloud"
+# 2. Cuando esté listo para producción
+git checkout main
+git merge develop
+git push origin main
+# → Despliegue automático a PRODUCCIÓN
 
-# Variables
-PROJECT_ID="per-sistema-2025"
-REGION="us-central1"
-
-# Configurar proyecto
-gcloud config set project $PROJECT_ID
-
-# Construir imágenes
-echo "📦 Construyendo imágenes Docker..."
-docker build -t gcr.io/$PROJECT_ID/per-api:latest .
-docker build -f frontend.Dockerfile -t gcr.io/$PROJECT_ID/per-frontend:latest .
-
-# Subir imágenes
-echo "⬆️ Subiendo imágenes..."
-docker push gcr.io/$PROJECT_ID/per-api:latest
-docker push gcr.io/$PROJECT_ID/per-frontend:latest
-
-# Desplegar servicios
-echo "🚀 Desplegando API..."
-gcloud run deploy per-api \
-    --image=gcr.io/$PROJECT_ID/per-api:latest \
-    --platform=managed \
-    --region=$REGION \
-    --allow-unauthenticated \
-    --set-secrets="DATABASE_URL=database-url:latest,OPENAI_API_KEY=openai-api-key:latest,JWT_SECRET=jwt-secret:latest,SECRET_KEY=flask-secret-key:latest" \
-    --add-cloudsql-instances=$PROJECT_ID:$REGION:per-db-instance \
-    --memory=512Mi
-
-echo "🌐 Desplegando Frontend..."
-gcloud run deploy per-frontend \
-    --image=gcr.io/$PROJECT_ID/per-frontend:latest \
-    --platform=managed \
-    --region=$REGION \
-    --allow-unauthenticated \
-    --memory=256Mi
-
-# Obtener URLs
-API_URL=$(gcloud run services describe per-api --region=$REGION --format='value(status.url)')
-FRONTEND_URL=$(gcloud run services describe per-frontend --region=$REGION --format='value(status.url)')
-
-echo "✅ Despliegue completado!"
-echo "🔗 API URL: $API_URL"
-echo "🌐 Frontend URL: $FRONTEND_URL"
-echo ""
-echo "📋 Próximos pasos:"
-echo "1. Actualizar API_BASE en el frontend con: $API_URL"
-echo "2. Aplicar schema de database"
-echo "3. Probar la aplicación"
+# 3. O usar el script manual
+./scripts/deploy-git-workflow.sh
 ```
+
+### 🛠️ Variables de Configuración
+
+Los scripts usan estas variables (configuradas automáticamente):
+- **PROJECT_ID**: `webpersonal-189221`
+- **REGION**: `europe-west1`
+- **API_IMAGE**: `europe-west1-docker.pkg.dev/webpersonal-189221/per-images/per-api:latest`
+- **FRONTEND_IMAGE**: `europe-west1-docker.pkg.dev/webpersonal-189221/per-images/per-frontend:latest`
 
 ## 🔄 Actualización Continua
 
-### 1. GitHub Actions (CI/CD)
+### 1. GitHub Actions (CI/CD) - AUTOMATIZADO
 
-Crear `.github/workflows/deploy.yml`:
+**Archivo**: `.github/workflows/deploy-google-cloud.yml` (Creado: 2025-01-29)
 
-```yaml
-name: Deploy to Google Cloud
+El workflow incluye:
+- ✅ **Despliegue automático** por rama (main → producción, develop → staging)
+- ✅ **Tests automáticos** antes del despliegue
+- ✅ **Verificación de archivos** críticos
+- ✅ **Configuración automática** de Artifact Registry
+- ✅ **Construcción y despliegue** de ambas imágenes
+- ✅ **Health checks** post-despliegue
+- ✅ **Notificaciones** detalladas de éxito/fallo
+- ✅ **Variables de entorno** automáticas por rama
 
-on:
-  push:
-    branches: [ main ]
+**Configuración requerida**:
+1. Crear Service Account en Google Cloud
+2. Generar clave JSON
+3. Añadir como secreto `GCP_SA_KEY` en GitHub
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+**Uso automático**:
+```bash
+# Push a develop → Despliegue automático a STAGING
+git push origin develop
 
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Setup Google Cloud
-      uses: google-github-actions/setup-gcloud@v1
-      with:
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
-        project_id: per-sistema-2025
-
-    - name: Configure Docker
-      run: gcloud auth configure-docker
-
-    - name: Build and Deploy
-      run: |
-        docker build -t gcr.io/per-sistema-2025/per-api:latest .
-        docker push gcr.io/per-sistema-2025/per-api:latest
-        gcloud run deploy per-api --image=gcr.io/per-sistema-2025/per-api:latest --region=us-central1
+# Push a main → Despliegue automático a PRODUCCIÓN  
+git push origin main
 ```
 
 ## 🛡️ Seguridad

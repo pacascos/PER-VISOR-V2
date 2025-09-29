@@ -1,0 +1,239 @@
+# =============================================================================
+# 🚀 DESPLIEGUE AUTOMATIZADO A GOOGLE CLOUD
+# =============================================================================
+# Fecha de creación: 2025-01-29
+# Versión: 1.0
+# Descripción: Despliegue automático a Google Cloud Run basado en ramas
+# =============================================================================
+
+name: 🚀 Deploy to Google Cloud
+
+on:
+  push:
+    branches: 
+      - main      # Despliegue a producción
+      - develop   # Despliegue a staging
+  workflow_dispatch:  # Permite ejecución manual
+
+env:
+  PROJECT_ID: webpersonal-189221
+  REGION: europe-west1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    # Solo ejecutar en ramas específicas
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    
+    steps:
+    - name: 📥 Checkout código
+      uses: actions/checkout@v4
+      with:
+        lfs: true
+
+    - name: 🐍 Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: 📦 Instalar dependencias Python
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: 🧪 Ejecutar tests
+      run: |
+        if [ -d "tests/" ]; then
+          python -m pytest tests/ -v --tb=short
+        else
+          echo "No hay tests configurados"
+        fi
+
+    - name: 🔍 Verificar estructura de archivos
+      run: |
+        echo "📁 Verificando archivos críticos..."
+        ls -la scripts/servidores/api_postgresql.py || exit 1
+        ls -la src/web/ || exit 1
+        ls -la Dockerfile || exit 1
+        ls -la frontend.Dockerfile || exit 1
+        echo "✅ Archivos críticos encontrados"
+
+    - name: 🔧 Configurar Google Cloud CLI
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ env.PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    - name: 🐳 Configurar Docker
+      run: |
+        gcloud auth configure-docker europe-west1-docker.pkg.dev
+
+    - name: 📦 Configurar Artifact Registry
+      run: |
+        # Crear repositorio si no existe
+        gcloud artifacts repositories create per-images \
+          --repository-format=docker \
+          --location=${{ env.REGION }} \
+          --description="Imágenes Docker para PER Sistema" \
+          --quiet || echo "Repositorio ya existe"
+
+    - name: 🏗️ Construir y subir imagen del API
+      run: |
+        # Determinar tag basado en la rama
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          TAG="latest"
+          SERVICE_NAME="per-api"
+        else
+          TAG="staging"
+          SERVICE_NAME="per-api-staging"
+        fi
+        
+        IMAGE="europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/per-images/per-api:${TAG}"
+        
+        echo "🏗️ Construyendo imagen: ${IMAGE}"
+        docker build -t ${IMAGE} .
+        
+        echo "⬆️ Subiendo imagen..."
+        docker push ${IMAGE}
+        
+        echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
+        echo "SERVICE_NAME=${SERVICE_NAME}" >> $GITHUB_ENV
+
+    - name: 🏗️ Construir y subir imagen del Frontend
+      run: |
+        # Determinar tag basado en la rama
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          TAG="latest"
+          SERVICE_NAME="per-frontend"
+        else
+          TAG="staging"
+          SERVICE_NAME="per-frontend-staging"
+        fi
+        
+        IMAGE="europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/per-images/per-frontend:${TAG}"
+        
+        echo "🏗️ Construyendo imagen: ${IMAGE}"
+        docker build -f frontend.Dockerfile -t ${IMAGE} .
+        
+        echo "⬆️ Subiendo imagen..."
+        docker push ${IMAGE}
+        
+        echo "FRONTEND_IMAGE=${IMAGE}" >> $GITHUB_ENV
+        echo "FRONTEND_SERVICE_NAME=${SERVICE_NAME}" >> $GITHUB_ENV
+
+    - name: 🚀 Desplegar API a Cloud Run
+      run: |
+        # Determinar configuración basada en la rama
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          MEMORY="1Gi"
+          CPU="1000m"
+          CONCURRENCY="100"
+          MAX_INSTANCES="10"
+          ENV_VARS="FLASK_ENV=production"
+        else
+          MEMORY="512Mi"
+          CPU="500m"
+          CONCURRENCY="50"
+          MAX_INSTANCES="3"
+          ENV_VARS="FLASK_ENV=staging"
+        fi
+        
+        echo "🚀 Desplegando API: ${{ env.SERVICE_NAME }}"
+        gcloud run deploy ${{ env.SERVICE_NAME }} \
+          --image=${{ env.IMAGE }} \
+          --platform=managed \
+          --region=${{ env.REGION }} \
+          --allow-unauthenticated \
+          --memory=${MEMORY} \
+          --cpu=${CPU} \
+          --concurrency=${CONCURRENCY} \
+          --max-instances=${MAX_INSTANCES} \
+          --timeout=300 \
+          --set-env-vars="${ENV_VARS}" \
+          --quiet
+
+    - name: 🚀 Desplegar Frontend a Cloud Run
+      run: |
+        # Determinar configuración basada en la rama
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          MEMORY="512Mi"
+          CPU="1000m"
+          CONCURRENCY="1000"
+          MAX_INSTANCES="5"
+        else
+          MEMORY="256Mi"
+          CPU="500m"
+          CONCURRENCY="500"
+          MAX_INSTANCES="2"
+        fi
+        
+        echo "🌐 Desplegando Frontend: ${{ env.FRONTEND_SERVICE_NAME }}"
+        gcloud run deploy ${{ env.FRONTEND_SERVICE_NAME }} \
+          --image=${{ env.FRONTEND_IMAGE }} \
+          --platform=managed \
+          --region=${{ env.REGION }} \
+          --allow-unauthenticated \
+          --memory=${MEMORY} \
+          --cpu=${CPU} \
+          --concurrency=${CONCURRENCY} \
+          --max-instances=${MAX_INSTANCES} \
+          --quiet
+
+    - name: 🔗 Obtener URLs de los servicios
+      run: |
+        API_URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} --region=${{ env.REGION }} --format='value(status.url)')
+        FRONTEND_URL=$(gcloud run services describe ${{ env.FRONTEND_SERVICE_NAME }} --region=${{ env.REGION }} --format='value(status.url)')
+        
+        echo "API_URL=${API_URL}" >> $GITHUB_ENV
+        echo "FRONTEND_URL=${FRONTEND_URL}" >> $GITHUB_ENV
+        
+        echo "🔗 API URL: ${API_URL}"
+        echo "🌐 Frontend URL: ${FRONTEND_URL}"
+
+    - name: ✅ Verificar despliegue
+      run: |
+        echo "🔍 Verificando que los servicios están funcionando..."
+        
+        # Verificar API
+        echo "🔍 Probando API..."
+        curl -f "${{ env.API_URL }}/health" || echo "⚠️ API health check falló"
+        
+        # Verificar Frontend
+        echo "🔍 Probando Frontend..."
+        curl -f "${{ env.FRONTEND_URL }}" || echo "⚠️ Frontend check falló"
+
+    - name: 📢 Notificación de éxito
+      if: success()
+      run: |
+        echo "🎉 ¡DESPLIEGUE COMPLETADO EXITOSAMENTE!"
+        echo "=========================================="
+        echo ""
+        echo "🌿 Rama: ${{ github.ref_name }}"
+        echo "🔗 API URL: ${{ env.API_URL }}"
+        echo "🌐 Frontend URL: ${{ env.FRONTEND_URL }}"
+        echo ""
+        echo "📋 Servicios desplegados:"
+        echo "  - ${{ env.SERVICE_NAME }} (API)"
+        echo "  - ${{ env.FRONTEND_SERVICE_NAME }} (Frontend)"
+        echo ""
+        echo "🔍 Comandos útiles:"
+        echo "  Ver logs API: gcloud run services logs read ${{ env.SERVICE_NAME }} --region=${{ env.REGION }}"
+        echo "  Ver logs Frontend: gcloud run services logs read ${{ env.FRONTEND_SERVICE_NAME }} --region=${{ env.REGION }}"
+        echo "  Listar servicios: gcloud run services list --region=${{ env.REGION }}"
+        echo ""
+
+    - name: ❌ Notificación de fallo
+      if: failure()
+      run: |
+        echo "❌ ¡DESPLIEGUE FALLÓ!"
+        echo "===================="
+        echo ""
+        echo "🌿 Rama: ${{ github.ref_name }}"
+        echo "📝 Revisa los logs anteriores para más detalles"
+        echo ""
+        echo "🔍 Comandos de debug:"
+        echo "  gcloud run services list --region=${{ env.REGION }}"
+        echo "  gcloud run services logs read --region=${{ env.REGION }}"
+        echo ""

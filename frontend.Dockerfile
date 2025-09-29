@@ -4,9 +4,9 @@ FROM nginx:alpine
 COPY src/web/ /usr/share/nginx/html/
 
 # Configuración personalizada de Nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY config/nginx-cloud-run.conf /etc/nginx/conf.d/default.conf
 
-# Exponer puerto
+# Exponer puerto 80 (Cloud Run mapeará automáticamente)
 EXPOSE 80
 
 # Comando de inicio

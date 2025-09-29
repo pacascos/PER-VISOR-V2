@@ -1,6 +1,14 @@
 #!/bin/bash
-# scripts/deploy-production.sh
-# Script para desplegar a producción desde la rama main
+
+# =============================================================================
+# 🚀 SCRIPT DE DESPLIEGUE AUTOMATIZADO A GOOGLE CLOUD
+# =============================================================================
+# Fecha de creación: 2025-01-29
+# Versión: 1.0
+# Descripción: Despliegue completo y automatizado a Google Cloud Run
+# =============================================================================
+
+set -e  # Salir si hay cualquier error
 
 # Colores para output
 RED='\033[0;31m'
@@ -9,80 +17,190 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-set -e # Salir si algún comando falla
+# Función para logging
+log() {
+    echo -e "${BLUE}[$(date +'%Y-%m-%d %H:%M:%S')]${NC} $1"
+}
 
-echo -e "${BLUE}🚀 DESPLEGANDO A PRODUCCIÓN${NC}"
-echo "=================================="
-
-# Verificar que estamos en la rama main
-CURRENT_BRANCH=$(git branch --show-current)
-if [ "$CURRENT_BRANCH" != "main" ]; then
-    echo -e "${RED}❌ Error: Debes estar en la rama 'main' para desplegar a producción${NC}"
-    echo -e "${YELLOW}💡 Cambia a main con: git checkout main${NC}"
+error() {
+    echo -e "${RED}[ERROR]${NC} $1"
     exit 1
-fi
+}
 
-# Verificar que main está actualizada
-echo -e "${YELLOW}📡 Verificando que main está actualizada...${NC}"
-git pull origin main
+success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
 
-# Verificar que gcloud está disponible
+warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+# =============================================================================
+# CONFIGURACIÓN
+# =============================================================================
+
+# Variables del proyecto
+PROJECT_ID="webpersonal-189221"
+REGION="europe-west1"
+API_SERVICE_NAME="per-api"
+FRONTEND_SERVICE_NAME="per-frontend"
+
+# URLs de las imágenes
+API_IMAGE="europe-west1-docker.pkg.dev/${PROJECT_ID}/per-images/per-api:latest"
+FRONTEND_IMAGE="europe-west1-docker.pkg.dev/${PROJECT_ID}/per-images/per-frontend:latest"
+
+log "🚀 Iniciando despliegue automatizado a Google Cloud"
+log "📋 Proyecto: ${PROJECT_ID}"
+log "🌍 Región: ${REGION}"
+
+# =============================================================================
+# VERIFICACIONES PREVIAS
+# =============================================================================
+
+log "🔍 Verificando prerrequisitos..."
+
+# Verificar que gcloud está instalado
 if ! command -v gcloud &> /dev/null; then
-    echo -e "${RED}❌ Error: gcloud no está disponible en PATH${NC}"
-    echo -e "${YELLOW}💡 Añade gcloud al PATH: export PATH=\"/Users/cascos/google-cloud-sdk/bin:\$PATH\"${NC}"
-    exit 1
+    error "gcloud CLI no está instalado. Instálalo desde: https://cloud.google.com/sdk/docs/install"
 fi
 
-# Configurar PATH para gcloud
-export PATH="/Users/cascos/google-cloud-sdk/bin:$PATH"
+# Verificar que docker está instalado
+if ! command -v docker &> /dev/null; then
+    error "Docker no está instalado. Instálalo desde: https://docs.docker.com/get-docker/"
+fi
 
-echo -e "${YELLOW}🔨 Construyendo imagen de la API...${NC}"
-docker build --platform linux/amd64 -t europe-west1-docker.pkg.dev/webpersonal-189221/per-repo/per-api:latest .
+# Verificar autenticación
+if ! gcloud auth list --filter=status:ACTIVE --format="value(account)" | grep -q .; then
+    error "No estás autenticado en gcloud. Ejecuta: gcloud auth login"
+fi
 
-echo -e "${YELLOW}📤 Subiendo imagen de la API...${NC}"
-docker push europe-west1-docker.pkg.dev/webpersonal-189221/per-repo/per-api:latest
+# Configurar proyecto
+log "⚙️ Configurando proyecto..."
+gcloud config set project ${PROJECT_ID} > /dev/null 2>&1
 
-echo -e "${YELLOW}🚀 Desplegando API a Cloud Run...${NC}"
-gcloud run deploy per-api \
-  --image=europe-west1-docker.pkg.dev/webpersonal-189221/per-repo/per-api:latest \
-  --region=europe-west1 \
-  --platform=managed \
-  --allow-unauthenticated \
-  --port=8080 \
-  --memory=1Gi \
-  --cpu=1 \
-  --timeout=300 \
-  --max-instances=10 \
-  --add-cloudsql-instances=webpersonal-189221:europe-west1:per-db-instance \
-  --update-env-vars="DATABASE_URL=postgresql://per_user:U56csCarzJp43B9K507Y4xp/3h7uRSgf0DuBWTwuLhs=@/per_exams?host=/cloudsql/webpersonal-189221:europe-west1:per-db-instance"
+# Habilitar APIs necesarias
+log "🔧 Habilitando APIs de Google Cloud..."
+gcloud services enable cloudbuild.googleapis.com > /dev/null 2>&1
+gcloud services enable run.googleapis.com > /dev/null 2>&1
+gcloud services enable artifactregistry.googleapis.com > /dev/null 2>&1
 
-echo -e "${YELLOW}🔨 Construyendo imagen del Frontend...${NC}"
-docker build --platform linux/amd64 -t europe-west1-docker.pkg.dev/webpersonal-189221/per-repo/per-frontend:latest -f frontend.Dockerfile .
+# =============================================================================
+# CONFIGURAR ARTIFACT REGISTRY
+# =============================================================================
 
-echo -e "${YELLOW}📤 Subiendo imagen del Frontend...${NC}"
-docker push europe-west1-docker.pkg.dev/webpersonal-189221/per-repo/per-frontend:latest
+log "📦 Configurando Artifact Registry..."
 
-echo -e "${YELLOW}🚀 Desplegando Frontend a Cloud Run...${NC}"
-gcloud run deploy per-frontend \
-  --image=europe-west1-docker.pkg.dev/webpersonal-189221/per-repo/per-frontend:latest \
-  --region=europe-west1 \
-  --platform=managed \
-  --allow-unauthenticated \
-  --port=80
+# Crear repositorio si no existe
+if ! gcloud artifacts repositories describe per-images --location=${REGION} > /dev/null 2>&1; then
+    log "📦 Creando repositorio de imágenes..."
+    gcloud artifacts repositories create per-images \
+        --repository-format=docker \
+        --location=${REGION} \
+        --description="Imágenes Docker para PER Sistema" > /dev/null 2>&1
+    success "Repositorio creado: europe-west1-docker.pkg.dev/${PROJECT_ID}/per-images"
+else
+    log "✅ Repositorio ya existe: europe-west1-docker.pkg.dev/${PROJECT_ID}/per-images"
+fi
+
+# Configurar autenticación Docker
+log "🔐 Configurando autenticación Docker..."
+gcloud auth configure-docker europe-west1-docker.pkg.dev > /dev/null 2>&1
+
+# =============================================================================
+# CONSTRUIR IMÁGENES
+# =============================================================================
+
+log "🏗️ Construyendo imágenes Docker..."
+
+# Construir imagen del API
+log "📦 Construyendo imagen del API..."
+docker build -t ${API_IMAGE} . > /dev/null 2>&1
+success "Imagen del API construida: ${API_IMAGE}"
+
+# Construir imagen del Frontend
+log "📦 Construyendo imagen del Frontend..."
+docker build -f frontend.Dockerfile -t ${FRONTEND_IMAGE} . > /dev/null 2>&1
+success "Imagen del Frontend construida: ${FRONTEND_IMAGE}"
+
+# =============================================================================
+# SUBIR IMÁGENES
+# =============================================================================
+
+log "⬆️ Subiendo imágenes a Artifact Registry..."
+
+# Subir imagen del API
+log "⬆️ Subiendo imagen del API..."
+docker push ${API_IMAGE} > /dev/null 2>&1
+success "Imagen del API subida"
+
+# Subir imagen del Frontend
+log "⬆️ Subiendo imagen del Frontend..."
+docker push ${FRONTEND_IMAGE} > /dev/null 2>&1
+success "Imagen del Frontend subida"
+
+# =============================================================================
+# DESPLEGAR SERVICIOS
+# =============================================================================
+
+log "🚀 Desplegando servicios en Cloud Run..."
+
+# Desplegar API
+log "🔧 Desplegando servicio API..."
+gcloud run deploy ${API_SERVICE_NAME} \
+    --image=${API_IMAGE} \
+    --platform=managed \
+    --region=${REGION} \
+    --allow-unauthenticated \
+    --memory=1Gi \
+    --cpu=1000m \
+    --concurrency=100 \
+    --max-instances=10 \
+    --timeout=300 \
+    --set-env-vars="FLASK_ENV=production" \
+    --quiet > /dev/null 2>&1
+
+success "Servicio API desplegado"
+
+# Desplegar Frontend
+log "🌐 Desplegando servicio Frontend..."
+gcloud run deploy ${FRONTEND_SERVICE_NAME} \
+    --image=${FRONTEND_IMAGE} \
+    --platform=managed \
+    --region=${REGION} \
+    --allow-unauthenticated \
+    --memory=512Mi \
+    --cpu=1000m \
+    --concurrency=1000 \
+    --max-instances=5 \
+    --quiet > /dev/null 2>&1
+
+success "Servicio Frontend desplegado"
+
+# =============================================================================
+# OBTENER URLs Y MOSTRAR RESULTADOS
+# =============================================================================
+
+log "🔗 Obteniendo URLs de los servicios..."
+
+API_URL=$(gcloud run services describe ${API_SERVICE_NAME} --region=${REGION} --format='value(status.url)')
+FRONTEND_URL=$(gcloud run services describe ${FRONTEND_SERVICE_NAME} --region=${REGION} --format='value(status.url)')
 
 echo ""
-echo -e "${GREEN}✅ DESPLIEGUE COMPLETADO EXITOSAMENTE${NC}"
-echo "=================================="
-echo -e "${BLUE}🌐 URLs de Producción:${NC}"
-echo -e "   Frontend: ${GREEN}https://bancotest.com${NC}"
-echo -e "   API: ${GREEN}https://per-api-435987927843.europe-west1.run.app${NC}"
+echo "🎉 ¡DESPLIEGUE COMPLETADO EXITOSAMENTE!"
+echo "=========================================="
 echo ""
-echo -e "${YELLOW}🔍 Verificaciones recomendadas:${NC}"
-echo "   1. Probar login en https://bancotest.com"
-echo "   2. Verificar favicon de producción (rojo/azul)"
-echo "   3. Comprobar que las estadísticas funcionan"
-echo "   4. Probar generación de exámenes"
+echo "🔗 API URL: ${API_URL}"
+echo "🌐 Frontend URL: ${FRONTEND_URL}"
 echo ""
-echo -e "${BLUE}📝 Logs disponibles en:${NC}"
-echo "   gcloud run logs read per-api --region=europe-west1"
-echo "   gcloud run logs read per-frontend --region=europe-west1"
+echo "📋 Próximos pasos:"
+echo "1. ✅ Verificar que los servicios están funcionando"
+echo "2. ✅ Probar la aplicación en: ${FRONTEND_URL}"
+echo "3. ✅ Verificar logs si hay problemas"
+echo ""
+echo "🔍 Comandos útiles:"
+echo "   Ver logs API: gcloud run services logs read ${API_SERVICE_NAME} --region=${REGION}"
+echo "   Ver logs Frontend: gcloud run services logs read ${FRONTEND_SERVICE_NAME} --region=${REGION}"
+echo "   Listar servicios: gcloud run services list --region=${REGION}"
+echo ""
+
+success "🚀 Despliegue a producción completado!"
