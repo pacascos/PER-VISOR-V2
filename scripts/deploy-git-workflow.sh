@@ -50,17 +50,13 @@ case ${CURRENT_BRANCH} in
         ENVIRONMENT="production"
         log "🎯 Entorno detectado: PRODUCCIÓN"
         ;;
-    "develop")
-        ENVIRONMENT="staging"
-        log "🎯 Entorno detectado: STAGING"
-        ;;
     *)
         ENVIRONMENT="development"
         log "🎯 Entorno detectado: DESARROLLO"
         warning "Esta rama no tiene despliegue automático configurado"
         echo "Ramas con despliegue automático:"
         echo "  - main → PRODUCCIÓN"
-        echo "  - develop → STAGING"
+        echo "  - Otras ramas → Solo desarrollo local"
         exit 0
         ;;
 esac
@@ -80,8 +76,8 @@ fi
 log "🔄 Actualizando repositorio..."
 git fetch origin > /dev/null 2>&1
 
-if [ "${CURRENT_BRANCH}" != "main" ] && [ "${CURRENT_BRANCH}" != "develop" ]; then
-    error "No puedes desplegar desde la rama ${CURRENT_BRANCH}. Usa main (producción) o develop (staging)."
+if [ "${CURRENT_BRANCH}" != "main" ]; then
+    error "No puedes desplegar desde la rama ${CURRENT_BRANCH}. Solo se puede desplegar desde main (producción)."
 fi
 
 # Verificar que la rama está actualizada
@@ -103,10 +99,6 @@ case ${ENVIRONMENT} in
     "production")
         log "🚀 Iniciando despliegue a PRODUCCIÓN..."
         ./scripts/deploy-production.sh
-        ;;
-    "staging")
-        log "🚀 Iniciando despliegue a STAGING..."
-        ./scripts/deploy-staging.sh
         ;;
     *)
         error "Entorno no reconocido: ${ENVIRONMENT}"

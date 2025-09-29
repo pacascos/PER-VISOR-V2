@@ -18,8 +18,7 @@
 
 1. **`scripts/deploy-git-workflow.sh`** - Despliegue automático por rama
 2. **`scripts/deploy-production.sh`** - Despliegue manual a producción  
-3. **`scripts/deploy-staging.sh`** - Despliegue manual a staging
-4. **`.github/workflows/deploy-google-cloud.yml`** - CI/CD automatizado
+3. **`.github/workflows/deploy-google-cloud.yml`** - CI/CD automatizado
 
 ## 🔧 CONFIGURACIÓN ACTUAL
 
@@ -45,12 +44,9 @@ FRONTEND_IMAGE="europe-west1-docker.pkg.dev/webpersonal-189221/per-images/per-fr
 
 ### Opción 1: Automático por Git (RECOMENDADO)
 ```bash
-# 1. Desarrollo normal
+# 1. Desarrollo normal (local)
 git checkout develop
-git add .
-git commit -m "feat: nueva funcionalidad"
-git push origin develop
-# → Despliegue automático a STAGING
+# ... desarrollo local ...
 
 # 2. Cuando esté listo para producción
 git checkout main
@@ -139,7 +135,6 @@ gcloud auth configure-docker europe-west1-docker.pkg.dev
 ### Scripts de Despliegue
 - `scripts/deploy-git-workflow.sh` - Script principal (usar este)
 - `scripts/deploy-production.sh` - Producción manual
-- `scripts/deploy-staging.sh` - Staging manual
 
 ### Configuración
 - `Dockerfile` - Imagen del API

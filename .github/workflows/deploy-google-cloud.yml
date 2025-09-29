@@ -12,7 +12,6 @@ on:
   push:
     branches: 
       - main      # Despliegue a producción
-      - develop   # Despliegue a staging
   workflow_dispatch:  # Permite ejecución manual
 
 env:
@@ -23,8 +22,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     
-    # Solo ejecutar en ramas específicas
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    # Solo ejecutar en rama main
+    if: github.ref == 'refs/heads/main'
     
     steps:
     - name: 📥 Checkout código
@@ -81,14 +80,9 @@ jobs:
 
     - name: 🏗️ Construir y subir imagen del API
       run: |
-        # Determinar tag basado en la rama
-        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-          TAG="latest"
-          SERVICE_NAME="per-api"
-        else
-          TAG="staging"
-          SERVICE_NAME="per-api-staging"
-        fi
+        # Solo producción (main)
+        TAG="latest"
+        SERVICE_NAME="per-api"
         
         IMAGE="europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/per-images/per-api:${TAG}"
         
@@ -103,14 +97,9 @@ jobs:
 
     - name: 🏗️ Construir y subir imagen del Frontend
       run: |
-        # Determinar tag basado en la rama
-        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-          TAG="latest"
-          SERVICE_NAME="per-frontend"
-        else
-          TAG="staging"
-          SERVICE_NAME="per-frontend-staging"
-        fi
+        # Solo producción (main)
+        TAG="latest"
+        SERVICE_NAME="per-frontend"
         
         IMAGE="europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/per-images/per-frontend:${TAG}"
         
@@ -125,20 +114,12 @@ jobs:
 
     - name: 🚀 Desplegar API a Cloud Run
       run: |
-        # Determinar configuración basada en la rama
-        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-          MEMORY="1Gi"
-          CPU="1000m"
-          CONCURRENCY="100"
-          MAX_INSTANCES="10"
-          ENV_VARS="FLASK_ENV=production"
-        else
-          MEMORY="512Mi"
-          CPU="500m"
-          CONCURRENCY="50"
-          MAX_INSTANCES="3"
-          ENV_VARS="FLASK_ENV=staging"
-        fi
+        # Configuración para producción
+        MEMORY="1Gi"
+        CPU="1000m"
+        CONCURRENCY="100"
+        MAX_INSTANCES="10"
+        ENV_VARS="FLASK_ENV=production"
         
         echo "🚀 Desplegando API: ${{ env.SERVICE_NAME }}"
         gcloud run deploy ${{ env.SERVICE_NAME }} \
@@ -156,18 +137,11 @@ jobs:
 
     - name: 🚀 Desplegar Frontend a Cloud Run
       run: |
-        # Determinar configuración basada en la rama
-        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-          MEMORY="512Mi"
-          CPU="1000m"
-          CONCURRENCY="1000"
-          MAX_INSTANCES="5"
-        else
-          MEMORY="256Mi"
-          CPU="500m"
-          CONCURRENCY="500"
-          MAX_INSTANCES="2"
-        fi
+        # Configuración para producción
+        MEMORY="512Mi"
+        CPU="1000m"
+        CONCURRENCY="1000"
+        MAX_INSTANCES="5"
         
         echo "🌐 Desplegando Frontend: ${{ env.FRONTEND_SERVICE_NAME }}"
         gcloud run deploy ${{ env.FRONTEND_SERVICE_NAME }} \
