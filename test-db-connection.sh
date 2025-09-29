@@ -10,9 +10,9 @@ if [ -z "$DB_PASSWORD" ]; then
 fi
 echo "✅ Contraseña obtenida"
 
-# Probar conexión simple
-echo "🔍 Probando conexión con gcloud sql connect..."
-echo "SELECT 1;" | gcloud sql connect per-db-instance --user=per_user --database=per_exams --project=webpersonal-189221 2>&1
+# Probar conexión simple con beta (Cloud SQL Proxy)
+echo "🔍 Probando conexión con gcloud beta sql connect..."
+echo "SELECT 1;" | gcloud beta sql connect per-db-instance --user=per_user --database=per_exams --project=webpersonal-189221 2>&1
 
 if [ $? -eq 0 ]; then
     echo "✅ Conexión exitosa"

@@ -223,11 +223,30 @@ jobs:
           --set-env-vars="${ENV_VARS}" \
           --quiet
 
-    - name: 🧪 Test conexión a base de datos
+    - name: 🗄️ Aplicar migraciones de base de datos
       run: |
-        echo "🧪 Probando conexión a base de datos..."
-        chmod +x test-db-connection.sh
-        ./test-db-connection.sh
+        echo "🗄️ Aplicando migraciones de base de datos..."
+        # Usar Cloud SQL Proxy en GitHub Actions para evitar restricciones de red
+        echo "🔗 Configurando Cloud SQL Proxy para GitHub Actions..."
+
+        # Descargar Cloud SQL Proxy
+        curl -o cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64
+        chmod +x cloud_sql_proxy
+
+        # Iniciar proxy en background
+        ./cloud_sql_proxy -instances=webpersonal-189221:europe-west1:per-db-instance=tcp:5432 &
+        PROXY_PID=$!
+
+        # Esperar que esté listo
+        sleep 10
+
+        # Aplicar migraciones
+        echo "🚀 Aplicando migraciones de base de datos..."
+        chmod +x scripts/apply-migrations.sh
+        ./scripts/apply-migrations.sh -e production
+
+        # Limpiar
+        kill $PROXY_PID || true
 
     - name: 🚀 Desplegar Frontend a Cloud Run
       run: |
