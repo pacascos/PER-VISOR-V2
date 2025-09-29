@@ -95,6 +95,44 @@ def get_db_connection():
         logger.error(f"Error conectando a PostgreSQL: {e}")
         return None
 
+# Middleware para verificar roles
+def require_admin(f):
+    """Decorador para requerir rol de administrador"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
+            return jsonify({'error': 'Token de autorización requerido'}), 401
+        
+        try:
+            token = auth_header.split(' ')[1]  # Bearer token
+            payload = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
+            user_id = payload.get('user_id')
+            
+            # Verificar rol de administrador
+            conn = get_db_connection()
+            if not conn:
+                return jsonify({'error': 'Error de conexión a la base de datos'}), 500
+            
+            cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            cur.execute("SELECT role FROM users WHERE id = %s AND is_active = true", (user_id,))
+            user = cur.fetchone()
+            
+            if not user or user['role'] != 'admin':
+                return jsonify({'error': 'Acceso denegado. Se requiere rol de administrador'}), 403
+            
+            return f(*args, **kwargs)
+            
+        except jwt.ExpiredSignatureError:
+            return jsonify({'error': 'Token expirado'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'error': 'Token inválido'}), 401
+        except Exception as e:
+            logger.error(f"Error verificando rol de administrador: {e}")
+            return jsonify({'error': 'Error interno del servidor'}), 500
+    
+    return decorated_function
+
 @app.route('/health')
 def health():
     """Endpoint de salud de la API"""
@@ -1296,7 +1334,7 @@ def get_current_user():
 
         # Obtener información del usuario
         cur.execute("""
-            SELECT id, username, email, created_at, last_login
+            SELECT id, username, email, role, created_at, last_login
             FROM users WHERE id = %s
         """, (user_id,))
 
@@ -1312,6 +1350,7 @@ def get_current_user():
                 'id': str(user['id']),
                 'username': user['username'],
                 'email': user['email'],
+                'role': user['role'],
                 'created_at': user['created_at'].isoformat() if user['created_at'] else None,
                 'last_login': user['last_login'].isoformat() if user['last_login'] else None
             }
@@ -1319,6 +1358,291 @@ def get_current_user():
 
     except Exception as e:
         logger.error(f"Error obteniendo usuario actual: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+# ===== ENDPOINTS DE ADMINISTRACIÓN =====
+
+@app.route('/admin/users', methods=['GET'])
+@require_admin
+def get_all_users():
+    """Obtener lista de todos los usuarios (solo administradores)"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Error de conexión a la base de datos'}), 500
+        
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Obtener todos los usuarios con información básica
+        cur.execute("""
+            SELECT 
+                id, username, email, role, is_active, 
+                created_at, last_login,
+                (SELECT COUNT(*) FROM user_exams WHERE user_id = users.id) as total_exams,
+                (SELECT COUNT(*) FROM user_exams WHERE user_id = users.id AND passed = true) as passed_exams
+            FROM users 
+            ORDER BY created_at DESC
+        """)
+        
+        users = cur.fetchall()
+        
+        # Convertir a lista de diccionarios
+        users_list = []
+        for user in users:
+            users_list.append({
+                'id': str(user['id']),
+                'username': user['username'],
+                'email': user['email'],
+                'role': user['role'],
+                'is_active': user['is_active'],
+                'created_at': user['created_at'].isoformat() if user['created_at'] else None,
+                'last_login': user['last_login'].isoformat() if user['last_login'] else None,
+                'total_exams': user['total_exams'],
+                'passed_exams': user['passed_exams']
+            })
+        
+        cur.close()
+        
+        return jsonify({
+            'users': users_list,
+            'total': len(users_list)
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo usuarios: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/admin/users', methods=['POST'])
+@require_admin
+def create_user():
+    """Crear nuevo usuario (solo administradores)"""
+    try:
+        data = request.get_json()
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
+        role = data.get('role', 'viewer')  # Default a viewer
+        
+        # Validaciones
+        if not username or not email or not password:
+            return jsonify({'error': 'Username, email y password son requeridos'}), 400
+        
+        if role not in ['admin', 'editor', 'viewer']:
+            return jsonify({'error': 'Rol inválido. Debe ser admin, editor o viewer'}), 400
+        
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Error de conexión a la base de datos'}), 500
+        
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Verificar si el usuario ya existe
+        cur.execute("SELECT id FROM users WHERE username = %s OR email = %s", (username, email))
+        existing_user = cur.fetchone()
+        
+        if existing_user:
+            cur.close()
+            return jsonify({'error': 'Username o email ya existe'}), 400
+        
+        # Hash de la contraseña
+        password_hash = hashlib.sha256(password.encode()).hexdigest()
+        
+        # Crear usuario
+        cur.execute("""
+            INSERT INTO users (username, email, password_hash, role, is_active)
+            VALUES (%s, %s, %s, %s, true)
+            RETURNING id, username, email, role, created_at
+        """, (username, email, password_hash, role))
+        
+        new_user = cur.fetchone()
+        cur.close()
+        
+        return jsonify({
+            'message': 'Usuario creado exitosamente',
+            'user': {
+                'id': str(new_user['id']),
+                'username': new_user['username'],
+                'email': new_user['email'],
+                'role': new_user['role'],
+                'created_at': new_user['created_at'].isoformat()
+            }
+        }), 201
+        
+    except Exception as e:
+        logger.error(f"Error creando usuario: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/admin/users/<user_id>', methods=['PUT'])
+@require_admin
+def update_user(user_id):
+    """Actualizar usuario (solo administradores)"""
+    try:
+        data = request.get_json()
+        
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Error de conexión a la base de datos'}), 500
+        
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Verificar que el usuario existe
+        cur.execute("SELECT id, username, email, role FROM users WHERE id = %s", (user_id,))
+        user = cur.fetchone()
+        
+        if not user:
+            cur.close()
+            return jsonify({'error': 'Usuario no encontrado'}), 404
+        
+        # Preparar campos para actualizar
+        updates = []
+        values = []
+        
+        if 'username' in data:
+            updates.append("username = %s")
+            values.append(data['username'])
+        
+        if 'email' in data:
+            updates.append("email = %s")
+            values.append(data['email'])
+        
+        if 'role' in data:
+            if data['role'] not in ['admin', 'editor', 'viewer']:
+                cur.close()
+                return jsonify({'error': 'Rol inválido'}), 400
+            updates.append("role = %s")
+            values.append(data['role'])
+        
+        if 'is_active' in data:
+            updates.append("is_active = %s")
+            values.append(data['is_active'])
+        
+        if 'password' in data and data['password']:
+            password_hash = hashlib.sha256(data['password'].encode()).hexdigest()
+            updates.append("password_hash = %s")
+            values.append(password_hash)
+        
+        if not updates:
+            cur.close()
+            return jsonify({'error': 'No hay campos para actualizar'}), 400
+        
+        # Ejecutar actualización
+        values.append(user_id)
+        query = f"UPDATE users SET {', '.join(updates)}, updated_at = CURRENT_TIMESTAMP WHERE id = %s RETURNING *"
+        
+        cur.execute(query, values)
+        updated_user = cur.fetchone()
+        cur.close()
+        
+        return jsonify({
+            'message': 'Usuario actualizado exitosamente',
+            'user': {
+                'id': str(updated_user['id']),
+                'username': updated_user['username'],
+                'email': updated_user['email'],
+                'role': updated_user['role'],
+                'is_active': updated_user['is_active'],
+                'updated_at': updated_user['updated_at'].isoformat()
+            }
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error actualizando usuario: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/admin/users/<user_id>', methods=['DELETE'])
+@require_admin
+def delete_user(user_id):
+    """Eliminar usuario (solo administradores)"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Error de conexión a la base de datos'}), 500
+        
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Verificar que el usuario existe
+        cur.execute("SELECT id, username FROM users WHERE id = %s", (user_id,))
+        user = cur.fetchone()
+        
+        if not user:
+            cur.close()
+            return jsonify({'error': 'Usuario no encontrado'}), 404
+        
+        # Eliminar usuario (cascada eliminará datos relacionados)
+        cur.execute("DELETE FROM users WHERE id = %s", (user_id,))
+        cur.close()
+        
+        return jsonify({
+            'message': f'Usuario {user["username"]} eliminado exitosamente'
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error eliminando usuario: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/admin/stats', methods=['GET'])
+@require_admin
+def get_admin_stats():
+    """Obtener estadísticas generales del sistema (solo administradores)"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Error de conexión a la base de datos'}), 500
+        
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Estadísticas generales
+        stats = {}
+        
+        # Total usuarios
+        cur.execute("SELECT COUNT(*) as total FROM users")
+        stats['total_users'] = cur.fetchone()['total']
+        
+        # Usuarios activos
+        cur.execute("SELECT COUNT(*) as total FROM users WHERE is_active = true")
+        stats['active_users'] = cur.fetchone()['total']
+        
+        # Usuarios por rol
+        cur.execute("""
+            SELECT role, COUNT(*) as count 
+            FROM users 
+            WHERE is_active = true 
+            GROUP BY role
+        """)
+        role_stats = {}
+        for row in cur.fetchall():
+            role_stats[row['role']] = row['count']
+        stats['users_by_role'] = role_stats
+        
+        # Total exámenes realizados
+        cur.execute("SELECT COUNT(*) as total FROM user_exams")
+        stats['total_exams'] = cur.fetchone()['total']
+        
+        # Exámenes pasados
+        cur.execute("SELECT COUNT(*) as total FROM user_exams WHERE passed = true")
+        stats['passed_exams'] = cur.fetchone()['total']
+        
+        # Total preguntas
+        cur.execute("SELECT COUNT(*) as total FROM questions WHERE anulada = false")
+        stats['total_questions'] = cur.fetchone()['total']
+        
+        # Actividad reciente (últimos 7 días)
+        cur.execute("""
+            SELECT COUNT(*) as total 
+            FROM user_exams 
+            WHERE created_at >= NOW() - INTERVAL '7 days'
+        """)
+        stats['recent_exams'] = cur.fetchone()['total']
+        
+        cur.close()
+        
+        return jsonify({
+            'stats': stats,
+            'generated_at': datetime.now().isoformat()
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo estadísticas de admin: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
 @app.route('/api/failed-questions', methods=['GET'])
