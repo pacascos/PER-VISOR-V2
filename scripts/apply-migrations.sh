@@ -134,12 +134,12 @@ elif [ "$ENVIRONMENT" = "production" ]; then
     # Función para ejecutar comandos SQL en producción usando Cloud SQL Proxy
     execute_sql() {
         echo "🔍 Ejecutando SQL: $1" >&2
-        echo "$1" | gcloud beta sql connect per-db-instance --user=per_user --database=per_exams --project=${PROJECT_ID} 2>&1
+        PGPASSWORD="$DB_PASSWORD" echo "$1" | gcloud beta sql connect per-db-instance --user=per_user --database=per_exams --project=${PROJECT_ID} 2>&1
     }
-
+    
     execute_sql_file() {
         echo "🔍 Ejecutando archivo SQL: $1" >&2
-        gcloud beta sql connect per-db-instance --user=per_user --database=per_exams --project=${PROJECT_ID} < "$1" 2>&1
+        PGPASSWORD="$DB_PASSWORD" gcloud beta sql connect per-db-instance --user=per_user --database=per_exams --project=${PROJECT_ID} < "$1" 2>&1
     }
 fi
 
