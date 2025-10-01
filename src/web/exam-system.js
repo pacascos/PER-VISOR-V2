@@ -72,6 +72,11 @@ class ExamSystem {
             window.location.href = 'statistics-dashboard.html';
         });
 
+        document.getElementById('studyModeBtn').addEventListener('click', () => {
+            // Redirect to study mode configuration
+            window.location.href = 'study-config.html';
+        });
+
         // Exam navigation events
         document.getElementById('prevBtn').addEventListener('click', () => {
             this.goToPreviousQuestion();

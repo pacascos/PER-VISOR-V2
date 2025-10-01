@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurar Test de Estudio - Sistema PER</title>
+
+    <!-- Favicon dinámico -->
+    <link rel="icon" type="image/svg+xml" href="" id="dynamic-favicon">
+    <script>
+        const isProduction = window.location.hostname === 'bancotest.com';
+        document.getElementById('dynamic-favicon').href = isProduction ? 'favicon-prod.svg' : 'favicon.svg';
+        window.ENVIRONMENT = isProduction ? 'PRODUCCIÓN' : 'DESARROLLO';
+        window.ENVIRONMENT_COLOR = isProduction ? '#dc2626' : '#059669';
+    </script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 2rem 0;
+        }
+
+        .environment-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .config-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .card-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .ut-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .ut-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f9fafb;
+        }
+
+        .ut-card:hover {
+            border-color: #667eea;
+            background: #f3f4f6;
+            transform: translateY(-2px);
+        }
+
+        .ut-card.selected {
+            border-color: #667eea;
+            background: #ede9fe;
+        }
+
+        .ut-card input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .ut-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .ut-number {
+            background: #667eea;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .ut-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #333;
+            flex: 1;
+        }
+
+        .ut-info {
+            font-size: 0.85rem;
+            color: #666;
+            margin-left: 2.5rem;
+        }
+
+        .mode-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .mode-option {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .mode-option:hover {
+            border-color: #667eea;
+            background: #f3f4f6;
+        }
+
+        .mode-option.selected {
+            border-color: #667eea;
+            background: #ede9fe;
+        }
+
+        .mode-option input[type="radio"] {
+            display: none;
+        }
+
+        .mode-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mode-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .mode-description {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-generate:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-generate:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-back {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .selection-summary {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .summary-text {
+            font-size: 0.95rem;
+            color: #0369a1;
+            font-weight: 500;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(102, 126, 234, 0.2);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            display: none;
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c33;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .select-all-checkbox {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .select-all-checkbox label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Indicador de entorno -->
+    <div class="environment-indicator" id="env-indicator"></div>
+
+    <div class="main-container">
+        <div class="config-card">
+            <div class="card-header">
+                <h1><i class="fas fa-book-reader"></i> Modo Estudio</h1>
+                <p>Configura tu test de estudio personalizado</p>
+            </div>
+
+            <div class="card-body">
+                <!-- Error message -->
+                <div class="error-message" id="error-message"></div>
+
+                <!-- Selección de UTs -->
+                <div class="section-title">
+                    <i class="fas fa-list-check"></i>
+                    Selecciona las Unidades Temáticas (UTs)
+                </div>
+                <div class="section-description">
+                    Elige una o más UTs sobre las que quieres estudiar
+                </div>
+
+                <div class="select-all-checkbox">
+                    <label>
+                        <input type="checkbox" id="select-all-uts">
+                        Seleccionar todas las UTs (examen completo - 45 preguntas)
+                    </label>
+                </div>
+
+                <div class="ut-grid" id="ut-grid">
+                    <!-- UTs will be loaded here -->
+                </div>
+
+                <!-- Selection summary -->
+                <div class="selection-summary" id="selection-summary" style="display: none;">
+                    <div class="summary-text" id="summary-text"></div>
+                </div>
+
+                <!-- Selección de modo -->
+                <div class="section-title">
+                    <i class="fas fa-sliders"></i>
+                    Selecciona el modo de estudio
+                </div>
+                <div class="section-description">
+                    Elige cómo quieres que se seleccionen las preguntas
+                </div>
+
+                <div class="mode-selector">
+                    <label class="mode-option selected" for="mode-random">
+                        <input type="radio" name="study-mode" id="mode-random" value="random" checked>
+                        <div class="mode-icon">🎲</div>
+                        <div class="mode-title">Aleatorio</div>
+                        <div class="mode-description">Preguntas seleccionadas al azar</div>
+                    </label>
+
+                    <label class="mode-option" for="mode-failed">
+                        <input type="radio" name="study-mode" id="mode-failed" value="failed">
+                        <div class="mode-icon">❌</div>
+                        <div class="mode-title">Falladas</div>
+                        <div class="mode-description">Prioriza preguntas que has fallado</div>
+                    </label>
+
+                    <label class="mode-option" for="mode-new">
+                        <input type="radio" name="study-mode" id="mode-new" value="new">
+                        <div class="mode-icon">✨</div>
+                        <div class="mode-title">Nuevas</div>
+                        <div class="mode-description">Prioriza preguntas no respondidas</div>
+                    </label>
+                </div>
+
+                <!-- Loading spinner -->
+                <div class="loading-spinner" id="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Generando test de estudio...</p>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="action-buttons">
+                    <button class="btn-back" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </button>
+                    <button class="btn-generate" id="btn-generate" onclick="generateStudyTest()" disabled>
+                        <i class="fas fa-play"></i> Generar Test de Estudio
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_URL = window.location.hostname === 'bancotest.com'
+            ? 'https://per-api-435987927843.europe-west1.run.app'
+            : 'http://localhost:5001';
+
+        // State
+        let availableUTs = [];
+        let selectedUTs = [];
+        let selectedMode = 'random';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Set environment indicator
+            const envIndicator = document.getElementById('env-indicator');
+            envIndicator.textContent = window.ENVIRONMENT;
+            envIndicator.style.background = window.ENVIRONMENT_COLOR;
+
+            // Check authentication
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'exam-system.html';
+                return;
+            }
+
+            // Load available UTs
+            await loadAvailableUTs();
+
+            // Setup event listeners
+            setupEventListeners();
+        });
+
+        async function loadAvailableUTs() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/study-tests/available-uts`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error cargando UTs disponibles');
+                }
+
+                const data = await response.json();
+                availableUTs = data.uts;
+
+                renderUTGrid();
+            } catch (error) {
+                console.error('Error loading UTs:', error);
+                showError('Error al cargar las UTs disponibles. Por favor, recarga la página.');
+            }
+        }
+
+        function renderUTGrid() {
+            const grid = document.getElementById('ut-grid');
+            grid.innerHTML = '';
+
+            availableUTs.forEach(ut => {
+                const card = document.createElement('div');
+                card.className = 'ut-card';
+                card.dataset.utNumber = ut.ut_number;
+
+                const questionsInfo = ut.official_distribution.questions
+                    ? `${ut.official_distribution.questions} preguntas en examen oficial`
+                    : `${ut.questions_per_exam} preguntas`;
+
+                card.innerHTML = `
+                    <div class="ut-header">
+                        <div class="ut-number">${ut.ut_number}</div>
+                        <div class="ut-title">${ut.category_name}</div>
+                        <input type="checkbox" class="ut-checkbox" data-ut="${ut.ut_number}">
+                    </div>
+                    <div class="ut-info">
+                        ${questionsInfo}<br>
+                        <small>${ut.available_questions} preguntas disponibles</small>
+                    </div>
+                `;
+
+                card.addEventListener('click', (e) => {
+                    if (e.target.type !== 'checkbox') {
+                        const checkbox = card.querySelector('.ut-checkbox');
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change'));
+                    }
+                });
+
+                grid.appendChild(card);
+            });
+        }
+
+        function setupEventListeners() {
+            // UT selection
+            document.getElementById('ut-grid').addEventListener('change', (e) => {
+                if (e.target.classList.contains('ut-checkbox')) {
+                    const utNumber = parseInt(e.target.dataset.ut);
+                    const card = e.target.closest('.ut-card');
+
+                    if (e.target.checked) {
+                        selectedUTs.push(utNumber);
+                        card.classList.add('selected');
+                    } else {
+                        selectedUTs = selectedUTs.filter(ut => ut !== utNumber);
+                        card.classList.remove('selected');
+                        document.getElementById('select-all-uts').checked = false;
+                    }
+
+                    updateSelectionSummary();
+                    updateGenerateButton();
+                }
+            });
+
+            // Select all checkbox
+            document.getElementById('select-all-uts').addEventListener('change', (e) => {
+                const checkboxes = document.querySelectorAll('.ut-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = e.target.checked;
+                    const card = checkbox.closest('.ut-card');
+                    if (e.target.checked) {
+                        card.classList.add('selected');
+                    } else {
+                        card.classList.remove('selected');
+                    }
+                });
+
+                if (e.target.checked) {
+                    selectedUTs = availableUTs.map(ut => ut.ut_number);
+                } else {
+                    selectedUTs = [];
+                }
+
+                updateSelectionSummary();
+                updateGenerateButton();
+            });
+
+            // Mode selection
+            document.querySelectorAll('.mode-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('.mode-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    option.classList.add('selected');
+                    const radio = option.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    selectedMode = radio.value;
+                });
+            });
+        }
+
+        function updateSelectionSummary() {
+            const summary = document.getElementById('selection-summary');
+            const summaryText = document.getElementById('summary-text');
+
+            if (selectedUTs.length === 0) {
+                summary.style.display = 'none';
+                return;
+            }
+
+            // Calculate total questions
+            const totalQuestions = selectedUTs.reduce((sum, utNum) => {
+                const ut = availableUTs.find(u => u.ut_number === utNum);
+                return sum + (ut.official_distribution.questions || ut.questions_per_exam);
+            }, 0);
+
+            summaryText.textContent = `Has seleccionado ${selectedUTs.length} UT${selectedUTs.length > 1 ? 's' : ''} - Aproximadamente ${totalQuestions} preguntas`;
+            summary.style.display = 'block';
+        }
+
+        function updateGenerateButton() {
+            const btn = document.getElementById('btn-generate');
+            btn.disabled = selectedUTs.length === 0;
+        }
+
+        async function generateStudyTest() {
+            const btn = document.getElementById('btn-generate');
+            btn.disabled = true;
+
+            document.getElementById('loading-spinner').style.display = 'block';
+            document.querySelector('.action-buttons').style.display = 'none';
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/study-tests/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        selected_uts: selectedUTs.sort((a, b) => a - b),
+                        selection_mode: selectedMode
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Error generando test');
+                }
+
+                const data = await response.json();
+                console.log('Study test generated:', data);
+
+                // Redirect to exam system with study mode
+                window.location.href = `exam-system.html?study_test_id=${data.study_test_id}&mode=study`;
+
+            } catch (error) {
+                console.error('Error generating study test:', error);
+                showError(error.message || 'Error generando el test de estudio. Por favor, inténtalo de nuevo.');
+
+                document.getElementById('loading-spinner').style.display = 'none';
+                document.querySelector('.action-buttons').style.display = 'flex';
+                btn.disabled = false;
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function goBack() {
+            window.location.href = 'exam-system.html';
+        }
+    </script>
+</body>
+</html>
