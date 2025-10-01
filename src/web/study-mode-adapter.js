@@ -75,6 +75,7 @@ class StudyModeAdapter {
             this.selectionMode = data.selection_mode;
 
             // Transform to exam format
+            const questionDetails = this.transformQuestionsFormat(data.questions);
             this.examSystem.currentExam = {
                 exam_id: this.studyTestId,
                 total_questions: data.total_questions,
@@ -82,7 +83,8 @@ class StudyModeAdapter {
                 studyTestId: this.studyTestId,
                 selectedUTs: this.selectedUTs,
                 selectionMode: this.selectionMode,
-                questionDetails: this.transformQuestionsFormat(data.questions)
+                questionDetails: questionDetails,
+                questions: questionDetails  // Alias for compatibility with updateProgress
             };
 
             this.examSystem.currentQuestionIndex = 0;
