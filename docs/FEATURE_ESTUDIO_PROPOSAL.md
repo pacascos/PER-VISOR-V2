@@ -20,19 +20,28 @@ La funcionalidad "Estudio" será la **primera opción en el menú principal** y 
 
 ### Estructura de Temas (UTs)
 El sistema maneja 11 Unidades Temáticas:
-- **UT1**: Nomenclatura náutica (15 preguntas en examen oficial)
-- **UT2**: Elementos de amarre y fondeo (3 preguntas)
-- **UT3**: Seguridad en la mar (9 preguntas)
-- **UT4**: Legislación (3 preguntas)
-- **UT5**: Balizamiento (5 preguntas)
-- **UT6**: Reglamento de abordajes (9 preguntas)
-- **UT7**: Maniobras (10 preguntas)
-- **UT8**: Propulsión y gobierno (4 preguntas)
-- **UT9**: Meteorología (4 preguntas)
-- **UT10**: Teoría de navegación (15 preguntas)
-- **UT11**: Carta de navegación (13 preguntas)
+- 📌 Estructura del examen PER
 
-**Total**: 90 preguntas en examen oficial completo
+45 preguntas tipo test (4 opciones).
+Duración: 1h 30 min.
+Mínimo para aprobar: 32 correctas.
+Límites de error:
+   Reglamento (RIPA): máx. 5 errores.
+   Balizamiento: máx. 2 errores.
+   Carta de navegación: máx. 2 errores.
+
+Distribución de preguntas (según BOE 2025):
+UT1 Nomenclatura: 4
+UT2 Amarre/Fondeo: 2
+UT3 Seguridad: 4
+UT4 Legislación: 2
+UT5 Balizamiento: 5 (≥3 correctas)
+UT6 RIPA: 10 (≥5 correctas)
+UT7 Maniobra: 2
+UT8 Emergencias: 3
+UT9 Meteorología: 4
+UT10 Teoría navegación: 5
+UT11 Carta navegación: 4 (≥2 correctas)
 
 ### Sistema Actual de Exámenes
 - Genera exámenes de 45 o 90 preguntas
