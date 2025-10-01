@@ -2896,7 +2896,7 @@ def get_per_questions_stats():
         logger.error(f"Error obteniendo estadísticas de preguntas PER: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/question-attempt', methods=['POST', 'OPTIONS'])
+@app.route('/api/question-attempt', methods=['POST', 'OPTIONS'])
 def record_question_attempt():
     if request.method == 'OPTIONS':
         # Manejar petición preflight
@@ -3378,7 +3378,7 @@ if __name__ == '__main__':
     logger.info("   - PUT    /preguntas/<question_id>")
     logger.info("   - GET    /stats")
     logger.info("📊 Endpoints de estadísticas de preguntas:")
-    logger.info("   - POST   /question-attempt")
+    logger.info("   - POST   /api/question-attempt")
     logger.info("   - GET    /question-stats/<question_id>")
     logger.info("   - GET    /question-stats/rankings/<category>")
     logger.info("🔐 Endpoints de autenticación:")
