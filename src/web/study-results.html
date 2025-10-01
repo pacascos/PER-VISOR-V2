@@ -426,7 +426,7 @@
         async function loadResults() {
             try {
                 const token = localStorage.getItem('token') || localStorage.getItem('authToken');
-                const response = await fetch(`${API_URL}/api/study-tests/${studyTestId}/questions`, {
+                const response = await fetch(`${API_URL}/study-tests/${studyTestId}/questions`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

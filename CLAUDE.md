@@ -30,6 +30,25 @@ This is a Spanish maritime exam (PER - Patrón de Embarcaciones de Recreo) manag
 
 ## CRITICAL SAFETY RULES
 
+### Production Testing
+⚠️ **ALWAYS run production tests after important changes!**
+
+After deploying changes to API, database, or core functionality:
+```bash
+# Run comprehensive production tests
+./scripts/test-production.sh
+
+# Tests verify:
+# - API health and database connectivity
+# - All main pages load without errors
+# - CORS functionality
+# - Exam system works correctly
+# - Statistics dashboard loads
+# - Question browser functions
+
+# See scripts/TEST_PRODUCTION_README.md for details
+```
+
 ### Database Testing and Modifications
 ⚠️ **NEVER modify production data without backup first!**
 
