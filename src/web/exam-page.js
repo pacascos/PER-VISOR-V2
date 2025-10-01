@@ -100,7 +100,6 @@ class ExamPage {
                 this.showExamInterface();
                 this.startTimer();
                 this.displayCurrentQuestion();
-                this.showAlert('¡Examen iniciado! Tienes 90 minutos.', 'success');
             } else {
                 this.showAlert(data.error || 'Error generando examen', 'danger');
                 setTimeout(() => {
