@@ -23,6 +23,7 @@ import random
 
 # Import statistics API routes
 from statistics_api import register_statistics_routes
+from study_mode_logic import select_study_questions, UT_DISTRIBUTION
 
 def get_secret(secret_name, project_id="webpersonal-189221"):
     """
@@ -120,6 +121,18 @@ def add_cors_headers(response):
         response.headers['Access-Control-Max-Age'] = '3600'
 
     return response
+
+# Handler para peticiones OPTIONS preflight
+@app.before_request
+def handle_preflight():
+    """Manejar peticiones OPTIONS preflight antes de que lleguen a las rutas"""
+    if request.method == 'OPTIONS':
+        origin = request.headers.get('Origin')
+        if origin in ALLOWED_ORIGINS:
+            response = app.make_response('')
+            response.status_code = 200
+            return response
+    return None
 
 # Register statistics routes
 register_statistics_routes(app)
@@ -738,6 +751,10 @@ def health_check():
     """Health check endpoint for Cloud Run"""
     return jsonify({'status': 'healthy', 'timestamp': datetime.now().isoformat()}), 200
 
+@app.route('/user-stats', methods=['GET'])
+def get_user_stats_alias():
+    """Alias for /api/user-stats for frontend compatibility"""
+    return get_simple_user_stats()
 
 @app.route('/stats')
 def get_stats():
@@ -2351,6 +2368,466 @@ def get_user_exams():
         logger.error(f"Error obteniendo historial de exámenes: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
+################################################################################
+# STUDY MODE ENDPOINTS
+################################################################################
+
+@app.route('/api/study-tests/generate', methods=['POST'])
+@require_auth
+def generate_study_test():
+    """
+    Generate new study test for user with custom UT selection
+
+    Request body:
+    {
+        "selected_uts": [1, 2, 5, 6],  # List of UT numbers
+        "selection_mode": "random"      # 'random', 'failed', or 'new'
+    }
+    """
+    try:
+        user_id = request.current_user['user_id']
+        data = request.get_json()
+
+        # Validate request
+        selected_uts = data.get('selected_uts', [])
+        selection_mode = data.get('selection_mode', 'random')
+
+        if not selected_uts:
+            return jsonify({'error': 'selected_uts is required'}), 400
+
+        if selection_mode not in ['random', 'failed', 'new']:
+            return jsonify({'error': 'selection_mode must be random, failed, or new'}), 400
+
+        # Validate UT numbers
+        if not all(1 <= ut <= 11 for ut in selected_uts):
+            return jsonify({'error': 'Invalid UT numbers. Must be between 1 and 11'}), 400
+
+        # Connect to database
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Select questions using study mode logic
+        questions, total_questions = select_study_questions(cur, user_id, selected_uts, selection_mode)
+
+        if not questions:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'No se pudieron seleccionar preguntas para los UTs indicados'}), 400
+
+        # Create study test record
+        cur.execute("""
+            INSERT INTO study_tests
+            (user_id, selected_uts, selection_mode, total_questions, status)
+            VALUES (%s, %s, %s, %s, 'in_progress')
+            RETURNING id
+        """, (user_id, json.dumps(selected_uts), selection_mode, total_questions))
+
+        study_test = cur.fetchone()
+        study_test_id = study_test['id']
+
+        # Insert selected questions
+        question_order = 1
+        for q in questions:
+            cur.execute("""
+                INSERT INTO study_test_questions
+                (study_test_id, question_id, question_order, ut_number, ut_category)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (study_test_id, q['question_id'], question_order, q['ut_number'], q['ut_category']))
+            question_order += 1
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        logger.info(f"✅ Test de estudio generado: {study_test_id} - Usuario: {request.current_user['username']} - "
+                   f"UTs: {selected_uts} - Modo: {selection_mode} - {total_questions} preguntas")
+
+        return jsonify({
+            'success': True,
+            'study_test_id': str(study_test_id),
+            'total_questions': total_questions,
+            'selected_uts': selected_uts,
+            'selection_mode': selection_mode,
+            'message': f'Test de estudio generado con {total_questions} preguntas'
+        }), 201
+
+    except Exception as e:
+        logger.error(f"Error generando test de estudio: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+
+@app.route('/api/study-tests/<study_test_id>/questions', methods=['GET'])
+@require_auth
+def get_study_test_questions(study_test_id):
+    """Get questions for a specific study test"""
+    try:
+        user_id = request.current_user['user_id']
+
+        # Connect to database
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Verify study test belongs to user
+        cur.execute("""
+            SELECT id, selected_uts, selection_mode, total_questions, status
+            FROM study_tests
+            WHERE id = %s AND user_id = %s
+        """, (study_test_id, user_id))
+
+        study_test = cur.fetchone()
+        if not study_test:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Test de estudio no encontrado'}), 404
+
+        # Get questions with details
+        cur.execute("""
+            SELECT
+                stq.question_order,
+                stq.ut_category,
+                stq.ut_number,
+                q.id,
+                q.texto_pregunta,
+                q.respuesta_correcta,
+                q.categoria,
+                q.numero_pregunta,
+                e.tipo_examen,
+                e.titulo,
+                e.convocatoria
+            FROM study_test_questions stq
+            JOIN questions q ON stq.question_id = q.id
+            JOIN exams e ON q.exam_id = e.id
+            WHERE stq.study_test_id = %s
+            ORDER BY stq.question_order
+        """, (study_test_id,))
+
+        questions = cur.fetchall()
+
+        questions_list = []
+        for q in questions:
+            # Get answer options
+            cur.execute("""
+                SELECT opcion, texto
+                FROM answer_options
+                WHERE question_id = %s
+                ORDER BY opcion
+            """, (q['id'],))
+
+            options = cur.fetchall()
+            options_dict = {opt['opcion']: opt['texto'] for opt in options}
+
+            questions_list.append({
+                'id': str(q['id']),
+                'order': q['question_order'],
+                'ut_number': q['ut_number'],
+                'ut_category': q['ut_category'],
+                'texto_pregunta': q['texto_pregunta'],
+                'opciones': options_dict,
+                'categoria': q['categoria'],
+                'numero_pregunta': q['numero_pregunta'],
+                'exam_info': {
+                    'tipo_examen': q['tipo_examen'],
+                    'titulo': q['titulo'],
+                    'convocatoria': q['convocatoria']
+                }
+            })
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'study_test_id': str(study_test_id),
+            'selected_uts': json.loads(study_test['selected_uts']),
+            'selection_mode': study_test['selection_mode'],
+            'total_questions': study_test['total_questions'],
+            'status': study_test['status'],
+            'questions': questions_list
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo preguntas de test de estudio: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+
+@app.route('/api/study-tests/<study_test_id>/answer', methods=['POST'])
+@require_auth
+def answer_study_question(study_test_id):
+    """
+    Record user's answer to a study test question
+
+    Request body:
+    {
+        "question_id": "uuid",
+        "user_answer": "A",
+        "time_spent_seconds": 30
+    }
+    """
+    try:
+        user_id = request.current_user['user_id']
+        data = request.get_json()
+
+        question_id = data.get('question_id')
+        user_answer = data.get('user_answer')
+        time_spent = data.get('time_spent_seconds', 0)
+
+        if not question_id or not user_answer:
+            return jsonify({'error': 'question_id and user_answer are required'}), 400
+
+        # Connect to database
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Verify study test belongs to user
+        cur.execute("""
+            SELECT id FROM study_tests
+            WHERE id = %s AND user_id = %s
+        """, (study_test_id, user_id))
+
+        if not cur.fetchone():
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Test de estudio no encontrado'}), 404
+
+        # Get correct answer
+        cur.execute("""
+            SELECT respuesta_correcta FROM questions
+            WHERE id = %s
+        """, (question_id,))
+
+        question = cur.fetchone()
+        if not question:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Pregunta no encontrada'}), 404
+
+        correct_answer = question['respuesta_correcta']
+        is_correct = (user_answer.upper() == correct_answer.upper())
+
+        # Update study test question with answer
+        cur.execute("""
+            UPDATE study_test_questions
+            SET user_answer = %s,
+                is_correct = %s,
+                answered_at = CURRENT_TIMESTAMP,
+                time_spent_seconds = %s
+            WHERE study_test_id = %s AND question_id = %s
+        """, (user_answer, is_correct, time_spent, study_test_id, question_id))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'is_correct': is_correct,
+            'correct_answer': correct_answer
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error registrando respuesta de test de estudio: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+
+@app.route('/api/study-tests/<study_test_id>/submit', methods=['POST'])
+@require_auth
+def submit_study_test(study_test_id):
+    """
+    Submit and complete a study test
+    Calculates final score and marks as completed
+    """
+    try:
+        user_id = request.current_user['user_id']
+
+        # Connect to database
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Verify study test belongs to user
+        cur.execute("""
+            SELECT id, started_at, total_questions
+            FROM study_tests
+            WHERE id = %s AND user_id = %s AND status = 'in_progress'
+        """, (study_test_id, user_id))
+
+        study_test = cur.fetchone()
+        if not study_test:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Test de estudio no encontrado o ya completado'}), 404
+
+        # Calculate results
+        cur.execute("""
+            SELECT
+                COUNT(*) as total_answered,
+                COUNT(CASE WHEN is_correct = true THEN 1 END) as correct_answers,
+                SUM(time_spent_seconds) as total_time_seconds
+            FROM study_test_questions
+            WHERE study_test_id = %s
+        """, (study_test_id,))
+
+        results = cur.fetchone()
+
+        correct_answers = results['correct_answers'] or 0
+        total_questions = study_test['total_questions']
+        score_percentage = (correct_answers / total_questions * 100) if total_questions > 0 else 0
+
+        # Calculate duration
+        started_at = study_test['started_at']
+        duration_minutes = int((datetime.now() - started_at).total_seconds() / 60)
+
+        # Update study test as completed
+        cur.execute("""
+            UPDATE study_tests
+            SET status = 'completed',
+                completed_at = CURRENT_TIMESTAMP,
+                correct_answers = %s,
+                score_percentage = %s,
+                duration_minutes = %s
+            WHERE id = %s
+        """, (correct_answers, score_percentage, duration_minutes, study_test_id))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        logger.info(f"✅ Test de estudio completado: {study_test_id} - Usuario: {request.current_user['username']} - "
+                   f"Puntuación: {score_percentage:.2f}% ({correct_answers}/{total_questions})")
+
+        return jsonify({
+            'success': True,
+            'study_test_id': str(study_test_id),
+            'total_questions': total_questions,
+            'correct_answers': correct_answers,
+            'score_percentage': float(score_percentage),
+            'duration_minutes': duration_minutes,
+            'message': 'Test de estudio completado'
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error completando test de estudio: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+
+@app.route('/api/study-tests/available-uts', methods=['GET'])
+@require_auth
+def get_available_uts():
+    """Get list of available UTs with question counts"""
+    try:
+        # Connect to database
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Get UT configuration
+        cur.execute("SELECT * FROM ut_configuration ORDER BY ut_number")
+        ut_configs = cur.fetchall()
+
+        uts_list = []
+        for ut in ut_configs:
+            # Count available questions for this UT
+            cur.execute("""
+                SELECT COUNT(*) as count
+                FROM questions q
+                JOIN exams e ON q.exam_id = e.id
+                WHERE q.categoria = %s
+                AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
+                AND q.anulada = false
+            """, (ut['category_name'],))
+
+            count_result = cur.fetchone()
+            available_questions = count_result['count']
+
+            uts_list.append({
+                'ut_number': ut['ut_number'],
+                'category_name': ut['category_name'],
+                'questions_per_exam': ut['questions_per_exam'],
+                'min_correct_required': ut['min_correct_required'],
+                'available_questions': available_questions,
+                'official_distribution': UT_DISTRIBUTION.get(ut['ut_number'], {})
+            })
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'uts': uts_list,
+            'total_uts': len(uts_list)
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo UTs disponibles: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+
+@app.route('/api/study-tests/user-history', methods=['GET'])
+@require_auth
+def get_user_study_history():
+    """Get user's study test history"""
+    try:
+        user_id = request.current_user['user_id']
+
+        # Connect to database
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Get user's study tests
+        cur.execute("""
+            SELECT
+                id,
+                selected_uts,
+                selection_mode,
+                total_questions,
+                status,
+                started_at,
+                completed_at,
+                correct_answers,
+                score_percentage,
+                duration_minutes
+            FROM study_tests
+            WHERE user_id = %s
+            ORDER BY started_at DESC
+            LIMIT 50
+        """, (user_id,))
+
+        study_tests = cur.fetchall()
+
+        tests_list = []
+        for test in study_tests:
+            test_data = {
+                'id': str(test['id']),
+                'selected_uts': json.loads(test['selected_uts']),
+                'selection_mode': test['selection_mode'],
+                'total_questions': test['total_questions'],
+                'status': test['status'],
+                'started_at': test['started_at'].isoformat() if test['started_at'] else None,
+                'completed_at': test['completed_at'].isoformat() if test['completed_at'] else None,
+                'correct_answers': test['correct_answers'],
+                'score_percentage': float(test['score_percentage']) if test['score_percentage'] else None,
+                'duration_minutes': test['duration_minutes']
+            }
+            tests_list.append(test_data)
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'study_tests': tests_list,
+            'total_tests': len(tests_list)
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo historial de tests de estudio: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+
+################################################################################
+# END STUDY MODE ENDPOINTS
+################################################################################
+
 @app.route('/per-questions/stats', methods=['GET'])
 def get_per_questions_stats():
     """Get statistics of available PER questions by category"""
@@ -2905,6 +3382,13 @@ if __name__ == '__main__':
     logger.info("   - GET    /auth/me")
     logger.info("🎯 Endpoints de exámenes:")
     logger.info("   - POST   /exams/generate")
-    
+    logger.info("📚 Endpoints de modo estudio:")
+    logger.info("   - POST   /api/study-tests/generate")
+    logger.info("   - GET    /api/study-tests/<study_test_id>/questions")
+    logger.info("   - POST   /api/study-tests/<study_test_id>/answer")
+    logger.info("   - POST   /api/study-tests/<study_test_id>/submit")
+    logger.info("   - GET    /api/study-tests/available-uts")
+    logger.info("   - GET    /api/study-tests/user-history")
+
     port = int(os.getenv('PORT', 5001))
     app.run(host='0.0.0.0', port=port, debug=False)
