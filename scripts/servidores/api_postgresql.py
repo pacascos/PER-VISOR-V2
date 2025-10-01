@@ -2135,7 +2135,7 @@ def submit_exam_answers(exam_id):
             # Verificar si la respuesta es correcta
             is_correct = selected_answer.lower() == question_info['respuesta_correcta'].lower()
 
-            # Guardar respuesta del usuario
+            # Guardar respuesta del usuario (convertir a minúscula para cumplir restricción de BD)
             cur.execute("""
                 INSERT INTO user_answers (user_exam_id, question_id, selected_answer, is_correct, answered_at)
                 VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP)
@@ -2144,7 +2144,7 @@ def submit_exam_answers(exam_id):
                     selected_answer = EXCLUDED.selected_answer,
                     is_correct = EXCLUDED.is_correct,
                     answered_at = EXCLUDED.answered_at
-            """, (exam_id, question_id, selected_answer, is_correct))
+            """, (exam_id, question_id, selected_answer.lower(), is_correct))
 
             total_questions += 1
             if is_correct:
@@ -2204,6 +2204,123 @@ def submit_exam_answers(exam_id):
         logger.error(f"Error enviando respuestas del examen: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
+@app.route('/api/user-statistics/update', methods=['POST'])
+@require_auth
+def update_user_statistics():
+    """Update user statistics after exam completion"""
+    try:
+        data = request.get_json()
+        user_id = request.current_user['user_id']
+        
+        if not data.get('exam_completed'):
+            return jsonify({'error': 'No exam completion data provided'}), 400
+        
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Actualizar estadísticas del usuario
+        cur.execute("""
+            INSERT INTO user_statistics (
+                user_id, exams_completed, total_questions_answered,
+                correct_answers, study_time_minutes, last_exam_date
+            )
+            VALUES (%s, 1, %s, %s, %s, CURRENT_TIMESTAMP)
+            ON CONFLICT (user_id)
+            DO UPDATE SET
+                exams_completed = user_statistics.exams_completed + 1,
+                total_questions_answered = user_statistics.total_questions_answered + %s,
+                correct_answers = user_statistics.correct_answers + %s,
+                study_time_minutes = user_statistics.study_time_minutes + %s,
+                last_exam_date = CURRENT_TIMESTAMP,
+                updated_at = CURRENT_TIMESTAMP
+        """, (
+            user_id,
+            data.get('total_questions', 0),
+            data.get('correct_answers', 0),
+            data.get('duration_minutes', 0),
+            data.get('total_questions', 0),
+            data.get('correct_answers', 0),
+            data.get('duration_minutes', 0)
+        ))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        logger.info(f"📊 Estadísticas actualizadas para usuario {request.current_user['username']}")
+        
+        return jsonify({
+            'success': True,
+            'message': 'Estadísticas actualizadas correctamente'
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error actualizando estadísticas: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/api/user/exam/<exam_id>/failed-questions', methods=['GET'])
+@require_auth
+def get_failed_questions_from_exam(exam_id):
+    """Get failed questions from a specific exam"""
+    try:
+        user_id = request.current_user['user_id']
+        
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Verificar que el examen pertenece al usuario
+        cur.execute("""
+            SELECT id, started_at FROM user_exams 
+            WHERE id = %s AND user_id = %s
+        """, (exam_id, user_id))
+        
+        exam = cur.fetchone()
+        if not exam:
+            return jsonify({'error': 'Examen no encontrado'}), 404
+        
+        # Obtener preguntas falladas del examen
+        cur.execute("""
+            SELECT
+                ua.question_id,
+                ua.selected_answer,
+                ua.is_correct,
+                ua.answered_at,
+                q.respuesta_correcta,
+                q.texto_pregunta,
+                q.categoria,
+                e.tipo_examen
+            FROM user_answers ua
+            JOIN questions q ON ua.question_id = q.id
+            JOIN exams e ON q.exam_id = e.id
+            WHERE ua.user_exam_id = %s AND ua.is_correct = false
+            ORDER BY ua.answered_at
+        """, (exam_id,))
+        
+        failed_questions = cur.fetchall()
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        logger.info(f"📊 Obtenidas {len(failed_questions)} preguntas falladas del examen {exam_id}")
+        
+        return jsonify({
+            'success': True,
+            'failed_questions': [dict(q) for q in failed_questions],
+            'total_failed': len(failed_questions),
+            'exam_date': exam['started_at'].isoformat()
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo preguntas falladas: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
 def _check_exam_passed(score_percentage, ut_results):
     """Check if exam is passed based on PER criteria"""
     # Criterio 1: Puntuación general >= 65%
@@ -2233,77 +2350,6 @@ def _calculate_exam_duration(started_at):
     duration = datetime.now(started_at.tzinfo) - started_at
     return int(duration.total_seconds() / 60)
 
-@app.route('/user/exam/<exam_id>/failed-questions', methods=['GET'])
-@require_auth
-def get_exam_failed_questions(exam_id):
-    """Get failed questions for a specific exam"""
-    try:
-        user_id = request.current_user['user_id']
-
-        # Conectar a base de datos
-        conn = psycopg2.connect(**DB_CONFIG)
-        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
-        # Verificar que el examen pertenezca al usuario
-        cur.execute("""
-            SELECT id, user_id FROM user_exams
-            WHERE id = %s AND user_id = %s AND status = 'completed'
-        """, (exam_id, user_id))
-
-        exam = cur.fetchone()
-        if not exam:
-            return jsonify({'error': 'Examen no encontrado o no completado'}), 404
-
-        # Obtener preguntas falladas del examen
-        cur.execute("""
-            SELECT 
-                q.id as question_id,
-                q.texto_pregunta,
-                q.respuesta_correcta,
-                ua.selected_answer as user_answer,
-                q.categoria,
-                eq.ut_category,
-                eq.ut_number
-            FROM user_answers ua
-            JOIN questions q ON ua.question_id = q.id
-            LEFT JOIN exam_questions eq ON ua.question_id = eq.question_id AND ua.user_exam_id = eq.user_exam_id
-            WHERE ua.user_exam_id = %s 
-            AND ua.is_correct = false
-            ORDER BY eq.question_order
-        """, (exam_id,))
-
-        failed_questions = cur.fetchall()
-        
-        # Para cada pregunta, obtener sus opciones
-        questions_with_options = []
-        for question in failed_questions:
-            question_dict = dict(question)
-            
-            # Obtener opciones de la pregunta
-            cur.execute("""
-                SELECT opcion, texto
-                FROM answer_options
-                WHERE question_id = %s
-                ORDER BY opcion
-            """, (question_dict['question_id'],))
-            
-            options = cur.fetchall()
-            question_dict['opciones'] = [dict(opt) for opt in options]
-            questions_with_options.append(question_dict)
-        
-        cur.close()
-        conn.close()
-
-        return jsonify({
-            'success': True,
-            'exam_id': exam_id,
-            'total_failed': len(questions_with_options),
-            'failed_questions': questions_with_options
-        })
-
-    except Exception as e:
-        logger.error(f"Error obteniendo preguntas falladas del examen: {e}")
-        return jsonify({'error': 'Error interno del servidor'}), 500
 
 @app.route('/user/exams', methods=['GET'])
 @require_auth
@@ -2616,6 +2662,34 @@ def answer_study_question(study_test_id):
             WHERE study_test_id = %s AND question_id = %s
         """, (user_answer, is_correct, time_spent, study_test_id, question_id))
 
+        # NUEVO: También registrar en question_attempts para estadísticas globales
+        # Obtener información adicional de la pregunta
+        cur.execute("""
+            SELECT q.categoria, stq.question_order
+            FROM questions q
+            JOIN study_test_questions stq ON q.id = stq.question_id
+            WHERE q.id = %s AND stq.study_test_id = %s
+        """, (question_id, study_test_id))
+
+        question_info = cur.fetchone()
+        if question_info:
+            category = question_info['categoria']
+            attempt_order = question_info['question_order']
+
+            # Insertar en question_attempts con study_test_id como exam_id
+            # Esto permite que las estadísticas de estudio aparezcan en el dashboard
+            cur.execute("""
+                INSERT INTO question_attempts (
+                    exam_id, question_id, user_answer, correct_answer,
+                    is_correct, time_spent_seconds, category, attempt_order
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+                study_test_id, question_id, user_answer.lower(),
+                correct_answer.lower(), is_correct, time_spent,
+                category, attempt_order
+            ))
+
         conn.commit()
         cur.close()
         conn.close()
@@ -2688,6 +2762,31 @@ def submit_study_test(study_test_id):
                 duration_minutes = %s
             WHERE id = %s
         """, (correct_answers, score_percentage, duration_minutes, study_test_id))
+
+        # NUEVO: Actualizar estadísticas del usuario (igual que con exámenes)
+        cur.execute("""
+            INSERT INTO user_statistics (
+                user_id, exams_completed, total_questions_answered,
+                correct_answers, study_time_minutes, last_exam_date
+            )
+            VALUES (%s, 1, %s, %s, %s, CURRENT_TIMESTAMP)
+            ON CONFLICT (user_id)
+            DO UPDATE SET
+                exams_completed = user_statistics.exams_completed + 1,
+                total_questions_answered = user_statistics.total_questions_answered + %s,
+                correct_answers = user_statistics.correct_answers + %s,
+                study_time_minutes = user_statistics.study_time_minutes + %s,
+                last_exam_date = CURRENT_TIMESTAMP,
+                updated_at = CURRENT_TIMESTAMP
+        """, (
+            user_id,
+            total_questions,
+            correct_answers,
+            duration_minutes,
+            total_questions,
+            correct_answers,
+            duration_minutes
+        ))
 
         conn.commit()
         cur.close()

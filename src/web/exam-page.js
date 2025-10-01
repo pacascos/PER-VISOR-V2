@@ -434,7 +434,13 @@ class ExamPage {
                         <p style="margin: 0; color: #6b7280;">Correctas</p>
                     </div>
                     <div style="background: #fef2f2; padding: 1.5rem; border-radius: 12px; border: 2px solid rgba(239, 68, 68, 0.1);">
-                        <h3 style="color: #ef4444; margin: 0 0 0.5rem 0;">${results.incorrect_answers}</h3>
+                        <h3 style="color: #ef4444; margin: 0 0 0.5rem 0;">
+                            ${results.incorrect_answers > 0 ? 
+                                `<a href="#" onclick="examPage.viewFailedQuestions('${this.currentExam.exam_id}')" 
+                                   style="color: #ef4444; text-decoration: none;" 
+                                   title="Ver preguntas falladas">${results.incorrect_answers}</a>` : 
+                                results.incorrect_answers}
+                        </h3>
                         <p style="margin: 0; color: #6b7280;">Incorrectas</p>
                     </div>
                     <div style="background: #f3f4f6; padding: 1.5rem; border-radius: 12px; border: 2px solid rgba(107, 114, 128, 0.1);">
@@ -465,6 +471,84 @@ class ExamPage {
 
         document.getElementById('resultsInterface').innerHTML = resultsHtml;
         document.getElementById('resultsInterface').style.display = 'block';
+        
+        // Actualizar estadísticas del usuario
+        this.updateUserStatistics(results);
+    }
+
+    async updateUserStatistics(results) {
+        try {
+            console.log('📊 Actualizando estadísticas del usuario...');
+            
+            const response = await fetch(`${this.API_BASE}/user-statistics/update`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.authToken}`
+                },
+                body: JSON.stringify({
+                    exam_completed: true,
+                    score: results.percentage,
+                    correct_answers: results.correct_answers,
+                    total_questions: results.total_questions,
+                    duration_minutes: results.duration_minutes,
+                    passed: results.passed
+                })
+            });
+
+            if (!response.ok) {
+                console.error('❌ Error actualizando estadísticas:', response.statusText);
+                return;
+            }
+
+            const data = await response.json();
+            console.log('✅ Estadísticas actualizadas:', data);
+            
+        } catch (error) {
+            console.error('❌ Error actualizando estadísticas:', error);
+        }
+    }
+
+    async viewFailedQuestions(examId) {
+        try {
+            console.log('🔍 Obteniendo preguntas falladas del examen:', examId);
+
+            const response = await fetch(`${this.API_BASE}/user/exam/${examId}/failed-questions`, {
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            
+            if (data.success && data.failed_questions.length > 0) {
+                // Extraer IDs de las preguntas falladas
+                const failedQuestionIds = data.failed_questions.map(q => q.question_id);
+                
+                // Guardar el filtro en localStorage para que el banco de preguntas lo use
+                localStorage.setItem('failedQuestionsFilter', JSON.stringify({
+                    examId: examId,
+                    questionIds: failedQuestionIds,
+                    examDate: data.exam_date,
+                    totalFailed: data.total_failed
+                }));
+                
+                console.log('🔍 Redirigiendo al banco de preguntas con', failedQuestionIds.length, 'preguntas falladas');
+                
+                // Redirigir al banco de preguntas
+                window.location.href = 'visor-nueva-arquitectura.html?filter=failed_questions';
+            } else {
+                this.showAlert('No se encontraron preguntas falladas para este examen', 'info');
+            }
+
+        } catch (error) {
+            console.error('❌ Error obteniendo preguntas falladas:', error);
+            this.showAlert(`Error cargando preguntas falladas: ${error.message}`, 'danger');
+        }
     }
 
     showAlert(message, type = 'info') {
