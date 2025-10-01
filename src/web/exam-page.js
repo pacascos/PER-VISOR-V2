@@ -88,9 +88,10 @@ class ExamPage {
                 this.timeRemaining = 90 * 60; // Reset timer
                 this.examStartTime = new Date(); // Track exam start time for statistics
 
-                // Las preguntas ya vienen en la respuesta del examen
-                console.log('🔍 Preguntas del examen:', data.questions);
-                this.currentExam.questionDetails = data.questions || [];
+        // Las preguntas ya vienen en la respuesta del examen
+        console.log('🔍 Preguntas del examen:', data.questions);
+        console.log('🔍 Estructura de la primera pregunta:', data.questions[0]);
+        this.currentExam.questionDetails = data.questions || [];
 
                 this.showExamInterface();
                 this.startTimer();
@@ -191,6 +192,9 @@ class ExamPage {
     displayAnswerOptions(question) {
         const optionsContainer = document.getElementById('answerOptions');
         optionsContainer.innerHTML = '';
+
+        console.log('🔍 Estructura de la pregunta actual:', question);
+        console.log('🔍 Propiedades disponibles:', Object.keys(question));
 
         const options = [
             { letter: 'A', text: question.respuesta_a },
