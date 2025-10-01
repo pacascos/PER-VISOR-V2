@@ -173,6 +173,13 @@ class StudyModeAdapter {
         if (!this.isStudyMode) return;
 
         try {
+            console.log('🔄 Enviando respuesta al servidor:', {
+                studyTestId: this.studyTestId,
+                questionId: questionId,
+                userAnswer: userAnswer,
+                timeSpent: Math.floor(timeSpentSeconds)
+            });
+
             const response = await fetch(`${this.examSystem.API_BASE}/study-tests/${this.studyTestId}/answer`, {
                 method: 'POST',
                 headers: {
@@ -187,13 +194,14 @@ class StudyModeAdapter {
             });
 
             if (!response.ok) {
-                console.error('Error recording study answer:', response.status);
+                const errorText = await response.text();
+                console.error('❌ Error recording study answer:', response.status, errorText);
             } else {
                 const data = await response.json();
                 console.log('✅ Respuesta registrada:', data);
             }
         } catch (error) {
-            console.error('Error recording answer:', error);
+            console.error('❌ Error recording answer:', error);
         }
     }
 
@@ -262,15 +270,18 @@ class StudyModeAdapter {
     // Intercept answer recording for study mode
     const originalAnswerHandler = ExamSystem.prototype.goToNextQuestion;
     ExamSystem.prototype.goToNextQuestion = function() {
-        // Record answer if in study mode
+        // Record answer if in study mode BEFORE moving to next question
         if (this.studyModeAdapter && this.studyModeAdapter.isStudyMode) {
             const question = this.currentExam.questionDetails[this.currentQuestionIndex];
-            const selectedOption = document.querySelector('.question-option.selected');
+            const userAnswer = this.userAnswers[question.question_id];
 
-            if (selectedOption && question) {
-                const userAnswer = selectedOption.dataset.option.toUpperCase();
+            if (userAnswer && question) {
                 const timeSpent = (Date.now() - (this.questionStartTimes[question.question_id] || Date.now())) / 1000;
-
+                console.log('📝 Guardando respuesta modo estudio:', {
+                    questionId: question.question_id,
+                    userAnswer: userAnswer,
+                    timeSpent: timeSpent
+                });
                 this.studyModeAdapter.recordAnswer(question.question_id, userAnswer, timeSpent);
             }
         }
