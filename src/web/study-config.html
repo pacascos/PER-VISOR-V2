@@ -18,6 +18,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Unificado -->
+    <link rel="stylesheet" href="styles/unified-navigation.css">
 
     <!-- Configuration -->
     <script src="config.js"></script>
@@ -252,22 +255,7 @@
             cursor: not-allowed;
         }
 
-        .btn-back {
-            background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
-            padding: 1rem 2rem;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-back:hover {
-            background: #667eea;
-            color: white;
-        }
+        /* Estilos de navegación movidos a unified-navigation.css */
 
         .loading-spinner {
             display: none;
@@ -389,11 +377,33 @@
                     <p>Generando test de estudio...</p>
                 </div>
 
-                <!-- Action buttons -->
-                <div class="action-buttons">
-                    <button class="btn-back" onclick="goBack()">
+                <!-- Navegación Unificada Superior -->
+                <div class="unified-top-nav">
+                    <button class="unified-back-btn" onclick="goBack()">
                         <i class="fas fa-arrow-left"></i> Volver
                     </button>
+                    <h1 class="page-title">
+                        <i class="fas fa-book-reader"></i> Configuración de Estudio
+                    </h1>
+                    <button class="unified-nav-btn" onclick="window.location.href='visor-nueva-arquitectura.html'">
+                        <i class="fas fa-book"></i> Banco de Preguntas
+                    </button>
+                </div>
+
+                <!-- Navegación Lateral -->
+                <div class="unified-side-nav">
+                    <a href="exam-system.html" class="unified-nav-btn">
+                        <i class="fas fa-home"></i> Sistema Principal
+                    </a>
+                    <a href="visor-nueva-arquitectura.html" class="unified-nav-btn">
+                        <i class="fas fa-book"></i> Banco de Preguntas
+                    </a>
+                    <a href="statistics-dashboard.html" class="unified-nav-btn">
+                        <i class="fas fa-chart-bar"></i> Mis Estadísticas
+                    </a>
+                    <a href="question-statistics-dashboard.html" class="unified-nav-btn">
+                        <i class="fas fa-chart-line"></i> Estadísticas de Preguntas
+                    </a>
                 </div>
             </div>
         </div>

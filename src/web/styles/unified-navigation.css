@@ -1,0 +1,538 @@
+/* =============================================================================
+   🎨 SISTEMA DE NAVEGACIÓN UNIFICADO - PER_Cloude
+   =============================================================================
+   Fecha de creación: 2025-09-30
+   Descripción: Estilos unificados para navegación consistente en toda la aplicación
+   ============================================================================= */
+
+/* =============================================================================
+   📱 VARIABLES CSS GLOBALES
+   ============================================================================= */
+:root {
+    /* Colores principales */
+    --primary-color: #667eea;
+    --primary-hover: #5a67d8;
+    --primary-light: #e6f3ff;
+    --secondary-color: #4a5568;
+    --secondary-hover: #2d3748;
+    --success-color: #38a169;
+    --warning-color: #ed8936;
+    --danger-color: #e53e3e;
+    --danger-hover: #c53030;
+    
+    /* Colores de fondo */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f7fafc;
+    --bg-overlay: rgba(255, 255, 255, 0.95);
+    
+    /* Sombras */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.1);
+    
+    /* Transiciones */
+    --transition-fast: all 0.2s ease;
+    --transition-normal: all 0.3s ease;
+    --transition-slow: all 0.5s ease;
+    
+    /* Bordes */
+    --border-radius-sm: 6px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 20px;
+    --border-radius-xl: 50px;
+}
+
+/* =============================================================================
+   🧭 NAVEGACIÓN PRINCIPAL
+   ============================================================================= */
+
+/* Contenedor de navegación superior */
+.unified-top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: var(--bg-overlay);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Título de la página */
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+.page-title i {
+    font-size: 1.5rem;
+}
+
+/* =============================================================================
+   🔙 BOTONES DE NAVEGACIÓN
+   ============================================================================= */
+
+/* Botón de regreso principal */
+.unified-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg-primary);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: var(--transition-normal);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+}
+
+.unified-back-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+}
+
+.unified-back-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Botón de regreso compacto (circular) */
+.unified-back-btn-compact {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: var(--bg-overlay);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius-xl);
+    font-size: 1.2rem;
+    transition: var(--transition-normal);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+}
+
+.unified-back-btn-compact:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+/* Botón de regreso secundario */
+.unified-back-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--secondary-color);
+    color: white;
+    border: 2px solid var(--secondary-color);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: var(--transition-normal);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+}
+
+.unified-back-btn-secondary:hover {
+    background: var(--secondary-hover);
+    border-color: var(--secondary-hover);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+}
+
+/* =============================================================================
+   🏠 BOTONES DE NAVEGACIÓN LATERAL
+   ============================================================================= */
+
+/* Contenedor de navegación lateral */
+.unified-side-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    background: var(--bg-overlay);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 2rem;
+}
+
+/* Botones de navegación lateral */
+.unified-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--bg-primary);
+    color: var(--secondary-color);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius-lg);
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: var(--transition-normal);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+}
+
+.unified-nav-btn:hover {
+    background: var(--primary-light);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+}
+
+.unified-nav-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.unified-nav-btn i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* =============================================================================
+   🎯 BOTONES DE ACCIÓN PRINCIPAL
+   ============================================================================= */
+
+/* Botón principal */
+.unified-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: var(--transition-normal);
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+}
+
+.unified-btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary-color) 100%);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    text-decoration: none;
+    color: white;
+}
+
+.unified-btn-primary:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-md);
+}
+
+/* Botón secundario */
+.unified-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    color: var(--secondary-color);
+    border: 2px solid var(--secondary-color);
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: var(--transition-normal);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+}
+
+.unified-btn-secondary:hover {
+    background: var(--secondary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+}
+
+/* Botón de peligro */
+.unified-btn-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--danger-color);
+    color: white;
+    border: 2px solid var(--danger-color);
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: var(--transition-normal);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+}
+
+.unified-btn-danger:hover {
+    background: var(--danger-hover);
+    border-color: var(--danger-hover);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+}
+
+/* =============================================================================
+   📱 RESPONSIVE DESIGN
+   ============================================================================= */
+
+/* Tablet */
+@media (max-width: 768px) {
+    .unified-top-nav {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+    
+    .unified-back-btn-compact {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin-bottom: 1rem;
+    }
+    
+    .unified-side-nav {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .unified-nav-btn {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .page-title {
+        font-size: 1.1rem;
+        text-align: center;
+    }
+}
+
+/* Móvil */
+@media (max-width: 480px) {
+    .unified-top-nav {
+        padding: 0.75rem;
+    }
+    
+    .unified-back-btn,
+    .unified-back-btn-secondary,
+    .unified-btn-primary,
+    .unified-btn-secondary,
+    .unified-btn-danger {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .unified-nav-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .unified-nav-btn i {
+        font-size: 1rem;
+        width: 16px;
+    }
+    
+    .page-title {
+        font-size: 1rem;
+    }
+    
+    .page-title i {
+        font-size: 1.25rem;
+    }
+}
+
+/* =============================================================================
+   🎨 ESTADOS ESPECIALES
+   ============================================================================= */
+
+/* Botón deshabilitado */
+.unified-btn-disabled,
+.unified-back-btn:disabled,
+.unified-btn-primary:disabled,
+.unified-btn-secondary:disabled,
+.unified-btn-danger:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Botón con loading */
+.unified-btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.unified-btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: unified-spin 1s linear infinite;
+}
+
+@keyframes unified-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* =============================================================================
+   🔧 UTILIDADES
+   ============================================================================= */
+
+/* Centrar botones */
+.unified-btn-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+/* Botones en línea */
+.unified-btn-inline {
+    display: inline-flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+/* Espaciado entre botones */
+.unified-btn-spacing > * + * {
+    margin-left: 1rem;
+}
+
+/* Botón de solo icono */
+.unified-btn-icon-only {
+    padding: 0.75rem;
+    min-width: auto;
+}
+
+.unified-btn-icon-only i {
+    margin: 0;
+}
+
+/* =============================================================================
+   🎭 ANIMACIONES
+   ============================================================================= */
+
+/* Animación de entrada para navegación */
+.unified-nav-enter {
+    animation: unified-slideIn 0.3s ease-out;
+}
+
+@keyframes unified-slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animación de hover mejorada */
+.unified-hover-lift {
+    transition: var(--transition-normal);
+}
+
+.unified-hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* =============================================================================
+   🌙 MODO OSCURO (Preparado para futuro)
+   ============================================================================= */
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: #1a202c;
+        --bg-secondary: #2d3748;
+        --bg-overlay: rgba(26, 32, 44, 0.95);
+        --secondary-color: #e2e8f0;
+        --secondary-hover: #f7fafc;
+    }
+}
+
+/* =============================================================================
+   📝 NOTAS DE IMPLEMENTACIÓN
+   ============================================================================= */
+
+/*
+USO RECOMENDADO:
+
+1. Navegación superior:
+   <div class="unified-top-nav">
+       <button class="unified-back-btn">
+           <i class="fas fa-arrow-left"></i> Volver
+       </button>
+       <h1 class="page-title">
+           <i class="fas fa-chart-bar"></i> Título de la Página
+       </h1>
+       <div></div>
+   </div>
+
+2. Navegación lateral:
+   <div class="unified-side-nav">
+       <a href="exam-system.html" class="unified-nav-btn">
+           <i class="fas fa-home"></i> Sistema Principal
+       </a>
+       <a href="visor-nueva-arquitectura.html" class="unified-nav-btn">
+           <i class="fas fa-book"></i> Banco de Preguntas
+       </a>
+   </div>
+
+3. Botones de acción:
+   <button class="unified-btn-primary">
+       <i class="fas fa-play"></i> Iniciar
+   </button>
+   
+   <button class="unified-btn-secondary">
+       <i class="fas fa-cancel"></i> Cancelar
+   </button>
+*/

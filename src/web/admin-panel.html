@@ -22,6 +22,9 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Unificado -->
+    <link rel="stylesheet" href="styles/unified-navigation.css">
 
     <style>
         * {
@@ -253,25 +256,7 @@
             text-align: center;
         }
 
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            color: #4a5568;
-            padding: 12px 24px;
-            margin: 0 10px;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .nav-btn:hover {
-            background: white;
-            color: #2d3748;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
+        /* Estilos de navegación movidos a unified-navigation.css */
 
         .loading {
             text-align: center;
@@ -318,24 +303,40 @@
     <div class="environment-indicator" id="env-indicator"></div>
 
     <div class="admin-container">
-        <!-- Navegación -->
-        <div class="nav-buttons">
-            <a href="exam-system.html" class="nav-btn">
+        <!-- Navegación Unificada Superior -->
+        <div class="unified-top-nav">
+            <button class="unified-back-btn" onclick="location.href='exam-system.html'">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+            <h1 class="page-title">
+                <i class="fas fa-crown"></i> Panel de Administración
+            </h1>
+            <button class="unified-nav-btn" onclick="location.href='visor-nueva-arquitectura.html'">
+                <i class="fas fa-book"></i> Banco de Preguntas
+            </button>
+        </div>
+
+        <!-- Navegación Lateral -->
+        <div class="unified-side-nav">
+            <a href="exam-system.html" class="unified-nav-btn">
                 <i class="fas fa-home"></i> Sistema Principal
             </a>
-            <a href="visor-nueva-arquitectura.html" class="nav-btn">
+            <a href="visor-nueva-arquitectura.html" class="unified-nav-btn">
                 <i class="fas fa-book"></i> Banco de Preguntas
             </a>
-            <a href="statistics-dashboard.html" class="nav-btn">
+            <a href="statistics-dashboard.html" class="unified-nav-btn">
                 <i class="fas fa-chart-bar"></i> Mis Estadísticas
+            </a>
+            <a href="question-statistics-dashboard.html" class="unified-nav-btn">
+                <i class="fas fa-chart-line"></i> Estadísticas de Preguntas
+            </a>
+            <a href="study-config.html" class="unified-nav-btn">
+                <i class="fas fa-book-reader"></i> Modo de Estudio
             </a>
         </div>
 
         <!-- Header del Admin -->
         <div class="admin-header">
-            <h1 class="admin-title">
-                <i class="fas fa-crown"></i> Panel de Administración
-            </h1>
             <p class="admin-subtitle">Gestión de usuarios y estadísticas del sistema</p>
         </div>
 
