@@ -482,6 +482,61 @@ class ProductionTester {
         }
     }
 
+    async testStudyMode() {
+        const testName = "Modo Estudio";
+        this.log(`Testing: ${testName}`);
+
+        try {
+            this.consoleErrors = [];
+
+            // Buscar botón "Modo Estudio" o "Estudio"
+            const studyBtn = await this.page.$('text="Modo Estudio", text="Estudio"');
+            if (studyBtn) {
+                await studyBtn.click();
+                await this.page.waitForTimeout(3000);
+            } else {
+                // Intentar navegar directamente
+                await this.page.goto(`${PRODUCTION_URL}/study-config.html`, {
+                    waitUntil: "networkidle",
+                    timeout: TIMEOUT
+                });
+            }
+
+            // Verificar que se cargó la página de configuración
+            const hasUTSelection = await this.page.$('text=/Selecciona.*UTs|Unidades Temáticas/i');
+
+            if (!hasUTSelection) {
+                throw new Error("No se detectó página de configuración de Modo Estudio");
+            }
+
+            // Verificar que no hay errores 404 en available-uts
+            const has404Error = this.consoleErrors.some(e =>
+                e.includes("404") && e.includes("available-uts")
+            );
+
+            if (has404Error) {
+                throw new Error("Error 404 al cargar UTs disponibles");
+            }
+
+            // Verificar que no hay errores críticos
+            const criticalErrors = this.consoleErrors.filter(e =>
+                e.includes("ERROR:") && (e.includes("500") || e.includes("Failed to load"))
+            );
+
+            if (criticalErrors.length > 0) {
+                throw new Error(`Errors found: ${criticalErrors.join(", ")}`);
+            }
+
+            await this.takeScreenshot("study_mode_success");
+            this.recordSuccess(testName);
+            return true;
+        } catch (error) {
+            await this.takeScreenshot("study_mode_error");
+            this.recordFailure(testName, error.message);
+            return false;
+        }
+    }
+
     async testCorsFunctionality() {
         const testName = "CORS Functionality";
         this.log(`Testing: ${testName}`);
@@ -496,7 +551,7 @@ class ProductionTester {
             // Hacer una petición a la API desde el frontend
             const response = await this.page.evaluate(async (apiUrl) => {
                 try {
-                    const res = await fetch(`${apiUrl}/health`);
+                    const res = await fetch(`${apiUrl}/api/health`);
                     return await res.json();
                 } catch (err) {
                     return { error: err.message };
@@ -597,9 +652,10 @@ class ProductionTester {
                 await new Promise(resolve => setTimeout(resolve, 1000));
             }
 
-            // Tests que requieren autenticación (verifican las 5 secciones principales del menú)
+            // Tests que requieren autenticación (verifican las secciones principales del menú)
             const authTests = [
                 { name: "Nuevo Examen", func: () => this.testExamSystem() },
+                { name: "Modo Estudio", func: () => this.testStudyMode() },
                 { name: "Estadísticas de Preguntas", func: () => this.testQuestionStatistics() },
                 { name: "Estadísticas", func: () => this.testStatisticsDashboard() },
                 { name: "Banco de Preguntas", func: () => this.testQuestionBrowser() },
