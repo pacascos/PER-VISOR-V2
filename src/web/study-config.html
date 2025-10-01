@@ -449,8 +449,8 @@
         async function loadAvailableUTs() {
             try {
                 const token = localStorage.getItem('token') || localStorage.getItem('authToken');
-                console.log('🔍 Cargando UTs disponibles desde:', `${API_URL}/study-tests/available-uts`);
-                const response = await fetch(`${API_URL}/study-tests/available-uts`, {
+                console.log('🔍 Cargando UTs disponibles desde:', `${API_URL}/api/study-tests/available-uts`);
+                const response = await fetch(`${API_URL}/api/study-tests/available-uts`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -577,7 +577,7 @@
             try {
                 const token = localStorage.getItem('token') || localStorage.getItem('authToken');
                 console.log('🚀 Generando test de estudio con UTs:', selectedUTs, 'Modo:', selectedMode);
-                const response = await fetch(`${API_URL}/study-tests/generate`, {
+                const response = await fetch(`${API_URL}/api/study-tests/generate`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

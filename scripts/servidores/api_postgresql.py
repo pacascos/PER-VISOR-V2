@@ -191,7 +191,7 @@ def require_admin(f):
     
     return decorated_function
 
-@app.route('/health')
+@app.route('/api/health')
 def health():
     """Endpoint de salud de la API"""
     try:
@@ -207,7 +207,7 @@ def health():
     except Exception as e:
         return jsonify({'status': 'unhealthy', 'error': str(e)}), 500
 
-@app.route('/examenes')
+@app.route('/api/examenes')
 def get_examenes():
     """Obtener lista de exámenes desde PostgreSQL"""
     try:
@@ -253,7 +253,7 @@ def get_examenes():
         logger.error(f"Error obteniendo exámenes: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/preguntas/<exam_id>')
+@app.route('/api/preguntas/<exam_id>')
 def get_preguntas(exam_id):
     """Obtener preguntas de un examen desde PostgreSQL"""
     try:
@@ -382,7 +382,7 @@ def _format_questions_response(preguntas):
 
     return result
 
-@app.route('/preguntas-filtradas')
+@app.route('/api/preguntas-filtradas')
 def get_preguntas_filtradas():
     """Obtener preguntas filtradas por múltiples criterios"""
     try:
@@ -427,7 +427,7 @@ def get_preguntas_filtradas():
         logger.error(f"Error obteniendo preguntas filtradas: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/explicaciones')
+@app.route('/api/explicaciones')
 def get_explicaciones():
     """Obtener explicaciones desde PostgreSQL"""
     try:
@@ -507,7 +507,7 @@ def get_explicaciones():
         logger.error(f"Error obteniendo explicaciones: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/generar-explicacion', methods=['POST'])
+@app.route('/api/generar-explicacion', methods=['POST'])
 def generar_explicacion():
     """Generar explicación usando GPT-5 y guardar en PostgreSQL"""
     try:
@@ -746,17 +746,17 @@ Para resolver este problema, verifica la configuración de la API de GPT-5.""",
             'image_prompt': None
         }
 
-@app.route('/health', methods=['GET'])
+@app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint for Cloud Run"""
     return jsonify({'status': 'healthy', 'timestamp': datetime.now().isoformat()}), 200
 
-@app.route('/user-stats', methods=['GET'])
+@app.route('/api/user-stats', methods=['GET'])
 def get_user_stats_alias():
     """Alias for /api/user-stats for frontend compatibility"""
     return get_simple_user_stats()
 
-@app.route('/stats')
+@app.route('/api/stats')
 def get_stats():
     """Obtener estadísticas del sistema desde PostgreSQL"""
     try:
@@ -804,7 +804,7 @@ def get_stats():
         logger.error(f"Error obteniendo estadísticas: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/preguntas-individual/<question_id>', methods=['GET'])
+@app.route('/api/preguntas-individual/<question_id>', methods=['GET'])
 def get_individual_question(question_id):
     """Obtener una pregunta específica por su ID"""
     try:
@@ -914,7 +914,7 @@ def _update_question_options(cur, question_id, data):
             VALUES (%s, %s, %s, %s)
         """, (question_id, letra, texto, es_correcta))
 
-@app.route('/preguntas/<question_id>', methods=['PUT'])
+@app.route('/api/preguntas/<question_id>', methods=['PUT'])
 def update_question(question_id):
     """Actualizar una pregunta específica"""
     try:
@@ -968,7 +968,7 @@ def update_question(question_id):
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/generar-imagen-png', methods=['POST', 'OPTIONS'])
+@app.route('/api/generar-imagen-png', methods=['POST', 'OPTIONS'])
 def generar_imagen_png():
     """Generar imagen PNG usando GPT-5 para una explicación existente"""
     try:
@@ -1023,7 +1023,7 @@ def generar_imagen_png():
         logger.error(f"Error generando imagen PNG: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/subir-imagen', methods=['POST', 'OPTIONS'])
+@app.route('/api/subir-imagen', methods=['POST', 'OPTIONS'])
 def subir_imagen():
     """Subir imagen para reemplazar recursos visuales en explicación"""
     try:
@@ -1088,7 +1088,7 @@ def subir_imagen():
         logger.error(f"Error subiendo imagen: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/images/<path:filename>')
+@app.route('/api/images/<path:filename>')
 def serve_image(filename):
     """Servir imágenes estáticas"""
     try:
@@ -1098,7 +1098,7 @@ def serve_image(filename):
         logger.error(f"Error sirviendo imagen {filename}: {e}")
         return jsonify({'error': 'Imagen no encontrada'}), 404
 
-@app.route('/guardar-explicacion', methods=['PUT', 'OPTIONS'])
+@app.route('/api/guardar-explicacion', methods=['PUT', 'OPTIONS'])
 def guardar_explicacion():
     """Guardar cambios en una explicación existente"""
     try:
@@ -1142,7 +1142,7 @@ def guardar_explicacion():
         logger.error(f"Error guardando explicación: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/borrar-explicacion', methods=['DELETE', 'OPTIONS'])
+@app.route('/api/borrar-explicacion', methods=['DELETE', 'OPTIONS'])
 def borrar_explicacion():
     """Borrar una explicación"""
     try:
@@ -1251,7 +1251,7 @@ def require_auth(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@app.route('/auth/register', methods=['POST'])
+@app.route('/api/auth/register', methods=['POST'])
 def register_user():
     """Register new user"""
     try:
@@ -1324,7 +1324,7 @@ def register_user():
         logger.error(f"Error registrando usuario: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/auth/login', methods=['POST'])
+@app.route('/api/auth/login', methods=['POST'])
 def login_user():
     """Login user"""
     try:
@@ -1385,7 +1385,7 @@ def login_user():
         logger.error(f"Error en login: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/auth/me', methods=['GET'])
+@app.route('/api/auth/me', methods=['GET'])
 @require_auth
 def get_current_user():
     """Get current user info"""
@@ -1426,7 +1426,7 @@ def get_current_user():
 
 # ===== ENDPOINTS DE ADMINISTRACIÓN =====
 
-@app.route('/admin/users', methods=['GET'])
+@app.route('/api/admin/users', methods=['GET'])
 @require_admin
 def get_all_users():
     """Obtener lista de todos los usuarios (solo administradores)"""
@@ -1477,7 +1477,7 @@ def get_all_users():
         logger.error(f"Error obteniendo usuarios: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/admin/users', methods=['POST'])
+@app.route('/api/admin/users', methods=['POST'])
 @require_admin
 def create_user():
     """Crear nuevo usuario (solo administradores)"""
@@ -1538,7 +1538,7 @@ def create_user():
         logger.error(f"Error creando usuario: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/admin/users/<user_id>', methods=['PUT'])
+@app.route('/api/admin/users/<user_id>', methods=['PUT'])
 @require_admin
 def update_user(user_id):
     """Actualizar usuario (solo administradores)"""
@@ -1616,7 +1616,7 @@ def update_user(user_id):
         logger.error(f"Error actualizando usuario: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/admin/users/<user_id>', methods=['DELETE'])
+@app.route('/api/admin/users/<user_id>', methods=['DELETE'])
 @require_admin
 def delete_user(user_id):
     """Eliminar usuario (solo administradores)"""
@@ -1647,7 +1647,7 @@ def delete_user(user_id):
         logger.error(f"Error eliminando usuario: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/admin/stats', methods=['GET'])
+@app.route('/api/admin/stats', methods=['GET'])
 @require_admin
 def get_admin_stats():
     """Obtener estadísticas generales del sistema (solo administradores)"""
@@ -1897,7 +1897,7 @@ def get_simple_user_stats():
 # SISTEMA DE EXÁMENES
 # ====================================
 
-@app.route('/exams/generate', methods=['POST'])
+@app.route('/api/exams/generate', methods=['POST'])
 @require_auth
 def generate_exam():
     """
@@ -1995,7 +1995,7 @@ def generate_exam():
         logger.error(f"Traceback: {traceback.format_exc()}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/exams/<exam_id>/questions', methods=['GET'])
+@app.route('/api/exams/<exam_id>/questions', methods=['GET'])
 @require_auth
 def get_exam_questions(exam_id):
     """Get questions for a specific exam"""
@@ -2085,7 +2085,7 @@ def get_exam_questions(exam_id):
         logger.error(f"Error obteniendo preguntas del examen: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/exams/<exam_id>/submit', methods=['POST'])
+@app.route('/api/exams/<exam_id>/submit', methods=['POST'])
 @require_auth
 def submit_exam_answers(exam_id):
     """Submit answers for an exam"""
@@ -2351,7 +2351,7 @@ def _calculate_exam_duration(started_at):
     return int(duration.total_seconds() / 60)
 
 
-@app.route('/user/exams', methods=['GET'])
+@app.route('/api/user/exams', methods=['GET'])
 @require_auth
 def get_user_exams():
     """Get user's exam history"""
@@ -2932,7 +2932,7 @@ def get_user_study_history():
 # END STUDY MODE ENDPOINTS
 ################################################################################
 
-@app.route('/per-questions/stats', methods=['GET'])
+@app.route('/api/per-questions/stats', methods=['GET'])
 def get_per_questions_stats():
     """Get statistics of available PER questions by category"""
     try:
@@ -3162,7 +3162,7 @@ def record_question_attempt():
         logger.error(f"Error registrando intento de pregunta: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/question-stats/<question_id>', methods=['GET'])
+@app.route('/api/question-stats/<question_id>', methods=['GET'])
 def get_question_stats(question_id):
     """Obtener estadísticas de una pregunta específica"""
     try:
@@ -3209,7 +3209,7 @@ def get_question_stats(question_id):
         logger.error(f"Error obteniendo estadísticas de pregunta: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/question-stats/rankings/<category>', methods=['GET'])
+@app.route('/api/question-stats/rankings/<category>', methods=['GET'])
 def get_question_rankings(category):
     """Obtener rankings de preguntas más falladas por categoría"""
     try:
@@ -3276,7 +3276,7 @@ def get_question_rankings(category):
         logger.error(f"Error obteniendo rankings de categoría: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/question-stats/user/<user_id>', methods=['GET'])
+@app.route('/api/question-stats/user/<user_id>', methods=['GET'])
 def get_user_question_stats(user_id):
     """Obtener estadísticas de preguntas para un usuario específico"""
     try:
@@ -3356,7 +3356,7 @@ def get_user_question_stats(user_id):
         logger.error(f"Error obteniendo estadísticas del usuario: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/question-stats/user/<user_id>/rankings', methods=['GET'])
+@app.route('/api/question-stats/user/<user_id>/rankings', methods=['GET'])
 def get_user_question_rankings(user_id):
     """Obtener rankings de preguntas más falladas para un usuario específico"""
     try:
@@ -3401,7 +3401,7 @@ def get_user_question_rankings(user_id):
         logger.error(f"Error obteniendo rankings del usuario: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/question-stats/general', methods=['GET'])
+@app.route('/api/question-stats/general', methods=['GET'])
 def get_general_question_stats():
     """Obtener estadísticas generales de preguntas"""
     try:
