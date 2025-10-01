@@ -572,7 +572,10 @@
 
         async function generateStudyTest() {
             document.getElementById('loading-spinner').style.display = 'block';
-            document.querySelector('.action-buttons').style.display = 'none';
+            const actionButtons = document.querySelector('.action-buttons');
+            if (actionButtons) {
+                actionButtons.style.display = 'none';
+            }
 
             try {
                 const token = localStorage.getItem('token') || localStorage.getItem('authToken');
@@ -605,8 +608,14 @@
                 showError(error.message || 'Error generando el test de estudio. Por favor, inténtalo de nuevo.');
 
                 document.getElementById('loading-spinner').style.display = 'none';
-                document.querySelector('.action-buttons').style.display = 'flex';
-                btn.disabled = false;
+                const actionButtons = document.querySelector('.action-buttons');
+                if (actionButtons) {
+                    actionButtons.style.display = 'flex';
+                }
+                const btn = document.querySelector('.btn-generate');
+                if (btn) {
+                    btn.disabled = false;
+                }
             }
         }
 
