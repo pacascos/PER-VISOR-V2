@@ -480,7 +480,7 @@ class ExamPage {
         try {
             console.log('📊 Actualizando estadísticas del usuario...');
             
-            const response = await fetch(`${this.API_BASE}/user-statistics/update`, {
+            const response = await fetch(`${this.API_BASE}/api/user-statistics/update`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -513,7 +513,7 @@ class ExamPage {
         try {
             console.log('🔍 Obteniendo preguntas falladas del examen:', examId);
 
-            const response = await fetch(`${this.API_BASE}/user/exam/${examId}/failed-questions`, {
+            const response = await fetch(`${this.API_BASE}/api/user/exam/${examId}/failed-questions`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`
                 }
