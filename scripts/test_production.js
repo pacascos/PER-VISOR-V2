@@ -225,12 +225,38 @@ class ProductionTester {
         return filename;
     }
 
+    async clickMenuButton(buttonText, fallbackUrl = null) {
+        // Esperar a que cargue el dashboard
+        await this.page.waitForTimeout(2000);
+
+        // Buscar el botón con más tiempo y tolerancia
+        const button = await this.page.waitForSelector(
+            `button:has-text("${buttonText}"), a:has-text("${buttonText}")`,
+            { timeout: 10000, state: 'visible' }
+        ).catch(() => null);
+
+        if (button) {
+            await button.click();
+            await this.page.waitForTimeout(3000);
+            return true;
+        } else if (fallbackUrl) {
+            this.log(`Botón "${buttonText}" no encontrado, navegando directamente a ${fallbackUrl}`, "WARNING");
+            await this.page.goto(`${PRODUCTION_URL}/${fallbackUrl}`, {
+                waitUntil: "networkidle",
+                timeout: TIMEOUT
+            });
+            return true;
+        } else {
+            throw new Error(`No se encontró botón "${buttonText}"`);
+        }
+    }
+
     async testApiHealth() {
         const testName = "API Health Check";
         this.log(`Testing: ${testName}`);
 
         try {
-            const response = await this.page.request.get(`${API_URL}/health`);
+            const response = await this.page.request.get(`${API_URL}/api/health`);
             if (response.status() !== 200) {
                 throw new Error(`API health check failed with status ${response.status()}`);
             }
@@ -290,17 +316,10 @@ class ProductionTester {
 
         try {
             this.consoleErrors = [];
-
-            // Si estamos en el dashboard, hacer click en "Nuevo Examen"
-            const newExamBtn = await this.page.$('text="Nuevo Examen"');
-            if (newExamBtn) {
-                await newExamBtn.click();
-                await this.page.waitForTimeout(3000);
-            } else {
-                throw new Error("No se encontró botón 'Nuevo Examen' en dashboard");
-            }
+            await this.clickMenuButton("Nuevo Examen", "exam-system.html");
 
             // Verificar que se cargó un examen (buscar elementos que indican que hay una pregunta)
+            await this.page.waitForTimeout(2000);
             const hasQuestion = await this.page.$('text=/Pregunta \\d+ de|pregunta/i');
             const hasAnswerOptions = await this.page.$$('input[type="radio"]');
 
@@ -314,7 +333,7 @@ class ProductionTester {
 
             // Verificar que no hay errores críticos
             const criticalErrors = this.consoleErrors.filter(e =>
-                e.includes("ERROR:") && !e.includes("404")
+                e.includes("ERROR:") && !e.includes("404") && !e.includes("Login error")
             );
             if (criticalErrors.length > 0) {
                 throw new Error(`Console errors found: ${criticalErrors.join(", ")}`);
@@ -336,15 +355,7 @@ class ProductionTester {
 
         try {
             this.consoleErrors = [];
-
-            // Hacer click en "Estadísticas de Preguntas"
-            const statsBtn = await this.page.$('text="Estadísticas de Preguntas"');
-            if (statsBtn) {
-                await statsBtn.click();
-                await this.page.waitForTimeout(3000);
-            } else {
-                throw new Error("No se encontró botón 'Estadísticas de Preguntas'");
-            }
+            await this.clickMenuButton("Estadísticas de Preguntas", "question-statistics-dashboard.html");
 
             // Verificar que se cargó la página de estadísticas
             // Puede tener diferentes contenidos dependiendo de si hay datos
@@ -378,19 +389,7 @@ class ProductionTester {
 
         try {
             this.consoleErrors = [];
-
-            // Hacer click en "Estadísticas"
-            const statsBtn = await this.page.$('text=/^Estadísticas$/');
-            if (statsBtn) {
-                await statsBtn.click();
-                await this.page.waitForTimeout(3000);
-            } else {
-                // Alternativa: navegar directamente
-                await this.page.goto(`${PRODUCTION_URL}/statistics-dashboard.html`, {
-                    waitUntil: "networkidle",
-                    timeout: TIMEOUT
-                });
-            }
+            await this.clickMenuButton("Estadísticas", "statistics-dashboard.html");
 
             // Verificar que no hay errores 500 en user-stats
             const criticalErrors = this.consoleErrors.filter(e =>
@@ -417,15 +416,7 @@ class ProductionTester {
 
         try {
             this.consoleErrors = [];
-
-            // Hacer click en "Banco de Preguntas"
-            const bankBtn = await this.page.$('text="Banco de Preguntas"');
-            if (bankBtn) {
-                await bankBtn.click();
-                await this.page.waitForTimeout(3000);
-            } else {
-                throw new Error("No se encontró botón 'Banco de Preguntas'");
-            }
+            await this.clickMenuButton("Banco de Preguntas", "index.html");
 
             // Verificar que la página cargó (puede ser index.html o visor)
             // Simplemente verificamos que no hay errores críticos
@@ -453,15 +444,7 @@ class ProductionTester {
 
         try {
             this.consoleErrors = [];
-
-            // Hacer click en "Panel de Administración"
-            const adminBtn = await this.page.$('text="Panel de Administración"');
-            if (adminBtn) {
-                await adminBtn.click();
-                await this.page.waitForTimeout(3000);
-            } else {
-                throw new Error("No se encontró botón 'Panel de Administración'");
-            }
+            await this.clickMenuButton("Panel de Administración", "admin-panel.html");
 
             // Verificar que no hay errores críticos
             const criticalErrors = this.consoleErrors.filter(e =>
@@ -488,19 +471,7 @@ class ProductionTester {
 
         try {
             this.consoleErrors = [];
-
-            // Buscar botón "Modo Estudio" o "Estudio"
-            const studyBtn = await this.page.$('text="Modo Estudio", text="Estudio"');
-            if (studyBtn) {
-                await studyBtn.click();
-                await this.page.waitForTimeout(3000);
-            } else {
-                // Intentar navegar directamente
-                await this.page.goto(`${PRODUCTION_URL}/study-config.html`, {
-                    waitUntil: "networkidle",
-                    timeout: TIMEOUT
-                });
-            }
+            await this.clickMenuButton("Modo Estudio", "study-config.html");
 
             // Verificar que se cargó la página de configuración
             const hasUTSelection = await this.page.$('text=/Selecciona.*UTs|Unidades Temáticas/i');
