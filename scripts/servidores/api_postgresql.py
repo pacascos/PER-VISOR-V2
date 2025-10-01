@@ -2540,7 +2540,7 @@ def get_study_test_questions(study_test_id):
         return jsonify({
             'success': True,
             'study_test_id': str(study_test_id),
-            'selected_uts': json.loads(study_test['selected_uts']),
+            'selected_uts': study_test['selected_uts'],  # Already parsed by psycopg2
             'selection_mode': study_test['selection_mode'],
             'total_questions': study_test['total_questions'],
             'status': study_test['status'],
@@ -2739,11 +2739,16 @@ def get_available_uts():
             count_result = cur.fetchone()
             available_questions = count_result['count']
 
+            # Calculate min_correct_required from max_errors_allowed
+            min_correct = None
+            if ut.get('max_errors_allowed') is not None:
+                min_correct = ut['questions_per_exam'] - ut['max_errors_allowed']
+
             uts_list.append({
                 'ut_number': ut['ut_number'],
                 'category_name': ut['category_name'],
                 'questions_per_exam': ut['questions_per_exam'],
-                'min_correct_required': ut['min_correct_required'],
+                'min_correct_required': min_correct,
                 'available_questions': available_questions,
                 'official_distribution': UT_DISTRIBUTION.get(ut['ut_number'], {})
             })
@@ -2798,7 +2803,7 @@ def get_user_study_history():
         for test in study_tests:
             test_data = {
                 'id': str(test['id']),
-                'selected_uts': json.loads(test['selected_uts']),
+                'selected_uts': test['selected_uts'],  # Already parsed by psycopg2
                 'selection_mode': test['selection_mode'],
                 'total_questions': test['total_questions'],
                 'status': test['status'],
