@@ -321,20 +321,20 @@
 
                 <!-- Navigation -->
                 <div class="exam-navigation">
-                    <button class="unified-btn-secondary" id="prevBtn" onclick="examSystem.goToPreviousQuestion()" disabled>
+                    <button class="unified-btn-secondary" id="prevBtn" onclick="examPage.goToPreviousQuestion()" disabled>
                         <i class="fas fa-arrow-left"></i> Anterior
                     </button>
                     
                     <div style="display: flex; gap: 1rem;">
-                        <button class="unified-btn-secondary" id="pauseBtn" onclick="examSystem.pauseExam()">
+                        <button class="unified-btn-secondary" id="pauseBtn" onclick="examPage.pauseExam()">
                             <i class="fas fa-pause"></i> Pausar
                         </button>
-                        <button class="unified-btn-primary" id="nextBtn" onclick="examSystem.goToNextQuestion()">
+                        <button class="unified-btn-primary" id="nextBtn" onclick="examPage.goToNextQuestion()">
                             Siguiente <i class="fas fa-arrow-right"></i>
                         </button>
                     </div>
                     
-                    <button class="unified-btn-danger" id="finishBtn" onclick="examSystem.finishExam()" style="display: none;">
+                    <button class="unified-btn-danger" id="finishBtn" onclick="examPage.finishExam()" style="display: none;">
                         <i class="fas fa-check"></i> Finalizar Examen
                     </button>
                 </div>
