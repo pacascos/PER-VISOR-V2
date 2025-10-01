@@ -19,6 +19,9 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+    <!-- Configuration -->
+    <script src="config.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -418,10 +421,12 @@
     </div>
 
     <script>
-        // Configuration
-        const API_URL = window.location.hostname === 'bancotest.com'
+        // Configuration - usar window.API_BASE si está disponible (configurado por config.js)
+        const API_URL = window.API_BASE || (window.location.hostname === 'bancotest.com'
             ? 'https://per-api-435987927843.europe-west1.run.app'
-            : 'http://localhost:5001';
+            : 'http://localhost:5001');
+
+        console.log('🌐 study-config.html - API_URL:', API_URL);
 
         // State
         let availableUTs = [];
@@ -436,11 +441,13 @@
             envIndicator.style.background = window.ENVIRONMENT_COLOR;
 
             // Check authentication
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token') || localStorage.getItem('authToken');
             if (!token) {
+                console.error('No token found, redirecting to exam-system.html');
                 window.location.href = 'exam-system.html';
                 return;
             }
+            console.log('✅ Token found, loading study config');
 
             // Load available UTs
             await loadAvailableUTs();
@@ -451,7 +458,8 @@
 
         async function loadAvailableUTs() {
             try {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                console.log('🔍 Cargando UTs disponibles desde:', `${API_URL}/api/study-tests/available-uts`);
                 const response = await fetch(`${API_URL}/api/study-tests/available-uts`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -463,11 +471,12 @@
                 }
 
                 const data = await response.json();
+                console.log('✅ UTs cargadas:', data);
                 availableUTs = data.uts;
 
                 renderUTGrid();
             } catch (error) {
-                console.error('Error loading UTs:', error);
+                console.error('❌ Error loading UTs:', error);
                 showError('Error al cargar las UTs disponibles. Por favor, recarga la página.');
             }
         }
@@ -599,7 +608,8 @@
             document.querySelector('.action-buttons').style.display = 'none';
 
             try {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                console.log('🚀 Generando test de estudio con UTs:', selectedUTs, 'Modo:', selectedMode);
                 const response = await fetch(`${API_URL}/api/study-tests/generate`, {
                     method: 'POST',
                     headers: {
