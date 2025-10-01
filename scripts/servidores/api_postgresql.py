@@ -12,7 +12,7 @@ import psycopg2
 import psycopg2.extras
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory, session
-from flask_cors import CORS
+# from flask_cors import CORS  # Usando implementación custom de CORS
 import hashlib
 import secrets
 from functools import wraps
@@ -96,10 +96,30 @@ logging.getLogger('werkzeug').setLevel(logging.WARNING)
 
 # Crear aplicación Flask
 app = Flask(__name__)
-CORS(app, origins=['http://localhost:8095', 'http://127.0.0.1:8095', 'https://per-frontend-435987927843.europe-west1.run.app', 'https://bancotest.com'], 
-     allow_headers=['Content-Type', 'Authorization'], 
-     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-     supports_credentials=True)
+
+# Configurar CORS con múltiples orígenes permitidos
+ALLOWED_ORIGINS = [
+    'http://localhost:8095',
+    'http://127.0.0.1:8095',
+    'https://per-frontend-435987927843.europe-west1.run.app',
+    'https://bancotest.com'
+]
+
+# Middleware personalizado para CORS
+@app.after_request
+def add_cors_headers(response):
+    """Añadir headers CORS dinámicamente basado en el origin de la petición"""
+    origin = request.headers.get('Origin')
+
+    # Si el origin está en la lista permitida, añadir headers CORS
+    if origin in ALLOWED_ORIGINS:
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Max-Age'] = '3600'
+
+    return response
 
 # Register statistics routes
 register_statistics_routes(app)
@@ -1865,10 +1885,7 @@ def get_simple_user_stats():
 def generate_exam():
     """
     Generate new PER exam for user
-    
-    TEMPORAL: Prioriza preguntas con respuestas incompletas (sin punto final)
-    para facilitar la revisión y corrección de datos.
-    TODO: Remover esta priorización cuando se hayan completado todas las respuestas.
+    Selects questions randomly from each category
     """
     try:
         user_id = request.current_user['user_id']
@@ -1900,87 +1917,29 @@ def generate_exam():
         questions_selected = []
         question_order = 1
 
-        logger.info(f"🔍 DEBUG ut_configs: {ut_configs}, len: {len(ut_configs) if ut_configs else 'None'}")
-
-        for i, ut_config in enumerate(ut_configs):
-            logger.info(f"🔍 DEBUG ut_config[{i}]: {ut_config}, type: {type(ut_config)}")
+        for ut_config in ut_configs:
             ut_number = ut_config['ut_number']
             category_name = ut_config['category_name']
             questions_needed = ut_config['questions_per_exam']
-            
-            # TEMPORAL: Priorización de preguntas con respuestas incompletas - IMPLEMENTACIÓN CUIDADOSA
+
             logger.info(f"🔍 Procesando UT{ut_number} ({category_name}): {questions_needed} preguntas necesarias")
 
-            # DEBUG: Verificar valores de entrada
-            logger.info(f"🔍 DEBUG - category_name: '{category_name}' (type: {type(category_name)})")
-            logger.info(f"🔍 DEBUG - questions_needed: {questions_needed} (type: {type(questions_needed)})")
-
-            # PASO 1: Obtener TODAS las preguntas disponibles de la categoría
-            logger.info(f"🔍 PASO 1: Obteniendo todas las preguntas de '{category_name}'")
-
+            # Obtener preguntas aleatorias de la categoría
             cur.execute("""
                 SELECT q.id FROM questions q
                 JOIN exams e ON q.exam_id = e.id
                 WHERE q.categoria = %s
                 AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
                 AND q.anulada = false
-            """, (category_name,))
+                ORDER BY RANDOM()
+                LIMIT %s
+            """, (category_name, questions_needed))
 
-            all_questions = cur.fetchall()
-            logger.info(f"✅ PASO 1: {len(all_questions)} preguntas totales encontradas")
+            ut_questions = cur.fetchall()
+            logger.info(f"✅ UT{ut_number} ({category_name}): {len(ut_questions)} preguntas seleccionadas aleatoriamente")
 
-            # PASO 2: Identificar cuáles son incompletas (sin punto final)
-            logger.info(f"🔍 PASO 2: Identificando preguntas incompletas...")
-
-            # Convertir a lista de IDs para consulta más sencilla
-            if all_questions:
-                question_ids = [str(q[0]) for q in all_questions]
-                question_ids_str = "'" + "','".join(question_ids) + "'"
-
-                logger.info(f"🔍 DEBUG - Consultando opciones para {len(question_ids)} preguntas")
-
-                # Consulta directa sin parámetros problemáticos
-                incomplete_query = f"""
-                    SELECT DISTINCT ao.question_id
-                    FROM answer_options ao
-                    WHERE ao.question_id IN ({question_ids_str})
-                    AND ao.texto IS NOT NULL
-                    AND ao.texto != ''
-                    AND ao.texto NOT LIKE '%.'
-                """
-
-                cur.execute(incomplete_query)
-                incomplete_question_ids = cur.fetchall()
-                incomplete_ids_set = {str(row[0]) for row in incomplete_question_ids}
-
-                logger.info(f"✅ PASO 2: {len(incomplete_ids_set)} preguntas incompletas identificadas")
-
-                # PASO 3: Priorizar - incompletas primero, luego completas
-                prioritized_questions = []
-
-                # Añadir preguntas incompletas primero
-                for q in all_questions:
-                    if str(q[0]) in incomplete_ids_set:
-                        prioritized_questions.append(q)
-
-                # Añadir preguntas completas después
-                for q in all_questions:
-                    if str(q[0]) not in incomplete_ids_set:
-                        prioritized_questions.append(q)
-
-                # Seleccionar las primeras N preguntas (priorizadas)
-                ut_questions = prioritized_questions[:questions_needed]
-
-                incomplete_count = sum(1 for q in ut_questions if str(q[0]) in incomplete_ids_set)
-                complete_count = len(ut_questions) - incomplete_count
-
-                logger.info(f"✅ UT{ut_number} ({category_name}): {len(ut_questions)} preguntas seleccionadas")
-                logger.info(f"📝 - Incompletas priorizadas: {incomplete_count}")
-                logger.info(f"📝 - Completas añadidas: {complete_count}")
-
-            else:
-                ut_questions = []
-                logger.warning(f"⚠️ No se encontraron preguntas para {category_name}")
+            if len(ut_questions) < questions_needed:
+                logger.warning(f"⚠️ Solo se encontraron {len(ut_questions)} de {questions_needed} preguntas para {category_name}")
 
             # Asignar preguntas al examen
             for question in ut_questions:

@@ -17,7 +17,17 @@
       "Bash(docker cp:*)",
       "Bash(docker logs:*)",
       "Bash(docker restart:*)",
-      "Bash(brew services:*)"
+      "Bash(brew services:*)",
+      "Bash(gcloud run services describe:*)",
+      "Bash(gcloud secrets versions access:*)",
+      "Bash(gcloud secrets:*)",
+      "Bash(gcloud sql users set-password:*)",
+      "Bash(gcloud run services update:*)",
+      "Bash(gcloud run services logs read:*)",
+      "Bash(gcloud sql users:*)",
+      "Bash(gcloud run revisions:*)",
+      "Bash(gcloud builds submit:*)",
+      "Bash(gcloud builds list:*)"
     ],
     "deny": [],
     "ask": []
