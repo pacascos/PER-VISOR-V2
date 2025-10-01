@@ -175,27 +175,28 @@
 .unified-side-nav {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    padding: 1.5rem;
+    gap: 0.5rem;
+    padding: 1rem;
     background: var(--bg-overlay);
     backdrop-filter: blur(10px);
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-md);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+    max-width: 300px;
 }
 
 /* Botones de navegación lateral */
 .unified-nav-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     background: var(--bg-primary);
     color: var(--secondary-color);
     border: 1px solid rgba(102, 126, 234, 0.2);
-    padding: 1rem 1.5rem;
-    border-radius: var(--border-radius-lg);
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius-md);
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     text-decoration: none;
     transition: var(--transition-normal);
     cursor: pointer;
@@ -217,9 +218,10 @@
 }
 
 .unified-nav-btn i {
-    font-size: 1.1rem;
-    width: 20px;
+    font-size: 1rem;
+    width: 16px;
     text-align: center;
+    flex-shrink: 0;
 }
 
 /* =============================================================================
@@ -331,13 +333,25 @@
     }
     
     .unified-side-nav {
-        padding: 1rem;
-        margin-bottom: 1.5rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        max-width: none;
     }
     
     .unified-nav-btn {
-        padding: 0.875rem 1.25rem;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+        flex: 1;
+        min-width: 120px;
+        justify-content: center;
+    }
+    
+    .unified-nav-btn i {
         font-size: 0.9rem;
+        width: 14px;
     }
     
     .page-title {
@@ -361,14 +375,25 @@
         font-size: 0.9rem;
     }
     
+    .unified-side-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        padding: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+    
     .unified-nav-btn {
-        padding: 0.75rem 1rem;
-        font-size: 0.85rem;
+        padding: 0.5rem 0.5rem;
+        font-size: 0.75rem;
+        flex: 1;
+        min-width: 80px;
+        justify-content: center;
     }
     
     .unified-nav-btn i {
-        font-size: 1rem;
-        width: 16px;
+        font-size: 0.8rem;
+        width: 12px;
     }
     
     .page-title {
@@ -418,6 +443,65 @@
 @keyframes unified-spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* =============================================================================
+   🎛️ VARIANTES DE NAVEGACIÓN
+   ============================================================================= */
+
+/* Menú lateral compacto (para páginas con mucho contenido) */
+.unified-side-nav-compact {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--bg-overlay);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1rem;
+    max-width: none;
+}
+
+.unified-side-nav-compact .unified-nav-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    flex: 1;
+    min-width: 100px;
+    justify-content: center;
+    text-align: center;
+}
+
+.unified-side-nav-compact .unified-nav-btn i {
+    font-size: 0.9rem;
+    width: 14px;
+}
+
+/* Menú lateral oculto por defecto (se puede mostrar con toggle) */
+.unified-side-nav-hidden {
+    display: none;
+}
+
+.unified-side-nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-md);
+    font-weight: 500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    margin-bottom: 1rem;
+}
+
+.unified-side-nav-toggle:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
 }
 
 /* =============================================================================
