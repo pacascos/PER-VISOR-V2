@@ -1758,6 +1758,35 @@ study_sessions          - Sesiones de estudio
 
 ---
 
-**Versión del documento:** 1.0
+## 🎓 Modo de Estudio - Versión 2.0 (2025-09-30)
+
+### ✅ Implementado y Mejorado
+
+#### **Nuevas Características:**
+- **Generación automática de tests**: Al seleccionar modo, se genera inmediatamente
+- **Interfaz optimizada**: Diseño más compacto y eficiente
+- **Cancelación de tests**: Botón para cancelar tests en curso
+- **Integración con banco de preguntas**: Preguntas incorrectas clickeables
+- **Consultas SQL optimizadas**: Mejor rendimiento en selección de preguntas
+
+#### **Mejoras Técnicas:**
+- **Optimización de consultas**: Reducción de JOINs de 4 a 2
+- **Eliminación de DISTINCT**: Mejor rendimiento en consultas complejas
+- **Navegación mejorada**: Flujo más intuitivo y predecible
+- **Validación mejorada**: Mensajes de error más claros
+
+#### **Archivos Modificados:**
+- `scripts/servidores/study_mode_logic.py` - Lógica optimizada
+- `src/web/study-config.html` - Interfaz mejorada
+- `src/web/study-mode-adapter.js` - Funcionalidad de cancelación
+- `src/web/study-results.html` - Integración con banco de preguntas
+- `src/web/question-statistics-dashboard.html` - Navegación mejorada
+
+#### **Documentación:**
+- `docs/MODO_ESTUDIO_MEJORAS.md` - Documentación completa de mejoras
+
+---
+
+**Versión del documento:** 2.0
 **Última actualización:** 2025-09-30
-**Total de features documentadas:** 60+
+**Total de features documentadas:** 65+

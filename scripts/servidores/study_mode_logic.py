@@ -134,16 +134,14 @@ def select_questions_failed(cur, user_id: str, selected_uts: List[int]) -> Tuple
 
         # First, get questions user has answered incorrectly
         cur.execute("""
-            SELECT DISTINCT q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta,
+            SELECT q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta,
                    COUNT(*) as failed_count
             FROM questions q
-            JOIN exams e ON q.exam_id = e.id
-            JOIN exam_questions eq ON q.id = eq.question_id
-            JOIN user_exams ue ON eq.user_exam_id = ue.id
+            JOIN user_answers ua ON q.id = ua.question_id
+            JOIN user_exams ue ON ua.user_exam_id = ue.id
             WHERE q.categoria = %s
             AND ue.user_id = %s
-            AND eq.is_correct = false
-            AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
+            AND ua.is_correct = false
             AND q.anulada = false
             GROUP BY q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta
             ORDER BY failed_count DESC, RANDOM()
@@ -225,15 +223,13 @@ def select_questions_new(cur, user_id: str, selected_uts: List[int]) -> Tuple[Li
         cur.execute("""
             SELECT q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta
             FROM questions q
-            JOIN exams e ON q.exam_id = e.id
             WHERE q.categoria = %s
             AND q.id NOT IN (
-                SELECT DISTINCT eq.question_id
-                FROM exam_questions eq
-                JOIN user_exams ue ON eq.user_exam_id = ue.id
+                SELECT DISTINCT ua.question_id
+                FROM user_answers ua
+                JOIN user_exams ue ON ua.user_exam_id = ue.id
                 WHERE ue.user_id = %s
             )
-            AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
             AND q.anulada = false
             ORDER BY RANDOM()
             LIMIT %s

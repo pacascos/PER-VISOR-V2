@@ -159,6 +159,48 @@ class StudyModeAdapter {
 
         document.body.appendChild(badge);
 
+        // Create cancel button
+        const cancelBtn = document.createElement('button');
+        cancelBtn.id = 'cancel-study-btn';
+        cancelBtn.style.cssText = `
+            position: fixed;
+            top: 50px;
+            left: 10px;
+            background: #ef4444;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 9998;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        `;
+        cancelBtn.innerHTML = `
+            <i class="fas fa-times"></i>
+            <span>Cancelar</span>
+        `;
+        cancelBtn.onclick = () => {
+            if (confirm('¿Estás seguro de que quieres cancelar este test de estudio? Se perderá el progreso actual.')) {
+                window.location.href = 'study-config.html';
+            }
+        };
+        cancelBtn.onmouseover = () => {
+            cancelBtn.style.background = '#dc2626';
+            cancelBtn.style.transform = 'translateY(-2px)';
+        };
+        cancelBtn.onmouseout = () => {
+            cancelBtn.style.background = '#ef4444';
+            cancelBtn.style.transform = 'translateY(0)';
+        };
+
+        document.body.appendChild(cancelBtn);
+
         // Add UT selection info to progress area
         const progressText = document.querySelector('.progress-text');
         if (progressText) {

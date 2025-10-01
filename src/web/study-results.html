@@ -349,7 +349,7 @@
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon">❌</div>
-                            <div class="stat-value" id="incorrect-value">0</div>
+                            <div class="stat-value" id="incorrect-value" style="cursor: pointer; text-decoration: underline;" onclick="viewIncorrectQuestions()">0</div>
                             <div class="stat-label">Incorrectas</div>
                         </div>
                         <div class="stat-card">
@@ -522,6 +522,54 @@
         function repeatStudyMode() {
             // Would need to store selected UTs to repeat
             window.location.href = 'study-config.html';
+        }
+
+        async function viewIncorrectQuestions() {
+            try {
+                console.log('🔍 Obteniendo preguntas incorrectas del test de estudio:', studyTestId);
+
+                const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+
+                // Obtener todas las preguntas del test de estudio con sus respuestas
+                const response = await fetch(`${API_URL}/study-tests/${studyTestId}/questions`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                // Filtrar solo las preguntas incorrectas
+                const incorrectQuestions = data.questions.filter(q => q.is_correct === false);
+
+                if (incorrectQuestions.length > 0) {
+                    // Extraer IDs de las preguntas incorrectas
+                    const incorrectQuestionIds = incorrectQuestions.map(q => q.id);
+
+                    // Guardar el filtro en localStorage para que el banco de preguntas lo use
+                    localStorage.setItem('failedQuestionsFilter', JSON.stringify({
+                        studyTestId: studyTestId,
+                        questionIds: incorrectQuestionIds,
+                        testDate: new Date().toISOString(),
+                        totalFailed: incorrectQuestions.length
+                    }));
+
+                    console.log('🔍 Redirigiendo al banco de preguntas con', incorrectQuestionIds.length, 'preguntas incorrectas');
+
+                    // Redirigir al banco de preguntas
+                    window.location.href = 'visor-nueva-arquitectura.html?filter=failed_questions';
+                } else {
+                    alert('No hay preguntas incorrectas en este test');
+                }
+
+            } catch (error) {
+                console.error('❌ Error obteniendo preguntas incorrectas:', error);
+                alert(`Error cargando preguntas incorrectas: ${error.message}`);
+            }
         }
     </script>
 </body>
