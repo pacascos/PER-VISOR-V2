@@ -90,9 +90,11 @@ class ExamPage {
 
                 // Las preguntas vienen como metadatos, necesitamos cargar los detalles
                 console.log('🔍 Preguntas del examen (metadatos):', data.questions);
+                console.log('🔍 Exam ID para cargar detalles:', data.exam_id);
                 this.currentExam.questionDetails = data.questions || [];
+                this.currentExam.exam_id = data.exam_id;
                 
-                // Cargar los detalles completos de las preguntas
+                // Cargar los detalles completos de las preguntas usando el exam_id
                 await this.loadQuestionDetails();
 
                 this.showExamInterface();
@@ -116,44 +118,30 @@ class ExamPage {
 
     async loadQuestionDetails() {
         try {
-            console.log('🔍 Cargando detalles completos de las preguntas...');
+            console.log('🔍 Cargando detalles completos de las preguntas para examen:', this.currentExam.exam_id);
             
-            // Crear array para almacenar los detalles completos
-            const detailedQuestions = [];
-            
-            // Cargar detalles de cada pregunta
-            for (let i = 0; i < this.currentExam.questionDetails.length; i++) {
-                const questionMeta = this.currentExam.questionDetails[i];
-                
-                try {
-                    const response = await fetch(`${this.API_BASE}/preguntas-individual/${questionMeta.question_id}`, {
-                        headers: {
-                            'Authorization': `Bearer ${this.authToken}`
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        const responseData = await response.json();
-                        console.log(`✅ Pregunta ${i + 1} cargada:`, responseData);
-                        if (responseData.success && responseData.question) {
-                            detailedQuestions.push(responseData.question);
-                        } else {
-                            console.error(`❌ Pregunta ${i + 1} sin datos válidos:`, responseData);
-                            throw new Error(`Pregunta ${i + 1} sin datos válidos`);
-                        }
-                    } else {
-                        console.error(`❌ Error cargando pregunta ${i + 1}:`, response.status);
-                        throw new Error(`Error cargando pregunta ${i + 1}`);
-                    }
-                } catch (error) {
-                    console.error(`❌ Error en pregunta ${i + 1}:`, error);
-                    throw error;
+            // Usar el endpoint específico para obtener todas las preguntas de un examen
+            const response = await fetch(`${this.API_BASE}/exams/${this.currentExam.exam_id}/questions`, {
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`
                 }
-            }
+            });
             
-            // Reemplazar los metadatos con los detalles completos
-            this.currentExam.questionDetails = detailedQuestions;
-            console.log('✅ Todas las preguntas cargadas con detalles completos:', this.currentExam.questionDetails.length);
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log('✅ Preguntas del examen cargadas:', responseData);
+                
+                if (responseData.questions && Array.isArray(responseData.questions)) {
+                    this.currentExam.questionDetails = responseData.questions;
+                    console.log('✅ Todas las preguntas cargadas con detalles completos:', this.currentExam.questionDetails.length);
+                } else {
+                    console.error('❌ Formato de respuesta incorrecto:', responseData);
+                    throw new Error('Formato de respuesta incorrecto del servidor');
+                }
+            } else {
+                console.error('❌ Error cargando preguntas del examen:', response.status);
+                throw new Error(`Error cargando preguntas del examen: ${response.status}`);
+            }
             
         } catch (error) {
             console.error('❌ Error cargando detalles de preguntas:', error);
