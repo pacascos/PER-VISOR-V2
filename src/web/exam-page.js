@@ -88,10 +88,12 @@ class ExamPage {
                 this.timeRemaining = 90 * 60; // Reset timer
                 this.examStartTime = new Date(); // Track exam start time for statistics
 
-        // Las preguntas ya vienen en la respuesta del examen
-        console.log('🔍 Preguntas del examen:', data.questions);
-        console.log('🔍 Estructura de la primera pregunta:', data.questions[0]);
-        this.currentExam.questionDetails = data.questions || [];
+                // Las preguntas vienen como metadatos, necesitamos cargar los detalles
+                console.log('🔍 Preguntas del examen (metadatos):', data.questions);
+                this.currentExam.questionDetails = data.questions || [];
+                
+                // Cargar los detalles completos de las preguntas
+                await this.loadQuestionDetails();
 
                 this.showExamInterface();
                 this.startTimer();
@@ -112,6 +114,50 @@ class ExamPage {
         }
     }
 
+    async loadQuestionDetails() {
+        try {
+            console.log('🔍 Cargando detalles completos de las preguntas...');
+            
+            // Crear array para almacenar los detalles completos
+            const detailedQuestions = [];
+            
+            // Cargar detalles de cada pregunta
+            for (let i = 0; i < this.currentExam.questionDetails.length; i++) {
+                const questionMeta = this.currentExam.questionDetails[i];
+                
+                try {
+                    const response = await fetch(`${this.API_BASE}/preguntas/${questionMeta.question_id}`, {
+                        headers: {
+                            'Authorization': `Bearer ${this.authToken}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const questionData = await response.json();
+                        console.log(`✅ Pregunta ${i + 1} cargada:`, questionData);
+                        detailedQuestions.push(questionData);
+                    } else {
+                        console.error(`❌ Error cargando pregunta ${i + 1}:`, response.status);
+                        throw new Error(`Error cargando pregunta ${i + 1}`);
+                    }
+                } catch (error) {
+                    console.error(`❌ Error en pregunta ${i + 1}:`, error);
+                    throw error;
+                }
+            }
+            
+            // Reemplazar los metadatos con los detalles completos
+            this.currentExam.questionDetails = detailedQuestions;
+            console.log('✅ Todas las preguntas cargadas con detalles completos:', this.currentExam.questionDetails.length);
+            
+        } catch (error) {
+            console.error('❌ Error cargando detalles de preguntas:', error);
+            this.showAlert('Error cargando preguntas del examen', 'danger');
+            setTimeout(() => {
+                window.location.href = 'exam-system.html';
+            }, 3000);
+        }
+    }
 
     showExamInterface() {
         document.getElementById('loadingState').style.display = 'none';
