@@ -26,6 +26,7 @@ class ExamPage {
 
     async checkAuthStatus() {
         if (!this.authToken) {
+            console.error('❌ No auth token found');
             this.showAlert('Debes iniciar sesión para realizar un examen', 'danger');
             setTimeout(() => {
                 window.location.href = 'exam-system.html';
@@ -33,29 +34,37 @@ class ExamPage {
             return;
         }
 
+        console.log('🔍 Checking auth status with token:', this.authToken.substring(0, 20) + '...');
+
         try {
-            const response = await fetch(`${this.API_BASE}/current-user`, {
+            const response = await fetch(`${this.API_BASE}/auth/me`, {
                 headers: {
-                    'Authorization': `Bearer ${this.authToken}`
+                    'Authorization': `Bearer ${this.authToken}`,
+                    'Content-Type': 'application/json'
                 }
             });
 
+            console.log('📡 Auth response status:', response.status);
+
             if (response.ok) {
                 const data = await response.json();
-                this.currentUser = data;
+                console.log('✅ User authenticated:', data);
+                this.currentUser = data.user || data;
                 this.startNewExam();
             } else {
-                this.showAlert('Error de autenticación', 'danger');
+                const errorData = await response.json().catch(() => ({ error: 'Error de autenticación' }));
+                console.error('❌ Auth error:', errorData);
+                this.showAlert(`Error de autenticación: ${errorData.error || 'Token inválido'}`, 'danger');
                 setTimeout(() => {
                     window.location.href = 'exam-system.html';
-                }, 2000);
+                }, 3000);
             }
         } catch (error) {
-            console.error('Auth check error:', error);
-            this.showAlert('Error de conexión', 'danger');
+            console.error('❌ Auth check error:', error);
+            this.showAlert(`Error de conexión: ${error.message}`, 'danger');
             setTimeout(() => {
                 window.location.href = 'exam-system.html';
-            }, 2000);
+            }, 3000);
         }
     }
 
