@@ -52,7 +52,7 @@ class ExamSystem {
 
         // Dashboard events
         document.getElementById('startExamBtn').addEventListener('click', () => {
-            this.startNewExam();
+            window.location.href = 'exam.html';
         });
 
         document.getElementById('viewQuestionsBankBtn').addEventListener('click', () => {
@@ -328,34 +328,11 @@ class ExamSystem {
     // Exam Methods
     async startNewExam() {
         try {
-            this.showAlert('Generando examen...', 'info');
+            this.showAlert('Redirigiendo al examen...', 'info');
 
-            const response = await fetch(`${this.API_BASE}/exams/generate`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${this.authToken}`
-                }
-            });
+            // Redirigir a la página de examen
+            window.location.href = 'exam.html';
 
-            const data = await response.json();
-
-            if (response.ok) {
-                this.currentExam = data;
-                this.currentQuestionIndex = 0;
-                this.userAnswers = {};
-                this.timeRemaining = 90 * 60; // Reset timer
-                this.examStartTime = new Date(); // Track exam start time for statistics
-
-                // Load exam questions details
-                await this.loadExamQuestions();
-
-                this.showExamInterface();
-                this.startTimer();
-                this.displayCurrentQuestion();
-                this.showAlert('¡Examen iniciado! Tienes 90 minutos.', 'success');
-            } else {
-                this.showAlert(data.error || 'Error generando examen', 'danger');
-            }
         } catch (error) {
             console.error('Error starting exam:', error);
             this.showAlert('Error de conexión', 'danger');
