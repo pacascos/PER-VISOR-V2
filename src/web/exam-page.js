@@ -236,10 +236,10 @@ class ExamPage {
         console.log('🔍 Propiedades disponibles:', Object.keys(question));
 
         const options = [
-            { letter: 'A', text: question.opciones?.A || 'Opción A no disponible' },
-            { letter: 'B', text: question.opciones?.B || 'Opción B no disponible' },
-            { letter: 'C', text: question.opciones?.C || 'Opción C no disponible' },
-            { letter: 'D', text: question.opciones?.D || 'Opción D no disponible' }
+            { letter: 'A', text: question.opcion_a || 'Opción A no disponible' },
+            { letter: 'B', text: question.opcion_b || 'Opción B no disponible' },
+            { letter: 'C', text: question.opcion_c || 'Opción C no disponible' },
+            { letter: 'D', text: question.opcion_d || 'Opción D no disponible' }
         ];
 
         options.forEach((option, index) => {
