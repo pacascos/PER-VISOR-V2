@@ -2911,8 +2911,8 @@ def record_question_attempt():
         if not data:
             return jsonify({'error': 'No se proporcionaron datos'}), 400
 
-        # Validar datos requeridos
-        required_fields = ['user_id', 'question_id', 'user_answer', 'correct_answer', 'is_correct']
+        # Validar datos requeridos básicos
+        required_fields = ['user_id', 'question_id', 'user_answer']
         for field in required_fields:
             if field not in data:
                 return jsonify({'error': f'Campo requerido faltante: {field}'}), 400
@@ -2921,7 +2921,19 @@ def record_question_attempt():
         if not conn:
             return jsonify({'error': 'Database connection failed'}), 500
 
-        cur = conn.cursor()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Si no se proporcionó correct_answer o is_correct, buscarlos en la BD
+        if not data.get('correct_answer') or data.get('is_correct') is None:
+            cur.execute("""
+                SELECT respuesta_correcta FROM questions WHERE id = %s
+            """, (data['question_id'],))
+            question = cur.fetchone()
+            if question:
+                data['correct_answer'] = question['respuesta_correcta']
+                data['is_correct'] = (data['user_answer'].upper() == question['respuesta_correcta'].upper())
+            else:
+                return jsonify({'error': 'Pregunta no encontrada'}), 404
 
         # Insertar intento detallado
         cur.execute("""
