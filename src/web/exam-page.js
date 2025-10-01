@@ -126,16 +126,21 @@ class ExamPage {
                 const questionMeta = this.currentExam.questionDetails[i];
                 
                 try {
-                    const response = await fetch(`${this.API_BASE}/preguntas/${questionMeta.question_id}`, {
+                    const response = await fetch(`${this.API_BASE}/preguntas-individual/${questionMeta.question_id}`, {
                         headers: {
                             'Authorization': `Bearer ${this.authToken}`
                         }
                     });
                     
                     if (response.ok) {
-                        const questionData = await response.json();
-                        console.log(`✅ Pregunta ${i + 1} cargada:`, questionData);
-                        detailedQuestions.push(questionData);
+                        const responseData = await response.json();
+                        console.log(`✅ Pregunta ${i + 1} cargada:`, responseData);
+                        if (responseData.success && responseData.question) {
+                            detailedQuestions.push(responseData.question);
+                        } else {
+                            console.error(`❌ Pregunta ${i + 1} sin datos válidos:`, responseData);
+                            throw new Error(`Pregunta ${i + 1} sin datos válidos`);
+                        }
                     } else {
                         console.error(`❌ Error cargando pregunta ${i + 1}:`, response.status);
                         throw new Error(`Error cargando pregunta ${i + 1}`);
@@ -243,10 +248,10 @@ class ExamPage {
         console.log('🔍 Propiedades disponibles:', Object.keys(question));
 
         const options = [
-            { letter: 'A', text: question.respuesta_a },
-            { letter: 'B', text: question.respuesta_b },
-            { letter: 'C', text: question.respuesta_c },
-            { letter: 'D', text: question.respuesta_d }
+            { letter: 'A', text: question.opciones?.A || 'Opción A no disponible' },
+            { letter: 'B', text: question.opciones?.B || 'Opción B no disponible' },
+            { letter: 'C', text: question.opciones?.C || 'Opción C no disponible' },
+            { letter: 'D', text: question.opciones?.D || 'Opción D no disponible' }
         ];
 
         options.forEach((option, index) => {
