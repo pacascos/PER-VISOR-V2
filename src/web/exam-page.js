@@ -88,8 +88,9 @@ class ExamPage {
                 this.timeRemaining = 90 * 60; // Reset timer
                 this.examStartTime = new Date(); // Track exam start time for statistics
 
-                // Load exam questions details
-                await this.loadExamQuestions();
+                // Las preguntas ya vienen en la respuesta del examen
+                console.log('🔍 Preguntas del examen:', data.questions);
+                this.currentExam.questionDetails = data.questions || [];
 
                 this.showExamInterface();
                 this.startTimer();
@@ -110,30 +111,6 @@ class ExamPage {
         }
     }
 
-    async loadExamQuestions() {
-        // Load detailed question data from the exam endpoint
-        try {
-            console.log('🔍 Cargando preguntas del examen:', this.currentExam);
-
-            const response = await fetch(`${this.API_BASE}/preguntas/${this.currentExam.exam_id}`, {
-                headers: {
-                    'Authorization': `Bearer ${this.authToken}`
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log('🔍 Cargando preguntas del examen:', data);
-                this.currentExam.questionDetails = data.questions || [];
-                console.log('✅ Preguntas cargadas:', this.currentExam.questionDetails.length);
-            } else {
-                throw new Error('Error cargando preguntas del examen');
-            }
-        } catch (error) {
-            console.error('Error loading exam questions:', error);
-            throw error;
-        }
-    }
 
     showExamInterface() {
         document.getElementById('loadingState').style.display = 'none';
