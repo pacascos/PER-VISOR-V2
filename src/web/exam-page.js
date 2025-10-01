@@ -123,8 +123,9 @@ class ExamPage {
 
             if (response.ok) {
                 const data = await response.json();
-                this.currentExam.questionDetails = data.questions;
-                console.log('✅ Preguntas cargadas:', data.questions.length);
+                console.log('🔍 Cargando preguntas del examen:', data);
+                this.currentExam.questionDetails = data.questions || [];
+                console.log('✅ Preguntas cargadas:', this.currentExam.questionDetails.length);
             } else {
                 throw new Error('Error cargando preguntas del examen');
             }
