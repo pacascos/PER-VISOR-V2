@@ -308,24 +308,31 @@ class ExamPage {
             try {
                 this.showAlert('Finalizando examen...', 'info');
 
+                // Validar que tenemos los datos necesarios
+                if (!this.currentExam || !this.currentExam.questionDetails || !this.currentExam.exam_id) {
+                    throw new Error('Datos del examen incompletos');
+                }
+
                 // Calculate results
                 const results = this.calculateResults();
+                console.log('📊 Resultados calculados:', results);
                 
                 // Save exam results
-                await this.saveExamResults(results);
+                const saveResult = await this.saveExamResults(results);
+                console.log('💾 Resultados guardados:', saveResult);
 
                 // Show results
                 this.showResults(results);
 
             } catch (error) {
-                console.error('Error finishing exam:', error);
-                this.showAlert('Error finalizando examen', 'danger');
+                console.error('❌ Error finishing exam:', error);
+                this.showAlert(`Error finalizando examen: ${error.message}`, 'danger');
             }
         }
     }
 
     calculateResults() {
-        const totalQuestions = this.currentExam.total_questions;
+        const totalQuestions = this.currentExam.questionDetails.length;
         let correctAnswers = 0;
         let incorrectAnswers = 0;
         let unanswered = 0;
@@ -334,6 +341,8 @@ class ExamPage {
 
         for (let i = 0; i < totalQuestions; i++) {
             const question = this.currentExam.questionDetails[i];
+            if (!question) continue; // Skip if question doesn't exist
+            
             const userAnswer = this.userAnswers[i];
             const correctAnswer = question.respuesta_correcta;
             
@@ -348,7 +357,7 @@ class ExamPage {
             }
 
             questionResults.push({
-                question_id: question.id,
+                question_id: question.id || question.question_id,
                 user_answer: userAnswer,
                 correct_answer: correctAnswer,
                 is_correct: isCorrect,
@@ -374,6 +383,20 @@ class ExamPage {
     }
 
     async saveExamResults(results) {
+        // Convertir userAnswers a formato esperado por el backend
+        const answers = [];
+        for (let i = 0; i < this.currentExam.questionDetails.length; i++) {
+            const question = this.currentExam.questionDetails[i];
+            const selectedAnswer = this.userAnswers[i];
+            
+            if (selectedAnswer) {
+                answers.push({
+                    question_id: question.id || question.question_id,
+                    selected_answer: selectedAnswer
+                });
+            }
+        }
+
         const response = await fetch(`${this.API_BASE}/exams/${this.currentExam.exam_id}/submit`, {
             method: 'POST',
             headers: {
@@ -381,13 +404,15 @@ class ExamPage {
                 'Authorization': `Bearer ${this.authToken}`
             },
             body: JSON.stringify({
-                answers: this.userAnswers,
+                answers: answers,
                 duration_minutes: results.duration_minutes
             })
         });
 
         if (!response.ok) {
-            throw new Error('Error guardando resultados del examen');
+            const errorData = await response.json().catch(() => ({ error: 'Error desconocido' }));
+            console.error('Error del servidor:', errorData);
+            throw new Error(`Error guardando resultados: ${errorData.error || response.statusText}`);
         }
 
         return response.json();
