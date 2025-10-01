@@ -70,7 +70,6 @@ class ExamPage {
 
     async startNewExam() {
         try {
-            this.showAlert('Generando examen...', 'info');
 
             const response = await fetch(`${this.API_BASE}/exams/generate`, {
                 method: 'POST',
