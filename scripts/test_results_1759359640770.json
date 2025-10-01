@@ -1,0 +1,56 @@
+{
+  "timestamp": "2025-10-01T22:58:09.046Z",
+  "tests": [
+    {
+      "name": "API Health Check",
+      "status": "PASSED",
+      "timestamp": "2025-10-01T22:58:09.495Z"
+    },
+    {
+      "name": "Homepage",
+      "status": "PASSED",
+      "timestamp": "2025-10-01T22:58:11.677Z"
+    },
+    {
+      "name": "CORS Functionality",
+      "status": "PASSED",
+      "timestamp": "2025-10-01T22:58:13.348Z"
+    },
+    {
+      "name": "Exam System (Nuevo Examen)",
+      "status": "FAILED",
+      "error": "No se detectaron opciones de respuesta",
+      "timestamp": "2025-10-01T22:58:39.337Z"
+    },
+    {
+      "name": "Modo Estudio",
+      "status": "PASSED",
+      "timestamp": "2025-10-01T22:59:03.268Z"
+    },
+    {
+      "name": "Estadísticas de Preguntas",
+      "status": "PASSED",
+      "timestamp": "2025-10-01T22:59:27.981Z"
+    },
+    {
+      "name": "Estadísticas (Dashboard)",
+      "status": "PASSED",
+      "timestamp": "2025-10-01T22:59:51.906Z"
+    },
+    {
+      "name": "Banco de Preguntas",
+      "status": "PASSED",
+      "timestamp": "2025-10-01T23:00:15.856Z"
+    },
+    {
+      "name": "Panel de Administración",
+      "status": "PASSED",
+      "timestamp": "2025-10-01T23:00:39.728Z"
+    }
+  ],
+  "passed": 8,
+  "failed": 1,
+  "errors": [
+    "Exam System (Nuevo Examen): No se detectaron opciones de respuesta"
+  ]
+}

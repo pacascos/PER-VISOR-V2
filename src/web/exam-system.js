@@ -99,7 +99,7 @@ class ExamSystem {
     async checkAuthStatus() {
         if (this.authToken) {
             try {
-                const response = await fetch(`${this.API_BASE}/auth/me`, {
+                const response = await fetch(`${this.API_BASE}/api/auth/me`, {
                     headers: {
                         'Authorization': `Bearer ${this.authToken}`
                     }
@@ -142,7 +142,7 @@ class ExamSystem {
         const password = document.getElementById('loginPassword').value;
 
         try {
-            const response = await fetch(`${this.API_BASE}/auth/login`, {
+            const response = await fetch(`${this.API_BASE}/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -187,7 +187,7 @@ class ExamSystem {
         const password = document.getElementById('registerPassword').value;
 
         try {
-            const response = await fetch(`${this.API_BASE}/auth/register`, {
+            const response = await fetch(`${this.API_BASE}/api/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -270,7 +270,7 @@ class ExamSystem {
 
     async checkAdminRole() {
         try {
-            const response = await fetch(`${this.API_BASE}/auth/me`, {
+            const response = await fetch(`${this.API_BASE}/api/auth/me`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`,
                     'Content-Type': 'application/json'
