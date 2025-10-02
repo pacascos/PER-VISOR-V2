@@ -38,7 +38,7 @@ class FeatureFlags {
             // Use unified exam page instead of exam.html
             'unified_exam_page': {
                 enabled: true,
-                rolloutPercentage: 75, // 75% of users (increased from 50%)
+                rolloutPercentage: 100, // 100% of users - ROLLOUT COMPLETO
                 description: 'New unified exam page using ExamController'
             },
 
