@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas de Preguntas - PER Visor</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS Unificado -->
+    <link rel="stylesheet" href="styles/unified-navigation.css">
+    
+    <style>
+        /* Estilos específicos de la página */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        /* Contenido principal */
+        .dashboard-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e6f3ff 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1rem;
+            }
+            
+            .dashboard-content {
+                padding: 1.5rem;
+                margin-top: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .stat-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Navegación Unificada Superior -->
+        <div class="unified-top-nav">
+            <button class="unified-back-btn" onclick="window.location.href='exam-system.html'">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+            <h1 class="page-title">
+                <i class="fas fa-chart-line"></i> Estadísticas de Preguntas
+            </h1>
+            <button class="unified-nav-btn" onclick="window.location.href='visor-nueva-arquitectura.html'">
+                <i class="fas fa-book"></i> Banco de Preguntas
+            </button>
+        </div>
+
+        <!-- Navegación Lateral -->
+        <div class="unified-side-nav">
+            <a href="exam-system.html" class="unified-nav-btn">
+                <i class="fas fa-home"></i> Sistema Principal
+            </a>
+            <a href="visor-nueva-arquitectura.html" class="unified-nav-btn">
+                <i class="fas fa-book"></i> Banco de Preguntas
+            </a>
+            <a href="statistics-dashboard.html" class="unified-nav-btn">
+                <i class="fas fa-chart-bar"></i> Mis Estadísticas
+            </a>
+            <a href="study-config.html" class="unified-nav-btn">
+                <i class="fas fa-book-reader"></i> Modo de Estudio
+            </a>
+        </div>
+
+        <!-- Contenido Principal -->
+        <div class="dashboard-content">
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+            </div>
+
+            <div id="dashboardContent" style="display: none;">
+                <!-- Estadísticas Generales -->
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="stat-number" id="totalQuestions">0</div>
+                        <div class="stat-label">Total Preguntas</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="stat-number" id="failedQuestions">0</div>
+                        <div class="stat-label">Preguntas Falladas</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-number" id="failureRate">0%</div>
+                        <div class="stat-label">Tasa de Error</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="stat-number" id="topCategory">N/A</div>
+                        <div class="stat-label">Categoría Más Fallada</div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Categorías -->
+                <div class="chart-container">
+                    <h3 style="margin-top: 0; color: #2d3748;">
+                        <i class="fas fa-chart-pie me-2"></i>Errores por Categoría
+                    </h3>
+                    <canvas id="categoryChart" width="400" height="200"></canvas>
+                </div>
+
+                <!-- Tabla de Preguntas Más Falladas -->
+                <div class="chart-container">
+                    <h3 style="margin-top: 0; color: #2d3748;">
+                        <i class="fas fa-list me-2"></i>Preguntas Más Falladas
+                    </h3>
+                    <div id="failedQuestionsTable">
+                        <!-- Tabla se llenará dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="unified-btn-center">
+                <button class="unified-btn-primary" onclick="refreshStats()">
+                    <i class="fas fa-sync-alt"></i> Actualizar Estadísticas
+                </button>
+                <button class="unified-btn-secondary" onclick="exportStats()">
+                    <i class="fas fa-download"></i> Exportar Datos
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulación de carga de datos
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+                loadStats();
+            }, 2000);
+        });
+
+        function loadStats() {
+            // Simulación de datos
+            document.getElementById('totalQuestions').textContent = '1,247';
+            document.getElementById('failedQuestions').textContent = '89';
+            document.getElementById('failureRate').textContent = '7.1%';
+            document.getElementById('topCategory').textContent = 'Navegación';
+        }
+
+        function refreshStats() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+            document.getElementById('dashboardContent').style.display = 'none';
+            
+            setTimeout(() => {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+                loadStats();
+            }, 1500);
+        }
+
+        function exportStats() {
+            alert('Funcionalidad de exportación en desarrollo');
+        }
+    </script>
+</body>
+</html>

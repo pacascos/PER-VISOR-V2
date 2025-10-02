@@ -18,6 +18,9 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Unificado -->
+    <link rel="stylesheet" href="styles/unified-navigation.css">
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -77,32 +80,7 @@
             align-items: center;
         }
 
-        .nav-btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .nav-btn-primary {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            color: white;
-        }
-
-        .nav-btn-secondary {
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-            color: white;
-        }
-
-        .nav-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-        }
+        /* Estilos de navegación movidos a unified-navigation.css */
 
         .stats-title {
             font-size: 2.5rem;
@@ -560,25 +538,38 @@
 </head>
 <body>
     <div class="stats-container">
-        <!-- Top Navigation -->
-        <div class="top-navigation">
-            <button class="nav-btn nav-btn-primary" onclick="location.href='exam-system.html'">
-                <i class="fas fa-arrow-left me-2"></i>Volver al Sistema
+        <!-- Navegación Unificada Superior -->
+        <div class="unified-top-nav">
+            <button class="unified-back-btn" onclick="location.href='exam-system.html'">
+                <i class="fas fa-arrow-left"></i> Volver al Sistema
             </button>
-            <h2 class="mb-0" style="color: var(--primary-color); font-weight: 600;">
-                <i class="fas fa-chart-line me-2"></i>Dashboard de Estadísticas
-            </h2>
-            <button class="nav-btn nav-btn-secondary" onclick="location.href='visor-nueva-arquitectura.html'">
-                <i class="fas fa-book me-2"></i>Banco de Preguntas
-            </button>
+            <h1 class="page-title">
+                <i class="fas fa-chart-line"></i> Dashboard de Estadísticas
+            </h1>
+            <div></div>
+        </div>
+
+        <!-- Barra de Navegación con Tabs -->
+        <div class="unified-tab-nav">
+            <a href="exam-system.html" class="unified-tab-item">
+                <i class="fas fa-home"></i> Principal
+            </a>
+            <a href="visor-nueva-arquitectura.html" class="unified-tab-item">
+                <i class="fas fa-book"></i> Banco
+            </a>
+            <a href="statistics-dashboard.html" class="unified-tab-item active">
+                <i class="fas fa-chart-bar"></i> Estadísticas
+            </a>
+            <a href="question-statistics-dashboard.html" class="unified-tab-item">
+                <i class="fas fa-chart-line"></i> Preguntas
+            </a>
+            <a href="study-config.html" class="unified-tab-item">
+                <i class="fas fa-book-reader"></i> Estudio
+            </a>
         </div>
 
         <!-- Header -->
         <div class="stats-header">
-            <h1 class="stats-title">
-                <i class="fas fa-chart-line me-3"></i>
-                Dashboard de Estadísticas
-            </h1>
             <p class="stats-subtitle">Seguimiento de tu progreso en el examen PER</p>
 
             <div class="user-info-header">

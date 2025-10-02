@@ -22,6 +22,9 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Unificado -->
+    <link rel="stylesheet" href="styles/unified-navigation.css">
 
     <style>
         * {
@@ -564,6 +567,14 @@
                     </div>
 
                     <div class="exam-actions">
+                        <div class="action-card" id="studyModeBtn">
+                            <div class="action-icon" style="color: #667eea;">
+                                <i class="fas fa-book-reader"></i>
+                            </div>
+                            <div class="action-title">Estudio</div>
+                            <div class="action-description">Practica seleccionando UTs específicas y modo de estudio</div>
+                        </div>
+
                         <div class="action-card" id="startExamBtn">
                             <div class="action-icon">
                                 <i class="fas fa-play-circle"></i>
@@ -603,6 +614,28 @@
                             <div class="action-title">Panel de Administración</div>
                             <div class="action-description">Gestionar usuarios y estadísticas del sistema</div>
                         </div>
+                    </div>
+
+                    <!-- Barra de Navegación con Tabs -->
+                    <div class="unified-tab-nav">
+                        <a href="exam-system.html" class="unified-tab-item active">
+                            <i class="fas fa-home"></i> Principal
+                        </a>
+                        <a href="visor-nueva-arquitectura.html" class="unified-tab-item">
+                            <i class="fas fa-book"></i> Banco
+                        </a>
+                        <a href="statistics-dashboard.html" class="unified-tab-item">
+                            <i class="fas fa-chart-bar"></i> Estadísticas
+                        </a>
+                        <a href="question-statistics-dashboard.html" class="unified-tab-item">
+                            <i class="fas fa-chart-line"></i> Preguntas
+                        </a>
+                        <a href="study-config.html" class="unified-tab-item">
+                            <i class="fas fa-book-reader"></i> Estudio
+                        </a>
+                        <a href="exam.html" class="unified-tab-item">
+                            <i class="fas fa-file-alt"></i> Examen
+                        </a>
                     </div>
 
                     <!-- Pie de página con información de versión -->
@@ -711,6 +744,9 @@
 
     <!-- Exam System JS -->
     <script src="exam-system.js"></script>
+
+    <!-- Study Mode Adapter -->
+    <script src="study-mode-adapter.js"></script>
 
     <!-- Configurar indicador de entorno -->
     <script>
