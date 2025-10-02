@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados Test de Estudio - Sistema PER</title>
+
+    <!-- Favicon dinámico -->
+    <link rel="icon" type="image/svg+xml" href="" id="dynamic-favicon">
+    <script>
+        const isProduction = window.location.hostname === 'bancotest.com';
+        document.getElementById('dynamic-favicon').href = isProduction ? 'favicon-prod.svg' : 'favicon.svg';
+        window.ENVIRONMENT = isProduction ? 'PRODUCCIÓN' : 'DESARROLLO';
+        window.ENVIRONMENT_COLOR = isProduction ? '#dc2626' : '#059669';
+    </script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Unificado -->
+    <link rel="stylesheet" href="styles/unified-navigation.css">
+
+    <!-- Configuration -->
+    <script src="config.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 2rem 0;
+        }
+
+        .environment-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .results-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .card-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .score-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid #e5e7eb;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #667eea;
+            margin: 2rem 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ut-results {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .ut-result-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+        }
+
+        .ut-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .ut-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .ut-title {
+            flex: 1;
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #333;
+        }
+
+        .ut-score {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .ut-score.good {
+            color: #059669;
+        }
+
+        .ut-score.bad {
+            color: #dc2626;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        /* Estilos de navegación movidos a unified-navigation.css */
+
+        .congrats-message {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .needs-improvement {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(102, 126, 234, 0.2);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .mode-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .mode-random {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .mode-failed {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .mode-new {
+            background: rgba(59, 130, 246, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Indicador de entorno -->
+    <div class="environment-indicator" id="env-indicator"></div>
+
+    <div class="main-container">
+        <div class="results-card">
+            <div class="card-header">
+                <h1><i class="fas fa-book-reader"></i> Resultados del Test de Estudio</h1>
+                <div id="mode-display"></div>
+            </div>
+
+            <div class="card-body">
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Cargando resultados...</p>
+                </div>
+
+                <div id="results-content" style="display: none;">
+                    <!-- Message -->
+                    <div id="result-message"></div>
+
+                    <!-- Overall score -->
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <div class="score-display" id="score-display">0%</div>
+                        <div class="score-label">
+                            <span id="correct-count">0</span> de <span id="total-count">0</span> correctas
+                        </div>
+                    </div>
+
+                    <!-- Stats grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">⏱️</div>
+                            <div class="stat-value" id="duration-value">0</div>
+                            <div class="stat-label">Minutos</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-value" id="correct-value">0</div>
+                            <div class="stat-label">Correctas</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">❌</div>
+                            <div class="stat-value" id="incorrect-value" style="cursor: pointer; text-decoration: underline;" onclick="viewIncorrectQuestions()">0</div>
+                            <div class="stat-label">Incorrectas</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📚</div>
+                            <div class="stat-value" id="uts-value">0</div>
+                            <div class="stat-label">UTs estudiadas</div>
+                        </div>
+                    </div>
+
+                    <!-- UT Results -->
+                    <div class="section-title">
+                        <i class="fas fa-chart-bar"></i>
+                        Resultados por Unidad Temática
+                    </div>
+                    <div class="ut-results" id="ut-results"></div>
+
+                    <!-- Navegación Unificada Superior -->
+                    <div class="unified-top-nav">
+                        <button class="unified-back-btn" onclick="goToHome()">
+                            <i class="fas fa-home"></i> Volver al Inicio
+                        </button>
+                        <h1 class="page-title">
+                            <i class="fas fa-chart-line"></i> Resultados del Test de Estudio
+                        </h1>
+                        <div></div>
+                    </div>
+
+                    <!-- Barra de Navegación con Tabs -->
+                    <div class="unified-tab-nav">
+                        <a href="exam-system.html" class="unified-tab-item">
+                            <i class="fas fa-home"></i> Principal
+                        </a>
+                        <a href="visor-nueva-arquitectura.html" class="unified-tab-item">
+                            <i class="fas fa-book"></i> Banco
+                        </a>
+                        <a href="statistics-dashboard.html" class="unified-tab-item">
+                            <i class="fas fa-chart-bar"></i> Estadísticas
+                        </a>
+                        <a href="question-statistics-dashboard.html" class="unified-tab-item">
+                            <i class="fas fa-chart-line"></i> Preguntas
+                        </a>
+                        <a href="study-config.html" class="unified-tab-item">
+                            <i class="fas fa-book-reader"></i> Estudio
+                        </a>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="unified-btn-center">
+                        <button class="unified-btn-primary" onclick="repeatStudyMode()">
+                            <i class="fas fa-redo"></i> Repetir con las mismas UTs
+                        </button>
+                        <button class="unified-btn-secondary" onclick="newStudyTest()">
+                            <i class="fas fa-book-reader"></i> Nuevo Test de Estudio
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration - usar window.API_BASE si está disponible
+        const API_URL = window.API_BASE || (window.location.hostname === 'bancotest.com'
+            ? 'https://per-api-435987927843.europe-west1.run.app'
+            : 'http://localhost:5001');
+
+        console.log('🌐 study-results.html - API_URL:', API_URL);
+
+        let studyTestId = null;
+        let resultsData = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Set environment indicator
+            const envIndicator = document.getElementById('env-indicator');
+            envIndicator.textContent = window.ENVIRONMENT;
+            envIndicator.style.background = window.ENVIRONMENT_COLOR;
+
+            // Get study test ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            studyTestId = urlParams.get('study_test_id');
+
+            if (!studyTestId) {
+                alert('ID de test de estudio no encontrado');
+                window.location.href = 'exam-system.html';
+                return;
+            }
+
+            // Check for results in sessionStorage first
+            const storedResults = sessionStorage.getItem('studyTestResults');
+            if (storedResults) {
+                resultsData = JSON.parse(storedResults);
+                displayResults();
+                return;
+            }
+
+            // Otherwise fetch from API
+            await loadResults();
+        });
+
+        async function loadResults() {
+            try {
+                const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                const response = await fetch(`${API_URL}/api/study-tests/${studyTestId}/questions`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error loading results');
+                }
+
+                const data = await response.json();
+
+                // Calculate results from questions
+                resultsData = calculateResultsFromQuestions(data);
+                displayResults();
+
+            } catch (error) {
+                console.error('Error loading results:', error);
+                document.getElementById('loading').innerHTML = `
+                    <p style="color: #dc2626;">Error cargando resultados. <a href="exam-system.html">Volver al inicio</a></p>
+                `;
+            }
+        }
+
+        function calculateResultsFromQuestions(data) {
+            // This would be called if we don't have results from submit
+            // For now, redirect to submit endpoint
+            window.location.href = 'exam-system.html';
+            return null;
+        }
+
+        function displayResults() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('results-content').style.display = 'block';
+
+            const scorePercentage = resultsData.score_percentage || 0;
+            const correctAnswers = resultsData.correct_answers || 0;
+            const totalQuestions = resultsData.total_questions || 0;
+            const incorrectAnswers = totalQuestions - correctAnswers;
+            const duration = resultsData.duration_minutes || 0;
+
+            // Display score
+            document.getElementById('score-display').textContent = `${scorePercentage.toFixed(1)}%`;
+            document.getElementById('correct-count').textContent = correctAnswers;
+            document.getElementById('total-count').textContent = totalQuestions;
+
+            // Display stats
+            document.getElementById('duration-value').textContent = duration;
+            document.getElementById('correct-value').textContent = correctAnswers;
+            document.getElementById('incorrect-value').textContent = incorrectAnswers;
+
+            // Display message based on score
+            const messageDiv = document.getElementById('result-message');
+            if (scorePercentage >= 70) {
+                messageDiv.className = 'congrats-message';
+                messageDiv.innerHTML = '<i class="fas fa-trophy"></i> ¡Excelente trabajo! Has demostrado un buen dominio de estos temas.';
+            } else if (scorePercentage >= 50) {
+                messageDiv.className = 'needs-improvement';
+                messageDiv.innerHTML = '<i class="fas fa-chart-line"></i> Buen intento. Sigue practicando para mejorar tu puntuación.';
+            } else {
+                messageDiv.className = 'needs-improvement';
+                messageDiv.innerHTML = '<i class="fas fa-book"></i> Necesitas repasar estos temas. No te rindas, la práctica hace al maestro.';
+            }
+
+            // Note: UT breakdown would require additional API call to get per-UT stats
+            // For now, show simplified version
+            displaySimplifiedUTResults();
+        }
+
+        function displaySimplifiedUTResults() {
+            // This would be enhanced with actual UT statistics from the API
+            const utResultsDiv = document.getElementById('ut-results');
+            utResultsDiv.innerHTML = `
+                <div class="ut-result-card">
+                    <p style="text-align: center; color: #666;">
+                        <i class="fas fa-info-circle"></i>
+                        Las estadísticas detalladas por UT estarán disponibles en una próxima versión.
+                    </p>
+                </div>
+            `;
+
+            // Set UTs count
+            document.getElementById('uts-value').textContent = '—';
+        }
+
+        function goToHome() {
+            window.location.href = 'exam-system.html';
+        }
+
+        function newStudyTest() {
+            window.location.href = 'study-config.html';
+        }
+
+        function repeatStudyMode() {
+            // Would need to store selected UTs to repeat
+            window.location.href = 'study-config.html';
+        }
+
+        async function viewIncorrectQuestions() {
+            try {
+                console.log('🔍 Obteniendo preguntas incorrectas del test de estudio:', studyTestId);
+
+                const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+
+                // Obtener todas las preguntas del test de estudio con sus respuestas
+                const response = await fetch(`${API_URL}/api/study-tests/${studyTestId}/questions`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                // Filtrar solo las preguntas incorrectas
+                const incorrectQuestions = data.questions.filter(q => q.is_correct === false);
+
+                if (incorrectQuestions.length > 0) {
+                    // Extraer IDs de las preguntas incorrectas
+                    const incorrectQuestionIds = incorrectQuestions.map(q => q.id);
+
+                    // Guardar el filtro en localStorage para que el banco de preguntas lo use
+                    localStorage.setItem('failedQuestionsFilter', JSON.stringify({
+                        studyTestId: studyTestId,
+                        questionIds: incorrectQuestionIds,
+                        testDate: new Date().toISOString(),
+                        totalFailed: incorrectQuestions.length
+                    }));
+
+                    console.log('🔍 Redirigiendo al banco de preguntas con', incorrectQuestionIds.length, 'preguntas incorrectas');
+
+                    // Redirigir al banco de preguntas
+                    window.location.href = 'visor-nueva-arquitectura.html?filter=failed_questions';
+                } else {
+                    alert('No hay preguntas incorrectas en este test');
+                }
+
+            } catch (error) {
+                console.error('❌ Error obteniendo preguntas incorrectas:', error);
+                alert(`Error cargando preguntas incorrectas: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>

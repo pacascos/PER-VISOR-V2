@@ -18,6 +18,9 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Unificado -->
+    <link rel="stylesheet" href="styles/unified-navigation.css">
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -285,37 +288,43 @@
             box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
         }
 
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            color: #667eea;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-        }
-
-        .back-btn:hover {
-            background: #667eea;
-            color: white;
-            transform: scale(1.1);
-        }
+        /* Estilos de navegación movidos a unified-navigation.css */
     </style>
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Botón de regreso -->
-        <button class="back-btn" onclick="window.history.back()" title="Volver">
-            <i class="fas fa-arrow-left"></i>
-        </button>
+        <!-- Navegación Unificada Superior -->
+        <div class="unified-top-nav">
+            <button class="unified-back-btn" onclick="window.location.href='exam-system.html'">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+            <h1 class="page-title">
+                <i class="fas fa-chart-line"></i> Estadísticas de Preguntas
+            </h1>
+            <div></div>
+        </div>
+
+        <!-- Barra de Navegación con Tabs -->
+        <div class="unified-tab-nav">
+            <a href="exam-system.html" class="unified-tab-item">
+                <i class="fas fa-home"></i> Principal
+            </a>
+            <a href="visor-nueva-arquitectura.html" class="unified-tab-item">
+                <i class="fas fa-book"></i> Banco
+            </a>
+            <a href="statistics-dashboard.html" class="unified-tab-item">
+                <i class="fas fa-chart-bar"></i> Estadísticas
+            </a>
+            <a href="question-statistics-dashboard.html" class="unified-tab-item active">
+                <i class="fas fa-chart-line"></i> Preguntas
+            </a>
+            <a href="study-config.html" class="unified-tab-item">
+                <i class="fas fa-book-reader"></i> Estudio
+            </a>
+        </div>
 
         <!-- Header -->
         <div class="header">
-            <h1><i class="fas fa-chart-line"></i> Estadísticas de Preguntas</h1>
             <p>Análisis detallado del rendimiento de preguntas por categoría</p>
             
             <!-- Toggle de Vista -->

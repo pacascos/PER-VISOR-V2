@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-10-01T08:32:02.828Z",
+  "tests": [
+    {
+      "name": "API Health Check",
+      "status": "PASSED",
+      "timestamp": "2025-10-01T08:32:03.130Z"
+    },
+    {
+      "name": "Homepage",
+      "status": "PASSED",
+      "timestamp": "2025-10-01T08:32:05.288Z"
+    },
+    {
+      "name": "CORS Functionality",
+      "status": "PASSED",
+      "timestamp": "2025-10-01T08:32:06.958Z"
+    },
+    {
+      "name": "Exam System",
+      "status": "FAILED",
+      "error": "page.waitForSelector: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#questionCount') to be visible\u001b[22m\n",
+      "timestamp": "2025-10-01T08:32:30.339Z"
+    },
+    {
+      "name": "Create Exam",
+      "status": "FAILED",
+      "error": "page.waitForSelector: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#startExamBtn') to be visible\u001b[22m\n\u001b[2m    25 × locator resolved to hidden <div id=\"startExamBtn\" class=\"action-card\">…</div>\u001b[22m\n",
+      "timestamp": "2025-10-01T08:33:22.729Z"
+    },
+    {
+      "name": "Statistics Dashboard",
+      "status": "PASSED",
+      "timestamp": "2025-10-01T08:34:06.743Z"
+    },
+    {
+      "name": "Question Browser",
+      "status": "FAILED",
+      "error": "page.waitForSelector: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.question-item') to be visible\u001b[22m\n",
+      "timestamp": "2025-10-01T08:34:30.045Z"
+    }
+  ],
+  "passed": 4,
+  "failed": 3,
+  "errors": [
+    "Exam System: page.waitForSelector: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#questionCount') to be visible\u001b[22m\n",
+    "Create Exam: page.waitForSelector: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#startExamBtn') to be visible\u001b[22m\n\u001b[2m    25 × locator resolved to hidden <div id=\"startExamBtn\" class=\"action-card\">…</div>\u001b[22m\n",
+    "Question Browser: page.waitForSelector: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.question-item') to be visible\u001b[22m\n"
+  ]
+}

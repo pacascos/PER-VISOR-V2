@@ -1,0 +1,7 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'europe-west1-docker.pkg.dev/webpersonal-189221/per-images/per-frontend:4e11647', '-f', 'frontend.Dockerfile', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'europe-west1-docker.pkg.dev/webpersonal-189221/per-images/per-frontend:4e11647']
+images:
+  - 'europe-west1-docker.pkg.dev/webpersonal-189221/per-images/per-frontend:4e11647'

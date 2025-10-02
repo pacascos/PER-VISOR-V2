@@ -6,7 +6,7 @@
 class AdminPanel {
     constructor() {
         // Usar configuración de entorno automática
-        this.API_BASE = window.API_BASE || '/api'; // Fallback por seguridad
+        this.API_BASE = window.API_BASE !== undefined ? window.API_BASE : '/api'; // Fallback por seguridad
         this.token = localStorage.getItem('authToken');
         this.currentUser = null;
         
@@ -39,7 +39,7 @@ class AdminPanel {
 
     async verifyAdminRole() {
         try {
-            const response = await fetch(`${this.API_BASE}/auth/me`, {
+            const response = await fetch(`${this.API_BASE}/api/auth/me`, {
                 headers: {
                     'Authorization': `Bearer ${this.token}`,
                     'Content-Type': 'application/json'
@@ -68,7 +68,7 @@ class AdminPanel {
 
     async loadAdminStats() {
         try {
-            const response = await fetch(`${this.API_BASE}/admin/stats`, {
+            const response = await fetch(`${this.API_BASE}/api/admin/stats`, {
                 headers: {
                     'Authorization': `Bearer ${this.token}`,
                     'Content-Type': 'application/json'
@@ -97,7 +97,7 @@ class AdminPanel {
 
     async loadUsers() {
         try {
-            const response = await fetch(`${this.API_BASE}/admin/users`, {
+            const response = await fetch(`${this.API_BASE}/api/admin/users`, {
                 headers: {
                     'Authorization': `Bearer ${this.token}`,
                     'Content-Type': 'application/json'
@@ -245,7 +245,7 @@ class AdminPanel {
         }
 
         try {
-            const response = await fetch(`${this.API_BASE}/admin/users`, {
+            const response = await fetch(`${this.API_BASE}/api/admin/users`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.token}`,
@@ -280,7 +280,7 @@ class AdminPanel {
     async editUser(userId) {
         try {
             // Obtener datos del usuario
-            const usersResponse = await fetch(`${this.API_BASE}/admin/users`, {
+            const usersResponse = await fetch(`${this.API_BASE}/api/admin/users`, {
                 headers: {
                     'Authorization': `Bearer ${this.token}`,
                     'Content-Type': 'application/json'
@@ -337,7 +337,7 @@ class AdminPanel {
         }
 
         try {
-            const response = await fetch(`${this.API_BASE}/admin/users/${userId}`, {
+            const response = await fetch(`${this.API_BASE}/api/admin/users/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${this.token}`,
@@ -373,7 +373,7 @@ class AdminPanel {
         }
 
         try {
-            const response = await fetch(`${this.API_BASE}/admin/users/${userId}`, {
+            const response = await fetch(`${this.API_BASE}/api/admin/users/${userId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${this.token}`,
