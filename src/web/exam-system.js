@@ -52,7 +52,14 @@ class ExamSystem {
 
         // Dashboard events
         document.getElementById('startExamBtn').addEventListener('click', () => {
-            window.location.href = 'exam.html';
+            // Check feature flag for unified exam page
+            if (window.featureFlags && window.featureFlags.isEnabled('unified_exam_page')) {
+                console.log('🚩 Using new unified exam page');
+                window.location.href = 'exam-unified.html';
+            } else {
+                console.log('📄 Using classic exam page');
+                window.location.href = 'exam.html';
+            }
         });
 
         document.getElementById('viewQuestionsBankBtn').addEventListener('click', () => {
