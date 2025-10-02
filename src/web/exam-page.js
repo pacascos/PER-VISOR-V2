@@ -6,7 +6,7 @@
 class ExamPage {
     constructor() {
         // Usar configuración de entorno automática
-        this.API_BASE = window.API_BASE || '/api';
+        this.API_BASE = window.API_BASE !== undefined ? window.API_BASE : '/api';
         this.currentUser = null;
         this.authToken = localStorage.getItem('authToken') || localStorage.getItem('token');
         this.currentExam = null;

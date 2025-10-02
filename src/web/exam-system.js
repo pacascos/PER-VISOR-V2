@@ -6,7 +6,7 @@
 class ExamSystem {
     constructor() {
         // Usar configuración de entorno automática
-        this.API_BASE = window.API_BASE || '/api'; // Fallback por seguridad
+        this.API_BASE = window.API_BASE !== undefined ? window.API_BASE : '/api'; // Fallback por seguridad
         this.currentUser = null;
         this.authToken = localStorage.getItem('authToken');
         this.currentExam = null;
@@ -90,9 +90,10 @@ class ExamSystem {
             this.finishExam();
         });
 
-        document.getElementById('pauseBtn').addEventListener('click', () => {
-            this.pauseExam();
-        });
+        // Comentado: botón de pausa eliminado
+        // document.getElementById('pauseBtn').addEventListener('click', () => {
+        //     this.pauseExam();
+        // });
     }
 
     // Authentication Methods
@@ -521,11 +522,13 @@ class ExamSystem {
         if (this.examTimer) {
             clearInterval(this.examTimer);
             this.examTimer = null;
-            document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-play me-1"></i>Continuar';
+            // Comentado: botón de pausa eliminado
+            // document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-play me-1"></i>Continuar';
             this.showAlert('Examen pausado', 'info');
         } else {
             this.startTimer();
-            document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause me-1"></i>Pausar';
+            // Comentado: botón de pausa eliminado
+            // document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause me-1"></i>Pausar';
             this.showAlert('Examen reanudado', 'info');
         }
     }
@@ -1055,7 +1058,7 @@ let examSystem;
 document.addEventListener('DOMContentLoaded', () => {
     // Esperar a que la configuración esté lista
     function waitForConfig() {
-        if (window.API_BASE && window.envConfig) {
+        if (window.API_BASE !== undefined && window.envConfig) {
             console.log('✅ Configuración lista, inicializando exam-system...');
             examSystem = new ExamSystem();
         } else {

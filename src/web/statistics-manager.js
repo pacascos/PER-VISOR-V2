@@ -4,7 +4,7 @@
 class StatisticsManager {
     constructor() {
         // Usar configuración de entorno automática
-        this.API_BASE = window.API_BASE || '/api'; // Fallback por seguridad
+        this.API_BASE = window.API_BASE !== undefined ? window.API_BASE : '/api'; // Fallback por seguridad
         this.userId = this.getCurrentUserId();
         this.charts = {};
 
