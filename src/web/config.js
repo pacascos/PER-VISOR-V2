@@ -36,7 +36,7 @@ class EnvironmentConfig {
         switch (this.environment) {
             case 'development':
                 this.config = {
-                    API_BASE: '/api',  // Relativa - nginx proxy
+                    API_BASE: '',  // Vacío - los endpoints ya incluyen /api/
                     FRONTEND_BASE: '', // Relativa - mismo dominio
                     ENVIRONMENT_NAME: 'DESARROLLO',
                     ENVIRONMENT_COLOR: '#059669'
@@ -64,7 +64,7 @@ class EnvironmentConfig {
             default:
                 // Fallback a desarrollo
                 this.config = {
-                    API_BASE: '/api',  // Relativa - nginx proxy
+                    API_BASE: '',  // Vacío - los endpoints ya incluyen /api/
                     FRONTEND_BASE: '', // Relativa - mismo dominio
                     ENVIRONMENT_NAME: 'DESARROLLO',
                     ENVIRONMENT_COLOR: '#059669'

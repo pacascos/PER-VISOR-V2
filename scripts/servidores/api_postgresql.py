@@ -12,7 +12,7 @@ import psycopg2
 import psycopg2.extras
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory, session
-from flask_cors import CORS
+# from flask_cors import CORS  # Usando implementación custom de CORS
 import hashlib
 import secrets
 from functools import wraps
@@ -23,6 +23,7 @@ import random
 
 # Import statistics API routes
 from statistics_api import register_statistics_routes
+from study_mode_logic import select_study_questions, UT_DISTRIBUTION
 
 def get_secret(secret_name, project_id="webpersonal-189221"):
     """
@@ -96,10 +97,42 @@ logging.getLogger('werkzeug').setLevel(logging.WARNING)
 
 # Crear aplicación Flask
 app = Flask(__name__)
-CORS(app, origins=['http://localhost:8095', 'http://127.0.0.1:8095', 'https://per-frontend-435987927843.europe-west1.run.app', 'https://bancotest.com'], 
-     allow_headers=['Content-Type', 'Authorization'], 
-     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-     supports_credentials=True)
+
+# Configurar CORS con múltiples orígenes permitidos
+ALLOWED_ORIGINS = [
+    'http://localhost:8095',
+    'http://127.0.0.1:8095',
+    'https://per-frontend-435987927843.europe-west1.run.app',
+    'https://bancotest.com'
+]
+
+# Middleware personalizado para CORS
+@app.after_request
+def add_cors_headers(response):
+    """Añadir headers CORS dinámicamente basado en el origin de la petición"""
+    origin = request.headers.get('Origin')
+
+    # Si el origin está en la lista permitida, añadir headers CORS
+    if origin in ALLOWED_ORIGINS:
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Max-Age'] = '3600'
+
+    return response
+
+# Handler para peticiones OPTIONS preflight
+@app.before_request
+def handle_preflight():
+    """Manejar peticiones OPTIONS preflight antes de que lleguen a las rutas"""
+    if request.method == 'OPTIONS':
+        origin = request.headers.get('Origin')
+        if origin in ALLOWED_ORIGINS:
+            response = app.make_response('')
+            response.status_code = 200
+            return response
+    return None
 
 # Register statistics routes
 register_statistics_routes(app)
@@ -158,7 +191,7 @@ def require_admin(f):
     
     return decorated_function
 
-@app.route('/health')
+@app.route('/api/health')
 def health():
     """Endpoint de salud de la API"""
     try:
@@ -174,7 +207,7 @@ def health():
     except Exception as e:
         return jsonify({'status': 'unhealthy', 'error': str(e)}), 500
 
-@app.route('/examenes')
+@app.route('/api/examenes')
 def get_examenes():
     """Obtener lista de exámenes desde PostgreSQL"""
     try:
@@ -220,7 +253,7 @@ def get_examenes():
         logger.error(f"Error obteniendo exámenes: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/preguntas/<exam_id>')
+@app.route('/api/preguntas/<exam_id>')
 def get_preguntas(exam_id):
     """Obtener preguntas de un examen desde PostgreSQL"""
     try:
@@ -349,7 +382,7 @@ def _format_questions_response(preguntas):
 
     return result
 
-@app.route('/preguntas-filtradas')
+@app.route('/api/preguntas-filtradas')
 def get_preguntas_filtradas():
     """Obtener preguntas filtradas por múltiples criterios"""
     try:
@@ -394,7 +427,7 @@ def get_preguntas_filtradas():
         logger.error(f"Error obteniendo preguntas filtradas: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/explicaciones')
+@app.route('/api/explicaciones')
 def get_explicaciones():
     """Obtener explicaciones desde PostgreSQL"""
     try:
@@ -474,7 +507,7 @@ def get_explicaciones():
         logger.error(f"Error obteniendo explicaciones: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/generar-explicacion', methods=['POST'])
+@app.route('/api/generar-explicacion', methods=['POST'])
 def generar_explicacion():
     """Generar explicación usando GPT-5 y guardar en PostgreSQL"""
     try:
@@ -713,13 +746,17 @@ Para resolver este problema, verifica la configuración de la API de GPT-5.""",
             'image_prompt': None
         }
 
-@app.route('/health', methods=['GET'])
+@app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint for Cloud Run"""
     return jsonify({'status': 'healthy', 'timestamp': datetime.now().isoformat()}), 200
 
+@app.route('/api/user-stats', methods=['GET'])
+def get_user_stats_alias():
+    """Alias for /api/user-stats for frontend compatibility"""
+    return get_simple_user_stats()
 
-@app.route('/stats')
+@app.route('/api/stats')
 def get_stats():
     """Obtener estadísticas del sistema desde PostgreSQL"""
     try:
@@ -767,7 +804,7 @@ def get_stats():
         logger.error(f"Error obteniendo estadísticas: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/preguntas-individual/<question_id>', methods=['GET'])
+@app.route('/api/preguntas-individual/<question_id>', methods=['GET'])
 def get_individual_question(question_id):
     """Obtener una pregunta específica por su ID"""
     try:
@@ -877,7 +914,7 @@ def _update_question_options(cur, question_id, data):
             VALUES (%s, %s, %s, %s)
         """, (question_id, letra, texto, es_correcta))
 
-@app.route('/preguntas/<question_id>', methods=['PUT'])
+@app.route('/api/preguntas/<question_id>', methods=['PUT'])
 def update_question(question_id):
     """Actualizar una pregunta específica"""
     try:
@@ -931,7 +968,7 @@ def update_question(question_id):
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/generar-imagen-png', methods=['POST', 'OPTIONS'])
+@app.route('/api/generar-imagen-png', methods=['POST', 'OPTIONS'])
 def generar_imagen_png():
     """Generar imagen PNG usando GPT-5 para una explicación existente"""
     try:
@@ -986,7 +1023,7 @@ def generar_imagen_png():
         logger.error(f"Error generando imagen PNG: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/subir-imagen', methods=['POST', 'OPTIONS'])
+@app.route('/api/subir-imagen', methods=['POST', 'OPTIONS'])
 def subir_imagen():
     """Subir imagen para reemplazar recursos visuales en explicación"""
     try:
@@ -1051,7 +1088,7 @@ def subir_imagen():
         logger.error(f"Error subiendo imagen: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/images/<path:filename>')
+@app.route('/api/images/<path:filename>')
 def serve_image(filename):
     """Servir imágenes estáticas"""
     try:
@@ -1061,7 +1098,7 @@ def serve_image(filename):
         logger.error(f"Error sirviendo imagen {filename}: {e}")
         return jsonify({'error': 'Imagen no encontrada'}), 404
 
-@app.route('/guardar-explicacion', methods=['PUT', 'OPTIONS'])
+@app.route('/api/guardar-explicacion', methods=['PUT', 'OPTIONS'])
 def guardar_explicacion():
     """Guardar cambios en una explicación existente"""
     try:
@@ -1105,7 +1142,7 @@ def guardar_explicacion():
         logger.error(f"Error guardando explicación: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/borrar-explicacion', methods=['DELETE', 'OPTIONS'])
+@app.route('/api/borrar-explicacion', methods=['DELETE', 'OPTIONS'])
 def borrar_explicacion():
     """Borrar una explicación"""
     try:
@@ -1214,7 +1251,7 @@ def require_auth(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@app.route('/auth/register', methods=['POST'])
+@app.route('/api/auth/register', methods=['POST'])
 def register_user():
     """Register new user"""
     try:
@@ -1287,7 +1324,7 @@ def register_user():
         logger.error(f"Error registrando usuario: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/auth/login', methods=['POST'])
+@app.route('/api/auth/login', methods=['POST'])
 def login_user():
     """Login user"""
     try:
@@ -1348,7 +1385,7 @@ def login_user():
         logger.error(f"Error en login: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/auth/me', methods=['GET'])
+@app.route('/api/auth/me', methods=['GET'])
 @require_auth
 def get_current_user():
     """Get current user info"""
@@ -1389,7 +1426,7 @@ def get_current_user():
 
 # ===== ENDPOINTS DE ADMINISTRACIÓN =====
 
-@app.route('/admin/users', methods=['GET'])
+@app.route('/api/admin/users', methods=['GET'])
 @require_admin
 def get_all_users():
     """Obtener lista de todos los usuarios (solo administradores)"""
@@ -1440,7 +1477,7 @@ def get_all_users():
         logger.error(f"Error obteniendo usuarios: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/admin/users', methods=['POST'])
+@app.route('/api/admin/users', methods=['POST'])
 @require_admin
 def create_user():
     """Crear nuevo usuario (solo administradores)"""
@@ -1501,7 +1538,7 @@ def create_user():
         logger.error(f"Error creando usuario: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/admin/users/<user_id>', methods=['PUT'])
+@app.route('/api/admin/users/<user_id>', methods=['PUT'])
 @require_admin
 def update_user(user_id):
     """Actualizar usuario (solo administradores)"""
@@ -1579,7 +1616,7 @@ def update_user(user_id):
         logger.error(f"Error actualizando usuario: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/admin/users/<user_id>', methods=['DELETE'])
+@app.route('/api/admin/users/<user_id>', methods=['DELETE'])
 @require_admin
 def delete_user(user_id):
     """Eliminar usuario (solo administradores)"""
@@ -1610,7 +1647,7 @@ def delete_user(user_id):
         logger.error(f"Error eliminando usuario: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/admin/stats', methods=['GET'])
+@app.route('/api/admin/stats', methods=['GET'])
 @require_admin
 def get_admin_stats():
     """Obtener estadísticas generales del sistema (solo administradores)"""
@@ -1860,15 +1897,12 @@ def get_simple_user_stats():
 # SISTEMA DE EXÁMENES
 # ====================================
 
-@app.route('/exams/generate', methods=['POST'])
+@app.route('/api/exams/generate', methods=['POST'])
 @require_auth
 def generate_exam():
     """
     Generate new PER exam for user
-    
-    TEMPORAL: Prioriza preguntas con respuestas incompletas (sin punto final)
-    para facilitar la revisión y corrección de datos.
-    TODO: Remover esta priorización cuando se hayan completado todas las respuestas.
+    Selects questions randomly from each category
     """
     try:
         user_id = request.current_user['user_id']
@@ -1900,87 +1934,29 @@ def generate_exam():
         questions_selected = []
         question_order = 1
 
-        logger.info(f"🔍 DEBUG ut_configs: {ut_configs}, len: {len(ut_configs) if ut_configs else 'None'}")
-
-        for i, ut_config in enumerate(ut_configs):
-            logger.info(f"🔍 DEBUG ut_config[{i}]: {ut_config}, type: {type(ut_config)}")
+        for ut_config in ut_configs:
             ut_number = ut_config['ut_number']
             category_name = ut_config['category_name']
             questions_needed = ut_config['questions_per_exam']
-            
-            # TEMPORAL: Priorización de preguntas con respuestas incompletas - IMPLEMENTACIÓN CUIDADOSA
+
             logger.info(f"🔍 Procesando UT{ut_number} ({category_name}): {questions_needed} preguntas necesarias")
 
-            # DEBUG: Verificar valores de entrada
-            logger.info(f"🔍 DEBUG - category_name: '{category_name}' (type: {type(category_name)})")
-            logger.info(f"🔍 DEBUG - questions_needed: {questions_needed} (type: {type(questions_needed)})")
-
-            # PASO 1: Obtener TODAS las preguntas disponibles de la categoría
-            logger.info(f"🔍 PASO 1: Obteniendo todas las preguntas de '{category_name}'")
-
+            # Obtener preguntas aleatorias de la categoría
             cur.execute("""
                 SELECT q.id FROM questions q
                 JOIN exams e ON q.exam_id = e.id
                 WHERE q.categoria = %s
                 AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
                 AND q.anulada = false
-            """, (category_name,))
+                ORDER BY RANDOM()
+                LIMIT %s
+            """, (category_name, questions_needed))
 
-            all_questions = cur.fetchall()
-            logger.info(f"✅ PASO 1: {len(all_questions)} preguntas totales encontradas")
+            ut_questions = cur.fetchall()
+            logger.info(f"✅ UT{ut_number} ({category_name}): {len(ut_questions)} preguntas seleccionadas aleatoriamente")
 
-            # PASO 2: Identificar cuáles son incompletas (sin punto final)
-            logger.info(f"🔍 PASO 2: Identificando preguntas incompletas...")
-
-            # Convertir a lista de IDs para consulta más sencilla
-            if all_questions:
-                question_ids = [str(q[0]) for q in all_questions]
-                question_ids_str = "'" + "','".join(question_ids) + "'"
-
-                logger.info(f"🔍 DEBUG - Consultando opciones para {len(question_ids)} preguntas")
-
-                # Consulta directa sin parámetros problemáticos
-                incomplete_query = f"""
-                    SELECT DISTINCT ao.question_id
-                    FROM answer_options ao
-                    WHERE ao.question_id IN ({question_ids_str})
-                    AND ao.texto IS NOT NULL
-                    AND ao.texto != ''
-                    AND ao.texto NOT LIKE '%.'
-                """
-
-                cur.execute(incomplete_query)
-                incomplete_question_ids = cur.fetchall()
-                incomplete_ids_set = {str(row[0]) for row in incomplete_question_ids}
-
-                logger.info(f"✅ PASO 2: {len(incomplete_ids_set)} preguntas incompletas identificadas")
-
-                # PASO 3: Priorizar - incompletas primero, luego completas
-                prioritized_questions = []
-
-                # Añadir preguntas incompletas primero
-                for q in all_questions:
-                    if str(q[0]) in incomplete_ids_set:
-                        prioritized_questions.append(q)
-
-                # Añadir preguntas completas después
-                for q in all_questions:
-                    if str(q[0]) not in incomplete_ids_set:
-                        prioritized_questions.append(q)
-
-                # Seleccionar las primeras N preguntas (priorizadas)
-                ut_questions = prioritized_questions[:questions_needed]
-
-                incomplete_count = sum(1 for q in ut_questions if str(q[0]) in incomplete_ids_set)
-                complete_count = len(ut_questions) - incomplete_count
-
-                logger.info(f"✅ UT{ut_number} ({category_name}): {len(ut_questions)} preguntas seleccionadas")
-                logger.info(f"📝 - Incompletas priorizadas: {incomplete_count}")
-                logger.info(f"📝 - Completas añadidas: {complete_count}")
-
-            else:
-                ut_questions = []
-                logger.warning(f"⚠️ No se encontraron preguntas para {category_name}")
+            if len(ut_questions) < questions_needed:
+                logger.warning(f"⚠️ Solo se encontraron {len(ut_questions)} de {questions_needed} preguntas para {category_name}")
 
             # Asignar preguntas al examen
             for question in ut_questions:
@@ -2019,7 +1995,7 @@ def generate_exam():
         logger.error(f"Traceback: {traceback.format_exc()}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/exams/<exam_id>/questions', methods=['GET'])
+@app.route('/api/exams/<exam_id>/questions', methods=['GET'])
 @require_auth
 def get_exam_questions(exam_id):
     """Get questions for a specific exam"""
@@ -2109,7 +2085,7 @@ def get_exam_questions(exam_id):
         logger.error(f"Error obteniendo preguntas del examen: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/exams/<exam_id>/submit', methods=['POST'])
+@app.route('/api/exams/<exam_id>/submit', methods=['POST'])
 @require_auth
 def submit_exam_answers(exam_id):
     """Submit answers for an exam"""
@@ -2159,7 +2135,7 @@ def submit_exam_answers(exam_id):
             # Verificar si la respuesta es correcta
             is_correct = selected_answer.lower() == question_info['respuesta_correcta'].lower()
 
-            # Guardar respuesta del usuario
+            # Guardar respuesta del usuario (convertir a minúscula para cumplir restricción de BD)
             cur.execute("""
                 INSERT INTO user_answers (user_exam_id, question_id, selected_answer, is_correct, answered_at)
                 VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP)
@@ -2168,7 +2144,7 @@ def submit_exam_answers(exam_id):
                     selected_answer = EXCLUDED.selected_answer,
                     is_correct = EXCLUDED.is_correct,
                     answered_at = EXCLUDED.answered_at
-            """, (exam_id, question_id, selected_answer, is_correct))
+            """, (exam_id, question_id, selected_answer.lower(), is_correct))
 
             total_questions += 1
             if is_correct:
@@ -2228,6 +2204,123 @@ def submit_exam_answers(exam_id):
         logger.error(f"Error enviando respuestas del examen: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
+@app.route('/api/user-statistics/update', methods=['POST'])
+@require_auth
+def update_user_statistics():
+    """Update user statistics after exam completion"""
+    try:
+        data = request.get_json()
+        user_id = request.current_user['user_id']
+        
+        if not data.get('exam_completed'):
+            return jsonify({'error': 'No exam completion data provided'}), 400
+        
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Actualizar estadísticas del usuario
+        cur.execute("""
+            INSERT INTO user_statistics (
+                user_id, exams_completed, total_questions_answered,
+                correct_answers, study_time_minutes, last_exam_date
+            )
+            VALUES (%s, 1, %s, %s, %s, CURRENT_TIMESTAMP)
+            ON CONFLICT (user_id)
+            DO UPDATE SET
+                exams_completed = user_statistics.exams_completed + 1,
+                total_questions_answered = user_statistics.total_questions_answered + %s,
+                correct_answers = user_statistics.correct_answers + %s,
+                study_time_minutes = user_statistics.study_time_minutes + %s,
+                last_exam_date = CURRENT_TIMESTAMP,
+                updated_at = CURRENT_TIMESTAMP
+        """, (
+            user_id,
+            data.get('total_questions', 0),
+            data.get('correct_answers', 0),
+            data.get('duration_minutes', 0),
+            data.get('total_questions', 0),
+            data.get('correct_answers', 0),
+            data.get('duration_minutes', 0)
+        ))
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        logger.info(f"📊 Estadísticas actualizadas para usuario {request.current_user['username']}")
+        
+        return jsonify({
+            'success': True,
+            'message': 'Estadísticas actualizadas correctamente'
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error actualizando estadísticas: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/api/user/exam/<exam_id>/failed-questions', methods=['GET'])
+@require_auth
+def get_failed_questions_from_exam(exam_id):
+    """Get failed questions from a specific exam"""
+    try:
+        user_id = request.current_user['user_id']
+        
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Verificar que el examen pertenece al usuario
+        cur.execute("""
+            SELECT id, started_at FROM user_exams 
+            WHERE id = %s AND user_id = %s
+        """, (exam_id, user_id))
+        
+        exam = cur.fetchone()
+        if not exam:
+            return jsonify({'error': 'Examen no encontrado'}), 404
+        
+        # Obtener preguntas falladas del examen
+        cur.execute("""
+            SELECT
+                ua.question_id,
+                ua.selected_answer,
+                ua.is_correct,
+                ua.answered_at,
+                q.respuesta_correcta,
+                q.texto_pregunta,
+                q.categoria,
+                e.tipo_examen
+            FROM user_answers ua
+            JOIN questions q ON ua.question_id = q.id
+            JOIN exams e ON q.exam_id = e.id
+            WHERE ua.user_exam_id = %s AND ua.is_correct = false
+            ORDER BY ua.answered_at
+        """, (exam_id,))
+        
+        failed_questions = cur.fetchall()
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        logger.info(f"📊 Obtenidas {len(failed_questions)} preguntas falladas del examen {exam_id}")
+        
+        return jsonify({
+            'success': True,
+            'failed_questions': [dict(q) for q in failed_questions],
+            'total_failed': len(failed_questions),
+            'exam_date': exam['started_at'].isoformat()
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo preguntas falladas: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
 def _check_exam_passed(score_percentage, ut_results):
     """Check if exam is passed based on PER criteria"""
     # Criterio 1: Puntuación general >= 65%
@@ -2257,79 +2350,8 @@ def _calculate_exam_duration(started_at):
     duration = datetime.now(started_at.tzinfo) - started_at
     return int(duration.total_seconds() / 60)
 
-@app.route('/user/exam/<exam_id>/failed-questions', methods=['GET'])
-@require_auth
-def get_exam_failed_questions(exam_id):
-    """Get failed questions for a specific exam"""
-    try:
-        user_id = request.current_user['user_id']
 
-        # Conectar a base de datos
-        conn = psycopg2.connect(**DB_CONFIG)
-        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
-        # Verificar que el examen pertenezca al usuario
-        cur.execute("""
-            SELECT id, user_id FROM user_exams
-            WHERE id = %s AND user_id = %s AND status = 'completed'
-        """, (exam_id, user_id))
-
-        exam = cur.fetchone()
-        if not exam:
-            return jsonify({'error': 'Examen no encontrado o no completado'}), 404
-
-        # Obtener preguntas falladas del examen
-        cur.execute("""
-            SELECT 
-                q.id as question_id,
-                q.texto_pregunta,
-                q.respuesta_correcta,
-                ua.selected_answer as user_answer,
-                q.categoria,
-                eq.ut_category,
-                eq.ut_number
-            FROM user_answers ua
-            JOIN questions q ON ua.question_id = q.id
-            LEFT JOIN exam_questions eq ON ua.question_id = eq.question_id AND ua.user_exam_id = eq.user_exam_id
-            WHERE ua.user_exam_id = %s 
-            AND ua.is_correct = false
-            ORDER BY eq.question_order
-        """, (exam_id,))
-
-        failed_questions = cur.fetchall()
-        
-        # Para cada pregunta, obtener sus opciones
-        questions_with_options = []
-        for question in failed_questions:
-            question_dict = dict(question)
-            
-            # Obtener opciones de la pregunta
-            cur.execute("""
-                SELECT opcion, texto
-                FROM answer_options
-                WHERE question_id = %s
-                ORDER BY opcion
-            """, (question_dict['question_id'],))
-            
-            options = cur.fetchall()
-            question_dict['opciones'] = [dict(opt) for opt in options]
-            questions_with_options.append(question_dict)
-        
-        cur.close()
-        conn.close()
-
-        return jsonify({
-            'success': True,
-            'exam_id': exam_id,
-            'total_failed': len(questions_with_options),
-            'failed_questions': questions_with_options
-        })
-
-    except Exception as e:
-        logger.error(f"Error obteniendo preguntas falladas del examen: {e}")
-        return jsonify({'error': 'Error interno del servidor'}), 500
-
-@app.route('/user/exams', methods=['GET'])
+@app.route('/api/user/exams', methods=['GET'])
 @require_auth
 def get_user_exams():
     """Get user's exam history"""
@@ -2392,7 +2414,525 @@ def get_user_exams():
         logger.error(f"Error obteniendo historial de exámenes: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/per-questions/stats', methods=['GET'])
+################################################################################
+# STUDY MODE ENDPOINTS
+################################################################################
+
+@app.route('/api/study-tests/generate', methods=['POST'])
+@require_auth
+def generate_study_test():
+    """
+    Generate new study test for user with custom UT selection
+
+    Request body:
+    {
+        "selected_uts": [1, 2, 5, 6],  # List of UT numbers
+        "selection_mode": "random"      # 'random', 'failed', or 'new'
+    }
+    """
+    try:
+        user_id = request.current_user['user_id']
+        data = request.get_json()
+
+        # Validate request
+        selected_uts = data.get('selected_uts', [])
+        selection_mode = data.get('selection_mode', 'random')
+
+        if not selected_uts:
+            return jsonify({'error': 'selected_uts is required'}), 400
+
+        if selection_mode not in ['random', 'failed', 'new']:
+            return jsonify({'error': 'selection_mode must be random, failed, or new'}), 400
+
+        # Validate UT numbers
+        if not all(1 <= ut <= 11 for ut in selected_uts):
+            return jsonify({'error': 'Invalid UT numbers. Must be between 1 and 11'}), 400
+
+        # Connect to database
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Select questions using study mode logic
+        questions, total_questions = select_study_questions(cur, user_id, selected_uts, selection_mode)
+
+        if not questions:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'No se pudieron seleccionar preguntas para los UTs indicados'}), 400
+
+        # Create study test record
+        cur.execute("""
+            INSERT INTO study_tests
+            (user_id, selected_uts, selection_mode, total_questions, status)
+            VALUES (%s, %s, %s, %s, 'in_progress')
+            RETURNING id
+        """, (user_id, json.dumps(selected_uts), selection_mode, total_questions))
+
+        study_test = cur.fetchone()
+        study_test_id = study_test['id']
+
+        # Insert selected questions
+        question_order = 1
+        for q in questions:
+            cur.execute("""
+                INSERT INTO study_test_questions
+                (study_test_id, question_id, question_order, ut_number, ut_category)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (study_test_id, q['question_id'], question_order, q['ut_number'], q['ut_category']))
+            question_order += 1
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        logger.info(f"✅ Test de estudio generado: {study_test_id} - Usuario: {request.current_user['username']} - "
+                   f"UTs: {selected_uts} - Modo: {selection_mode} - {total_questions} preguntas")
+
+        return jsonify({
+            'success': True,
+            'study_test_id': str(study_test_id),
+            'total_questions': total_questions,
+            'selected_uts': selected_uts,
+            'selection_mode': selection_mode,
+            'message': f'Test de estudio generado con {total_questions} preguntas'
+        }), 201
+
+    except Exception as e:
+        logger.error(f"Error generando test de estudio: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+
+@app.route('/api/study-tests/<study_test_id>/questions', methods=['GET'])
+@require_auth
+def get_study_test_questions(study_test_id):
+    """Get questions for a specific study test"""
+    try:
+        user_id = request.current_user['user_id']
+
+        # Connect to database
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Verify study test belongs to user
+        cur.execute("""
+            SELECT id, selected_uts, selection_mode, total_questions, status
+            FROM study_tests
+            WHERE id = %s AND user_id = %s
+        """, (study_test_id, user_id))
+
+        study_test = cur.fetchone()
+        if not study_test:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Test de estudio no encontrado'}), 404
+
+        # Get questions with details
+        cur.execute("""
+            SELECT
+                stq.question_order,
+                stq.ut_category,
+                stq.ut_number,
+                q.id,
+                q.texto_pregunta,
+                q.respuesta_correcta,
+                q.categoria,
+                q.numero_pregunta,
+                e.tipo_examen,
+                e.titulo,
+                e.convocatoria
+            FROM study_test_questions stq
+            JOIN questions q ON stq.question_id = q.id
+            JOIN exams e ON q.exam_id = e.id
+            WHERE stq.study_test_id = %s
+            ORDER BY stq.question_order
+        """, (study_test_id,))
+
+        questions = cur.fetchall()
+
+        questions_list = []
+        for q in questions:
+            # Get answer options
+            cur.execute("""
+                SELECT opcion, texto
+                FROM answer_options
+                WHERE question_id = %s
+                ORDER BY opcion
+            """, (q['id'],))
+
+            options = cur.fetchall()
+            options_dict = {opt['opcion']: opt['texto'] for opt in options}
+
+            questions_list.append({
+                'id': str(q['id']),
+                'order': q['question_order'],
+                'ut_number': q['ut_number'],
+                'ut_category': q['ut_category'],
+                'texto_pregunta': q['texto_pregunta'],
+                'opciones': options_dict,
+                'categoria': q['categoria'],
+                'numero_pregunta': q['numero_pregunta'],
+                'exam_info': {
+                    'tipo_examen': q['tipo_examen'],
+                    'titulo': q['titulo'],
+                    'convocatoria': q['convocatoria']
+                }
+            })
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'study_test_id': str(study_test_id),
+            'selected_uts': study_test['selected_uts'],  # Already parsed by psycopg2
+            'selection_mode': study_test['selection_mode'],
+            'total_questions': study_test['total_questions'],
+            'status': study_test['status'],
+            'questions': questions_list
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo preguntas de test de estudio: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+
+@app.route('/api/study-tests/<study_test_id>/answer', methods=['POST'])
+@require_auth
+def answer_study_question(study_test_id):
+    """
+    Record user's answer to a study test question
+
+    Request body:
+    {
+        "question_id": "uuid",
+        "user_answer": "A",
+        "time_spent_seconds": 30
+    }
+    """
+    try:
+        user_id = request.current_user['user_id']
+        data = request.get_json()
+
+        question_id = data.get('question_id')
+        user_answer = data.get('user_answer')
+        time_spent = data.get('time_spent_seconds', 0)
+
+        if not question_id or not user_answer:
+            return jsonify({'error': 'question_id and user_answer are required'}), 400
+
+        # Connect to database
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Verify study test belongs to user
+        cur.execute("""
+            SELECT id FROM study_tests
+            WHERE id = %s AND user_id = %s
+        """, (study_test_id, user_id))
+
+        if not cur.fetchone():
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Test de estudio no encontrado'}), 404
+
+        # Get correct answer
+        cur.execute("""
+            SELECT respuesta_correcta FROM questions
+            WHERE id = %s
+        """, (question_id,))
+
+        question = cur.fetchone()
+        if not question:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Pregunta no encontrada'}), 404
+
+        correct_answer = question['respuesta_correcta']
+        is_correct = (user_answer.upper() == correct_answer.upper())
+
+        # Update study test question with answer
+        cur.execute("""
+            UPDATE study_test_questions
+            SET user_answer = %s,
+                is_correct = %s,
+                answered_at = CURRENT_TIMESTAMP,
+                time_spent_seconds = %s
+            WHERE study_test_id = %s AND question_id = %s
+        """, (user_answer, is_correct, time_spent, study_test_id, question_id))
+
+        # NUEVO: También registrar en question_attempts para estadísticas globales
+        # Obtener información adicional de la pregunta
+        cur.execute("""
+            SELECT q.categoria, stq.question_order
+            FROM questions q
+            JOIN study_test_questions stq ON q.id = stq.question_id
+            WHERE q.id = %s AND stq.study_test_id = %s
+        """, (question_id, study_test_id))
+
+        question_info = cur.fetchone()
+        if question_info:
+            category = question_info['categoria']
+            attempt_order = question_info['question_order']
+
+            # Insertar en question_attempts con study_test_id como exam_id
+            # Esto permite que las estadísticas de estudio aparezcan en el dashboard
+            cur.execute("""
+                INSERT INTO question_attempts (
+                    exam_id, question_id, user_answer, correct_answer,
+                    is_correct, time_spent_seconds, category, attempt_order
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+                study_test_id, question_id, user_answer.lower(),
+                correct_answer.lower(), is_correct, time_spent,
+                category, attempt_order
+            ))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'is_correct': is_correct,
+            'correct_answer': correct_answer
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error registrando respuesta de test de estudio: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+
+@app.route('/api/study-tests/<study_test_id>/submit', methods=['POST'])
+@require_auth
+def submit_study_test(study_test_id):
+    """
+    Submit and complete a study test
+    Calculates final score and marks as completed
+    """
+    try:
+        user_id = request.current_user['user_id']
+
+        # Connect to database
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Verify study test belongs to user
+        cur.execute("""
+            SELECT id, started_at, total_questions
+            FROM study_tests
+            WHERE id = %s AND user_id = %s AND status = 'in_progress'
+        """, (study_test_id, user_id))
+
+        study_test = cur.fetchone()
+        if not study_test:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Test de estudio no encontrado o ya completado'}), 404
+
+        # Calculate results
+        cur.execute("""
+            SELECT
+                COUNT(*) as total_answered,
+                COUNT(CASE WHEN is_correct = true THEN 1 END) as correct_answers,
+                SUM(time_spent_seconds) as total_time_seconds
+            FROM study_test_questions
+            WHERE study_test_id = %s
+        """, (study_test_id,))
+
+        results = cur.fetchone()
+
+        correct_answers = results['correct_answers'] or 0
+        total_questions = study_test['total_questions']
+        score_percentage = (correct_answers / total_questions * 100) if total_questions > 0 else 0
+
+        # Calculate duration
+        started_at = study_test['started_at']
+        duration_minutes = int((datetime.now() - started_at).total_seconds() / 60)
+
+        # Update study test as completed
+        cur.execute("""
+            UPDATE study_tests
+            SET status = 'completed',
+                completed_at = CURRENT_TIMESTAMP,
+                correct_answers = %s,
+                score_percentage = %s,
+                duration_minutes = %s
+            WHERE id = %s
+        """, (correct_answers, score_percentage, duration_minutes, study_test_id))
+
+        # NUEVO: Actualizar estadísticas del usuario (igual que con exámenes)
+        cur.execute("""
+            INSERT INTO user_statistics (
+                user_id, exams_completed, total_questions_answered,
+                correct_answers, study_time_minutes, last_exam_date
+            )
+            VALUES (%s, 1, %s, %s, %s, CURRENT_TIMESTAMP)
+            ON CONFLICT (user_id)
+            DO UPDATE SET
+                exams_completed = user_statistics.exams_completed + 1,
+                total_questions_answered = user_statistics.total_questions_answered + %s,
+                correct_answers = user_statistics.correct_answers + %s,
+                study_time_minutes = user_statistics.study_time_minutes + %s,
+                last_exam_date = CURRENT_TIMESTAMP,
+                updated_at = CURRENT_TIMESTAMP
+        """, (
+            user_id,
+            total_questions,
+            correct_answers,
+            duration_minutes,
+            total_questions,
+            correct_answers,
+            duration_minutes
+        ))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        logger.info(f"✅ Test de estudio completado: {study_test_id} - Usuario: {request.current_user['username']} - "
+                   f"Puntuación: {score_percentage:.2f}% ({correct_answers}/{total_questions})")
+
+        return jsonify({
+            'success': True,
+            'study_test_id': str(study_test_id),
+            'total_questions': total_questions,
+            'correct_answers': correct_answers,
+            'score_percentage': float(score_percentage),
+            'duration_minutes': duration_minutes,
+            'message': 'Test de estudio completado'
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error completando test de estudio: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+
+@app.route('/api/study-tests/available-uts', methods=['GET'])
+@require_auth
+def get_available_uts():
+    """Get list of available UTs with question counts"""
+    try:
+        # Connect to database
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Get UT configuration
+        cur.execute("SELECT * FROM ut_configuration ORDER BY ut_number")
+        ut_configs = cur.fetchall()
+
+        uts_list = []
+        for ut in ut_configs:
+            # Count available questions for this UT
+            cur.execute("""
+                SELECT COUNT(*) as count
+                FROM questions q
+                JOIN exams e ON q.exam_id = e.id
+                WHERE q.categoria = %s
+                AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
+                AND q.anulada = false
+            """, (ut['category_name'],))
+
+            count_result = cur.fetchone()
+            available_questions = count_result['count']
+
+            # Calculate min_correct_required from max_errors_allowed
+            min_correct = None
+            if ut.get('max_errors_allowed') is not None:
+                min_correct = ut['questions_per_exam'] - ut['max_errors_allowed']
+
+            uts_list.append({
+                'ut_number': ut['ut_number'],
+                'category_name': ut['category_name'],
+                'questions_per_exam': ut['questions_per_exam'],
+                'min_correct_required': min_correct,
+                'available_questions': available_questions,
+                'official_distribution': UT_DISTRIBUTION.get(ut['ut_number'], {})
+            })
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'uts': uts_list,
+            'total_uts': len(uts_list)
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo UTs disponibles: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+
+@app.route('/api/study-tests/user-history', methods=['GET'])
+@require_auth
+def get_user_study_history():
+    """Get user's study test history"""
+    try:
+        user_id = request.current_user['user_id']
+
+        # Connect to database
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Get user's study tests
+        cur.execute("""
+            SELECT
+                id,
+                selected_uts,
+                selection_mode,
+                total_questions,
+                status,
+                started_at,
+                completed_at,
+                correct_answers,
+                score_percentage,
+                duration_minutes
+            FROM study_tests
+            WHERE user_id = %s
+            ORDER BY started_at DESC
+            LIMIT 50
+        """, (user_id,))
+
+        study_tests = cur.fetchall()
+
+        tests_list = []
+        for test in study_tests:
+            test_data = {
+                'id': str(test['id']),
+                'selected_uts': test['selected_uts'],  # Already parsed by psycopg2
+                'selection_mode': test['selection_mode'],
+                'total_questions': test['total_questions'],
+                'status': test['status'],
+                'started_at': test['started_at'].isoformat() if test['started_at'] else None,
+                'completed_at': test['completed_at'].isoformat() if test['completed_at'] else None,
+                'correct_answers': test['correct_answers'],
+                'score_percentage': float(test['score_percentage']) if test['score_percentage'] else None,
+                'duration_minutes': test['duration_minutes']
+            }
+            tests_list.append(test_data)
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'study_tests': tests_list,
+            'total_tests': len(tests_list)
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo historial de tests de estudio: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+
+################################################################################
+# END STUDY MODE ENDPOINTS
+################################################################################
+
+@app.route('/api/per-questions/stats', methods=['GET'])
 def get_per_questions_stats():
     """Get statistics of available PER questions by category"""
     try:
@@ -2455,7 +2995,7 @@ def get_per_questions_stats():
         logger.error(f"Error obteniendo estadísticas de preguntas PER: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-@app.route('/question-attempt', methods=['POST', 'OPTIONS'])
+@app.route('/api/question-attempt', methods=['POST', 'OPTIONS'])
 def record_question_attempt():
     if request.method == 'OPTIONS':
         # Manejar petición preflight
@@ -2470,8 +3010,8 @@ def record_question_attempt():
         if not data:
             return jsonify({'error': 'No se proporcionaron datos'}), 400
 
-        # Validar datos requeridos
-        required_fields = ['user_id', 'question_id', 'user_answer', 'correct_answer', 'is_correct']
+        # Validar datos requeridos básicos
+        required_fields = ['user_id', 'question_id', 'user_answer']
         for field in required_fields:
             if field not in data:
                 return jsonify({'error': f'Campo requerido faltante: {field}'}), 400
@@ -2480,7 +3020,19 @@ def record_question_attempt():
         if not conn:
             return jsonify({'error': 'Database connection failed'}), 500
 
-        cur = conn.cursor()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Si no se proporcionó correct_answer o is_correct, buscarlos en la BD
+        if not data.get('correct_answer') or data.get('is_correct') is None:
+            cur.execute("""
+                SELECT respuesta_correcta FROM questions WHERE id = %s
+            """, (data['question_id'],))
+            question = cur.fetchone()
+            if question:
+                data['correct_answer'] = question['respuesta_correcta']
+                data['is_correct'] = (data['user_answer'].upper() == question['respuesta_correcta'].upper())
+            else:
+                return jsonify({'error': 'Pregunta no encontrada'}), 404
 
         # Insertar intento detallado
         cur.execute("""
@@ -2610,7 +3162,7 @@ def record_question_attempt():
         logger.error(f"Error registrando intento de pregunta: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/question-stats/<question_id>', methods=['GET'])
+@app.route('/api/question-stats/<question_id>', methods=['GET'])
 def get_question_stats(question_id):
     """Obtener estadísticas de una pregunta específica"""
     try:
@@ -2657,7 +3209,7 @@ def get_question_stats(question_id):
         logger.error(f"Error obteniendo estadísticas de pregunta: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/question-stats/rankings/<category>', methods=['GET'])
+@app.route('/api/question-stats/rankings/<category>', methods=['GET'])
 def get_question_rankings(category):
     """Obtener rankings de preguntas más falladas por categoría"""
     try:
@@ -2724,7 +3276,7 @@ def get_question_rankings(category):
         logger.error(f"Error obteniendo rankings de categoría: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/question-stats/user/<user_id>', methods=['GET'])
+@app.route('/api/question-stats/user/<user_id>', methods=['GET'])
 def get_user_question_stats(user_id):
     """Obtener estadísticas de preguntas para un usuario específico"""
     try:
@@ -2804,7 +3356,7 @@ def get_user_question_stats(user_id):
         logger.error(f"Error obteniendo estadísticas del usuario: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/question-stats/user/<user_id>/rankings', methods=['GET'])
+@app.route('/api/question-stats/user/<user_id>/rankings', methods=['GET'])
 def get_user_question_rankings(user_id):
     """Obtener rankings de preguntas más falladas para un usuario específico"""
     try:
@@ -2849,7 +3401,7 @@ def get_user_question_rankings(user_id):
         logger.error(f"Error obteniendo rankings del usuario: {e}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/question-stats/general', methods=['GET'])
+@app.route('/api/question-stats/general', methods=['GET'])
 def get_general_question_stats():
     """Obtener estadísticas generales de preguntas"""
     try:
@@ -2937,7 +3489,7 @@ if __name__ == '__main__':
     logger.info("   - PUT    /preguntas/<question_id>")
     logger.info("   - GET    /stats")
     logger.info("📊 Endpoints de estadísticas de preguntas:")
-    logger.info("   - POST   /question-attempt")
+    logger.info("   - POST   /api/question-attempt")
     logger.info("   - GET    /question-stats/<question_id>")
     logger.info("   - GET    /question-stats/rankings/<category>")
     logger.info("🔐 Endpoints de autenticación:")
@@ -2946,6 +3498,13 @@ if __name__ == '__main__':
     logger.info("   - GET    /auth/me")
     logger.info("🎯 Endpoints de exámenes:")
     logger.info("   - POST   /exams/generate")
-    
+    logger.info("📚 Endpoints de modo estudio:")
+    logger.info("   - POST   /api/study-tests/generate")
+    logger.info("   - GET    /api/study-tests/<study_test_id>/questions")
+    logger.info("   - POST   /api/study-tests/<study_test_id>/answer")
+    logger.info("   - POST   /api/study-tests/<study_test_id>/submit")
+    logger.info("   - GET    /api/study-tests/available-uts")
+    logger.info("   - GET    /api/study-tests/user-history")
+
     port = int(os.getenv('PORT', 5001))
     app.run(host='0.0.0.0', port=port, debug=False)

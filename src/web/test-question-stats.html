@@ -92,7 +92,7 @@
 
         async function testAPIHealth() {
             try {
-                const response = await fetch(`${API_BASE}/health`);
+                const response = await fetch(`${API_BASE}/api/health`);
                 const data = await response.json();
                 logResult('healthResult', `✅ API Health: ${JSON.stringify(data, null, 2)}`);
             } catch (error) {
@@ -102,7 +102,7 @@
 
         async function testCORS() {
             try {
-                const response = await fetch(`${API_BASE}/question-attempt`, {
+                const response = await fetch(`${API_BASE}/api/question-attempt`, {
                     method: 'OPTIONS',
                     headers: {
                         'Origin': 'http://localhost:8095',
@@ -129,7 +129,7 @@
                 const userId = crypto.randomUUID();
                 const questionId = crypto.randomUUID();
                 
-                const response = await fetch(`${API_BASE}/question-attempt`, {
+                const response = await fetch(`${API_BASE}/api/question-attempt`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -162,7 +162,7 @@
 
         async function testGeneralStats() {
             try {
-                const response = await fetch(`${API_BASE}/question-stats/general`);
+                const response = await fetch(`${API_BASE}/api/question-stats/general`);
                 const data = await response.json();
                 
                 if (data.success) {
@@ -177,7 +177,7 @@
 
         async function testRankings() {
             try {
-                const response = await fetch(`${API_BASE}/question-stats/rankings/Nomenclatura náutica`);
+                const response = await fetch(`${API_BASE}/api/question-stats/rankings/Nomenclatura náutica`);
                 const data = await response.json();
                 
                 if (data.success) {

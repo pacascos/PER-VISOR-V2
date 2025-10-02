@@ -4,7 +4,7 @@
 class StatisticsManager {
     constructor() {
         // Usar configuración de entorno automática
-        this.API_BASE = window.API_BASE || '/api'; // Fallback por seguridad
+        this.API_BASE = window.API_BASE !== undefined ? window.API_BASE : '/api'; // Fallback por seguridad
         this.userId = this.getCurrentUserId();
         this.charts = {};
 
@@ -164,7 +164,7 @@ class StatisticsManager {
             };
 
             // Load user statistics
-            const statsResponse = await fetch(`${this.API_BASE}/user-stats`, {
+            const statsResponse = await fetch(`${this.API_BASE}/api/user-stats`, {
                 headers: headers
             });
 
@@ -734,7 +734,7 @@ class StatisticsManager {
             console.log('🔍 Obteniendo preguntas falladas del examen:', examId);
 
             // Obtener preguntas falladas del examen
-            const response = await fetch(`${this.API_BASE}/user/exam/${examId}/failed-questions`, {
+            const response = await fetch(`${this.API_BASE}/api/user/exam/${examId}/failed-questions`, {
                 headers: {
                     'Authorization': `Bearer ${this.getCurrentAuthToken()}`
                 }
