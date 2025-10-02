@@ -140,7 +140,7 @@ class QuestionStatisticsTracker {
             };
 
 
-            const response = await fetch(`${this.apiBase}/question-attempt`, {
+            const response = await fetch(`${this.apiBase}/api/question-attempt`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

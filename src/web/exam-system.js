@@ -343,7 +343,7 @@ class ExamSystem {
         // Load detailed question data from the exam endpoint
         try {
             console.log('🔍 Cargando preguntas del examen:', this.currentExam);
-            const response = await fetch(`${this.API_BASE}/exams/${this.currentExam.exam_id}/questions`, {
+            const response = await fetch(`${this.API_BASE}/api/exams/${this.currentExam.exam_id}/questions`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`
                 }
@@ -578,7 +578,7 @@ class ExamSystem {
         }
 
         try {
-            const response = await fetch(`${this.API_BASE}/exams/${this.currentExam.exam_id}/submit`, {
+            const response = await fetch(`${this.API_BASE}/api/exams/${this.currentExam.exam_id}/submit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -799,7 +799,7 @@ class ExamSystem {
         try {
             this.showAlert('Cargando estadísticas de preguntas PER...', 'info');
 
-            const response = await fetch(`${this.API_BASE}/per-questions/stats`);
+            const response = await fetch(`${this.API_BASE}/api/per-questions/stats`);
 
             if (response.ok) {
                 const data = await response.json();

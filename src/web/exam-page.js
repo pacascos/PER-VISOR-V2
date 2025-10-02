@@ -37,7 +37,7 @@ class ExamPage {
         console.log('🔍 Checking auth status with token:', this.authToken.substring(0, 20) + '...');
 
         try {
-            const response = await fetch(`${this.API_BASE}/auth/me`, {
+            const response = await fetch(`${this.API_BASE}/api/auth/me`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`,
                     'Content-Type': 'application/json'
@@ -71,7 +71,7 @@ class ExamPage {
     async startNewExam() {
         try {
 
-            const response = await fetch(`${this.API_BASE}/exams/generate`, {
+            const response = await fetch(`${this.API_BASE}/api/exams/generate`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`
@@ -119,7 +119,7 @@ class ExamPage {
             console.log('🔍 Cargando detalles completos de las preguntas para examen:', this.currentExam.exam_id);
             
             // Usar el endpoint específico para obtener todas las preguntas de un examen
-            const response = await fetch(`${this.API_BASE}/exams/${this.currentExam.exam_id}/questions`, {
+            const response = await fetch(`${this.API_BASE}/api/exams/${this.currentExam.exam_id}/questions`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`
                 }
@@ -397,7 +397,7 @@ class ExamPage {
             }
         }
 
-        const response = await fetch(`${this.API_BASE}/exams/${this.currentExam.exam_id}/submit`, {
+        const response = await fetch(`${this.API_BASE}/api/exams/${this.currentExam.exam_id}/submit`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
