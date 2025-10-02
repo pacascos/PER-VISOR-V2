@@ -6,7 +6,7 @@
 class ExamSystem {
     constructor() {
         // Usar configuración de entorno automática
-        this.API_BASE = window.API_BASE || '/api'; // Fallback por seguridad
+        this.API_BASE = window.API_BASE !== undefined ? window.API_BASE : '/api'; // Fallback por seguridad
         this.currentUser = null;
         this.authToken = localStorage.getItem('authToken');
         this.currentExam = null;
@@ -52,7 +52,14 @@ class ExamSystem {
 
         // Dashboard events
         document.getElementById('startExamBtn').addEventListener('click', () => {
-            this.startNewExam();
+            // Check feature flag for unified exam page
+            if (window.featureFlags && window.featureFlags.isEnabled('unified_exam_page')) {
+                console.log('🚩 Using new unified exam page');
+                window.location.href = 'exam-unified.html';
+            } else {
+                console.log('📄 Using classic exam page');
+                window.location.href = 'exam.html';
+            }
         });
 
         document.getElementById('viewQuestionsBankBtn').addEventListener('click', () => {
@@ -72,6 +79,11 @@ class ExamSystem {
             window.location.href = 'statistics-dashboard.html';
         });
 
+        document.getElementById('studyModeBtn').addEventListener('click', () => {
+            // Redirect to study mode configuration
+            window.location.href = 'study-config.html';
+        });
+
         // Exam navigation events
         document.getElementById('prevBtn').addEventListener('click', () => {
             this.goToPreviousQuestion();
@@ -85,16 +97,17 @@ class ExamSystem {
             this.finishExam();
         });
 
-        document.getElementById('pauseBtn').addEventListener('click', () => {
-            this.pauseExam();
-        });
+        // Comentado: botón de pausa eliminado
+        // document.getElementById('pauseBtn').addEventListener('click', () => {
+        //     this.pauseExam();
+        // });
     }
 
     // Authentication Methods
     async checkAuthStatus() {
         if (this.authToken) {
             try {
-                const response = await fetch(`${this.API_BASE}/auth/me`, {
+                const response = await fetch(`${this.API_BASE}/api/auth/me`, {
                     headers: {
                         'Authorization': `Bearer ${this.authToken}`
                     }
@@ -137,7 +150,7 @@ class ExamSystem {
         const password = document.getElementById('loginPassword').value;
 
         try {
-            const response = await fetch(`${this.API_BASE}/auth/login`, {
+            const response = await fetch(`${this.API_BASE}/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -182,7 +195,7 @@ class ExamSystem {
         const password = document.getElementById('registerPassword').value;
 
         try {
-            const response = await fetch(`${this.API_BASE}/auth/register`, {
+            const response = await fetch(`${this.API_BASE}/api/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -265,7 +278,7 @@ class ExamSystem {
 
     async checkAdminRole() {
         try {
-            const response = await fetch(`${this.API_BASE}/auth/me`, {
+            const response = await fetch(`${this.API_BASE}/api/auth/me`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`,
                     'Content-Type': 'application/json'
@@ -323,34 +336,11 @@ class ExamSystem {
     // Exam Methods
     async startNewExam() {
         try {
-            this.showAlert('Generando examen...', 'info');
+            this.showAlert('Redirigiendo al examen...', 'info');
 
-            const response = await fetch(`${this.API_BASE}/exams/generate`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${this.authToken}`
-                }
-            });
+            // Redirigir a la página de examen
+            window.location.href = 'exam.html';
 
-            const data = await response.json();
-
-            if (response.ok) {
-                this.currentExam = data;
-                this.currentQuestionIndex = 0;
-                this.userAnswers = {};
-                this.timeRemaining = 90 * 60; // Reset timer
-                this.examStartTime = new Date(); // Track exam start time for statistics
-
-                // Load exam questions details
-                await this.loadExamQuestions();
-
-                this.showExamInterface();
-                this.startTimer();
-                this.displayCurrentQuestion();
-                this.showAlert('¡Examen iniciado! Tienes 90 minutos.', 'success');
-            } else {
-                this.showAlert(data.error || 'Error generando examen', 'danger');
-            }
         } catch (error) {
             console.error('Error starting exam:', error);
             this.showAlert('Error de conexión', 'danger');
@@ -361,7 +351,7 @@ class ExamSystem {
         // Load detailed question data from the exam endpoint
         try {
             console.log('🔍 Cargando preguntas del examen:', this.currentExam);
-            const response = await fetch(`${this.API_BASE}/exams/${this.currentExam.exam_id}/questions`, {
+            const response = await fetch(`${this.API_BASE}/api/exams/${this.currentExam.exam_id}/questions`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`
                 }
@@ -539,11 +529,13 @@ class ExamSystem {
         if (this.examTimer) {
             clearInterval(this.examTimer);
             this.examTimer = null;
-            document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-play me-1"></i>Continuar';
+            // Comentado: botón de pausa eliminado
+            // document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-play me-1"></i>Continuar';
             this.showAlert('Examen pausado', 'info');
         } else {
             this.startTimer();
-            document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause me-1"></i>Pausar';
+            // Comentado: botón de pausa eliminado
+            // document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause me-1"></i>Pausar';
             this.showAlert('Examen reanudado', 'info');
         }
     }
@@ -596,7 +588,7 @@ class ExamSystem {
         }
 
         try {
-            const response = await fetch(`${this.API_BASE}/exams/${this.currentExam.exam_id}/submit`, {
+            const response = await fetch(`${this.API_BASE}/api/exams/${this.currentExam.exam_id}/submit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -817,7 +809,7 @@ class ExamSystem {
         try {
             this.showAlert('Cargando estadísticas de preguntas PER...', 'info');
 
-            const response = await fetch(`${this.API_BASE}/per-questions/stats`);
+            const response = await fetch(`${this.API_BASE}/api/per-questions/stats`);
 
             if (response.ok) {
                 const data = await response.json();
@@ -1073,7 +1065,7 @@ let examSystem;
 document.addEventListener('DOMContentLoaded', () => {
     // Esperar a que la configuración esté lista
     function waitForConfig() {
-        if (window.API_BASE && window.envConfig) {
+        if (window.API_BASE !== undefined && window.envConfig) {
             console.log('✅ Configuración lista, inicializando exam-system...');
             examSystem = new ExamSystem();
         } else {

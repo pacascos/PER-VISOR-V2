@@ -1,0 +1,68 @@
+# .claudeignore - Archivos y directorios a excluir de búsquedas de Claude Code
+
+# Dependencias y entornos virtuales
+node_modules/
+venv/
+env/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.pyo
+*.pyd
+
+# Builds y distribuciones
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Datos grandes y archivos binarios
+data/pdf/
+data/temporal/
+backups/
+*.pdf
+# *.sql
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs y archivos temporales
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Git y control de versiones
+.git/
+.gitignore
+
+# IDEs y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Archivos generados y minificados
+*.min.js
+*.min.css
+*.map
+coverage/
+htmlcov/
+.coverage
+
+# Configuración sensible (aunque ya está en .gitignore)
+config.py
+.env
+.env.local
+*.key
+*.pem
+credentials.json
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+desktop.ini

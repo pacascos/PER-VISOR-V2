@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurar Test de Estudio - Sistema PER</title>
+
+    <!-- Favicon dinámico -->
+    <link rel="icon" type="image/svg+xml" href="" id="dynamic-favicon">
+    <script>
+        const isProduction = window.location.hostname === 'bancotest.com';
+        document.getElementById('dynamic-favicon').href = isProduction ? 'favicon-prod.svg' : 'favicon.svg';
+        window.ENVIRONMENT = isProduction ? 'PRODUCCIÓN' : 'DESARROLLO';
+        window.ENVIRONMENT_COLOR = isProduction ? '#dc2626' : '#059669';
+    </script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Moderno -->
+    <link rel="stylesheet" href="styles/modern-study.css">
+
+    <!-- Configuration -->
+    <script src="config.js"></script>
+    <script src="feature-flags.js"></script>
+</head>
+<body>
+    <!-- Indicador de entorno -->
+    <div class="environment-indicator" id="env-indicator"></div>
+
+    <!-- Overlay de loading -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Generando test de estudio...</div>
+    </div>
+
+    <div class="study-container">
+        <!-- Navegación simple -->
+        <div class="simple-nav">
+            <button class="nav-btn back-btn" onclick="window.location.href='exam-system.html'">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+        </div>
+
+        <!-- Contenido principal -->
+        <main class="study-content">
+            <!-- Selección de UTs -->
+            <div class="study-card ut-selection-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-list-check"></i>
+                        Unidades Temáticas
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <!-- Grid de UTs -->
+                    <div class="ut-grid" id="ut-grid">
+                        <!-- UTs se cargan dinámicamente -->
+                    </div>
+
+                    <!-- Seleccionar todas -->
+                    <div class="select-all-section">
+                        <label class="select-all-checkbox">
+                            <input type="checkbox" id="select-all-uts">
+                            <span>Seleccionar todas las UTs (examen completo - 45 preguntas)</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selección de modo -->
+            <div class="study-card mode-selection-card">
+                <div class="card-body">
+                    <div class="mode-grid">
+                        <label class="mode-option" for="mode-random">
+                            <input type="radio" name="study-mode" id="mode-random" value="random">
+                            <span class="mode-icon">🎲</span>
+                            <div class="mode-title">Aleatorio</div>
+                        </label>
+
+                        <label class="mode-option" for="mode-failed">
+                            <input type="radio" name="study-mode" id="mode-failed" value="failed">
+                            <span class="mode-icon">❌</span>
+                            <div class="mode-title">Falladas</div>
+                        </label>
+
+                        <label class="mode-option" for="mode-new">
+                            <input type="radio" name="study-mode" id="mode-new" value="new">
+                            <span class="mode-icon">✨</span>
+                            <div class="mode-title">Nuevas</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensajes de estado -->
+            <div class="error-card" id="error-message" style="display: none;">
+                <div class="error-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div id="error-text"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Configuration - usar window.API_BASE si está disponible (configurado por config.js)
+        const API_URL = window.API_BASE || (window.location.hostname === 'bancotest.com'
+            ? 'https://per-api-435987927843.europe-west1.run.app'
+            : 'http://localhost:5001');
+
+        console.log('🌐 study-config.html - API_URL:', API_URL);
+
+        // State
+        let availableUTs = [];
+        let selectedUTs = [];
+        let selectedMode = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Set environment indicator
+            const envIndicator = document.getElementById('env-indicator');
+            envIndicator.textContent = window.ENVIRONMENT;
+            envIndicator.style.background = window.ENVIRONMENT_COLOR;
+
+            // Check authentication
+            const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+            if (!token) {
+                console.error('No token found, redirecting to exam-system.html');
+                window.location.href = 'exam-system.html';
+                return;
+            }
+            console.log('✅ Token found, loading study config');
+
+            // Load available UTs
+            await loadAvailableUTs();
+
+            // Setup event listeners
+            setupEventListeners();
+        });
+
+        async function loadAvailableUTs() {
+            try {
+                const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                console.log('🔍 Cargando UTs disponibles desde:', `${API_URL}/api/study-tests/available-uts`);
+                const response = await fetch(`${API_URL}/api/study-tests/available-uts`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error cargando UTs disponibles');
+                }
+
+                const data = await response.json();
+                console.log('✅ UTs cargadas:', data);
+                availableUTs = data.uts;
+
+                renderUTGrid();
+            } catch (error) {
+                console.error('❌ Error loading UTs:', error);
+                showError('Error al cargar las UTs disponibles. Por favor, recarga la página.');
+            }
+        }
+
+        function renderUTGrid() {
+            const grid = document.getElementById('ut-grid');
+            grid.innerHTML = '';
+
+            availableUTs.forEach(ut => {
+                const card = document.createElement('div');
+                card.className = 'ut-item';
+                card.dataset.utNumber = ut.ut_number;
+
+                const questionsInfo = ut.official_distribution.questions
+                    ? `${ut.official_distribution.questions} preguntas`
+                    : `${ut.questions_per_exam} preguntas`;
+
+                card.innerHTML = `
+                    <div class="ut-number" data-ut="${ut.ut_number}">${ut.ut_number}</div>
+                    <div class="ut-title">${ut.category_name}</div>
+                    <div class="ut-info">${questionsInfo}</div>
+                `;
+
+                card.addEventListener('click', (e) => {
+                    // Toda la fila es clickeable ahora
+                    const utNumber = card.querySelector('.ut-number');
+                    const utNum = parseInt(utNumber.dataset.ut);
+                    const isSelected = card.classList.contains('selected');
+                    
+                    if (isSelected) {
+                        selectedUTs = selectedUTs.filter(ut => ut !== utNum);
+                        card.classList.remove('selected');
+                        utNumber.classList.remove('selected');
+                    } else {
+                        selectedUTs.push(utNum);
+                        card.classList.add('selected');
+                        utNumber.classList.add('selected');
+                    }
+                    
+                    updateSelectionSummary();
+                });
+
+                grid.appendChild(card);
+            });
+        }
+
+        function setupEventListeners() {
+            // UT selection is now handled in the card click event in renderUTGrid()
+
+            // Select all checkbox
+            document.getElementById('select-all-uts').addEventListener('change', (e) => {
+                const utItems = document.querySelectorAll('.ut-item');
+                utItems.forEach(item => {
+                    const utNumber = item.querySelector('.ut-number');
+                    const utNum = parseInt(utNumber.dataset.ut);
+                    
+                    if (e.target.checked) {
+                        item.classList.add('selected');
+                        utNumber.classList.add('selected');
+                        if (!selectedUTs.includes(utNum)) {
+                            selectedUTs.push(utNum);
+                        }
+                    } else {
+                        item.classList.remove('selected');
+                        utNumber.classList.remove('selected');
+                        selectedUTs = selectedUTs.filter(ut => ut !== utNum);
+                    }
+                });
+
+                updateSelectionSummary();
+            });
+
+            // Mode selection
+            document.querySelectorAll('.mode-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    // Check if UTs are selected
+                    if (selectedUTs.length === 0) {
+                        showError('Por favor, selecciona al menos una UT antes de generar el test');
+                        return;
+                    }
+
+                    const radio = option.querySelector('input[type="radio"]');
+                    const newMode = radio.value;
+
+                    // Always update selection visually
+                    document.querySelectorAll('.mode-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    option.classList.add('selected');
+                    radio.checked = true;
+                    selectedMode = newMode;
+
+                    // Auto-generate test when mode is clicked
+                    generateStudyTest();
+                });
+            });
+        }
+
+        async function generateStudyTest() {
+            showLoading(true);
+            hideMessages();
+
+            try {
+                const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                console.log('🚀 Generando test de estudio con UTs:', selectedUTs, 'Modo:', selectedMode);
+                const response = await fetch(`${API_URL}/api/study-tests/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        selected_uts: selectedUTs.sort((a, b) => a - b),
+                        selection_mode: selectedMode
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Error generando test');
+                }
+
+                const data = await response.json();
+                console.log('Study test generated:', data);
+
+                // Check feature flag for unified exam page
+                const useUnifiedPage = window.featureFlags && window.featureFlags.isEnabled('unified_exam_page');
+
+                if (useUnifiedPage) {
+                    // NEW: Redirect directly to unified exam page with study mode
+                    console.log('🚩 Using unified exam page for study mode');
+                    window.location.href = `exam-unified.html?type=study&study_test_id=${data.study_test_id}`;
+                } else {
+                    // OLD: Redirect to exam-system with study mode adapter
+                    console.log('📄 Using classic exam-system with study adapter');
+                    window.location.href = `exam-system.html?study_test_id=${data.study_test_id}&mode=study`;
+                }
+
+            } catch (error) {
+                console.error('Error generating study test:', error);
+                showError(error.message || 'Error generando el test de estudio. Por favor, inténtalo de nuevo.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showLoading(show) {
+            const overlay = document.getElementById('loading-overlay');
+            if (show) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            errorText.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function hideMessages() {
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        function updateSelectionSummary() {
+            // Update UI based on selection
+            const totalUTs = availableUTs.length;
+            const selectedCount = selectedUTs.length;
+            
+            console.log(`📊 UTs seleccionadas: ${selectedCount}/${totalUTs}`);
+        }
+    </script>
+</body>
+</html>

@@ -22,6 +22,9 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Unificado -->
+    <link rel="stylesheet" href="styles/unified-navigation.css">
 
     <style>
         * {
@@ -88,13 +91,21 @@
         }
 
         .version-badge.production {
-            background: rgba(220, 38, 38, 0.8);
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
             color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 6px;
         }
 
         .version-badge.development {
-            background: rgba(5, 150, 105, 0.8);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 6px;
         }
 
         .main-container {
@@ -118,20 +129,17 @@
         .exam-header {
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
             color: white;
-            padding: 2rem;
+            padding: 0.5rem;
             text-align: center;
+            margin: 0 auto;
         }
 
         .exam-title {
-            font-size: 2rem;
+            font-size: 1.25rem;
             font-weight: bold;
-            margin-bottom: 0.5rem;
+            margin: 0;
         }
 
-        .exam-subtitle {
-            opacity: 0.9;
-            font-size: 1.1rem;
-        }
 
         .exam-content {
             padding: 2rem;
@@ -314,18 +322,20 @@
         }
 
         .question-header {
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .question-number {
             background: #4f46e5;
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
             font-weight: 600;
             display: inline-block;
-            margin-bottom: 1rem;
         }
 
         .question-text {
@@ -333,6 +343,11 @@
             color: #374151;
             line-height: 1.6;
             margin-bottom: 1.5rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
 
@@ -388,10 +403,10 @@
         .timer {
             background: #fef3c7;
             color: #d97706;
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 0.7rem;
         }
 
         .timer.warning {
@@ -496,7 +511,6 @@
         <div class="exam-card">
             <div class="exam-header">
                 <h1 class="exam-title">Sistema de Exámenes PER</h1>
-                <p class="exam-subtitle">Patrón de Embarcaciones de Recreo</p>
             </div>
 
             <div class="exam-content">
@@ -564,6 +578,14 @@
                     </div>
 
                     <div class="exam-actions">
+                        <div class="action-card" id="studyModeBtn">
+                            <div class="action-icon" style="color: #667eea;">
+                                <i class="fas fa-book-reader"></i>
+                            </div>
+                            <div class="action-title">Estudio</div>
+                            <div class="action-description">Practica seleccionando UTs específicas y modo de estudio</div>
+                        </div>
+
                         <div class="action-card" id="startExamBtn">
                             <div class="action-icon">
                                 <i class="fas fa-play-circle"></i>
@@ -605,6 +627,28 @@
                         </div>
                     </div>
 
+                    <!-- Barra de Navegación con Tabs -->
+                    <div class="unified-tab-nav">
+                        <a href="exam-system.html" class="unified-tab-item active">
+                            <i class="fas fa-home"></i> Principal
+                        </a>
+                        <a href="visor-nueva-arquitectura.html" class="unified-tab-item">
+                            <i class="fas fa-book"></i> Banco
+                        </a>
+                        <a href="statistics-dashboard.html" class="unified-tab-item">
+                            <i class="fas fa-chart-bar"></i> Estadísticas
+                        </a>
+                        <a href="question-statistics-dashboard.html" class="unified-tab-item">
+                            <i class="fas fa-chart-line"></i> Preguntas
+                        </a>
+                        <a href="study-config.html" class="unified-tab-item">
+                            <i class="fas fa-book-reader"></i> Estudio
+                        </a>
+                        <a href="exam.html" class="unified-tab-item">
+                            <i class="fas fa-file-alt"></i> Examen
+                        </a>
+                    </div>
+
                     <!-- Pie de página con información de versión -->
                     <div class="version-footer" id="versionFooter" style="display: none;">
                         <div class="version-info">
@@ -634,13 +678,21 @@
 
                 <!-- Exam Interface -->
                 <div id="exam-section" class="exam-interface">
+                    <!-- Pastilla de pregunta y timer en la misma línea -->
+                    <div class="question-header">
+                        <div class="question-number">
+                            Pregunta <span id="questionNumber">1</span>
+                            <span class="ms-2 text-sm">UT<span id="questionUT">1</span> - <span id="questionCategory">Categoría</span></span>
+                        </div>
+                        <span class="timer" id="timer">90:00</span>
+                    </div>
+
                     <div class="exam-progress">
                         <div class="progress-bar">
                             <div class="progress-fill" id="progressFill"></div>
                         </div>
                         <div class="progress-text">
                             <span>Pregunta <span id="currentQuestion">1</span> de <span id="totalQuestions">45</span></span>
-                            <span class="timer" id="timer">90:00</span>
                         </div>
                     </div>
 
@@ -651,13 +703,6 @@
                         </div>
 
                         <div id="questionContent" class="hidden">
-                            <div class="question-header">
-                                <div class="question-number">
-                                    Pregunta <span id="questionNumber">1</span>
-                                    <span class="ms-2 text-sm">UT<span id="questionUT">1</span> - <span id="questionCategory">Categoría</span></span>
-                                </div>
-                            </div>
-
                             <div class="question-text" id="questionText">
                                 <!-- Question text will be loaded here -->
                             </div>
@@ -674,9 +719,6 @@
                         </button>
 
                         <div class="nav-buttons">
-                            <button class="btn btn-secondary" id="pauseBtn">
-                                <i class="fas fa-pause me-1"></i>Pausar
-                            </button>
                             <button class="btn btn-primary" id="nextBtn">
                                 Siguiente<i class="fas fa-chevron-right ms-1"></i>
                             </button>
@@ -706,11 +748,17 @@
     <!-- Configuración de entorno (debe cargarse primero) -->
     <script src="config.js"></script>
 
+    <!-- Feature Flags (load before other scripts) -->
+    <script src="feature-flags.js"></script>
+
     <!-- Question Statistics Tracker -->
     <script src="question-statistics-tracker.js"></script>
 
     <!-- Exam System JS -->
     <script src="exam-system.js"></script>
+
+    <!-- Study Mode Adapter -->
+    <script src="study-mode-adapter.js"></script>
 
     <!-- Configurar indicador de entorno -->
     <script>
