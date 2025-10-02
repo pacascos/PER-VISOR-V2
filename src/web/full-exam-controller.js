@@ -316,8 +316,18 @@ class FullExamController extends ExamController {
     }
 }
 
-// Auto-initialize when DOM is ready
+// Auto-initialize when DOM is ready (only if NOT study mode)
 document.addEventListener('DOMContentLoaded', async () => {
+    // Check if this is study mode
+    const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get('type');
+
+    // Only auto-initialize for full exams (default)
+    if (type === 'study') {
+        console.log('📚 Study mode detected, skipping FullExamController auto-init');
+        return;
+    }
+
     console.log('🚀 Initializing FullExamController...');
 
     const authToken = localStorage.getItem('authToken') || localStorage.getItem('token');

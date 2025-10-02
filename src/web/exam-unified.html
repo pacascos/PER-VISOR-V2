@@ -117,6 +117,7 @@
     <script src="exam-controller.js"></script>
     <script src="exam-api.js"></script>
     <script src="full-exam-controller.js"></script>
+    <script src="study-exam-controller.js"></script>
 
     <script>
         // Wait for config to load
@@ -131,10 +132,39 @@
             });
         }
 
-        // Initialize when ready
-        waitForConfig().then(() => {
-            console.log('✅ Config loaded, exam will initialize automatically');
-        });
+        // Unified initialization based on URL parameters
+        async function initializeExam() {
+            await waitForConfig();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const type = urlParams.get('type');
+            const studyTestId = urlParams.get('study_test_id');
+
+            console.log('🚀 Initializing unified exam page', { type, studyTestId });
+
+            // Determine which controller to use
+            if (type === 'study' && studyTestId) {
+                // Study mode
+                console.log('📚 Loading Study Mode');
+                const authToken = localStorage.getItem('authToken') || localStorage.getItem('token');
+                const controller = new StudyExamController({ authToken, studyTestId });
+                controller.initializeUI();
+                await controller.init();
+                window.examController = controller;
+            } else {
+                // Full exam mode (default)
+                console.log('📝 Loading Full Exam Mode');
+                // FullExamController auto-initializes via DOMContentLoaded
+                // No need to do anything here
+            }
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeExam);
+        } else {
+            initializeExam();
+        }
     </script>
 </body>
 </html>

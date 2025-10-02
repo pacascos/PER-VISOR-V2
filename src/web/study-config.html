@@ -14,400 +14,93 @@
         window.ENVIRONMENT_COLOR = isProduction ? '#dc2626' : '#059669';
     </script>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- CSS Unificado -->
-    <link rel="stylesheet" href="styles/unified-navigation.css">
+    <!-- CSS Moderno -->
+    <link rel="stylesheet" href="styles/modern-study.css">
 
     <!-- Configuration -->
     <script src="config.js"></script>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-            padding: 2rem 0;
-        }
-
-        .environment-indicator {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
-            z-index: 9999;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .main-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        .config-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .card-header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .card-header p {
-            opacity: 0.9;
-            margin: 0;
-            font-size: 0.95rem;
-        }
-
-        .card-body {
-            padding: 1.25rem;
-        }
-
-        .section-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #667eea;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .section-description {
-            color: #666;
-            font-size: 0.8rem;
-            margin-bottom: 0.75rem;
-            padding-left: 1.25rem;
-        }
-
-        .ut-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.35rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .ut-card {
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            padding: 0.4rem 0.6rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: white;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-
-        .ut-card:hover {
-            border-color: #667eea;
-            background: #f8f9ff;
-        }
-
-        .ut-card.selected {
-            border-color: #667eea;
-            background: #ede9fe;
-        }
-
-        .ut-card input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .ut-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex: 1;
-        }
-
-        .ut-number {
-            background: #667eea;
-            color: white;
-            width: 26px;
-            height: 26px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.8rem;
-            flex-shrink: 0;
-        }
-
-        .ut-title {
-            font-weight: 500;
-            font-size: 0.85rem;
-            color: #333;
-            flex: 1;
-        }
-
-        .ut-info {
-            font-size: 0.75rem;
-            color: #666;
-            white-space: nowrap;
-        }
-
-        .mode-selector {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .mode-option {
-            border: 2px solid #e5e7eb;
-            border-radius: 6px;
-            padding: 0.6rem 0.5rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-
-        .mode-option:hover {
-            border-color: #667eea;
-            background: #f3f4f6;
-        }
-
-        .mode-option.selected {
-            border-color: #667eea;
-            background: #ede9fe;
-        }
-
-        .mode-option input[type="radio"] {
-            display: none;
-        }
-
-        .mode-icon {
-            font-size: 1.5rem;
-            margin-bottom: 0.2rem;
-        }
-
-        .mode-title {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #333;
-            margin-bottom: 0.1rem;
-        }
-
-        .mode-description {
-            font-size: 0.7rem;
-            color: #666;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        .btn-generate {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 1rem 2.5rem;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-generate:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
-        }
-
-        .btn-generate:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Estilos de navegación movidos a unified-navigation.css */
-
-        .loading-spinner {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(102, 126, 234, 0.2);
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .error-message {
-            display: none;
-            background: #fee;
-            border: 2px solid #fcc;
-            color: #c33;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-        }
-
-        .select-all-checkbox {
-            margin-bottom: 0.75rem;
-            padding: 0.5rem 0.6rem;
-            background: #f9fafb;
-            border-radius: 6px;
-            border: 1px solid #e5e7eb;
-        }
-
-        .select-all-checkbox label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.85rem;
-            color: #333;
-        }
-    </style>
+    <script src="feature-flags.js"></script>
 </head>
 <body>
     <!-- Indicador de entorno -->
     <div class="environment-indicator" id="env-indicator"></div>
 
-    <div class="main-container">
-        <div class="config-card">
-            <div class="card-header">
-                <h1><i class="fas fa-book-reader"></i> Modo Estudio</h1>
-                <p>Configura tu test de estudio personalizado</p>
-            </div>
+    <!-- Overlay de loading -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Generando test de estudio...</div>
+    </div>
 
-            <div class="card-body">
-                <!-- Error message -->
-                <div class="error-message" id="error-message"></div>
-
-                <!-- Selección de UTs -->
-                <div class="section-title">
-                    <i class="fas fa-list-check"></i>
-                    Selecciona las Unidades Temáticas (UTs)
-                </div>
-
-                <div class="ut-grid" id="ut-grid">
-                    <!-- UTs will be loaded here -->
-                </div>
-
-                <div class="select-all-checkbox">
-                    <label>
-                        <input type="checkbox" id="select-all-uts">
-                        Seleccionar todas las UTs (examen completo - 45 preguntas)
-                    </label>
-                </div>
-
-                <!-- Selección de modo -->
-                <div class="section-title">
-                    <i class="fas fa-sliders"></i>
-                    Selecciona el modo de estudio
-                </div>
-                <div class="section-description">
-                    Elige cómo quieres que se seleccionen las preguntas
-                </div>
-
-                <div class="mode-selector">
-                    <label class="mode-option" for="mode-random">
-                        <input type="radio" name="study-mode" id="mode-random" value="random">
-                        <div class="mode-icon">🎲</div>
-                        <div class="mode-title">Aleatorio</div>
-                        <div class="mode-description">Preguntas seleccionadas al azar</div>
-                    </label>
-
-                    <label class="mode-option" for="mode-failed">
-                        <input type="radio" name="study-mode" id="mode-failed" value="failed">
-                        <div class="mode-icon">❌</div>
-                        <div class="mode-title">Falladas</div>
-                        <div class="mode-description">Prioriza preguntas que has fallado</div>
-                    </label>
-
-                    <label class="mode-option" for="mode-new">
-                        <input type="radio" name="study-mode" id="mode-new" value="new">
-                        <div class="mode-icon">✨</div>
-                        <div class="mode-title">Nuevas</div>
-                        <div class="mode-description">Prioriza preguntas no respondidas</div>
-                    </label>
-                </div>
-
-                <!-- Loading spinner -->
-                <div class="loading-spinner" id="loading-spinner">
-                    <div class="spinner"></div>
-                    <p>Generando test de estudio...</p>
-                </div>
-
-                <!-- Navegación Unificada Superior -->
-                <div class="unified-top-nav">
-                    <button class="unified-back-btn" onclick="goBack()">
-                        <i class="fas fa-arrow-left"></i> Volver
-                    </button>
-                    <h1 class="page-title">
-                        <i class="fas fa-book-reader"></i> Configuración de Estudio
-                    </h1>
-                    <div></div>
-                </div>
-
-                <!-- Barra de Navegación con Tabs -->
-                <div class="unified-tab-nav">
-                    <a href="exam-system.html" class="unified-tab-item">
-                        <i class="fas fa-home"></i> Principal
-                    </a>
-                    <a href="visor-nueva-arquitectura.html" class="unified-tab-item">
-                        <i class="fas fa-book"></i> Banco
-                    </a>
-                    <a href="statistics-dashboard.html" class="unified-tab-item">
-                        <i class="fas fa-chart-bar"></i> Estadísticas
-                    </a>
-                    <a href="question-statistics-dashboard.html" class="unified-tab-item">
-                        <i class="fas fa-chart-line"></i> Preguntas
-                    </a>
-                    <a href="study-config.html" class="unified-tab-item active">
-                        <i class="fas fa-book-reader"></i> Estudio
-                    </a>
-                </div>
-            </div>
+    <div class="study-container">
+        <!-- Navegación simple -->
+        <div class="simple-nav">
+            <button class="nav-btn back-btn" onclick="window.location.href='exam-system.html'">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
         </div>
+
+        <!-- Contenido principal -->
+        <main class="study-content">
+            <!-- Selección de UTs -->
+            <div class="study-card ut-selection-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-list-check"></i>
+                        Unidades Temáticas
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <!-- Grid de UTs -->
+                    <div class="ut-grid" id="ut-grid">
+                        <!-- UTs se cargan dinámicamente -->
+                    </div>
+
+                    <!-- Seleccionar todas -->
+                    <div class="select-all-section">
+                        <label class="select-all-checkbox">
+                            <input type="checkbox" id="select-all-uts">
+                            <span>Seleccionar todas las UTs (examen completo - 45 preguntas)</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selección de modo -->
+            <div class="study-card mode-selection-card">
+                <div class="card-body">
+                    <div class="mode-grid">
+                        <label class="mode-option" for="mode-random">
+                            <input type="radio" name="study-mode" id="mode-random" value="random">
+                            <span class="mode-icon">🎲</span>
+                            <div class="mode-title">Aleatorio</div>
+                        </label>
+
+                        <label class="mode-option" for="mode-failed">
+                            <input type="radio" name="study-mode" id="mode-failed" value="failed">
+                            <span class="mode-icon">❌</span>
+                            <div class="mode-title">Falladas</div>
+                        </label>
+
+                        <label class="mode-option" for="mode-new">
+                            <input type="radio" name="study-mode" id="mode-new" value="new">
+                            <span class="mode-icon">✨</span>
+                            <div class="mode-title">Nuevas</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensajes de estado -->
+            <div class="error-card" id="error-message" style="display: none;">
+                <div class="error-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div id="error-text"></div>
+            </div>
+        </main>
     </div>
 
     <script>
@@ -477,26 +170,36 @@
 
             availableUTs.forEach(ut => {
                 const card = document.createElement('div');
-                card.className = 'ut-card';
+                card.className = 'ut-item';
                 card.dataset.utNumber = ut.ut_number;
 
                 const questionsInfo = ut.official_distribution.questions
-                    ? `${ut.official_distribution.questions} preguntas en examen oficial`
+                    ? `${ut.official_distribution.questions} preguntas`
                     : `${ut.questions_per_exam} preguntas`;
 
                 card.innerHTML = `
-                    <input type="checkbox" class="ut-checkbox" data-ut="${ut.ut_number}">
-                    <div class="ut-number">${ut.ut_number}</div>
+                    <div class="ut-number" data-ut="${ut.ut_number}">${ut.ut_number}</div>
                     <div class="ut-title">${ut.category_name}</div>
                     <div class="ut-info">${questionsInfo}</div>
                 `;
 
                 card.addEventListener('click', (e) => {
-                    if (e.target.type !== 'checkbox') {
-                        const checkbox = card.querySelector('.ut-checkbox');
-                        checkbox.checked = !checkbox.checked;
-                        checkbox.dispatchEvent(new Event('change'));
+                    // Toda la fila es clickeable ahora
+                    const utNumber = card.querySelector('.ut-number');
+                    const utNum = parseInt(utNumber.dataset.ut);
+                    const isSelected = card.classList.contains('selected');
+                    
+                    if (isSelected) {
+                        selectedUTs = selectedUTs.filter(ut => ut !== utNum);
+                        card.classList.remove('selected');
+                        utNumber.classList.remove('selected');
+                    } else {
+                        selectedUTs.push(utNum);
+                        card.classList.add('selected');
+                        utNumber.classList.add('selected');
                     }
+                    
+                    updateSelectionSummary();
                 });
 
                 grid.appendChild(card);
@@ -504,42 +207,27 @@
         }
 
         function setupEventListeners() {
-            // UT selection
-            document.getElementById('ut-grid').addEventListener('change', (e) => {
-                if (e.target.classList.contains('ut-checkbox')) {
-                    const utNumber = parseInt(e.target.dataset.ut);
-                    const card = e.target.closest('.ut-card');
-
-                    if (e.target.checked) {
-                        selectedUTs.push(utNumber);
-                        card.classList.add('selected');
-                    } else {
-                        selectedUTs = selectedUTs.filter(ut => ut !== utNumber);
-                        card.classList.remove('selected');
-                        document.getElementById('select-all-uts').checked = false;
-                    }
-
-                }
-            });
+            // UT selection is now handled in the card click event in renderUTGrid()
 
             // Select all checkbox
             document.getElementById('select-all-uts').addEventListener('change', (e) => {
-                const checkboxes = document.querySelectorAll('.ut-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = e.target.checked;
-                    const card = checkbox.closest('.ut-card');
+                const utItems = document.querySelectorAll('.ut-item');
+                utItems.forEach(item => {
+                    const utNumber = item.querySelector('.ut-number');
+                    const utNum = parseInt(utNumber.dataset.ut);
+                    
                     if (e.target.checked) {
-                        card.classList.add('selected');
+                        item.classList.add('selected');
+                        utNumber.classList.add('selected');
+                        if (!selectedUTs.includes(utNum)) {
+                            selectedUTs.push(utNum);
+                        }
                     } else {
-                        card.classList.remove('selected');
+                        item.classList.remove('selected');
+                        utNumber.classList.remove('selected');
+                        selectedUTs = selectedUTs.filter(ut => ut !== utNum);
                     }
                 });
-
-                if (e.target.checked) {
-                    selectedUTs = availableUTs.map(ut => ut.ut_number);
-                } else {
-                    selectedUTs = [];
-                }
 
                 updateSelectionSummary();
             });
@@ -549,7 +237,7 @@
                 option.addEventListener('click', () => {
                     // Check if UTs are selected
                     if (selectedUTs.length === 0) {
-                        alert('Por favor, selecciona al menos una UT antes de generar el test');
+                        showError('Por favor, selecciona al menos una UT antes de generar el test');
                         return;
                     }
 
@@ -571,11 +259,8 @@
         }
 
         async function generateStudyTest() {
-            document.getElementById('loading-spinner').style.display = 'block';
-            const actionButtons = document.querySelector('.action-buttons');
-            if (actionButtons) {
-                actionButtons.style.display = 'none';
-            }
+            showLoading(true);
+            hideMessages();
 
             try {
                 const token = localStorage.getItem('token') || localStorage.getItem('authToken');
@@ -600,36 +285,58 @@
                 const data = await response.json();
                 console.log('Study test generated:', data);
 
-                // Redirect to exam system with study mode
-                window.location.href = `exam-system.html?study_test_id=${data.study_test_id}&mode=study`;
+                // Check feature flag for unified exam page
+                const useUnifiedPage = window.featureFlags && window.featureFlags.isEnabled('unified_exam_page');
+
+                if (useUnifiedPage) {
+                    // NEW: Redirect directly to unified exam page with study mode
+                    console.log('🚩 Using unified exam page for study mode');
+                    window.location.href = `exam-unified.html?type=study&study_test_id=${data.study_test_id}`;
+                } else {
+                    // OLD: Redirect to exam-system with study mode adapter
+                    console.log('📄 Using classic exam-system with study adapter');
+                    window.location.href = `exam-system.html?study_test_id=${data.study_test_id}&mode=study`;
+                }
 
             } catch (error) {
                 console.error('Error generating study test:', error);
                 showError(error.message || 'Error generando el test de estudio. Por favor, inténtalo de nuevo.');
+            } finally {
+                showLoading(false);
+            }
+        }
 
-                document.getElementById('loading-spinner').style.display = 'none';
-                const actionButtons = document.querySelector('.action-buttons');
-                if (actionButtons) {
-                    actionButtons.style.display = 'flex';
-                }
-                const btn = document.querySelector('.btn-generate');
-                if (btn) {
-                    btn.disabled = false;
-                }
+        function showLoading(show) {
+            const overlay = document.getElementById('loading-overlay');
+            if (show) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
             }
         }
 
         function showError(message) {
             const errorDiv = document.getElementById('error-message');
-            errorDiv.textContent = message;
+            const errorText = document.getElementById('error-text');
+            errorText.textContent = message;
             errorDiv.style.display = 'block';
+            
+            // Hide after 5 seconds
             setTimeout(() => {
                 errorDiv.style.display = 'none';
             }, 5000);
         }
 
-        function goBack() {
-            window.location.href = 'exam-system.html';
+        function hideMessages() {
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        function updateSelectionSummary() {
+            // Update UI based on selection
+            const totalUTs = availableUTs.length;
+            const selectedCount = selectedUTs.length;
+            
+            console.log(`📊 UTs seleccionadas: ${selectedCount}/${totalUTs}`);
         }
     </script>
 </body>
