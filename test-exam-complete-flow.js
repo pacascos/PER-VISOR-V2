@@ -57,17 +57,58 @@ const { chromium } = require('playwright');
       }
     }
 
-    // 3. Ir al examen
-    console.log('📝 Navegando al examen...');
-    await page.goto(`${baseUrl}/exam.html`);
+    // 3. Ir al examen unificado
+    console.log('📝 Navegando al examen unificado...');
+    await page.goto(`${baseUrl}/exam-unified.html`);
     await page.waitForLoadState('networkidle');
     await page.screenshot({ path: 'test-exam-3-exam-page.png', fullPage: true });
 
     // 4. Esperar a que se cargue el examen
     console.log('⏳ Esperando a que se cargue el examen...');
-    await page.waitForSelector('#examInterface', { timeout: 30000 });
+    await page.waitForSelector('#exam-section:not(.hidden)', { timeout: 30000 });
     await page.screenshot({ path: 'test-exam-4-exam-loaded.png', fullPage: true });
     console.log('✅ Examen cargado correctamente');
+
+    // 4.5 Verificar diseño de círculos azules
+    console.log('🎨 Verificando diseño de círculos azules...');
+    const designCheck = await page.evaluate(() => {
+        const answerOption = document.querySelector('.answer-option');
+        const answerLetter = document.querySelector('.answer-letter');
+        const answerText = document.querySelector('.answer-text');
+
+        if (!answerOption || !answerLetter || !answerText) {
+            return { success: false, error: 'Elementos no encontrados' };
+        }
+
+        const letterStyles = window.getComputedStyle(answerLetter);
+        const optionStyles = window.getComputedStyle(answerOption);
+
+        return {
+            success: true,
+            letter: {
+                backgroundColor: letterStyles.backgroundColor,
+                borderRadius: letterStyles.borderRadius,
+                width: letterStyles.width,
+                height: letterStyles.height,
+                display: letterStyles.display
+            },
+            option: {
+                display: optionStyles.display,
+                gap: optionStyles.gap,
+                border: optionStyles.border
+            }
+        };
+    });
+
+    if (designCheck.success) {
+        console.log('✅ Diseño verificado:');
+        console.log('   🔵 Círculo azul:', designCheck.letter.width, 'x', designCheck.letter.height);
+        console.log('   ⭕ Border radius:', designCheck.letter.borderRadius);
+        console.log('   🎨 Background:', designCheck.letter.backgroundColor);
+        console.log('   📏 Gap:', designCheck.option.gap);
+    } else {
+        console.log('⚠️ Advertencia:', designCheck.error);
+    }
 
     // 5. Responder todas las preguntas
     console.log('📋 Respondiendo todas las preguntas del examen...');

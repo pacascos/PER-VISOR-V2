@@ -1,0 +1,567 @@
+/* =============================================================================
+   🎨 DISEÑO MODERNO - PÁGINA DE ESTUDIO
+   =============================================================================
+   Fecha: 2025-10-02
+   Descripción: Diseño moderno y responsive para la página de configuración de estudio
+   ============================================================================= */
+
+/* =============================================================================
+   📱 VARIABLES CSS GLOBALES
+   ============================================================================= */
+:root {
+    /* Colores principales */
+    --primary-color: #667eea;
+    --primary-hover: #5a67d8;
+    --primary-light: #e6f3ff;
+    --secondary-color: #4a5568;
+    --secondary-hover: #2d3748;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    
+    /* Colores de fondo */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-overlay: rgba(255, 255, 255, 0.95);
+    
+    /* Sombras */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.1);
+    
+    /* Transiciones */
+    --transition-fast: all 0.2s ease;
+    --transition-normal: all 0.3s ease;
+    --transition-slow: all 0.5s ease;
+    
+    /* Bordes */
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 16px;
+    --border-radius-xl: 20px;
+    
+    /* Espaciado */
+    --container-padding: 1rem;
+    --card-gap: 1rem;
+}
+
+/* =============================================================================
+   🏗️ LAYOUT PRINCIPAL
+   ============================================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+}
+
+.study-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--container-padding);
+    min-height: 100vh;
+}
+
+/* =============================================================================
+   🧭 NAVEGACIÓN SIMPLE
+   ============================================================================= */
+
+.simple-nav {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.nav-btn {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: var(--border-radius-md);
+    padding: 0.75rem 1rem;
+    color: #64748b;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.nav-btn:hover {
+    background: #f8fafc;
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.back-btn {
+    font-size: 0.875rem;
+}
+
+.back-btn i {
+    font-size: 0.875rem;
+}
+
+/* =============================================================================
+   📄 CONTENIDO PRINCIPAL
+   ============================================================================= */
+
+.study-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.study-card {
+    background: var(--bg-primary);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    overflow: hidden;
+    transition: var(--transition-normal);
+}
+
+.study-card:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(30px, -30px);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 1;
+}
+
+.card-title i {
+    font-size: 1.5rem;
+}
+
+.card-subtitle {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    margin: 0.5rem 0 0 0;
+    position: relative;
+    z-index: 1;
+}
+
+.card-body {
+    padding: 0.75rem 1.5rem;
+}
+
+.mode-selection-card .card-body {
+    padding: 1rem 1.5rem;
+}
+
+/* =============================================================================
+   📊 LISTA DE UTs (UNIDADES TEMÁTICAS) - SIN CAJAS
+   ============================================================================= */
+
+.ut-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 0.5rem;
+}
+
+/* Estilos para el div sin clase ut-grid */
+div[id="ut-grid"] {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 0.5rem;
+}
+
+.ut-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.0625rem 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    min-height: 22px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.ut-item:last-child {
+    border-bottom: none;
+}
+
+.ut-item:hover {
+    background: #f8fafc;
+}
+
+.ut-item.selected {
+    background: #f1f5f9;
+}
+
+.ut-number {
+    background: #e2e8f0;
+    color: #64748b;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    border: 2px solid transparent;
+}
+
+.ut-number:hover {
+    background: #cbd5e1;
+    border-color: #94a3b8;
+}
+
+.ut-number.selected {
+    background: #667eea;
+    color: white;
+    border-color: #5a67d8;
+}
+
+.ut-title {
+    font-weight: 500;
+    color: #374151;
+    font-size: 0.875rem;
+    flex: 1;
+    line-height: 1.3;
+}
+
+.ut-info {
+    font-size: 0.75rem;
+    color: #6b7280;
+    flex-shrink: 0;
+    margin-left: auto;
+    margin-right: 0.5rem;
+}
+
+/* .ut-checkbox eliminado - ahora usamos los números como checkboxes */
+
+/* =============================================================================
+   🎛️ SELECTOR DE MODOS
+   ============================================================================= */
+
+.mode-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.mode-option {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: var(--border-radius-lg);
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.mode-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mode-option:hover {
+    border-color: #667eea;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+}
+
+.mode-option:hover::before {
+    opacity: 1;
+}
+
+.mode-option.selected {
+    border-color: #667eea;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.2);
+}
+
+.mode-option input[type="radio"] {
+    display: none;
+}
+
+.mode-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.mode-title {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* =============================================================================
+   🔄 ESTADOS Y FEEDBACK VISUAL
+   ============================================================================= */
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-overlay.show {
+    display: flex;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(102, 126, 234, 0.2);
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+.loading-text {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #334155;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.success-card {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-radius: var(--border-radius-lg);
+    padding: 2rem;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.success-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.error-card {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.error-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+/* =============================================================================
+   📱 RESPONSIVE DESIGN
+   ============================================================================= */
+
+/* Small Mobile */
+@media (max-width: 375px) {
+    :root {
+        --container-padding: 0.75rem;
+        --card-gap: 0.75rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .ut-item {
+        padding: 0.75rem;
+    }
+    
+    .mode-option {
+        padding: 1rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .study-container {
+        padding: var(--container-padding);
+        gap: 1rem;
+    }
+    
+    .card-header {
+        padding: 1rem;
+    }
+    
+    .card-title {
+        font-size: 1.125rem;
+    }
+    
+    .ut-number {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+    
+    .mode-icon {
+        font-size: 2rem;
+    }
+}
+
+/* Tablet */
+@media (min-width: 640px) {
+    .ut-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .mode-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+    .study-container {
+        padding: 2rem;
+    }
+}
+
+/* Large Desktop */
+@media (min-width: 1024px) {
+    .study-container {
+        padding: 3rem;
+    }
+}
+
+/* Extra Large Desktop */
+@media (min-width: 1440px) {
+    .study-container {
+        max-width: 900px;
+    }
+}
+
+/* =============================================================================
+   🎨 UTILIDADES
+   ============================================================================= */
+
+.select-all-section {
+    background: transparent;
+    border: none;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.select-all-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: #334155;
+    font-size: 0.875rem;
+}
+
+.select-all-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #667eea;
+}
+
+.environment-indicator {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* =============================================================================
+   🌙 MODO OSCURO (Preparado para futuro)
+   ============================================================================= */
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: #1a202c;
+        --bg-secondary: #2d3748;
+        --bg-overlay: rgba(26, 32, 44, 0.95);
+    }
+    
+    .ut-item, .mode-option {
+        background: #2d3748;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+    
+    .ut-title, .mode-title {
+        color: #f7fafc;
+    }
+    
+    .ut-info, .mode-description {
+        color: #a0aec0;
+    }
+}
