@@ -272,8 +272,8 @@ const { chromium } = require('playwright');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
 
-    // ==================== 8. VERIFICAR ESTADÍSTICAS ====================
-    console.log('\n8️⃣ Verificando registro en estadísticas...');
+    // ==================== 8. VERIFICAR HISTORIAL DE EXÁMENES ====================
+    console.log('\n8️⃣ Verificando registro en historial de exámenes...');
 
     // Navegar a la página de estadísticas
     await page.goto(`${baseUrl}/statistics-dashboard.html`);
@@ -282,60 +282,149 @@ const { chromium } = require('playwright');
 
     console.log('✅ En statistics-dashboard.html');
 
-    // Verificar estadísticas en la página
-    const statsData = await page.evaluate(() => {
-      const stats = {};
+    // Listen to browser console for debugging
+    page.on('console', msg => {
+      if (msg.text().includes('History') || msg.text().includes('exam')) {
+        console.log(`   [BROWSER]: ${msg.text()}`);
+      }
+    });
 
-      // Buscar las tarjetas de estadísticas principales (bg-white, rounded-lg, p-6)
-      const statCards = document.querySelectorAll('.bg-white.rounded-lg.p-6, .stats-card, .metric-card, .stat-card');
+    // Esperar a que se cargue el historial (puede ser asíncrono)
+    await page.waitForTimeout(3000); // Dar tiempo para que cargue desde la API
 
-      statCards.forEach(card => {
-        // Buscar el título dentro de cada tarjeta
-        const titleElement = card.querySelector('h3, .text-gray-600, .stat-label');
-        // Buscar el valor (normalmente en texto grande)
-        const valueElement = card.querySelector('.text-3xl, .text-4xl, .stat-value, .metric-value');
+    // Buscar el examen recién completado en el historial
+    const historyData = await page.evaluate((searchExamId) => {
+      // Buscar el contenedor específico del historial
+      const historyContainer = document.querySelector('#examHistoryContainer');
+      console.log('History container found:', !!historyContainer);
+      console.log('History container HTML length:', historyContainer?.innerHTML?.length || 0);
 
-        if (titleElement && valueElement) {
-          const title = titleElement.textContent.trim();
-          const value = valueElement.textContent.trim();
-          stats[title] = value;
+      const historySection = historyContainer || document.querySelector('#exam-history, .exam-history, [data-section="history"]');
+
+      if (!historySection) {
+        // Intentar buscar cualquier elemento que contenga "Historial"
+        const allElements = Array.from(document.querySelectorAll('*'));
+        const historyElement = allElements.find(el =>
+          el.textContent.includes('Historial de Exámenes') ||
+          el.textContent.includes('Historial') && el.textContent.includes('Exámenes')
+        );
+
+        if (historyElement) {
+          console.log('Found history section by text search');
         }
-      });
+      }
 
-      // Si no encontramos nada con los selectores anteriores, buscar de forma genérica
-      if (Object.keys(stats).length === 0) {
-        // Buscar todos los h3 y su siguiente hermano con clase text-3xl o text-4xl
-        const headings = document.querySelectorAll('h3');
-        headings.forEach(h3 => {
-          const parent = h3.closest('.bg-white, .stat-card, .metric-card');
-          if (parent) {
-            const value = parent.querySelector('.text-3xl, .text-4xl');
-            if (value) {
-              stats[h3.textContent.trim()] = value.textContent.trim();
-            }
+      // Si encontramos el contenedor, buscar directamente sus hijos
+      if (historyContainer && historyContainer.innerHTML.length > 100) {
+        // El contenedor tiene contenido, buscar todos los elementos hijos directos
+        const children = Array.from(historyContainer.children);
+        const examRows = [];
+
+        children.forEach(child => {
+          const text = child.textContent || '';
+          // Si el elemento tiene texto sustancial, considerarlo una fila de examen
+          if (text.length > 20) {
+            examRows.push({
+              fullText: text.trim().substring(0, 200),
+              hasPercentage: /\d{1,2}%/.test(text),
+              hasDate: /\d{4}-\d{2}-\d{2}/.test(text) || /\d{1,2}\/\d{1,2}\/\d{4}/.test(text),
+              hasStatus: text.includes('Suspendido') || text.includes('Aprobado'),
+              innerHTML: child.innerHTML.substring(0, 100)
+            });
           }
         });
+
+        return {
+          foundHistory: examRows.length > 0,
+          examCount: examRows.length,
+          exams: examRows.slice(0, 5),
+          searchedExamId: searchExamId,
+          containerHTML: historyContainer.innerHTML.substring(0, 500)
+        };
+      }
+
+      // Fallback: buscar todas las tarjetas/filas de examen en el historial
+      const examCards = document.querySelectorAll('.exam-card, .history-item, .exam-row, [data-exam-id]');
+      const examRows = [];
+
+      examCards.forEach(card => {
+        // Intentar extraer datos del examen
+        const dateElement = card.querySelector('.exam-date, .date, [data-date]');
+        const scoreElement = card.querySelector('.exam-score, .score, .percentage');
+        const statusElement = card.querySelector('.exam-status, .status, .badge');
+        const correctElement = card.querySelector('.correct, [data-correct]');
+        const incorrectElement = card.querySelector('.incorrect, [data-incorrect]');
+
+        examRows.push({
+          date: dateElement?.textContent?.trim() || 'No date',
+          score: scoreElement?.textContent?.trim() || 'No score',
+          status: statusElement?.textContent?.trim() || 'No status',
+          correct: correctElement?.textContent?.trim() || '',
+          incorrect: incorrectElement?.textContent?.trim() || '',
+          fullText: card.textContent.substring(0, 200)
+        });
+      });
+
+      // Si no encontramos tarjetas específicas, buscar toda la sección de historial
+      if (examRows.length === 0) {
+        const historialSection = Array.from(document.querySelectorAll('h3, h2')).find(h =>
+          h.textContent.includes('Historial')
+        );
+
+        if (historialSection) {
+          // Buscar el contenedor padre
+          const container = historialSection.closest('.bg-white, .card, section, div[class*="rounded"]');
+          if (container) {
+            // Buscar todos los elementos que parezcan filas de examen
+            const possibleRows = container.querySelectorAll('div[class*="flex"], li, tr');
+
+            possibleRows.forEach(row => {
+              const text = row.textContent;
+              // Buscar patrones de fecha, porcentaje, etc.
+              if (text.match(/\d{1,2}%/) || text.match(/\d{4}-\d{2}-\d{2}/) || text.includes('Suspendido') || text.includes('Aprobado')) {
+                examRows.push({
+                  fullText: text.trim().substring(0, 200),
+                  containsDate: text.includes('2025') || text.includes('2024'),
+                  containsPercentage: /\d{1,2}%/.test(text),
+                  containsStatus: text.includes('Suspendido') || text.includes('Aprobado')
+                });
+              }
+            });
+          }
+        }
       }
 
       return {
-        stats,
-        hasStats: Object.keys(stats).length > 0,
-        pageTitle: document.querySelector('h1, h2, .page-title, .text-2xl')?.textContent?.trim() || 'No title',
-        cardCount: statCards.length
+        foundHistory: examRows.length > 0,
+        examCount: examRows.length,
+        exams: examRows.slice(0, 5), // Primeros 5 para no saturar
+        searchedExamId: searchExamId
       };
-    });
+    }, examId);
 
-    console.log('   Título de página:', statsData.pageTitle);
-    console.log('   Estadísticas encontradas:', Object.keys(statsData.stats).length);
+    console.log('   Historial de exámenes encontrados:', historyData.examCount);
 
-    if (statsData.hasStats) {
-      Object.entries(statsData.stats).forEach(([key, value]) => {
-        console.log(`     - ${key}: ${value}`);
-      });
-      console.log('✅ Estadísticas mostradas correctamente');
+    if (historyData.foundHistory) {
+      console.log('✅ Historial de exámenes encontrado');
+      console.log(`   Total de exámenes en historial: ${historyData.examCount}`);
+
+      if (historyData.examCount > 0) {
+        console.log('   📋 Últimos exámenes:');
+        historyData.exams.forEach((exam, index) => {
+          console.log(`      ${index + 1}. ${exam.status || 'Estado: ' + (exam.containsStatus ? 'Encontrado' : 'No encontrado')}`);
+          console.log(`         Porcentaje: ${exam.score || (exam.containsPercentage ? 'Encontrado' : 'No encontrado')}`);
+          if (exam.fullText) {
+            console.log(`         Texto: ${exam.fullText.substring(0, 100)}...`);
+          }
+        });
+        console.log('✅ El examen debería estar registrado en el historial');
+      }
     } else {
-      console.log('⚠️  No se encontraron elementos de estadísticas en la página');
-      console.log('   Verificar selectores CSS en la página');
+      console.log('⚠️  No se encontró el historial de exámenes en la página');
+      console.log('   Posibles causas:');
+      console.log('   - La sección está oculta o cargada dinámicamente');
+      console.log('   - Los selectores CSS necesitan ajuste');
+      console.log('   - El historial está vacío');
     }
 
     await page.screenshot({ path: 'tests/screenshots/full-9-stats.png', fullPage: true });
@@ -383,7 +472,8 @@ const { chromium } = require('playwright');
     console.log(`   • Preguntas respondidas: ${totalQuestions}`);
     console.log(`   • Exam ID: ${examId}`);
     console.log(`   • Resultados mostrados: ${resultsData.hasResults ? 'SÍ' : 'NO'}`);
-    console.log(`   • Estadísticas actualizadas: ${statsData.hasStats ? 'SÍ' : 'NO'}`);
+    console.log(`   • Historial actualizado: ${historyData.foundHistory ? 'SÍ' : 'NO'}`);
+    console.log(`   • Exámenes en historial: ${historyData.examCount || 0}`);
 
     console.log('\n📸 Capturas guardadas en tests/screenshots/:');
     console.log('   - full-1-homepage.png');
