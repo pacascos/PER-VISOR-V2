@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados del Examen - PER</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Exam Unified Styles -->
+    <link rel="stylesheet" href="exam-unified.css?v=3">
+
+    <!-- Configuration -->
+    <script src="config.js"></script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .results-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .results-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .result-title.passed {
+            color: #10b981;
+        }
+
+        .result-title.failed {
+            color: #ef4444;
+        }
+
+        .result-title i {
+            font-size: 3rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card.correct {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .stat-card.incorrect {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .stat-card.unanswered {
+            border-color: #94a3b8;
+            background: #f8fafc;
+        }
+
+        .stat-card.percentage {
+            border-color: #667eea;
+            background: #eef2ff;
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card.correct .stat-value {
+            color: #10b981;
+        }
+
+        .stat-card.incorrect .stat-value {
+            color: #ef4444;
+        }
+
+        .stat-card.unanswered .stat-value {
+            color: #64748b;
+        }
+
+        .stat-card.percentage .stat-value {
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .exam-info {
+            text-align: center;
+            margin: 2rem 0;
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .exam-info p {
+            margin: 0.5rem 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary-custom {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary-custom:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="unified-top-nav" style="background: white; padding: 1rem; margin-bottom: 0;">
+        <button class="unified-back-btn" onclick="window.location.href='exam-system.html'" style="background: white; border: 2px solid #667eea; color: #667eea; padding: 0.5rem 1.5rem; border-radius: 8px; cursor: pointer;">
+            <i class="fas fa-arrow-left"></i> Volver
+        </button>
+
+        <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; flex-wrap: wrap;">
+            <a href="exam-system.html" class="unified-tab-item" style="text-decoration: none; color: #64748b; padding: 0.5rem 1rem;">
+                <i class="fas fa-home"></i> Principal
+            </a>
+            <a href="visor-nueva-arquitectura.html" class="unified-tab-item" style="text-decoration: none; color: #64748b; padding: 0.5rem 1rem;">
+                <i class="fas fa-database"></i> Banco
+            </a>
+            <a href="statistics-dashboard.html" class="unified-tab-item" style="text-decoration: none; color: #64748b; padding: 0.5rem 1rem;">
+                <i class="fas fa-chart-bar"></i> Estadísticas
+            </a>
+            <a href="exam-system.html" class="unified-tab-item active" style="text-decoration: none; color: #667eea; padding: 0.5rem 1rem; border-bottom: 3px solid #667eea;">
+                <i class="fas fa-file-alt"></i> Examen
+            </a>
+        </div>
+    </div>
+
+    <div class="results-container">
+        <!-- Loading State -->
+        <div id="loading-section" class="results-card">
+            <div class="loading-spinner">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-3">Cargando resultados...</p>
+            </div>
+        </div>
+
+        <!-- Results Content -->
+        <div id="results-section" class="results-card" style="display: none;">
+            <!-- Title (will be set dynamically) -->
+            <h1 class="result-title" id="result-title">
+                <i class="fas fa-circle-xmark"></i>
+                <span>Cargando...</span>
+            </h1>
+
+            <!-- Statistics Grid -->
+            <div class="stats-grid">
+                <div class="stat-card correct">
+                    <div class="stat-value" id="correct-count">0</div>
+                    <div class="stat-label">Correctas</div>
+                </div>
+
+                <div class="stat-card incorrect">
+                    <div class="stat-value" id="incorrect-count">0</div>
+                    <div class="stat-label">Incorrectas</div>
+                </div>
+
+                <div class="stat-card unanswered">
+                    <div class="stat-value" id="unanswered-count">0</div>
+                    <div class="stat-label">Sin responder</div>
+                </div>
+
+                <div class="stat-card percentage">
+                    <div class="stat-value" id="percentage-value">0%</div>
+                    <div class="stat-label">Porcentaje</div>
+                </div>
+            </div>
+
+            <!-- Exam Info -->
+            <div class="exam-info">
+                <p><strong>Duración del examen:</strong> <span id="exam-duration">0 minutos</span></p>
+                <p><strong>Preguntas totales:</strong> <span id="total-questions">45</span></p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-primary-custom" onclick="window.location.href='exam-system.html'">
+                    <i class="fas fa-home"></i>
+                    Volver al Inicio
+                </button>
+                <button class="btn-secondary-custom" onclick="window.location.href='exam-unified.html'">
+                    <i class="fas fa-redo"></i>
+                    Nuevo Examen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Get exam ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const examId = urlParams.get('exam_id');
+
+        console.log('📊 Exam Results Page');
+        console.log('   Exam ID:', examId);
+
+        // Load results from sessionStorage or API
+        async function loadResults() {
+            try {
+                // First, try to get results from sessionStorage
+                const cachedResults = sessionStorage.getItem('examResults');
+
+                let results;
+
+                if (cachedResults) {
+                    console.log('✅ Using cached results from sessionStorage');
+                    results = JSON.parse(cachedResults);
+                } else if (examId) {
+                    console.log('📡 Fetching results from API...');
+
+                    const API_BASE = window.API_BASE || '';
+                    const response = await fetch(`${API_BASE}/api/exams/${examId}/results`, {
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    results = await response.json();
+                    console.log('✅ Results loaded from API:', results);
+                } else {
+                    throw new Error('No exam ID provided and no cached results found');
+                }
+
+                // Display results
+                displayResults(results);
+
+            } catch (error) {
+                console.error('❌ Error loading results:', error);
+                showError('No se pudieron cargar los resultados del examen.');
+            }
+        }
+
+        function displayResults(results) {
+            // Hide loading, show results
+            document.getElementById('loading-section').style.display = 'none';
+            document.getElementById('results-section').style.display = 'block';
+
+            // Calculate statistics
+            const correctCount = results.correct_answers || 0;
+            const totalQuestions = results.total_questions || 45;
+            const incorrectCount = (results.incorrect_answers !== undefined) ? results.incorrect_answers : (totalQuestions - correctCount - (results.unanswered || 0));
+            const unansweredCount = results.unanswered || 0;
+            const percentage = results.score !== undefined ? results.score : Math.round((correctCount / totalQuestions) * 100);
+            const passed = percentage >= 60; // Threshold for passing
+
+            // Update title
+            const titleElement = document.getElementById('result-title');
+            if (passed) {
+                titleElement.className = 'result-title passed';
+                titleElement.innerHTML = '<i class="fas fa-circle-check"></i><span>¡Examen Aprobado!</span>';
+            } else {
+                titleElement.className = 'result-title failed';
+                titleElement.innerHTML = '<i class="fas fa-circle-xmark"></i><span>Examen No Aprobado</span>';
+            }
+
+            // Update stats
+            document.getElementById('correct-count').textContent = correctCount;
+            document.getElementById('incorrect-count').textContent = incorrectCount;
+            document.getElementById('unanswered-count').textContent = unansweredCount;
+            document.getElementById('percentage-value').textContent = percentage + '%';
+
+            // Update exam info
+            document.getElementById('total-questions').textContent = totalQuestions;
+
+            // Calculate duration if available
+            if (results.started_at && results.completed_at) {
+                const start = new Date(results.started_at);
+                const end = new Date(results.completed_at);
+                const durationMs = end - start;
+                const durationMinutes = Math.round(durationMs / 60000);
+                document.getElementById('exam-duration').textContent = durationMinutes + ' minutos';
+            } else if (results.duration) {
+                document.getElementById('exam-duration').textContent = results.duration;
+            }
+
+            console.log('✅ Results displayed');
+            console.log('   Correct:', correctCount);
+            console.log('   Incorrect:', incorrectCount);
+            console.log('   Unanswered:', unansweredCount);
+            console.log('   Score:', percentage + '%');
+            console.log('   Passed:', passed);
+        }
+
+        function showError(message) {
+            document.getElementById('loading-section').innerHTML = `
+                <div class="text-center">
+                    <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                    <p class="mt-3 text-danger">${message}</p>
+                    <button class="btn-primary-custom mt-3" onclick="window.location.href='exam-system.html'">
+                        <i class="fas fa-home"></i>
+                        Volver al Inicio
+                    </button>
+                </div>
+            `;
+        }
+
+        // Load results when page loads
+        document.addEventListener('DOMContentLoaded', loadResults);
+    </script>
+</body>
+</html>

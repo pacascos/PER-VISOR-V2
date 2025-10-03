@@ -213,29 +213,55 @@ const { chromium } = require('playwright');
     console.log('   URL después de enviar:', resultsUrl);
     await page.screenshot({ path: 'tests/screenshots/full-8-after-submit.png', fullPage: true });
 
-    // ⚠️ NOTA: exam-results.html no existe actualmente (bug pendiente)
-    // El sistema debería crear esta página o redirigir a exam-system.html
     let resultsData = { hasResults: false };
 
     if (resultsUrl.includes('exam-results.html')) {
-      console.log('✅ Redirigió a exam-results.html (página existe)');
+      console.log('✅ Redirigió a exam-results.html');
+
+      // Esperar a que carguen los resultados
+      await page.waitForSelector('#results-section:not([style*="display: none"])', { timeout: 10000 });
+      await page.waitForTimeout(1000);
 
       resultsData = await page.evaluate(() => {
-        const scoreElement = document.querySelector('.score-display, .result-score, h2');
-        const detailsElement = document.querySelector('.exam-details, .result-details');
+        // Obtener datos de las tarjetas de estadísticas
+        const correctCount = document.getElementById('correct-count')?.textContent || '0';
+        const incorrectCount = document.getElementById('incorrect-count')?.textContent || '0';
+        const unansweredCount = document.getElementById('unanswered-count')?.textContent || '0';
+        const percentage = document.getElementById('percentage-value')?.textContent || '0%';
+
+        // Obtener título del resultado
+        const titleElement = document.getElementById('result-title');
+        const resultTitle = titleElement?.textContent?.trim() || 'No encontrado';
+        const passed = titleElement?.classList.contains('passed') || false;
+
+        // Obtener info adicional
+        const duration = document.getElementById('exam-duration')?.textContent || 'No disponible';
+        const totalQuestions = document.getElementById('total-questions')?.textContent || '0';
 
         return {
-          scoreText: scoreElement?.textContent || 'No encontrado',
-          detailsText: detailsElement?.textContent || 'No encontrado',
-          hasResults: !!scoreElement
+          hasResults: true,
+          correctCount,
+          incorrectCount,
+          unansweredCount,
+          percentage,
+          resultTitle,
+          passed,
+          duration,
+          totalQuestions
         };
       });
 
-      console.log('   Puntuación:', resultsData.scoreText);
-      console.log('   Detalles:', resultsData.detailsText.substring(0, 100) + '...');
+      console.log('   📊 Resultados del examen:');
+      console.log(`      ${resultsData.resultTitle}`);
+      console.log(`      Correctas: ${resultsData.correctCount}`);
+      console.log(`      Incorrectas: ${resultsData.incorrectCount}`);
+      console.log(`      Sin responder: ${resultsData.unansweredCount}`);
+      console.log(`      Porcentaje: ${resultsData.percentage}`);
+      console.log(`      Duración: ${resultsData.duration}`);
+      console.log(`      Aprobado: ${resultsData.passed ? 'SÍ' : 'NO'}`);
     } else {
-      console.log('⚠️  No redirigió a exam-results.html (404 - página no existe)');
-      console.log('   BUG: Necesita crear exam-results.html o redirigir a exam-system.html');
+      console.log('⚠️  No redirigió a exam-results.html');
+      console.log('   URL actual:', resultsUrl);
     }
 
     // ==================== 7. VERIFICAR EN API QUE EL EXAMEN SE REGISTRÓ ====================
