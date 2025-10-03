@@ -233,8 +233,16 @@ class FullExamController extends ExamController {
             this.stopTimer();
             this.showAlert('Enviando examen...', 'info');
 
-            // Submit exam
-            const results = await this.examApi.submitExam(this.currentExam.exam_id);
+            // Prepare answers in the format expected by the API
+            const answers = Object.entries(this.userAnswers).map(([question_id, selected_answer]) => ({
+                question_id,
+                selected_answer
+            }));
+
+            console.log('📤 Submitting exam with answers:', answers);
+
+            // Submit exam with answers
+            const results = await this.examApi.submitExam(this.currentExam.exam_id, answers);
             console.log('✅ Exam submitted:', results);
 
             // Store results for results page
