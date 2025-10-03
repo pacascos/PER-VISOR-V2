@@ -187,58 +187,58 @@ body {
 .answer-option {
     display: flex;
     align-items: center;
-    padding: 1.25rem;
-    background: #f8fafc;
-    border: 2px solid #e2e8f0;
+    padding: 1rem 1.5rem;
+    background: white;
+    border: 2px solid #e5e7eb;
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    gap: 1rem;
 }
 
 .answer-option:hover {
     border-color: #667eea;
-    background: #f5f3ff;
-    transform: translateX(4px);
+    background: #f8f9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
 }
 
 .answer-option.selected {
     border-color: #667eea;
-    background: #ede9fe;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
 }
 
-.answer-option input[type="radio"] {
-    width: 20px;
-    height: 20px;
-    margin-right: 1rem;
-    cursor: pointer;
-    accent-color: #667eea;
-}
-
-.answer-label {
+.answer-text {
     flex: 1;
     font-size: 1rem;
-    color: #1f2937;
+    line-height: 1.5;
+    color: #2d3748;
     cursor: pointer;
     user-select: none;
 }
 
+.answer-option.selected .answer-text {
+    color: white;
+}
+
 .answer-letter {
-    display: inline-block;
-    width: 28px;
-    height: 28px;
-    line-height: 28px;
-    text-align: center;
     background: #667eea;
     color: white;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: 600;
+    flex-shrink: 0;
     font-size: 0.875rem;
-    margin-right: 0.75rem;
 }
 
 .answer-option.selected .answer-letter {
-    background: #5a67d8;
+    background: rgba(255, 255, 255, 0.2);
 }
 
 /* ==================== NAVIGATION BUTTONS ==================== */

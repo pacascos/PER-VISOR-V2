@@ -338,8 +338,8 @@ class ExamSystem {
         try {
             this.showAlert('Redirigiendo al examen...', 'info');
 
-            // Redirigir a la página de examen
-            window.location.href = 'exam.html';
+            // Redirigir a la página de examen unificada
+            window.location.href = 'exam-unified.html';
 
         } catch (error) {
             console.error('Error starting exam:', error);

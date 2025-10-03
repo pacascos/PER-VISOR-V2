@@ -162,17 +162,8 @@ class FullExamController extends ExamController {
 
                 return `
                     <div class="answer-option ${isSelected ? 'selected' : ''}" data-answer="${option}">
-                        <input
-                            type="radio"
-                            name="answer"
-                            id="answer-${option}"
-                            value="${option}"
-                            ${isSelected ? 'checked' : ''}
-                        >
-                        <label for="answer-${option}" class="answer-label">
-                            <span class="answer-letter">${option}</span>
-                            ${optionText}
-                        </label>
+                        <span class="answer-letter">${option}</span>
+                        <span class="answer-text">${optionText}</span>
                     </div>
                 `;
             }).join('');
@@ -188,9 +179,6 @@ class FullExamController extends ExamController {
                         opt.classList.remove('selected');
                     });
                     option.classList.add('selected');
-
-                    // Check the radio
-                    option.querySelector('input').checked = true;
                 });
             });
         }
