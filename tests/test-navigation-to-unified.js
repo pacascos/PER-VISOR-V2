@@ -79,20 +79,44 @@ const { chromium } = require('playwright');
 
     // 3. Verificar que feature flags está cargado
     console.log('\n3️⃣ Verificando feature flags...');
+
+    // Listen to console messages from the browser
+    page.on('console', msg => {
+      console.log(`   [BROWSER]: ${msg.text()}`);
+    });
+
     const featureFlagsCheck = await page.evaluate(() => {
       return {
         loaded: typeof window.featureFlags !== 'undefined',
         userId: window.featureFlags?.userId,
-        enabled: window.featureFlags?.isEnabled('unified_exam_page')
+        rollout: window.featureFlags?.flags?.unified_exam_page?.rolloutPercentage,
+        enabled: window.featureFlags?.isEnabled('unified_exam_page'),
+        allFlags: window.featureFlags ? Object.keys(window.featureFlags.flags) : []
       };
     });
 
     console.log('   Feature Flags loaded:', featureFlagsCheck.loaded);
     console.log('   User ID:', featureFlagsCheck.userId);
+    console.log('   Rollout %:', featureFlagsCheck.rollout);
     console.log('   Unified page enabled:', featureFlagsCheck.enabled);
+    console.log('   Available flags:', featureFlagsCheck.allFlags);
 
     if (!featureFlagsCheck.loaded) {
       console.log('⚠️  Feature flags no cargado, pero continuamos...');
+
+      // Check if script tag exists
+      const scriptCheck = await page.evaluate(() => {
+        const scripts = Array.from(document.querySelectorAll('script'));
+        const featureFlagsScript = scripts.find(s => s.src.includes('feature-flags'));
+        return {
+          scriptExists: !!featureFlagsScript,
+          scriptSrc: featureFlagsScript?.src || 'not found',
+          allScripts: scripts.map(s => s.src || s.textContent.substring(0, 50))
+        };
+      });
+
+      console.log('   Script tag exists:', scriptCheck.scriptExists);
+      console.log('   Script src:', scriptCheck.scriptSrc);
     }
 
     // 4. Click en "Nuevo Examen"

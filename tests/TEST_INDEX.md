@@ -113,16 +113,37 @@ node test-login-production.js
 
 ### 🎨 Tests de UI/Diseño (NUEVOS)
 
-#### 8. **test-design-verification.js** ⚠️ TEMPORAL
+#### 8. **test-navigation-to-unified.js** ⭐ NAVEGACIÓN COMPLETA
+**Ubicación:** `/tests/test-navigation-to-unified.js`
+**Propósito:** Test completo de navegación desde login hasta exam-unified
+**Características:**
+- Login automático con patrón correcto
+- Navegación a exam-system.html
+- Click en botón "Nuevo Examen"
+- Verificación de redirección a exam-unified.html
+- Validación de diseño de círculos azules
+- Test de selección de respuestas
+- Capturas de pantalla en cada paso
+
+**Uso:**
+```bash
+node tests/test-navigation-to-unified.js
+```
+
+**Última ejecución:** ✅ Exitosa (2025-10-03)
+
+---
+
+#### 9. **test-design-verification.js** ⚠️ DEPRECATED
 **Ubicación:** `/test-design-verification.js`
 **Propósito:** Verificar diseño de círculos azules
-**NOTA:** Este test fue creado temporalmente. Integrar en test-exam-complete-flow.js
+**NOTA:** DEPRECATED - usar `test-navigation-to-unified.js` en su lugar
 
 ---
 
 ### 📱 Tests Responsive
 
-#### 9. **test-responsive-mobile.js**
+#### 10. **test-responsive-mobile.js**
 **Ubicación:** `/test-responsive-mobile.js`
 **Propósito:** Tests de diseño responsive en móvil
 
@@ -306,6 +327,23 @@ console.log(window.featureFlags.isEnabled('unified_exam_page'));
 1. Verificar que `feature-flags.js` esté cargado ANTES de `exam-system.js`
 2. Limpiar localStorage: `localStorage.clear()`
 3. Verificar userId: `localStorage.getItem('feature_flag_user_id')`
+
+**SOLUCIÓN DEFINITIVA (2025-10-03):**
+Eliminar completamente el feature flag y hacer que siempre redirija a exam-unified.html:
+
+```javascript
+// En exam-system.js - ANTES:
+if (window.featureFlags && window.featureFlags.isEnabled('unified_exam_page')) {
+    window.location.href = 'exam-unified.html';
+} else {
+    window.location.href = 'exam.html';
+}
+
+// DESPUÉS (feature flag removido):
+window.location.href = 'exam-unified.html';
+```
+
+✅ Esto simplifica el código y asegura que siempre se use exam-unified.html
 
 ### Problema 4: Selectores de login diferentes
 **Error:** No se encuentran los campos de login
