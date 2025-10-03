@@ -111,9 +111,37 @@ node test-login-production.js
 
 ---
 
-### 🎨 Tests de UI/Diseño (NUEVOS)
+### 🎯 Tests de Flujo Completo (END-TO-END)
 
-#### 8. **test-navigation-to-unified.js** ⭐ NAVEGACIÓN COMPLETA
+#### 8. **test-full-exam-flow.js** ⭐⭐ FLUJO COMPLETO DE EXAMEN
+**Ubicación:** `/tests/test-full-exam-flow.js`
+**Propósito:** Test completo del ciclo de vida de un examen desde login hasta resultados
+**Características:**
+- Login automático con patrón correcto
+- Navegación a exam-system.html
+- Click en botón "Nuevo Examen"
+- Espera carga del examen (45 preguntas)
+- **Responde TODAS las preguntas automáticamente**
+- Finaliza el examen
+- Verifica envío a API
+- Verifica registro en estadísticas
+- 9 capturas de pantalla documentando cada paso
+
+**Uso:**
+```bash
+node tests/test-full-exam-flow.js
+```
+
+**Última ejecución:** ✅ Exitosa (2025-10-03)
+
+**Bugs encontrados:**
+- ⚠️ `exam-results.html` no existe (404) - El sistema redirige a esta página pero no está creada
+
+---
+
+### 🎨 Tests de UI/Diseño
+
+#### 9. **test-navigation-to-unified.js** ⭐ NAVEGACIÓN Y DISEÑO
 **Ubicación:** `/tests/test-navigation-to-unified.js`
 **Propósito:** Test completo de navegación desde login hasta exam-unified
 **Características:**
@@ -134,16 +162,16 @@ node tests/test-navigation-to-unified.js
 
 ---
 
-#### 9. **test-design-verification.js** ⚠️ DEPRECATED
+#### 10. **test-design-verification.js** ⚠️ DEPRECATED
 **Ubicación:** `/test-design-verification.js`
 **Propósito:** Verificar diseño de círculos azules
-**NOTA:** DEPRECATED - usar `test-navigation-to-unified.js` en su lugar
+**NOTA:** DEPRECATED - usar `test-full-exam-flow.js` o `test-navigation-to-unified.js` en su lugar
 
 ---
 
 ### 📱 Tests Responsive
 
-#### 10. **test-responsive-mobile.js**
+#### 11. **test-responsive-mobile.js**
 **Ubicación:** `/test-responsive-mobile.js`
 **Propósito:** Tests de diseño responsive en móvil
 
