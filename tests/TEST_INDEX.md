@@ -189,10 +189,10 @@ const { chromium } = require('playwright');
 ## 🚀 Mejoras Pendientes
 
 ### Para test-exam-complete-flow.js:
-- [ ] Añadir verificación de diseño de círculos azules
-- [ ] Añadir verificación de estilos CSS
+- [x] Añadir verificación de diseño de círculos azules
+- [x] Añadir verificación de estilos CSS
 - [ ] Añadir test de atajos de teclado
-- [ ] Añadir verificación de feature flags
+- [x] Añadir verificación de feature flags
 
 ### General:
 - [ ] Mover todos los tests a carpeta `/tests`
@@ -202,5 +202,143 @@ const { chromium } = require('playwright');
 
 ---
 
+## 🐛 Lecciones Aprendidas y Soluciones
+
+### Problema 1: Login no funciona - Patrón correcto
+**Error:** `elementHandle.fill: Timeout 30000ms exceeded - element is not visible`
+
+**Causas múltiples:**
+1. Usar `slowMo` en launch
+2. Crear `context` innecesariamente
+3. URL incorrecta (index.html vs baseUrl directo)
+4. Selectores en bucle `for` en lugar de `||`
+
+**Solución CORRECTA (patrón que funciona):**
+```javascript
+// ✅ PATRÓN QUE FUNCIONA
+const browser = await chromium.launch({ headless: false, devtools: true });
+const page = await browser.newPage();  // SIN context
+const baseUrl = 'http://localhost:8095';
+
+// Ir a baseUrl directamente (NO a index.html)
+await page.goto(baseUrl);
+await page.waitForLoadState('networkidle');
+
+// Selectores con || en MISMA LÍNEA (no usar for loop)
+let usernameField = await page.$('#loginUsername') ||
+                    await page.$('input[type="text"]') ||
+                    await page.$('input[placeholder*="usuario" i]');
+
+let passwordField = await page.$('#loginPassword') ||
+                    await page.$('input[type="password"]');
+
+let loginButton = await page.$('#loginButton') ||
+                  await page.$('button[type="submit"]') ||
+                  await page.$('button:has-text("Iniciar")');
+
+if (usernameField && passwordField && loginButton) {
+  await usernameField.fill('testuser');  // credenciales específicas
+  await passwordField.fill('123');
+  await loginButton.click();
+  await page.waitForLoadState('networkidle');  // IMPORTANTE
+} else {
+  // Fallback genérico
+  const allInputs = await page.$$('input');
+  const allButtons = await page.$$('button');
+  if (allInputs.length >= 2) {
+    await allInputs[0].fill('testuser');
+    await allInputs[1].fill('123');
+    if (allButtons.length > 0) {
+      await allButtons[0].click();
+      await page.waitForLoadState('networkidle');
+    }
+  }
+}
+```
+
+**❌ PATRÓN QUE NO FUNCIONA:**
+```javascript
+const browser = await chromium.launch({ headless: false, slowMo: 500 }); // ❌
+const context = await browser.newContext(); // ❌ innecesario
+const page = await context.newPage(); // ❌
+
+await page.goto(`${baseUrl}/index.html`); // ❌ específica index.html
+
+// ❌ Selectores en array con for loop
+const selectors = ['#username', 'input[type="text"]'];
+for (const selector of selectors) {
+  usernameField = await page.$(selector);
+  if (usernameField) break;
+}
+```
+
+### Problema 2: Cache del navegador
+**Error:** Los cambios en CSS/JS no se reflejan en el navegador
+
+**Causa:** El navegador cachea los archivos JavaScript y CSS
+
+**Soluciones:**
+1. **Cache busting en HTML:**
+   ```html
+   <script src="file.js?v=2"></script>
+   <link rel="stylesheet" href="style.css?v=2">
+   ```
+
+2. **Hard refresh en navegador:**
+   - Mac: `Cmd + Shift + R`
+   - Windows/Linux: `Ctrl + Shift + R`
+
+3. **Disable cache en DevTools:**
+   - Abrir DevTools (F12)
+   - Network → "Disable cache"
+
+### Problema 3: Feature flags no funcionan
+**Error:** El código redirige a `exam.html` en lugar de `exam-unified.html`
+
+**Diagnóstico:**
+```javascript
+// En consola del navegador:
+console.log(window.featureFlags);
+console.log(window.featureFlags.isEnabled('unified_exam_page'));
+```
+
+**Soluciones:**
+1. Verificar que `feature-flags.js` esté cargado ANTES de `exam-system.js`
+2. Limpiar localStorage: `localStorage.clear()`
+3. Verificar userId: `localStorage.getItem('feature_flag_user_id')`
+
+### Problema 4: Selectores de login diferentes
+**Error:** No se encuentran los campos de login
+
+**Solución:** Usar múltiples selectores y fallback genérico
+```javascript
+const usernameSelectors = ['#username', 'input[name="username"]', 'input[type="text"]'];
+let usernameField;
+
+for (const selector of usernameSelectors) {
+  usernameField = await page.$(selector);
+  if (usernameField) break;
+}
+
+// Fallback genérico
+if (!usernameField) {
+  const allInputs = await page.$$('input');
+  if (allInputs.length >= 2) {
+    usernameField = allInputs[0];
+  }
+}
+```
+
+### Problema 5: Elementos no visibles
+**Error:** `waiting for element to be visible`
+
+**Soluciones:**
+1. Esperar networkidle: `await page.waitForLoadState('networkidle')`
+2. Esperar selector específico: `await page.waitForSelector('#element', { state: 'visible' })`
+3. Scroll al elemento: `await page.locator('#element').scrollIntoViewIfNeeded()`
+
+---
+
 **Mantenido por:** Claude Code
 **Proyecto:** PER-VISOR-V2
+**Última actualización problemas:** 2025-10-03
