@@ -41,7 +41,7 @@ class StudyExamController extends ExamController {
             return null;
         }
 
-        const authToken = localStorage.getItem('authToken') || localStorage.getItem('token');
+        const authToken = localStorage.getItem('token') || localStorage.getItem('authToken');
 
         const controller = new StudyExamController({
             authToken,
@@ -97,8 +97,8 @@ class StudyExamController extends ExamController {
     handleAuthError() {
         this.showAlert('Sesión expirada. Por favor, inicia sesión nuevamente.', 'warning');
         setTimeout(() => {
-            localStorage.removeItem('authToken');
             localStorage.removeItem('token');
+            localStorage.removeItem('authToken');
             window.location.href = 'exam-system.html';
         }, 2000);
     }

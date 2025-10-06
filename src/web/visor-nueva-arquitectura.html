@@ -1279,8 +1279,9 @@
     <script src="config.js"></script>
     
     <script>
-        const API_BASE = window.API_BASE || '/api'; // Fallback por seguridad
-        
+        // Permitir string vacío en desarrollo, solo usar fallback si undefined
+        const API_BASE = typeof window.API_BASE !== 'undefined' ? window.API_BASE : '/api';
+
         class PERViewer {
             constructor() {
                 this.examenes = [];
@@ -1322,26 +1323,30 @@
             checkFailedQuestionsFilter() {
                 // Verificar si hay parámetros de búsqueda específicos en la URL
                 const urlParams = new URLSearchParams(window.location.search);
+                const filterParam = urlParams.get('filter');
                 const hasSearchParams = urlParams.has('search') || urlParams.has('from_exam') || urlParams.has('question_id');
-                
-                if (hasSearchParams) {
-                    // Si hay parámetros de búsqueda específicos, limpiar el filtro de preguntas falladas
+
+                // Si viene con ?filter=failed_questions, NO limpiar el filtro
+                if (filterParam === 'failed_questions') {
+                    console.log('🔍 Detectado parámetro filter=failed_questions, cargando filtro de localStorage');
+                } else if (hasSearchParams) {
+                    // Si hay otros parámetros de búsqueda específicos, limpiar el filtro de preguntas falladas
                     console.log('🔍 Detectados parámetros de búsqueda específicos, limpiando filtro de preguntas falladas');
                     localStorage.removeItem('failedQuestionsFilter');
                     this.failedQuestionsFilter = null;
                     return;
                 }
-                
+
                 // Verificar si hay un filtro de preguntas falladas en localStorage
                 const failedQuestionsFilter = localStorage.getItem('failedQuestionsFilter');
                 if (failedQuestionsFilter) {
                     try {
                         const filter = JSON.parse(failedQuestionsFilter);
                         this.failedQuestionsFilter = filter;
-                        
+
                         // Mostrar mensaje informativo
                         this.showFailedQuestionsBanner(filter);
-                        
+
                         console.log('🔍 Filtro de preguntas falladas aplicado:', filter);
                     } catch (error) {
                         console.error('Error parseando filtro de preguntas falladas:', error);
@@ -1383,7 +1388,7 @@
             
             async loadStats() {
                 try {
-                    const response = await fetch(API_BASE + '/api/stats');
+                    const response = await fetch(API_BASE + '/stats');
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
@@ -1401,7 +1406,7 @@
                 try {
 
                     // Cargar exámenes desde PostgreSQL
-                    const response = await fetch(API_BASE + '/api/examenes');
+                    const response = await fetch(API_BASE + '/examenes');
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
@@ -1424,7 +1429,7 @@
 
             async loadExplicaciones() {
                 try {
-                    const response = await fetch(API_BASE + '/api/explicaciones');
+                    const response = await fetch(API_BASE + '/explicaciones');
                     const data = await response.json();
 
                     this.explicaciones = data;
@@ -1439,7 +1444,7 @@
                 try {
 
                     // Usar el endpoint PostgreSQL filtrado que incluye metadata
-                    const response = await fetch(API_BASE + '/api/preguntas-filtradas');
+                    const response = await fetch(API_BASE + '/preguntas-filtradas');
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
@@ -1565,7 +1570,7 @@
                     formData.append('question_id', questionId);
 
                     // Subir imagen
-                    const response = await fetch(API_BASE + '/api/subir-imagen', {
+                    const response = await fetch(API_BASE + '/subir-imagen', {
                         method: 'POST',
                         body: formData
                     });
@@ -1638,7 +1643,7 @@
 
                     visualControls.innerHTML = '<div class="text-center"><div class="spinner-border spinner-border-sm" role="status"></div> Generando imagen PNG...</div>';
 
-                    const response = await fetch(API_BASE + '/api/generar-imagen-png', {
+                    const response = await fetch(API_BASE + '/generar-imagen-png', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ question_id: questionId })
@@ -1851,7 +1856,7 @@
             async loadAllQuestions() {
                 try {
                     // Cargar todas las preguntas usando el endpoint de filtros sin parámetros
-                    const response = await fetch(API_BASE + '/api/preguntas-filtradas');
+                    const response = await fetch(API_BASE + '/preguntas-filtradas');
                     const data = await response.json();
                     
                     if (data.success) {
@@ -1876,7 +1881,7 @@
             
             async loadQuestionsForExam(examId) {
                 try {
-                    const response = await fetch(API_BASE + '/api/preguntas/' + examId);
+                    const response = await fetch(API_BASE + '/preguntas/' + examId);
                     const data = await response.json();
                     
                     if (data.success) {
@@ -2306,7 +2311,7 @@
                 `;
                 
                 try {
-                    const response = await fetch(API_BASE + '/api/generar-explicacion', {
+                    const response = await fetch(API_BASE + '/generar-explicacion', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -2415,7 +2420,7 @@
                         return;
                     }
 
-                    const response = await fetch(API_BASE + '/api/guardar-explicacion', {
+                    const response = await fetch(API_BASE + '/guardar-explicacion', {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -2454,7 +2459,7 @@
                 }
 
                 try {
-                    const response = await fetch(API_BASE + '/api/borrar-explicacion', {
+                    const response = await fetch(API_BASE + '/borrar-explicacion', {
                         method: 'DELETE',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -3014,7 +3019,7 @@
                     });
 
                     // Llamada real al API para guardar en PostgreSQL
-                    const response = await fetch(`${API_BASE}/api/preguntas/${questionId}`, {
+                    const response = await fetch(`${API_BASE}/preguntas/${questionId}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
@@ -3080,9 +3085,11 @@
         window.onload = function() {
             // Esperar a que la configuración esté lista
             function waitForConfig() {
-                if (window.API_BASE && window.envConfig) {
+                // Check if API_BASE is defined (can be empty string in development)
+                if (typeof window.API_BASE !== 'undefined' && window.envConfig) {
                     console.log('✅ Configuración lista, inicializando visor...');
                     viewer = new PERViewer();
+                    window.perViewer = viewer; // Expose globally for banner button and tests
                 } else {
                     console.log('⏳ Esperando configuración...');
                     setTimeout(waitForConfig, 100);

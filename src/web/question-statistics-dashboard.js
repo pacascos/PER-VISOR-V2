@@ -83,9 +83,9 @@ class QuestionStatisticsDashboard {
             let response;
             
             if (this.viewMode === 'personal' && this.currentUserId) {
-                response = await fetch(`${this.apiBase}/api/question-stats/user/${this.currentUserId}`);
+                response = await fetch(`${this.apiBase}/question-stats/user/${this.currentUserId}`);
             } else {
-                response = await fetch(`${this.apiBase}/api/question-stats/general`);
+                response = await fetch(`${this.apiBase}/question-stats/general`);
             }
             
             if (!response.ok) {
@@ -145,7 +145,7 @@ class QuestionStatisticsDashboard {
 
     async loadPersonalRankings() {
         try {
-            const response = await fetch(`${this.apiBase}/api/question-stats/user/${this.currentUserId}/rankings`);
+            const response = await fetch(`${this.apiBase}/question-stats/user/${this.currentUserId}/rankings`);
             
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -179,7 +179,7 @@ class QuestionStatisticsDashboard {
         
         for (const category of categories) {
             try {
-                const response = await fetch(`${this.apiBase}/api/question-stats/rankings/${encodeURIComponent(category)}`);
+                const response = await fetch(`${this.apiBase}/question-stats/rankings/${encodeURIComponent(category)}`);
                 if (response.ok) {
                     const data = await response.json();
                     allRankings.push(...data.rankings.slice(0, 5)); // Top 5 de cada categoría
@@ -197,7 +197,7 @@ class QuestionStatisticsDashboard {
 
     async loadCategoryRankings(category) {
         try {
-            const response = await fetch(`${this.apiBase}/api/question-stats/rankings/${encodeURIComponent(category)}`);
+            const response = await fetch(`${this.apiBase}/question-stats/rankings/${encodeURIComponent(category)}`);
             
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);

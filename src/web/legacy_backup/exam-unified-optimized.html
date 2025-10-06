@@ -160,7 +160,7 @@
                     await loadScript('study-exam-controller.js');
                     console.log('✅ StudyExamController loaded');
 
-                    const authToken = localStorage.getItem('authToken') || localStorage.getItem('token');
+                    const authToken = localStorage.getItem('token') || localStorage.getItem('authToken');
                     const controller = new StudyExamController({ authToken, studyTestId });
                     controller.initializeUI();
                     await controller.init();
@@ -176,7 +176,7 @@
                     await loadScript('full-exam-controller.js');
                     console.log('✅ FullExamController loaded');
 
-                    const authToken = localStorage.getItem('authToken') || localStorage.getItem('token');
+                    const authToken = localStorage.getItem('token') || localStorage.getItem('authToken');
                     const controller = new FullExamController({ authToken });
                     controller.initializeUI();
                     await controller.init();

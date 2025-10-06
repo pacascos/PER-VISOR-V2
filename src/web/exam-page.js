@@ -8,7 +8,7 @@ class ExamPage {
         // Usar configuración de entorno automática
         this.API_BASE = window.API_BASE !== undefined ? window.API_BASE : '/api';
         this.currentUser = null;
-        this.authToken = localStorage.getItem('authToken') || localStorage.getItem('token');
+        this.authToken = localStorage.getItem('token') || localStorage.getItem('authToken');
         this.currentExam = null;
         this.currentQuestionIndex = 0;
         this.userAnswers = {};
@@ -37,7 +37,7 @@ class ExamPage {
         console.log('🔍 Checking auth status with token:', this.authToken.substring(0, 20) + '...');
 
         try {
-            const response = await fetch(`${this.API_BASE}/api/auth/me`, {
+            const response = await fetch(`${this.API_BASE}/auth/me`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`,
                     'Content-Type': 'application/json'
@@ -71,7 +71,7 @@ class ExamPage {
     async startNewExam() {
         try {
 
-            const response = await fetch(`${this.API_BASE}/api/exams/generate`, {
+            const response = await fetch(`${this.API_BASE}/exams/generate`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`
@@ -119,7 +119,7 @@ class ExamPage {
             console.log('🔍 Cargando detalles completos de las preguntas para examen:', this.currentExam.exam_id);
             
             // Usar el endpoint específico para obtener todas las preguntas de un examen
-            const response = await fetch(`${this.API_BASE}/api/exams/${this.currentExam.exam_id}/questions`, {
+            const response = await fetch(`${this.API_BASE}/exams/${this.currentExam.exam_id}/questions`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`
                 }
@@ -397,7 +397,7 @@ class ExamPage {
             }
         }
 
-        const response = await fetch(`${this.API_BASE}/api/exams/${this.currentExam.exam_id}/submit`, {
+        const response = await fetch(`${this.API_BASE}/exams/${this.currentExam.exam_id}/submit`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -480,7 +480,7 @@ class ExamPage {
         try {
             console.log('📊 Actualizando estadísticas del usuario...');
             
-            const response = await fetch(`${this.API_BASE}/api/user-statistics/update`, {
+            const response = await fetch(`${this.API_BASE}/user-statistics/update`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -513,7 +513,7 @@ class ExamPage {
         try {
             console.log('🔍 Obteniendo preguntas falladas del examen:', examId);
 
-            const response = await fetch(`${this.API_BASE}/api/user/exam/${examId}/failed-questions`, {
+            const response = await fetch(`${this.API_BASE}/user/exam/${examId}/failed-questions`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`
                 }

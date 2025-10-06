@@ -1839,14 +1839,14 @@ def get_simple_user_stats():
             
             exam_history.append({
                 'exam_id': str(exam['exam_id']),
-                'date': exam['date'].strftime('%Y-%m-%d %H:%M') if exam['date'] else None,
+                'date': exam['date'].isoformat() if exam['date'] else None,
                 'score': int(exam['score']) if exam['score'] else 0,
                 'time_minutes': int(exam['time_minutes']) if exam['time_minutes'] else 0,
                 'total_questions': total_questions,
                 'correct_answers': correct_answers,
                 'incorrect_answers': incorrect_answers,
                 'passed': bool(exam['passed']) if exam['passed'] is not None else False,
-                'started_at': exam['started_at'].strftime('%Y-%m-%d %H:%M') if exam['started_at'] else None
+                'started_at': exam['started_at'].isoformat() if exam['started_at'] else None
             })
 
         # Generate topic progress data (simulated for now)
@@ -2016,7 +2016,7 @@ def get_exam_questions(exam_id):
         if not exam:
             return jsonify({'error': 'Examen no encontrado'}), 404
 
-        # Obtener preguntas del examen con detalles
+        # Obtener preguntas del examen con detalles y respuestas del usuario
         cur.execute("""
             SELECT
                 eq.question_order,
@@ -2029,10 +2029,13 @@ def get_exam_questions(exam_id):
                 q.numero_pregunta,
                 e.tipo_examen,
                 e.titulo,
-                e.convocatoria
+                e.convocatoria,
+                ua.selected_answer,
+                ua.is_correct
             FROM exam_questions eq
             JOIN questions q ON eq.question_id = q.id
             JOIN exams e ON q.exam_id = e.id
+            LEFT JOIN user_answers ua ON ua.user_exam_id = eq.user_exam_id AND ua.question_id = q.id
             WHERE eq.user_exam_id = %s
             ORDER BY eq.question_order
         """, (exam_id,))
@@ -2053,6 +2056,7 @@ def get_exam_questions(exam_id):
 
             # Organizar opciones en el formato esperado
             question_data = {
+                'id': str(q['id']),
                 'question_id': str(q['id']),
                 'order': q['question_order'],
                 'ut_number': q['ut_number'],
@@ -2063,7 +2067,9 @@ def get_exam_questions(exam_id):
                 'numero_pregunta': q['numero_pregunta'],
                 'tipo_examen': q['tipo_examen'],
                 'titulo_examen': q['titulo'],
-                'convocatoria': q['convocatoria']
+                'convocatoria': q['convocatoria'],
+                'selected_answer': q['selected_answer'],
+                'is_correct': q['is_correct']
             }
 
             # Agregar opciones

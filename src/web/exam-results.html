@@ -11,17 +11,41 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- Exam Unified Styles -->
-    <link rel="stylesheet" href="exam-unified.css?v=3">
+    <!-- CSS Unificado -->
+    <link rel="stylesheet" href="styles/unified-navigation.css">
 
     <!-- Configuration -->
     <script src="config.js"></script>
+
+    <!-- Favicon dinámico -->
+    <link rel="icon" type="image/svg+xml" href="" id="dynamic-favicon">
+    <script>
+        const isProduction = window.location.hostname === 'bancotest.com';
+        document.getElementById('dynamic-favicon').href = isProduction ? 'favicon-prod.svg' : 'favicon.svg';
+        window.ENVIRONMENT = isProduction ? 'PRODUCCIÓN' : 'DESARROLLO';
+        window.ENVIRONMENT_COLOR = isProduction ? '#dc2626' : '#059669';
+    </script>
 
     <style>
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .environment-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .results-container {
@@ -202,26 +226,37 @@
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <div class="unified-top-nav" style="background: white; padding: 1rem; margin-bottom: 0;">
-        <button class="unified-back-btn" onclick="window.location.href='exam-system.html'" style="background: white; border: 2px solid #667eea; color: #667eea; padding: 0.5rem 1.5rem; border-radius: 8px; cursor: pointer;">
-            <i class="fas fa-arrow-left"></i> Volver
-        </button>
+    <!-- Indicador de entorno -->
+    <div class="environment-indicator" id="env-indicator"></div>
 
-        <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; flex-wrap: wrap;">
-            <a href="exam-system.html" class="unified-tab-item" style="text-decoration: none; color: #64748b; padding: 0.5rem 1rem;">
-                <i class="fas fa-home"></i> Principal
-            </a>
-            <a href="visor-nueva-arquitectura.html" class="unified-tab-item" style="text-decoration: none; color: #64748b; padding: 0.5rem 1rem;">
-                <i class="fas fa-database"></i> Banco
-            </a>
-            <a href="statistics-dashboard.html" class="unified-tab-item" style="text-decoration: none; color: #64748b; padding: 0.5rem 1rem;">
-                <i class="fas fa-chart-bar"></i> Estadísticas
-            </a>
-            <a href="exam-system.html" class="unified-tab-item active" style="text-decoration: none; color: #667eea; padding: 0.5rem 1rem; border-bottom: 3px solid #667eea;">
-                <i class="fas fa-file-alt"></i> Examen
-            </a>
-        </div>
+    <!-- Navegación Unificada Superior -->
+    <div class="unified-top-nav">
+        <button class="unified-back-btn" onclick="window.location.href='exam-system.html'">
+            <i class="fas fa-home"></i> Volver al Inicio
+        </button>
+        <h1 class="page-title">
+            <i class="fas fa-chart-pie"></i> Resultados del Examen
+        </h1>
+        <div></div>
+    </div>
+
+    <!-- Barra de Navegación con Tabs -->
+    <div class="unified-tab-nav">
+        <a href="exam-system.html" class="unified-tab-item">
+            <i class="fas fa-home"></i> Principal
+        </a>
+        <a href="visor-nueva-arquitectura.html" class="unified-tab-item">
+            <i class="fas fa-book"></i> Banco
+        </a>
+        <a href="statistics-dashboard.html" class="unified-tab-item">
+            <i class="fas fa-chart-bar"></i> Estadísticas
+        </a>
+        <a href="question-statistics-dashboard.html" class="unified-tab-item">
+            <i class="fas fa-chart-line"></i> Preguntas
+        </a>
+        <a href="exam-system.html" class="unified-tab-item active">
+            <i class="fas fa-file-alt"></i> Examen
+        </a>
     </div>
 
     <div class="results-container">
@@ -249,7 +284,7 @@
                 </div>
 
                 <div class="stat-card incorrect">
-                    <div class="stat-value" id="incorrect-count">0</div>
+                    <div class="stat-value" id="incorrect-count" style="cursor: pointer; text-decoration: underline;" onclick="viewIncorrectQuestions()">0</div>
                     <div class="stat-label">Incorrectas</div>
                 </div>
 
@@ -308,7 +343,7 @@
                     console.log('📡 Fetching results from API...');
 
                     const API_BASE = window.API_BASE || '';
-                    const response = await fetch(`${API_BASE}/api/exams/${examId}/results`, {
+                    const response = await fetch(`${API_BASE}/exams/${examId}/results`, {
                         credentials: 'include'
                     });
 
@@ -396,7 +431,70 @@
         }
 
         // Load results when page loads
-        document.addEventListener('DOMContentLoaded', loadResults);
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set environment indicator
+            const envIndicator = document.getElementById('env-indicator');
+            envIndicator.textContent = window.ENVIRONMENT;
+            envIndicator.style.background = window.ENVIRONMENT_COLOR;
+
+            loadResults();
+        });
+
+        // View incorrect questions in question bank
+        async function viewIncorrectQuestions() {
+            try {
+                if (!examId) {
+                    alert('ID de examen no disponible');
+                    return;
+                }
+
+                console.log('🔍 Obteniendo preguntas incorrectas del examen:', examId);
+
+                const API_BASE = window.API_BASE || '';
+                const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+
+                // Obtener todas las preguntas del examen con sus respuestas
+                const response = await fetch(`${API_BASE}/exams/${examId}/questions`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                // Filtrar solo las preguntas incorrectas
+                const incorrectQuestions = data.questions.filter(q => q.is_correct === false);
+
+                if (incorrectQuestions.length > 0) {
+                    // Extraer IDs de las preguntas incorrectas
+                    const incorrectQuestionIds = incorrectQuestions.map(q => q.id);
+
+                    // Guardar el filtro en localStorage para que el banco de preguntas lo use
+                    localStorage.setItem('failedQuestionsFilter', JSON.stringify({
+                        examId: examId,
+                        questionIds: incorrectQuestionIds,
+                        examDate: new Date().toISOString(),
+                        totalFailed: incorrectQuestions.length
+                    }));
+
+                    console.log('🔍 Abriendo banco de preguntas con', incorrectQuestionIds.length, 'preguntas incorrectas');
+
+                    // Abrir banco de preguntas en nueva pestaña
+                    window.open('visor-nueva-arquitectura.html?filter=failed_questions', '_blank');
+                } else {
+                    alert('No hay preguntas incorrectas en este examen');
+                }
+
+            } catch (error) {
+                console.error('❌ Error obteniendo preguntas incorrectas:', error);
+                alert(`Error cargando preguntas incorrectas: ${error.message}`);
+            }
+        }
     </script>
 </body>
 </html>

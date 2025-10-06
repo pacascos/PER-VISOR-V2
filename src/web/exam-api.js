@@ -117,7 +117,7 @@ class ExamAPI {
      * Login user
      */
     async login(username, password) {
-        const url = `${this.API_BASE}/api/auth/login`;
+        const url = `${this.API_BASE}/auth/login`;
         const data = await this.fetchWithRetry(url, {
             method: 'POST',
             body: JSON.stringify({ username, password })
@@ -134,7 +134,7 @@ class ExamAPI {
      * Get current user info
      */
     async getCurrentUser() {
-        const url = `${this.API_BASE}/api/auth/me`;
+        const url = `${this.API_BASE}/auth/me`;
         return await this.fetchWithRetry(url);
     }
 
@@ -142,7 +142,7 @@ class ExamAPI {
      * Logout user
      */
     async logout() {
-        const url = `${this.API_BASE}/api/auth/logout`;
+        const url = `${this.API_BASE}/auth/logout`;
         try {
             await this.fetchWithRetry(url, { method: 'POST' });
         } finally {
@@ -156,7 +156,7 @@ class ExamAPI {
      * Generate new full exam (45 questions)
      */
     async generateFullExam() {
-        const url = `${this.API_BASE}/api/exams/generate`;
+        const url = `${this.API_BASE}/exams/generate`;
         return await this.fetchWithRetry(url, { method: 'POST' });
     }
 
@@ -164,7 +164,7 @@ class ExamAPI {
      * Get exam questions
      */
     async getExamQuestions(examId) {
-        const url = `${this.API_BASE}/api/exams/${examId}/questions`;
+        const url = `${this.API_BASE}/exams/${examId}/questions`;
         return await this.fetchWithRetry(url);
     }
 
@@ -172,7 +172,7 @@ class ExamAPI {
      * Submit full exam
      */
     async submitExam(examId, answers = null) {
-        const url = `${this.API_BASE}/api/exams/${examId}/submit`;
+        const url = `${this.API_BASE}/exams/${examId}/submit`;
         const body = answers ? { answers } : undefined;
 
         return await this.fetchWithRetry(url, {
@@ -185,7 +185,7 @@ class ExamAPI {
      * Get exam results
      */
     async getExamResults(examId) {
-        const url = `${this.API_BASE}/api/exams/${examId}/results`;
+        const url = `${this.API_BASE}/exams/${examId}/results`;
         return await this.fetchWithRetry(url);
     }
 
@@ -195,7 +195,7 @@ class ExamAPI {
      * Generate study test
      */
     async generateStudyTest(selectedUTs, selectionMode, questionCount = 10) {
-        const url = `${this.API_BASE}/api/study-tests/generate`;
+        const url = `${this.API_BASE}/study-tests/generate`;
         return await this.fetchWithRetry(url, {
             method: 'POST',
             body: JSON.stringify({
@@ -210,7 +210,7 @@ class ExamAPI {
      * Get study test questions
      */
     async getStudyTestQuestions(studyTestId) {
-        const url = `${this.API_BASE}/api/study-tests/${studyTestId}/questions`;
+        const url = `${this.API_BASE}/study-tests/${studyTestId}/questions`;
         return await this.fetchWithRetry(url);
     }
 
@@ -218,7 +218,7 @@ class ExamAPI {
      * Record answer for study test
      */
     async recordStudyAnswer(studyTestId, questionId, userAnswer, timeSpentSeconds) {
-        const url = `${this.API_BASE}/api/study-tests/${studyTestId}/answer`;
+        const url = `${this.API_BASE}/study-tests/${studyTestId}/answer`;
         return await this.fetchWithRetry(url, {
             method: 'POST',
             body: JSON.stringify({
@@ -233,7 +233,7 @@ class ExamAPI {
      * Submit study test
      */
     async submitStudyTest(studyTestId) {
-        const url = `${this.API_BASE}/api/study-tests/${studyTestId}/submit`;
+        const url = `${this.API_BASE}/study-tests/${studyTestId}/submit`;
         return await this.fetchWithRetry(url, { method: 'POST' });
     }
 
@@ -241,7 +241,7 @@ class ExamAPI {
      * Get study test results
      */
     async getStudyTestResults(studyTestId) {
-        const url = `${this.API_BASE}/api/study-tests/${studyTestId}/results`;
+        const url = `${this.API_BASE}/study-tests/${studyTestId}/results`;
         return await this.fetchWithRetry(url);
     }
 
@@ -251,7 +251,7 @@ class ExamAPI {
      * Get user statistics
      */
     async getUserStats() {
-        const url = `${this.API_BASE}/api/user-stats`;
+        const url = `${this.API_BASE}/user-stats`;
         return await this.fetchWithRetry(url);
     }
 
@@ -259,7 +259,7 @@ class ExamAPI {
      * Get PER question statistics
      */
     async getPERStats() {
-        const url = `${this.API_BASE}/api/per-questions/stats`;
+        const url = `${this.API_BASE}/per-questions/stats`;
         return await this.fetchWithRetry(url);
     }
 
@@ -267,7 +267,7 @@ class ExamAPI {
      * Get failed questions for specific exam
      */
     async getFailedQuestions(examId) {
-        const url = `${this.API_BASE}/api/user/exam/${examId}/failed-questions`;
+        const url = `${this.API_BASE}/user/exam/${examId}/failed-questions`;
         return await this.fetchWithRetry(url);
     }
 
@@ -275,7 +275,7 @@ class ExamAPI {
      * Record question attempt (for statistics tracking)
      */
     async recordQuestionAttempt(questionId, userAnswer, isCorrect, timeSpent, attempts = 1) {
-        const url = `${this.API_BASE}/api/question-attempt`;
+        const url = `${this.API_BASE}/question-attempt`;
         return await this.fetchWithRetry(url, {
             method: 'POST',
             body: JSON.stringify({
@@ -294,7 +294,7 @@ class ExamAPI {
      * Get admin statistics
      */
     async getAdminStats() {
-        const url = `${this.API_BASE}/api/admin/stats`;
+        const url = `${this.API_BASE}/admin/stats`;
         return await this.fetchWithRetry(url);
     }
 
@@ -302,7 +302,7 @@ class ExamAPI {
      * Get all users (admin only)
      */
     async getUsers() {
-        const url = `${this.API_BASE}/api/admin/users`;
+        const url = `${this.API_BASE}/admin/users`;
         return await this.fetchWithRetry(url);
     }
 
@@ -310,7 +310,7 @@ class ExamAPI {
      * Create user (admin only)
      */
     async createUser(userData) {
-        const url = `${this.API_BASE}/api/admin/users`;
+        const url = `${this.API_BASE}/admin/users`;
         return await this.fetchWithRetry(url, {
             method: 'POST',
             body: JSON.stringify(userData)
@@ -321,7 +321,7 @@ class ExamAPI {
      * Update user (admin only)
      */
     async updateUser(userId, userData) {
-        const url = `${this.API_BASE}/api/admin/users/${userId}`;
+        const url = `${this.API_BASE}/admin/users/${userId}`;
         return await this.fetchWithRetry(url, {
             method: 'PUT',
             body: JSON.stringify(userData)
@@ -332,7 +332,7 @@ class ExamAPI {
      * Delete user (admin only)
      */
     async deleteUser(userId) {
-        const url = `${this.API_BASE}/api/admin/users/${userId}`;
+        const url = `${this.API_BASE}/admin/users/${userId}`;
         return await this.fetchWithRetry(url, { method: 'DELETE' });
     }
 
@@ -343,7 +343,7 @@ class ExamAPI {
      */
     async healthCheck() {
         try {
-            const url = `${this.API_BASE}/api/health`;
+            const url = `${this.API_BASE}/health`;
             const response = await fetch(url);
             return response.ok;
         } catch (error) {

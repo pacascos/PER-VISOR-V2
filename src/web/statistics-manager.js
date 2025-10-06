@@ -130,7 +130,7 @@ class StatisticsManager {
     }
 
     getCurrentAuthToken() {
-        return localStorage.getItem('authToken') || null;
+        return localStorage.getItem('token') || localStorage.getItem('authToken') || null;
     }
 
     async initialize() {
@@ -164,7 +164,7 @@ class StatisticsManager {
             };
 
             // Load user statistics
-            const statsResponse = await fetch(`${this.API_BASE}/api/user-stats`, {
+            const statsResponse = await fetch(`${this.API_BASE}/user-stats`, {
                 headers: headers
             });
 
@@ -491,10 +491,27 @@ class StatisticsManager {
             const statusText = exam.passed ? 'Aprobado' : 'Suspenso';
             const statusClass = exam.passed ? 'passed' : 'failed';
             
+            // Format date to local timezone
+            let formattedDate = 'Fecha no disponible';
+            if (exam.date) {
+                try {
+                    const date = new Date(exam.date);
+                    formattedDate = date.toLocaleString('es-ES', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } catch (e) {
+                    formattedDate = exam.date;
+                }
+            }
+
             examElement.innerHTML = `
                 <div class="exam-date">
                     <i class="fas fa-calendar-alt me-1"></i>
-                    ${exam.date || 'Fecha no disponible'}
+                    ${formattedDate}
                 </div>
                 
                 <div class="exam-status">
@@ -734,7 +751,7 @@ class StatisticsManager {
             console.log('🔍 Obteniendo preguntas falladas del examen:', examId);
 
             // Obtener preguntas falladas del examen
-            const response = await fetch(`${this.API_BASE}/api/user/exam/${examId}/failed-questions`, {
+            const response = await fetch(`${this.API_BASE}/user/exam/${examId}/failed-questions`, {
                 headers: {
                     'Authorization': `Bearer ${this.getCurrentAuthToken()}`
                 }
@@ -787,7 +804,7 @@ class StatisticsManager {
     // Method to update statistics after completing an exam
     async updateAfterExam(examResults) {
         try {
-            const response = await fetch(`${this.API_BASE}/api/statistics/exam-completed`, {
+            const response = await fetch(`${this.API_BASE}/statistics/exam-completed`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -8,7 +8,7 @@ class ExamSystem {
         // Usar configuración de entorno automática
         this.API_BASE = window.API_BASE !== undefined ? window.API_BASE : '/api'; // Fallback por seguridad
         this.currentUser = null;
-        this.authToken = localStorage.getItem('authToken');
+        this.authToken = localStorage.getItem('token') || localStorage.getItem('authToken');
         this.currentExam = null;
         this.currentQuestionIndex = 0;
         this.userAnswers = {};
@@ -25,27 +25,7 @@ class ExamSystem {
     }
 
     bindEvents() {
-        // Authentication events
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.handleLogin();
-        });
-
-        document.getElementById('registerForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.handleRegister();
-        });
-
-        document.getElementById('showRegister').addEventListener('click', (e) => {
-            e.preventDefault();
-            this.showRegisterForm();
-        });
-
-        document.getElementById('showLogin').addEventListener('click', (e) => {
-            e.preventDefault();
-            this.showLoginForm();
-        });
-
+        // Logout event
         document.getElementById('logoutBtn').addEventListener('click', () => {
             this.handleLogout();
         });
@@ -100,43 +80,48 @@ class ExamSystem {
 
     // Authentication Methods
     async checkAuthStatus() {
-        if (this.authToken) {
-            try {
-                const response = await fetch(`${this.API_BASE}/api/auth/me`, {
-                    headers: {
-                        'Authorization': `Bearer ${this.authToken}`
-                    }
-                });
+        // Si no hay token, redirigir a login
+        if (!this.authToken) {
+            console.log('❌ No hay token, redirigiendo a login.html');
+            window.location.href = 'login.html';
+            return;
+        }
 
-                if (response.ok) {
-                    const data = await response.json();
-                    this.currentUser = data.user;
-                    // Restaurar currentUserId para el tracker de estadísticas
-                    window.currentUserId = data.user.id;
-                    localStorage.setItem('currentUserId', data.user.id);
-                    
-                    // Inicializar el tracker con el usuario restaurado
-                    if (window.initQuestionStatsTracker) {
-                        console.log('🔄 Inicializando tracker con usuario restaurado:', data.user.id);
-                        console.log('🔍 Debug - window.currentUserId:', window.currentUserId);
-                        console.log('🔍 Debug - localStorage:', localStorage.getItem('currentUserId'));
-                        setTimeout(() => {
-                            window.initQuestionStatsTracker();
-                        }, 200); // Delay para asegurar que todo esté establecido
-                    }
-                    
-                    this.showDashboard();
-                } else {
-                    this.clearAuth();
-                    this.showAuth();
+        try {
+            const response = await fetch(`${this.API_BASE}/auth/me`, {
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`
                 }
-            } catch (error) {
-                console.error('Error checking auth status:', error);
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                this.currentUser = data.user;
+                // Restaurar currentUserId para el tracker de estadísticas
+                window.currentUserId = data.user.id;
+                localStorage.setItem('currentUserId', data.user.id);
+
+                // Inicializar el tracker con el usuario restaurado
+                if (window.initQuestionStatsTracker) {
+                    console.log('🔄 Inicializando tracker con usuario restaurado:', data.user.id);
+                    console.log('🔍 Debug - window.currentUserId:', window.currentUserId);
+                    console.log('🔍 Debug - localStorage:', localStorage.getItem('currentUserId'));
+                    setTimeout(() => {
+                        window.initQuestionStatsTracker();
+                    }, 200); // Delay para asegurar que todo esté establecido
+                }
+
+                this.showDashboard();
+            } else {
+                // Token inválido, redirigir a login
+                console.log('❌ Token inválido, redirigiendo a login.html');
                 this.clearAuth();
-                this.showAuth();
+                window.location.href = 'login.html';
             }
-        } else {
-            this.showAuth();
+        } catch (error) {
+            console.error('Error checking auth status:', error);
+            this.clearAuth();
+            window.location.href = 'login.html';
         }
     }
 
@@ -145,7 +130,7 @@ class ExamSystem {
         const password = document.getElementById('loginPassword').value;
 
         try {
-            const response = await fetch(`${this.API_BASE}/api/auth/login`, {
+            const response = await fetch(`${this.API_BASE}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -190,7 +175,7 @@ class ExamSystem {
         const password = document.getElementById('registerPassword').value;
 
         try {
-            const response = await fetch(`${this.API_BASE}/api/auth/register`, {
+            const response = await fetch(`${this.API_BASE}/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -231,14 +216,15 @@ class ExamSystem {
 
     handleLogout() {
         this.clearAuth();
-        this.showAuth();
-        this.showAlert('Sesión cerrada', 'info');
+        console.log('✅ Sesión cerrada, redirigiendo a login.html');
+        window.location.href = 'login.html';
     }
 
     clearAuth() {
         this.authToken = null;
         this.currentUser = null;
         localStorage.removeItem('authToken');
+        localStorage.removeItem('token'); // Eliminar también el token de login
         // Limpiar currentUserId del tracker de estadísticas
         window.currentUserId = null;
         localStorage.removeItem('currentUserId');
@@ -259,10 +245,14 @@ class ExamSystem {
     }
 
     showDashboard() {
-        document.getElementById('auth-section').style.display = 'none';
-        document.getElementById('dashboard-section').style.display = 'block';
-        document.getElementById('exam-section').style.display = 'none';
-        document.getElementById('results-section').style.display = 'none';
+        // Solo mostrar dashboard, ocultar otros
+        const dashboardSection = document.getElementById('dashboard-section');
+        const examSection = document.getElementById('exam-section');
+        const resultsSection = document.getElementById('results-section');
+        
+        if (dashboardSection) dashboardSection.style.display = 'block';
+        if (examSection) examSection.style.display = 'none';
+        if (resultsSection) resultsSection.style.display = 'none';
 
         // Update username display
         document.getElementById('username').textContent = this.currentUser.username;
@@ -273,7 +263,7 @@ class ExamSystem {
 
     async checkAdminRole() {
         try {
-            const response = await fetch(`${this.API_BASE}/api/auth/me`, {
+            const response = await fetch(`${this.API_BASE}/auth/me`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`,
                     'Content-Type': 'application/json'
@@ -346,7 +336,7 @@ class ExamSystem {
         // Load detailed question data from the exam endpoint
         try {
             console.log('🔍 Cargando preguntas del examen:', this.currentExam);
-            const response = await fetch(`${this.API_BASE}/api/exams/${this.currentExam.exam_id}/questions`, {
+            const response = await fetch(`${this.API_BASE}/exams/${this.currentExam.exam_id}/questions`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`
                 }
@@ -583,7 +573,7 @@ class ExamSystem {
         }
 
         try {
-            const response = await fetch(`${this.API_BASE}/api/exams/${this.currentExam.exam_id}/submit`, {
+            const response = await fetch(`${this.API_BASE}/exams/${this.currentExam.exam_id}/submit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -804,7 +794,7 @@ class ExamSystem {
         try {
             this.showAlert('Cargando estadísticas de preguntas PER...', 'info');
 
-            const response = await fetch(`${this.API_BASE}/api/per-questions/stats`);
+            const response = await fetch(`${this.API_BASE}/per-questions/stats`);
 
             if (response.ok) {
                 const data = await response.json();
@@ -976,7 +966,7 @@ class ExamSystem {
             };
 
 
-            const response = await fetch(`${this.API_BASE}/api/statistics/exam-completed`, {
+            const response = await fetch(`${this.API_BASE}/statistics/exam-completed`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -146,7 +146,7 @@
             if (type === 'study' && studyTestId) {
                 // Study mode
                 console.log('📚 Loading Study Mode');
-                const authToken = localStorage.getItem('authToken') || localStorage.getItem('token');
+                const authToken = localStorage.getItem('token') || localStorage.getItem('authToken');
                 const controller = new StudyExamController({ authToken, studyTestId });
                 controller.initializeUI();
                 await controller.init();

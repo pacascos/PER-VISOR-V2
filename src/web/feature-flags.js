@@ -44,8 +44,8 @@ class FeatureFlags {
 
             // Use unified study mode
             'unified_study_mode': {
-                enabled: false,
-                rolloutPercentage: 0,
+                enabled: true,
+                rolloutPercentage: 100, // 100% of users - ACTIVADO
                 description: 'New unified study mode using ExamController'
             },
 
@@ -240,6 +240,7 @@ class FeatureFlags {
 
 // Create global instance
 const featureFlags = new FeatureFlags();
+window.featureFlags = featureFlags; // Export to window for global access
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {

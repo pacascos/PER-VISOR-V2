@@ -142,8 +142,8 @@
         async function loadAvailableUTs() {
             try {
                 const token = localStorage.getItem('token') || localStorage.getItem('authToken');
-                console.log('🔍 Cargando UTs disponibles desde:', `${API_URL}/api/study-tests/available-uts`);
-                const response = await fetch(`${API_URL}/api/study-tests/available-uts`, {
+                console.log('🔍 Cargando UTs disponibles desde:', `${API_URL}/study-tests/available-uts`);
+                const response = await fetch(`${API_URL}/study-tests/available-uts`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -265,7 +265,7 @@
             try {
                 const token = localStorage.getItem('token') || localStorage.getItem('authToken');
                 console.log('🚀 Generando test de estudio con UTs:', selectedUTs, 'Modo:', selectedMode);
-                const response = await fetch(`${API_URL}/api/study-tests/generate`, {
+                const response = await fetch(`${API_URL}/study-tests/generate`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -285,18 +285,9 @@
                 const data = await response.json();
                 console.log('Study test generated:', data);
 
-                // Check feature flag for unified exam page
-                const useUnifiedPage = window.featureFlags && window.featureFlags.isEnabled('unified_exam_page');
-
-                if (useUnifiedPage) {
-                    // NEW: Redirect directly to unified exam page with study mode
-                    console.log('🚩 Using unified exam page for study mode');
-                    window.location.href = `exam-unified.html?type=study&study_test_id=${data.study_test_id}`;
-                } else {
-                    // OLD: Redirect to exam-system with study mode adapter
-                    console.log('📄 Using classic exam-system with study adapter');
-                    window.location.href = `exam-system.html?study_test_id=${data.study_test_id}&mode=study`;
-                }
+                // Redirect to unified exam page with study mode
+                console.log('🚩 Using unified exam page for study mode');
+                window.location.href = `exam-unified.html?type=study&study_test_id=${data.study_test_id}`;
 
             } catch (error) {
                 console.error('Error generating study test:', error);

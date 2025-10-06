@@ -57,7 +57,7 @@ class StudyModeAdapter {
 
     async loadStudyTest() {
         try {
-            const response = await fetch(`${this.examSystem.API_BASE}/api/study-tests/${this.studyTestId}/questions`, {
+            const response = await fetch(`${this.examSystem.API_BASE}/study-tests/${this.studyTestId}/questions`, {
                 headers: {
                     'Authorization': `Bearer ${this.examSystem.authToken}`
                 }
@@ -222,7 +222,7 @@ class StudyModeAdapter {
                 timeSpent: Math.floor(timeSpentSeconds)
             });
 
-            const response = await fetch(`${this.examSystem.API_BASE}/api/study-tests/${this.studyTestId}/answer`, {
+            const response = await fetch(`${this.examSystem.API_BASE}/study-tests/${this.studyTestId}/answer`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -251,7 +251,7 @@ class StudyModeAdapter {
         try {
             this.examSystem.showAlert('Finalizando test de estudio...', 'info');
 
-            const response = await fetch(`${this.examSystem.API_BASE}/api/study-tests/${this.studyTestId}/submit`, {
+            const response = await fetch(`${this.examSystem.API_BASE}/study-tests/${this.studyTestId}/submit`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.examSystem.authToken}`
