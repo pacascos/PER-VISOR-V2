@@ -1,6 +1,6 @@
 # Test Index - PER Exam System
 
-**Última actualización:** 2025-10-03
+**Última actualización:** 2025-10-07
 
 ## 📋 Índice de Tests Disponibles
 
@@ -95,7 +95,60 @@ node test-login-production.js
 
 ### 📊 Tests de Componentes Específicos
 
-#### 6. **test-exam-generation-playwright.js**
+#### 6. **test-statistics-tracking.js** ⭐ NUEVO
+**Ubicación:** `/tests/test-statistics-tracking.js`
+**Propósito:** Verificación completa del sistema de estadísticas y envío diferido de respuestas
+**Características:**
+- ✅ Verifica que las respuestas NO se envían al seleccionar una opción
+- ✅ Verifica que las respuestas SÍ se envían al navegar (siguiente/anterior)
+- ✅ Permite cambiar de opinión antes de confirmar
+- ✅ Completa un test completo de estudio
+- ✅ Verifica registro en base de datos (`question_attempt_details` y `study_test_questions`)
+- 📸 7 Tests automatizados con capturas de pantalla
+
+**Tests incluidos:**
+1. TEST 1: Seleccionar opción A → NO debe enviar request
+2. TEST 2: Cambiar a opción B → NO debe enviar request
+3. TEST 3: Navegar a siguiente → SÍ debe enviar opción B
+4. TEST 4: Seleccionar opción C → NO debe enviar request
+5. TEST 5: Cambiar a D y navegar → SÍ debe enviar opción D
+6. TEST 6: Completar test completo y finalizar
+7. TEST 7: Verificar registro en base de datos
+
+**Uso:**
+```bash
+node tests/test-statistics-tracking.js
+```
+
+**Capturas generadas:**
+- `stats-01-login.png` - Página de login
+- `stats-02-study-config.png` - Configuración de modo estudio
+- `stats-03-exam-loaded.png` - Test cargado
+- `stats-04-option-a.png` - Opción A seleccionada
+- `stats-05-option-b.png` - Cambio a opción B
+- `stats-06-next-clicked.png` - Navegación a siguiente
+- `stats-07-option-c.png` - Opción C en pregunta 2
+- `stats-08-option-d.png` - Cambio a opción D
+- `stats-09-prev-clicked.png` - Navegación a anterior
+- `stats-10-all-answered.png` - Todas las preguntas respondidas
+- `stats-11-finish-modal.png` - Modal de confirmación
+- `stats-12-test-finished.png` - Test finalizado
+- `stats-final.png` - Captura final
+
+**Resultados esperados:**
+```
+Total de requests: 5 (uno por navegación, no por selección)
+Preguntas respondidas: 4
+Base de datos:
+  - question_attempt_details: registros con session_type='practice'
+  - study_test_questions: respuestas con is_correct y user_answer
+```
+
+**Última ejecución:** ✅ Exitosa (2025-10-07)
+
+---
+
+#### 8. **test-exam-generation-playwright.js**
 **Ubicación:** `/test-exam-generation-playwright.js`
 **Propósito:** Test de generación de exámenes
 **Características:**
@@ -105,7 +158,7 @@ node test-login-production.js
 
 ---
 
-#### 7. **test-admin-panel.js**
+#### 9. **test-admin-panel.js**
 **Ubicación:** `/test-admin-panel.js`
 **Propósito:** Tests del panel de administración
 
@@ -113,7 +166,7 @@ node test-login-production.js
 
 ### 🎯 Tests de Flujo Completo (END-TO-END)
 
-#### 8. **test-full-exam-flow.js** ⭐⭐ FLUJO COMPLETO DE EXAMEN
+#### 10. **test-full-exam-flow.js** ⭐⭐ FLUJO COMPLETO DE EXAMEN
 **Ubicación:** `/tests/test-full-exam-flow.js`
 **Propósito:** Test completo del ciclo de vida de un examen desde login hasta resultados
 **Características:**
@@ -162,7 +215,7 @@ node tests/test-navigation-to-unified.js
 
 ---
 
-#### 10. **test-design-verification.js** ⚠️ DEPRECATED
+#### 11. **test-design-verification.js** ⚠️ DEPRECATED
 **Ubicación:** `/test-design-verification.js`
 **Propósito:** Verificar diseño de círculos azules
 **NOTA:** DEPRECATED - usar `test-full-exam-flow.js` o `test-navigation-to-unified.js` en su lugar
@@ -171,7 +224,7 @@ node tests/test-navigation-to-unified.js
 
 ### 📱 Tests Responsive
 
-#### 11. **test-responsive-mobile.js**
+#### 12. **test-responsive-mobile.js**
 **Ubicación:** `/test-responsive-mobile.js`
 **Propósito:** Tests de diseño responsive en móvil
 
