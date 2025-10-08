@@ -45,16 +45,16 @@ class EnvironmentConfig {
                 
             case 'staging':
                 this.config = {
-                    API_BASE: 'https://per-api-435987927843.europe-west1.run.app',
+                    API_BASE: 'https://per-api-435987927843.europe-west1.run.app/api',
                     FRONTEND_BASE: 'https://per-frontend-435987927843.europe-west1.run.app',
                     ENVIRONMENT_NAME: 'STAGING',
                     ENVIRONMENT_COLOR: '#f59e0b'
                 };
                 break;
-                
+
                    case 'production':
                        this.config = {
-                           API_BASE: 'https://per-api-435987927843.europe-west1.run.app',  // Directa al API
+                           API_BASE: 'https://per-api-435987927843.europe-west1.run.app/api',  // Directa al API
                            FRONTEND_BASE: '', // Relativa - mismo dominio
                            ENVIRONMENT_NAME: 'PRODUCCIÓN',
                            ENVIRONMENT_COLOR: '#dc2626'
