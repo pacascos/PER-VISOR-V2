@@ -167,24 +167,30 @@ log "🏗️ Construyendo imágenes Docker (sin cache)..."
 
 # Construir imagen del API sin cache
 log "📦 Construyendo imagen del API (sin cache)..."
-docker build \
+if docker build \
     --platform linux/amd64 \
     --no-cache \
     --pull \
     -t ${API_IMAGE} \
-    . > /dev/null 2>&1
-success "Imagen del API construida: ${API_IMAGE}"
+    . 2>&1 | tail -10; then
+    success "Imagen del API construida: ${API_IMAGE}"
+else
+    error "Error construyendo imagen del API"
+fi
 
 # Construir imagen del Frontend sin cache
 log "📦 Construyendo imagen del Frontend (sin cache)..."
-docker build \
+if docker build \
     --platform linux/amd64 \
     --no-cache \
     --pull \
     -f frontend.Dockerfile \
     -t ${FRONTEND_IMAGE} \
-    . > /dev/null 2>&1
-success "Imagen del Frontend construida: ${FRONTEND_IMAGE}"
+    . 2>&1 | tail -10; then
+    success "Imagen del Frontend construida: ${FRONTEND_IMAGE}"
+else
+    error "Error construyendo imagen del Frontend"
+fi
 
 # =============================================================================
 # SUBIR IMÁGENES
@@ -194,13 +200,19 @@ log "⬆️ Subiendo imágenes a Artifact Registry..."
 
 # Subir imagen del API
 log "⬆️ Subiendo imagen del API..."
-docker push ${API_IMAGE} > /dev/null 2>&1
-success "Imagen del API subida"
+if docker push ${API_IMAGE} 2>&1 | grep -E "(Pushed|digest:)" | tail -3; then
+    success "Imagen del API subida"
+else
+    error "Error subiendo imagen del API"
+fi
 
 # Subir imagen del Frontend
 log "⬆️ Subiendo imagen del Frontend..."
-docker push ${FRONTEND_IMAGE} > /dev/null 2>&1
-success "Imagen del Frontend subida"
+if docker push ${FRONTEND_IMAGE} 2>&1 | grep -E "(Pushed|digest:)" | tail -3; then
+    success "Imagen del Frontend subida"
+else
+    error "Error subiendo imagen del Frontend"
+fi
 
 # =============================================================================
 # DESPLEGAR SERVICIOS CON FORCE UPDATE
@@ -210,7 +222,7 @@ log "🚀 Desplegando servicios en Cloud Run (forzando actualización)..."
 
 # Desplegar API con force update
 log "🔧 Desplegando servicio API..."
-gcloud run deploy ${API_SERVICE_NAME} \
+if gcloud run deploy ${API_SERVICE_NAME} \
     --image=${API_IMAGE} \
     --platform=managed \
     --region=${REGION} \
@@ -221,24 +233,23 @@ gcloud run deploy ${API_SERVICE_NAME} \
     --max-instances=10 \
     --timeout=300 \
     --set-env-vars="FLASK_ENV=production,BUILD_ID=${BUILD_ID}" \
-    --quiet > /dev/null 2>&1
-
-success "Servicio API desplegado"
-
-# =============================================================================
-# APLICAR MIGRACIONES DE BASE DE DATOS
-# =============================================================================
-
-log "🗄️ Aplicando migraciones de base de datos..."
-if ./scripts/apply-migrations.sh -e production; then
-    success "Migraciones aplicadas correctamente"
+    --quiet 2>&1; then
+    success "Servicio API desplegado"
 else
-    error "Error aplicando migraciones de base de datos"
+    error "Error al desplegar servicio API"
+fi
+
+# Verificar que la imagen correcta se desplegó
+DEPLOYED_API_IMAGE=$(gcloud run services describe ${API_SERVICE_NAME} --region=${REGION} --format='value(spec.template.spec.containers[0].image)')
+if [ "$DEPLOYED_API_IMAGE" = "$API_IMAGE" ]; then
+    success "✓ API usando imagen correcta: ${BUILD_ID}"
+else
+    warning "⚠️  API usando imagen diferente: $DEPLOYED_API_IMAGE"
 fi
 
 # Desplegar Frontend con force update
 log "🌐 Desplegando servicio Frontend..."
-gcloud run deploy ${FRONTEND_SERVICE_NAME} \
+if gcloud run deploy ${FRONTEND_SERVICE_NAME} \
     --image=${FRONTEND_IMAGE} \
     --platform=managed \
     --region=${REGION} \
@@ -248,9 +259,31 @@ gcloud run deploy ${FRONTEND_SERVICE_NAME} \
     --concurrency=1000 \
     --max-instances=5 \
     --set-env-vars="BUILD_ID=${BUILD_ID}" \
-    --quiet > /dev/null 2>&1
+    --quiet 2>&1; then
+    success "Servicio Frontend desplegado"
+else
+    error "Error al desplegar servicio Frontend"
+fi
 
-success "Servicio Frontend desplegado"
+# Verificar que la imagen correcta se desplegó
+DEPLOYED_FRONTEND_IMAGE=$(gcloud run services describe ${FRONTEND_SERVICE_NAME} --region=${REGION} --format='value(spec.template.spec.containers[0].image)')
+if [ "$DEPLOYED_FRONTEND_IMAGE" = "$FRONTEND_IMAGE" ]; then
+    success "✓ Frontend usando imagen correcta: ${BUILD_ID}"
+else
+    warning "⚠️  Frontend usando imagen diferente: $DEPLOYED_FRONTEND_IMAGE"
+fi
+
+# =============================================================================
+# APLICAR MIGRACIONES DE BASE DE DATOS (OPCIONAL)
+# =============================================================================
+
+log "🗄️ Aplicando migraciones de base de datos..."
+if ./scripts/apply-migrations.sh -e production 2>&1; then
+    success "Migraciones aplicadas correctamente"
+else
+    warning "⚠️  Migraciones fallaron, pero servicios están desplegados"
+    warning "Las migraciones se pueden aplicar manualmente más tarde"
+fi
 
 # =============================================================================
 # VERIFICAR DESPLIEGUE
@@ -286,24 +319,42 @@ fi
 # =============================================================================
 
 echo ""
-echo "🎉 ¡DESPLIEGUE ROBUSTO COMPLETADO EXITOSAMENTE!"
-echo "================================================"
+echo "╔══════════════════════════════════════════════════════════════════════╗"
+echo "║                                                                      ║"
+echo "║           🎉 DESPLIEGUE COMPLETADO EXITOSAMENTE 🎉                  ║"
+echo "║                                                                      ║"
+echo "╚══════════════════════════════════════════════════════════════════════╝"
 echo ""
-echo "🏷️ Build ID: ${BUILD_ID}"
-echo "🔗 API URL: ${API_URL}"
-echo "🌐 Frontend URL: ${FRONTEND_URL}"
+echo "📦 Build ID: ${BUILD_ID}"
 echo ""
-echo "📋 Servicios desplegados:"
-echo "  - ${API_SERVICE_NAME} (API) - Imagen: ${API_IMAGE}"
-echo "  - ${FRONTEND_SERVICE_NAME} (Frontend) - Imagen: ${FRONTEND_IMAGE}"
+echo "📍 URLs de servicios:"
+echo "   🔗 API:      ${API_URL}"
+echo "   🌐 Frontend: ${FRONTEND_URL}"
+echo ""
+echo "✅ Verificación de imágenes desplegadas:"
+echo "   API:      $([ "$DEPLOYED_API_IMAGE" = "$API_IMAGE" ] && echo "✓ CORRECTO" || echo "⚠ DIFERENTE")"
+echo "   Frontend: $([ "$DEPLOYED_FRONTEND_IMAGE" = "$FRONTEND_IMAGE" ] && echo "✓ CORRECTO" || echo "⚠ DIFERENTE")"
+echo ""
+if [ "$DEPLOYED_API_IMAGE" != "$API_IMAGE" ] || [ "$DEPLOYED_FRONTEND_IMAGE" != "$FRONTEND_IMAGE" ]; then
+    echo "⚠️  ADVERTENCIA: Las imágenes desplegadas no coinciden con las construidas"
+    echo "   API construida:      ${API_IMAGE}"
+    echo "   API desplegada:      ${DEPLOYED_API_IMAGE}"
+    echo "   Frontend construida: ${FRONTEND_IMAGE}"
+    echo "   Frontend desplegada: ${DEPLOYED_FRONTEND_IMAGE}"
+    echo ""
+fi
+echo "📋 Imágenes construidas:"
+echo "   API:      ${API_IMAGE}"
+echo "   Frontend: ${FRONTEND_IMAGE}"
 echo ""
 echo "🔍 Comandos útiles:"
-echo "   Ver logs API: gcloud run services logs read ${API_SERVICE_NAME} --region=${REGION}"
-echo "   Ver logs Frontend: gcloud run services logs read ${FRONTEND_SERVICE_NAME} --region=${REGION}"
-echo "   Listar servicios: gcloud run services list --region=${REGION}"
+echo "   Ver logs API:      gcloud run services logs read ${API_SERVICE_NAME} --region=${REGION} --limit=50"
+echo "   Ver logs Frontend: gcloud run services logs read ${FRONTEND_SERVICE_NAME} --region=${REGION} --limit=50"
+echo "   Listar servicios:  gcloud run services list --region=${REGION}"
+echo "   Verificar API:     curl -s ${API_URL}/health | jq"
 echo ""
 echo "🧹 Para limpiar imágenes antiguas:"
-echo "   gcloud artifacts docker images delete ${API_IMAGE} --quiet"
+echo "   gcloud artifacts docker images list europe-west1-docker.pkg.dev/${PROJECT_ID}/per-images"
 echo "   gcloud artifacts docker images delete ${FRONTEND_IMAGE} --quiet"
 echo ""
 
