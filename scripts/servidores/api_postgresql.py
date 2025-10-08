@@ -1769,7 +1769,7 @@ def get_simple_user_stats():
         conn = psycopg2.connect(**DB_CONFIG)
         cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-        # Get completed exams stats
+        # Get completed exams stats (combining user_exams and study_tests)
         cur.execute("""
             SELECT
                 COUNT(*) as exams_completed,
@@ -1777,28 +1777,61 @@ def get_simple_user_stats():
                 SUM(correct_answers) as total_correct,
                 AVG(score_percentage) as avg_score,
                 SUM(duration_minutes) as total_time_minutes
-            FROM user_exams
-            WHERE user_id = %s AND status = 'completed'
-        """, (user_id,))
+            FROM (
+                SELECT total_questions, correct_answers, score_percentage, duration_minutes
+                FROM user_exams
+                WHERE user_id = %s AND status = 'completed'
+                UNION ALL
+                SELECT total_questions, correct_answers, score_percentage, duration_minutes
+                FROM study_tests
+                WHERE user_id = %s AND status = 'completed'
+            ) AS all_exams
+        """, (user_id, user_id))
 
         stats = cur.fetchone()
 
-        # Get recent exam history with detailed information
+        # Get recent exam history with detailed information (combining both tables)
         cur.execute("""
-            SELECT
-                id as exam_id,
-                score_percentage as score,
-                duration_minutes as time_minutes,
-                completed_at as date,
-                total_questions,
-                correct_answers,
-                passed,
-                started_at
-            FROM user_exams
-            WHERE user_id = %s AND status = 'completed'
-            ORDER BY completed_at DESC
+            SELECT 
+                exam_id, 
+                score, 
+                time_minutes, 
+                date, 
+                total_questions, 
+                correct_answers, 
+                passed, 
+                started_at,
+                exam_type
+            FROM (
+                SELECT
+                    id as exam_id,
+                    score_percentage as score,
+                    duration_minutes as time_minutes,
+                    completed_at as date,
+                    total_questions,
+                    correct_answers,
+                    passed,
+                    started_at,
+                    'exam' as exam_type
+                FROM user_exams
+                WHERE user_id = %s AND status = 'completed'
+                UNION ALL
+                SELECT
+                    id as exam_id,
+                    score_percentage as score,
+                    duration_minutes as time_minutes,
+                    completed_at as date,
+                    total_questions,
+                    correct_answers,
+                    CASE WHEN score_percentage >= 70 THEN true ELSE false END as passed,
+                    created_at as started_at,
+                    'study_test' as exam_type
+                FROM study_tests
+                WHERE user_id = %s AND status = 'completed'
+            ) AS all_exams
+            ORDER BY date DESC
             LIMIT 20
-        """, (user_id,))
+        """, (user_id, user_id))
 
         recent_exams = cur.fetchall()
 
@@ -1846,7 +1879,8 @@ def get_simple_user_stats():
                 'correct_answers': correct_answers,
                 'incorrect_answers': incorrect_answers,
                 'passed': bool(exam['passed']) if exam['passed'] is not None else False,
-                'started_at': exam['started_at'].isoformat() if exam['started_at'] else None
+                'started_at': exam['started_at'].isoformat() if exam['started_at'] else None,
+                'exam_type': exam['exam_type']
             })
 
         # Generate topic progress data (simulated for now)
@@ -2420,6 +2454,166 @@ def get_user_exams():
         logger.error(f"Error obteniendo historial de exámenes: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
+@app.route('/api/exams/<exam_id>/results', methods=['GET'])
+@require_auth
+def get_exam_detailed_results(exam_id):
+    """Get detailed exam results with UT analysis"""
+    try:
+        user_id = request.current_user['user_id']
+        
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        
+        # Verificar que el examen pertenece al usuario
+        cur.execute("""
+            SELECT id, total_questions, correct_answers, score_percentage, 
+                   passed, started_at, completed_at, duration_minutes
+            FROM user_exams
+            WHERE id = %s AND user_id = %s
+        """, (exam_id, user_id))
+        
+        exam = cur.fetchone()
+        if not exam:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Examen no encontrado'}), 404
+        
+        # Obtener preguntas del examen con respuestas del usuario
+        cur.execute("""
+            SELECT
+                eq.question_order,
+                eq.ut_number,
+                eq.ut_category,
+                q.id as question_id,
+                q.texto_pregunta,
+                q.respuesta_correcta,
+                q.categoria,
+                ua.selected_answer,
+                ua.is_correct,
+                ua.time_spent_seconds,
+                ua.answered_at
+            FROM exam_questions eq
+            JOIN questions q ON eq.question_id = q.id
+            LEFT JOIN user_answers ua ON eq.user_exam_id = ua.user_exam_id 
+                                       AND eq.question_id = ua.question_id
+            WHERE eq.user_exam_id = %s
+            ORDER BY eq.question_order
+        """, (exam_id,))
+        
+        questions = cur.fetchall()
+        
+        # Analizar por UT
+        ut_analysis = {}
+        for q in questions:
+            ut_num = q['ut_number']
+            ut_category = q['ut_category'] or q['categoria']
+            
+            if ut_num not in ut_analysis:
+                ut_analysis[ut_num] = {
+                    'ut_number': ut_num,
+                    'ut_category': ut_category,
+                    'total_questions': 0,
+                    'correct_answers': 0,
+                    'incorrect_answers': 0,
+                    'unanswered': 0,
+                    'questions': []
+                }
+            
+            ut_analysis[ut_num]['total_questions'] += 1
+            ut_analysis[ut_num]['questions'].append({
+                'question_id': str(q['question_id']),
+                'order': q['question_order'],
+                'texto_pregunta': q['texto_pregunta'],
+                'correct_answer': q['respuesta_correcta'],
+                'user_answer': q['selected_answer'],
+                'is_correct': q['is_correct'],
+                'time_spent_seconds': q['time_spent_seconds']
+            })
+            
+            if q['is_correct'] is True:
+                ut_analysis[ut_num]['correct_answers'] += 1
+            elif q['is_correct'] is False:
+                ut_analysis[ut_num]['incorrect_answers'] += 1
+            else:
+                ut_analysis[ut_num]['unanswered'] += 1
+        
+        # Calcular porcentajes y verificar criterios de aprobación por UT
+        critical_uts = {
+            5: 2,   # Balizamiento - máximo 2 errores
+            6: 5,   # RIPA - máximo 5 errores
+            11: 2   # Carta navegación - máximo 2 errores
+        }
+        
+        for ut_num, ut_data in ut_analysis.items():
+            total = ut_data['total_questions']
+            correct = ut_data['correct_answers']
+            incorrect = ut_data['incorrect_answers']
+            
+            ut_data['score_percentage'] = round((correct / total * 100) if total > 0 else 0, 2)
+            ut_data['passed'] = True  # Por defecto
+            
+            # Verificar criterios específicos para UTs críticas
+            if ut_num in critical_uts:
+                max_errors = critical_uts[ut_num]
+                ut_data['max_errors_allowed'] = max_errors
+                ut_data['passed'] = incorrect <= max_errors
+            else:
+                ut_data['max_errors_allowed'] = None
+                # Para UTs no críticas, usar el criterio general del 65%
+                ut_data['passed'] = ut_data['score_percentage'] >= 65
+        
+        # Determinar si el examen está realmente aprobado
+        overall_score = float(exam['score_percentage'])
+        ut_passed_count = sum(1 for ut in ut_analysis.values() if ut['passed'])
+        total_uts = len(ut_analysis)
+        
+        # Criterio 1: Puntuación general >= 65%
+        overall_passed = overall_score >= 65
+        
+        # Criterio 2: Todas las UTs críticas deben pasar
+        critical_passed = True
+        for ut_num in critical_uts:
+            if ut_num in ut_analysis:
+                critical_passed = critical_passed and ut_analysis[ut_num]['passed']
+        
+        # Resultado final
+        actually_passed = overall_passed and critical_passed
+        
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'exam_id': str(exam_id),
+            'exam_summary': {
+                'total_questions': exam['total_questions'],
+                'correct_answers': exam['correct_answers'],
+                'score_percentage': overall_score,
+                'passed': exam['passed'],
+                'actually_passed': actually_passed,
+                'duration_minutes': exam['duration_minutes'],
+                'started_at': exam['started_at'].isoformat() if exam['started_at'] else None,
+                'completed_at': exam['completed_at'].isoformat() if exam['completed_at'] else None
+            },
+            'ut_analysis': list(ut_analysis.values()),
+            'criteria_check': {
+                'overall_score_ok': overall_passed,
+                'critical_uts_ok': critical_passed,
+                'critical_uts_required': list(critical_uts.keys()),
+                'actually_passed': actually_passed
+            },
+            'ut_summary': {
+                'total_uts': total_uts,
+                'uts_passed': ut_passed_count,
+                'uts_failed': total_uts - ut_passed_count
+            }
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo resultados detallados del examen: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
 ################################################################################
 # STUDY MODE ENDPOINTS
 ################################################################################
@@ -2604,6 +2798,114 @@ def get_study_test_questions(study_test_id):
         return jsonify({'error': 'Error interno del servidor'}), 500
 
 
+@app.route('/api/study-tests/<study_test_id>/results', methods=['GET'])
+@require_auth
+def get_study_test_results(study_test_id):
+    """Get study test questions with user answers and correctness"""
+    try:
+        user_id = request.current_user['user_id']
+
+        # Connect to database
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Verify study test belongs to user
+        cur.execute("""
+            SELECT id, selected_uts, selection_mode, total_questions, status
+            FROM study_tests
+            WHERE id = %s AND user_id = %s
+        """, (study_test_id, user_id))
+
+        study_test = cur.fetchone()
+        if not study_test:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Test de estudio no encontrado'}), 404
+
+        # Get questions with user answers
+        cur.execute("""
+            SELECT
+                stq.question_order,
+                stq.ut_category,
+                stq.ut_number,
+                q.id,
+                q.texto_pregunta,
+                q.respuesta_correcta,
+                q.categoria,
+                q.numero_pregunta,
+                e.tipo_examen,
+                e.titulo,
+                e.convocatoria,
+                stq.user_answer,
+                stq.is_correct,
+                stq.time_spent_seconds
+            FROM study_test_questions stq
+            JOIN questions q ON stq.question_id = q.id
+            JOIN exams e ON q.exam_id = e.id
+            WHERE stq.study_test_id = %s
+            ORDER BY stq.question_order
+        """, (study_test_id,))
+
+        questions = cur.fetchall()
+
+        questions_list = []
+        for q in questions:
+            # Get answer options
+            cur.execute("""
+                SELECT opcion, texto
+                FROM answer_options
+                WHERE question_id = %s
+                ORDER BY opcion
+            """, (q['id'],))
+
+            options = cur.fetchall()
+            options_dict = {opt['opcion']: opt['texto'] for opt in options}
+
+            questions_list.append({
+                'id': str(q['id']),
+                'order': q['question_order'],
+                'ut_number': q['ut_number'],
+                'ut_category': q['ut_category'],
+                'texto_pregunta': q['texto_pregunta'],
+                'opciones': options_dict,
+                'categoria': q['categoria'],
+                'numero_pregunta': q['numero_pregunta'],
+                'correct_answer': q['respuesta_correcta'],
+                'user_answer': q['user_answer'],
+                'is_correct': q['is_correct'],
+                'time_spent_seconds': q['time_spent_seconds'],
+                'exam_info': {
+                    'tipo_examen': q['tipo_examen'],
+                    'titulo': q['titulo'],
+                    'convocatoria': q['convocatoria']
+                }
+            })
+
+        # Calcular estadísticas del test
+        correct_answers = sum(1 for q in questions_list if q.get('is_correct') == True)
+        total_questions = len(questions_list)
+        score_percentage = (correct_answers / total_questions * 100) if total_questions > 0 else 0
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'study_test_id': str(study_test_id),
+            'selected_uts': study_test['selected_uts'],
+            'selection_mode': study_test['selection_mode'],
+            'total_questions': total_questions,
+            'correct_answers': correct_answers,
+            'score_percentage': round(score_percentage, 2),
+            'status': study_test['status'],
+            'questions': questions_list
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo resultados de test de estudio: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+
 @app.route('/api/study-tests/<study_test_id>/answer', methods=['POST'])
 @require_auth
 def answer_study_question(study_test_id):
@@ -2682,18 +2984,19 @@ def answer_study_question(study_test_id):
             category = question_info['categoria']
             attempt_order = question_info['question_order']
 
-            # Insertar en question_attempts con study_test_id como exam_id
+            # Insertar en question_attempt_details para estadísticas detalladas
             # Esto permite que las estadísticas de estudio aparezcan en el dashboard
+            # NOTE: exam_id es NULL para study tests porque no están en la tabla exams
             cur.execute("""
-                INSERT INTO question_attempts (
-                    exam_id, question_id, user_answer, correct_answer,
-                    is_correct, time_spent_seconds, category, attempt_order
+                INSERT INTO question_attempt_details (
+                    user_id, exam_id, question_id, user_answer, correct_answer,
+                    is_correct, time_spent_seconds, category, attempt_order, session_type
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, NULL, %s, %s, %s, %s, %s, %s, %s, %s)
             """, (
-                study_test_id, question_id, user_answer.lower(),
+                user_id, question_id, user_answer.lower(),
                 correct_answer.lower(), is_correct, time_spent,
-                category, attempt_order
+                category, attempt_order, 'practice'
             ))
 
         conn.commit()
@@ -2708,6 +3011,68 @@ def answer_study_question(study_test_id):
 
     except Exception as e:
         logger.error(f"Error registrando respuesta de test de estudio: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+
+@app.route('/api/study-tests/<study_test_id>/failed-questions', methods=['GET'])
+@require_auth
+def get_study_test_failed_questions(study_test_id):
+    """Get failed questions from a specific study test"""
+    try:
+        user_id = request.current_user['user_id']
+        
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Verificar que el test de estudio pertenece al usuario
+        cur.execute("""
+            SELECT id, status, completed_at
+            FROM study_tests
+            WHERE id = %s AND user_id = %s
+        """, (study_test_id, user_id))
+        
+        study_test = cur.fetchone()
+        if not study_test:
+            return jsonify({'error': 'Test de estudio no encontrado'}), 404
+        
+        # Obtener preguntas falladas del test de estudio (incorrectas + no respondidas)
+        cur.execute("""
+            SELECT
+                stq.question_id,
+                stq.user_answer,
+                stq.is_correct,
+                stq.answered_at,
+                q.respuesta_correcta,
+                q.texto_pregunta,
+                q.categoria,
+                e.tipo_examen
+            FROM study_test_questions stq
+            JOIN questions q ON stq.question_id = q.id
+            JOIN exams e ON q.exam_id = e.id
+            WHERE stq.study_test_id = %s 
+            AND (stq.is_correct = false OR stq.user_answer IS NULL OR stq.user_answer = '')
+            ORDER BY stq.answered_at
+        """, (study_test_id,))
+        
+        failed_questions = cur.fetchall()
+        
+        cur.close()
+        conn.close()
+        
+        logger.info(f"📊 Obtenidas {len(failed_questions)} preguntas falladas del test de estudio {study_test_id}")
+        
+        return jsonify({
+            'success': True,
+            'failed_questions': [dict(q) for q in failed_questions],
+            'total_failed': len(failed_questions),
+            'test_date': study_test['completed_at'].isoformat() if study_test['completed_at'] else None
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo preguntas falladas del test de estudio: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
 
@@ -3475,6 +3840,96 @@ def get_general_question_stats():
         logger.error(f"Error obteniendo estadísticas generales: {e}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/question-stats/by-ut', methods=['GET'])
+def get_question_stats_by_ut():
+    """Obtener estadísticas de preguntas agrupadas por UT"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # Obtener configuración de UTs
+        cur.execute("""
+            SELECT ut_number, ut_name, category_name, questions_per_exam
+            FROM ut_configuration 
+            ORDER BY ut_number
+        """)
+        ut_configs = cur.fetchall()
+
+        ut_stats = []
+        
+        for ut_config in ut_configs:
+            ut_number = ut_config['ut_number']
+            ut_name = ut_config['ut_name']
+            category_name = ut_config['category_name']
+            questions_per_exam = ut_config['questions_per_exam']
+
+            # Estadísticas de preguntas por UT
+            cur.execute("""
+                SELECT 
+                    COUNT(DISTINCT q.id) as total_questions_available,
+                    COUNT(DISTINCT qgs.question_id) as questions_with_stats,
+                    COALESCE(SUM(qgs.total_appearances), 0) as total_attempts,
+                    COALESCE(SUM(qgs.total_correct_answers), 0) as total_correct,
+                    COALESCE(SUM(qgs.total_incorrect_answers), 0) as total_incorrect,
+                    ROUND(COALESCE(AVG(qgs.success_rate), 0), 2) as avg_success_rate
+                FROM questions q
+                LEFT JOIN question_global_stats qgs ON q.id = qgs.question_id
+                WHERE q.categoria = %s
+                AND q.anulada = false
+            """, (category_name,))
+            
+            ut_stat = cur.fetchone()
+
+            # Preguntas más falladas de esta UT
+            cur.execute("""
+                SELECT 
+                    q.id as question_id,
+                    q.texto_pregunta,
+                    qgs.total_incorrect_answers,
+                    qgs.total_appearances,
+                    qgs.success_rate,
+                    (100 - qgs.success_rate) as failure_rate
+                FROM questions q
+                JOIN question_global_stats qgs ON q.id = qgs.question_id
+                WHERE q.categoria = %s
+                AND q.anulada = false
+                AND qgs.total_appearances > 0
+                ORDER BY qgs.total_incorrect_answers DESC, qgs.success_rate ASC
+                LIMIT 5
+            """, (category_name,))
+            
+            top_failed_questions = cur.fetchall()
+
+            ut_stats.append({
+                'ut_number': ut_number,
+                'ut_name': ut_name,
+                'category_name': category_name,
+                'questions_per_exam': questions_per_exam,
+                'total_questions_available': ut_stat['total_questions_available'],
+                'questions_with_stats': ut_stat['questions_with_stats'],
+                'total_attempts': ut_stat['total_attempts'],
+                'total_correct': ut_stat['total_correct'],
+                'total_incorrect': ut_stat['total_incorrect'],
+                'avg_success_rate': ut_stat['avg_success_rate'],
+                'top_failed_questions': [dict(q) for q in top_failed_questions]
+            })
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'ut_stats': ut_stats,
+            'total_uts': len(ut_stats)
+        })
+
+    except Exception as e:
+        logger.error(f"Error obteniendo estadísticas por UT: {e}")
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     logger.info("🚀 API PER Nueva Arquitectura iniciando...")
     logger.info("🔹 Base de datos: PostgreSQL")
@@ -3498,6 +3953,7 @@ if __name__ == '__main__':
     logger.info("   - POST   /api/question-attempt")
     logger.info("   - GET    /question-stats/<question_id>")
     logger.info("   - GET    /question-stats/rankings/<category>")
+    logger.info("   - GET    /api/question-stats/by-ut")
     logger.info("🔐 Endpoints de autenticación:")
     logger.info("   - POST   /auth/register")
     logger.info("   - POST   /auth/login")
@@ -3507,6 +3963,8 @@ if __name__ == '__main__':
     logger.info("📚 Endpoints de modo estudio:")
     logger.info("   - POST   /api/study-tests/generate")
     logger.info("   - GET    /api/study-tests/<study_test_id>/questions")
+    logger.info("   - GET    /api/study-tests/<study_test_id>/results")
+    logger.info("   - GET    /api/study-tests/<study_test_id>/failed-questions")
     logger.info("   - POST   /api/study-tests/<study_test_id>/answer")
     logger.info("   - POST   /api/study-tests/<study_test_id>/submit")
     logger.info("   - GET    /api/study-tests/available-uts")

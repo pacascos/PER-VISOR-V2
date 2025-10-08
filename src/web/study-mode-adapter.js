@@ -185,11 +185,8 @@ class StudyModeAdapter {
             <i class="fas fa-times"></i>
             <span>Cancelar</span>
         `;
-        cancelBtn.onclick = () => {
-            if (confirm('¿Estás seguro de que quieres cancelar este test de estudio? Se perderá el progreso actual.')) {
-                window.location.href = 'study-config.html';
-            }
-        };
+        // Botón de cancelar eliminado - usar el botón unificado "Cancelar Examen" en su lugar
+        cancelBtn.style.display = 'none';
         cancelBtn.onmouseover = () => {
             cancelBtn.style.background = '#dc2626';
             cancelBtn.style.transform = 'translateY(-2px)';

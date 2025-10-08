@@ -393,6 +393,9 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
+            // Clear old sessionStorage to force fresh data from API
+            sessionStorage.removeItem('studyTestResults');
+            
             // Set environment indicator
             const envIndicator = document.getElementById('env-indicator');
             envIndicator.textContent = window.ENVIRONMENT;
@@ -408,22 +411,25 @@
                 return;
             }
 
-            // Check for results in sessionStorage first
-            const storedResults = sessionStorage.getItem('studyTestResults');
-            if (storedResults) {
-                resultsData = JSON.parse(storedResults);
-                displayResults();
-                return;
+            // Try to fetch from API first, fallback to sessionStorage if API fails
+            try {
+                await loadResults();
+            } catch (error) {
+                console.log('⚠️ API failed, trying sessionStorage fallback');
+                const storedResults = sessionStorage.getItem('studyTestResults');
+                if (storedResults) {
+                    resultsData = JSON.parse(storedResults);
+                    displayResults();
+                } else {
+                    throw error;
+                }
             }
-
-            // Otherwise fetch from API
-            await loadResults();
         });
 
         async function loadResults() {
             try {
                 const token = localStorage.getItem('token') || localStorage.getItem('authToken');
-                const response = await fetch(`${API_URL}/study-tests/${studyTestId}/questions`, {
+                const response = await fetch(`${API_URL}/study-tests/${studyTestId}/results`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -434,9 +440,10 @@
                 }
 
                 const data = await response.json();
+                console.log('📊 Datos recibidos de la API:', data);
 
-                // Calculate results from questions
-                resultsData = calculateResultsFromQuestions(data);
+                // Use data directly from API (it already has calculated fields)
+                resultsData = data;
                 displayResults();
 
             } catch (error) {
@@ -461,7 +468,25 @@
             const scorePercentage = resultsData.score_percentage || 0;
             const correctAnswers = resultsData.correct_answers || 0;
             const totalQuestions = resultsData.total_questions || 0;
-            const incorrectAnswers = totalQuestions - correctAnswers;
+            
+            // Calculate failed questions (incorrect + unanswered)
+            let incorrectAnswers = 0;
+            
+            if (resultsData.questions && Array.isArray(resultsData.questions)) {
+                resultsData.questions.forEach(question => {
+                    // Count as failed: incorrect answers OR unanswered questions
+                    if (question.is_correct === false || 
+                        question.user_answer === null || 
+                        question.user_answer === '' || 
+                        question.is_correct === null) {
+                        incorrectAnswers++;
+                    }
+                });
+            } else {
+                // Fallback to old calculation if questions array is not available
+                incorrectAnswers = totalQuestions - correctAnswers;
+            }
+            
             const duration = resultsData.duration_minutes || 0;
 
             // Display score
@@ -527,8 +552,8 @@
 
                 const token = localStorage.getItem('token') || localStorage.getItem('authToken');
 
-                // Obtener todas las preguntas del test de estudio con sus respuestas
-                const response = await fetch(`${API_URL}/study-tests/${studyTestId}/questions`, {
+                // Obtener solo las preguntas falladas del test de estudio
+                const response = await fetch(`${API_URL}/study-tests/${studyTestId}/failed-questions`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -540,19 +565,27 @@
 
                 const data = await response.json();
 
-                // Filtrar solo las preguntas incorrectas
-                const incorrectQuestions = data.questions.filter(q => q.is_correct === false);
+                // El endpoint ya devuelve solo las preguntas falladas
+                const failedQuestions = data.failed_questions || [];
+                
+                console.log('🔍 Total de preguntas falladas encontradas:', failedQuestions.length);
+                console.log('🔍 Detalles de preguntas falladas:', failedQuestions.map(q => ({
+                    question_id: q.question_id,
+                    user_answer: q.user_answer,
+                    correct_answer: q.respuesta_correcta,
+                    is_correct: q.is_correct
+                })));
 
-                if (incorrectQuestions.length > 0) {
+                if (failedQuestions.length > 0) {
                     // Extraer IDs de las preguntas incorrectas
-                    const incorrectQuestionIds = incorrectQuestions.map(q => q.id);
+                    const incorrectQuestionIds = failedQuestions.map(q => q.question_id);
 
                     // Guardar el filtro en localStorage para que el banco de preguntas lo use
                     localStorage.setItem('failedQuestionsFilter', JSON.stringify({
                         studyTestId: studyTestId,
                         questionIds: incorrectQuestionIds,
                         examDate: new Date().toISOString(),
-                        totalFailed: incorrectQuestions.length
+                        totalFailed: failedQuestions.length
                     }));
 
                     console.log('🔍 Abriendo banco de preguntas con', incorrectQuestionIds.length, 'preguntas incorrectas');
@@ -560,13 +593,135 @@
                     // Abrir banco de preguntas en nueva pestaña
                     window.open('visor-nueva-arquitectura.html?filter=failed_questions', '_blank');
                 } else {
-                    alert('No hay preguntas incorrectas en este test');
+                    showNoIncorrectModal();
                 }
 
             } catch (error) {
                 console.error('❌ Error obteniendo preguntas incorrectas:', error);
                 alert(`Error cargando preguntas incorrectas: ${error.message}`);
             }
+        }
+    </script>
+
+    <!-- Modal Simple para Sin Preguntas Incorrectas -->
+    <div id="noIncorrectQuestionsModal" class="simple-modal" style="display: none;">
+        <div class="simple-modal-content">
+            <div class="simple-modal-header">
+                <h5>🎉 ¡Excelente!</h5>
+                <button type="button" class="simple-modal-close" onclick="hideNoIncorrectModal()">&times;</button>
+            </div>
+            <div class="simple-modal-body">
+                <p>¡Felicidades! No hay preguntas incorrectas en este test.</p>
+                <p><small>Has respondido todas las preguntas correctamente. ¡Sigue así!</small></p>
+            </div>
+            <div class="simple-modal-footer">
+                <button type="button" class="btn btn-success" onclick="hideNoIncorrectModal()">
+                    ¡Genial!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .simple-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .simple-modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 0;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .simple-modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .simple-modal-header h5 {
+            margin: 0;
+            color: #28a745;
+            font-size: 1.1rem;
+        }
+
+        .simple-modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .simple-modal-close:hover {
+            color: #333;
+        }
+
+        .simple-modal-body {
+            padding: 20px;
+        }
+
+        .simple-modal-body p {
+            margin: 0 0 10px 0;
+        }
+
+        .simple-modal-body small {
+            color: #666;
+        }
+
+        .simple-modal-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .simple-modal-footer .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .simple-modal-footer .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .simple-modal-footer .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+
+    <script>
+        function showNoIncorrectModal() {
+            document.getElementById('noIncorrectQuestionsModal').style.display = 'flex';
+        }
+
+        function hideNoIncorrectModal() {
+            document.getElementById('noIncorrectQuestionsModal').style.display = 'none';
         }
     </script>
 </body>

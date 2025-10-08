@@ -624,6 +624,37 @@ class StudyExamController extends ExamController {
             this.stopTimer();
             this.showAlert('Finalizando test de estudio...', 'info');
 
+            // IMPORTANTE: Save current question's answer before submitting
+            const currentQuestion = this.getCurrentQuestion();
+            console.log('🔍 DEBUG - Estado antes de guardar última pregunta:', {
+                currentQuestion: currentQuestion,
+                userAnswers: this.userAnswers,
+                currentQuestionId: currentQuestion?.question_id,
+                hasAnswer: currentQuestion && this.userAnswers[currentQuestion.question_id],
+                answerValue: currentQuestion ? this.userAnswers[currentQuestion.question_id] : null
+            });
+            
+            if (currentQuestion && this.userAnswers[currentQuestion.question_id]) {
+                console.log('💾 Guardando respuesta de la última pregunta antes de finalizar:', {
+                    questionId: currentQuestion.question_id,
+                    userAnswer: this.userAnswers[currentQuestion.question_id]
+                });
+                await this.recordAnswer(currentQuestion.question_id, this.userAnswers[currentQuestion.question_id]);
+            } else {
+                console.log('⚠️ No se pudo guardar la respuesta de la última pregunta:', {
+                    hasCurrentQuestion: !!currentQuestion,
+                    hasAnswer: currentQuestion && !!this.userAnswers[currentQuestion.question_id],
+                    userAnswersKeys: Object.keys(this.userAnswers)
+                });
+            }
+
+            // End tracking for all questions
+            if (window.questionStatsTracker) {
+                this.currentExam.questions.forEach(question => {
+                    window.questionStatsTracker.endQuestionTracking(question.question_id);
+                });
+            }
+
             const response = await fetch(`${this.API_BASE}/study-tests/${this.studyTestId}/submit`, {
                 method: 'POST',
                 headers: {

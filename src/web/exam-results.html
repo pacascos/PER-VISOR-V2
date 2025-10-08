@@ -343,7 +343,12 @@
                     console.log('📡 Fetching results from API...');
 
                     const API_BASE = window.API_BASE || '';
+                    const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                    
                     const response = await fetch(`${API_BASE}/exams/${examId}/results`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
                         credentials: 'include'
                     });
 
@@ -371,13 +376,32 @@
             document.getElementById('loading-section').style.display = 'none';
             document.getElementById('results-section').style.display = 'block';
 
+            // Handle both old format (from sessionStorage) and new format (from API)
+            let examSummary, utAnalysis, criteriaCheck, utSummary;
+            
+            if (results.exam_summary) {
+                // New format from detailed API
+                examSummary = results.exam_summary;
+                utAnalysis = results.ut_analysis || [];
+                criteriaCheck = results.criteria_check || {};
+                utSummary = results.ut_summary || {};
+            } else {
+                // Old format from sessionStorage
+                examSummary = results;
+                utAnalysis = [];
+                criteriaCheck = {};
+                utSummary = {};
+            }
+
             // Calculate statistics
-            const correctCount = results.correct_answers || 0;
-            const totalQuestions = results.total_questions || 45;
-            const incorrectCount = (results.incorrect_answers !== undefined) ? results.incorrect_answers : (totalQuestions - correctCount - (results.unanswered || 0));
-            const unansweredCount = results.unanswered || 0;
-            const percentage = results.score !== undefined ? results.score : Math.round((correctCount / totalQuestions) * 100);
-            const passed = percentage >= 60; // Threshold for passing
+            const correctCount = examSummary.correct_answers || 0;
+            const totalQuestions = examSummary.total_questions || 45;
+            const incorrectCount = totalQuestions - correctCount - (examSummary.unanswered || 0);
+            const unansweredCount = examSummary.unanswered || 0;
+            const percentage = examSummary.score_percentage || examSummary.score || Math.round((correctCount / totalQuestions) * 100);
+            
+            // Use actual passed status if available
+            const passed = examSummary.actually_passed !== undefined ? examSummary.actually_passed : (percentage >= 65);
 
             // Update title
             const titleElement = document.getElementById('result-title');
@@ -399,14 +423,19 @@
             document.getElementById('total-questions').textContent = totalQuestions;
 
             // Calculate duration if available
-            if (results.started_at && results.completed_at) {
-                const start = new Date(results.started_at);
-                const end = new Date(results.completed_at);
+            if (examSummary.started_at && examSummary.completed_at) {
+                const start = new Date(examSummary.started_at);
+                const end = new Date(examSummary.completed_at);
                 const durationMs = end - start;
                 const durationMinutes = Math.round(durationMs / 60000);
                 document.getElementById('exam-duration').textContent = durationMinutes + ' minutos';
-            } else if (results.duration) {
-                document.getElementById('exam-duration').textContent = results.duration;
+            } else if (examSummary.duration_minutes) {
+                document.getElementById('exam-duration').textContent = examSummary.duration_minutes + ' minutos';
+            }
+
+            // Display UT analysis if available
+            if (utAnalysis && utAnalysis.length > 0) {
+                displayUTAnalysis(utAnalysis, criteriaCheck, utSummary);
             }
 
             console.log('✅ Results displayed');
@@ -415,6 +444,188 @@
             console.log('   Unanswered:', unansweredCount);
             console.log('   Score:', percentage + '%');
             console.log('   Passed:', passed);
+            console.log('   Actually Passed:', examSummary.actually_passed);
+            console.log('   UT Analysis:', utAnalysis);
+        }
+
+        function displayUTAnalysis(utAnalysis, criteriaCheck, utSummary) {
+            // Create UT analysis section
+            let utAnalysisHTML = `
+                <div class="ut-analysis-section mt-4">
+                    <h4 class="mb-3">
+                        <i class="fas fa-chart-bar"></i>
+                        Análisis por Unidad Temática (UT)
+                    </h4>
+            `;
+
+            // Add criteria summary if available
+            if (criteriaCheck && Object.keys(criteriaCheck).length > 0) {
+                const overallOk = criteriaCheck.overall_score_ok ? '✅' : '❌';
+                const criticalOk = criteriaCheck.critical_uts_ok ? '✅' : '❌';
+                const actuallyPassed = criteriaCheck.actually_passed ? '✅' : '❌';
+
+                utAnalysisHTML += `
+                    <div class="criteria-summary mb-4">
+                        <div class="alert ${criteriaCheck.actually_passed ? 'alert-success' : 'alert-danger'}">
+                            <h6><i class="fas fa-clipboard-check"></i> Verificación de Criterios de Aprobación</h6>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <small><strong>Puntuación General (≥65%):</strong> ${overallOk}</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <small><strong>UTs Críticas:</strong> ${criticalOk}</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <small><strong>Resultado Final:</strong> ${actuallyPassed}</small>
+                                </div>
+                            </div>
+                            ${criteriaCheck.critical_uts_required ? `
+                                <small class="text-muted">UTs Críticas: ${criteriaCheck.critical_uts_required.join(', ')}</small>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Add UT summary if available
+            if (utSummary && Object.keys(utSummary).length > 0) {
+                utAnalysisHTML += `
+                    <div class="ut-summary mb-3">
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="stat-box">
+                                    <h5>${utSummary.total_uts || 0}</h5>
+                                    <small>UTs Totales</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-box text-success">
+                                    <h5>${utSummary.uts_passed || 0}</h5>
+                                    <small>UTs Aprobadas</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-box text-danger">
+                                    <h5>${utSummary.uts_failed || 0}</h5>
+                                    <small>UTs Fallidas</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Add individual UT analysis
+            utAnalysisHTML += '<div class="ut-details">';
+            
+            utAnalysis.forEach(ut => {
+                const passedClass = ut.passed ? 'success' : 'danger';
+                const passedIcon = ut.passed ? 'fa-check-circle' : 'fa-times-circle';
+                const criticalBadge = ut.max_errors_allowed !== null ? 
+                    `<span class="badge bg-warning">Crítica (máx. ${ut.max_errors_allowed} errores)</span>` : '';
+
+                utAnalysisHTML += `
+                    <div class="card mb-3">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">
+                                <i class="fas fa-book"></i>
+                                UT ${ut.ut_number} - ${ut.ut_category}
+                                ${criticalBadge}
+                            </h6>
+                            <span class="badge bg-${passedClass}">
+                                <i class="fas ${passedIcon}"></i>
+                                ${ut.passed ? 'Aprobada' : 'Fallida'}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h5 class="text-${passedClass}">${ut.score_percentage}%</h5>
+                                        <small>Puntuación</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h5 class="text-success">${ut.correct_answers}</h5>
+                                        <small>Correctas</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h5 class="text-danger">${ut.incorrect_answers}</h5>
+                                        <small>Incorrectas</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h5 class="text-secondary">${ut.unanswered || 0}</h5>
+                                        <small>Sin responder</small>
+                                    </div>
+                                </div>
+                            </div>
+                            ${ut.max_errors_allowed !== null ? `
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle"></i>
+                                        UT Crítica: Máximo ${ut.max_errors_allowed} errores permitidos
+                                        ${ut.incorrect_answers > ut.max_errors_allowed ? 
+                                            ` (${ut.incorrect_answers - ut.max_errors_allowed} error(es) de más)` : 
+                                            ` (✅ Dentro del límite)`
+                                        }
+                                    </small>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            utAnalysisHTML += '</div></div>';
+
+            // Add to results section
+            const resultsSection = document.getElementById('results-section');
+            const existingUTSection = resultsSection.querySelector('.ut-analysis-section');
+            if (existingUTSection) {
+                existingUTSection.remove();
+            }
+            resultsSection.insertAdjacentHTML('beforeend', utAnalysisHTML);
+
+            // Add some CSS for UT analysis
+            const style = document.createElement('style');
+            style.textContent = `
+                .ut-analysis-section {
+                    margin-top: 2rem;
+                    padding-top: 2rem;
+                    border-top: 2px solid #e9ecef;
+                }
+                .criteria-summary .alert {
+                    border-radius: 10px;
+                }
+                .stat-box {
+                    padding: 1rem;
+                    border-radius: 8px;
+                    background: #f8f9fa;
+                }
+                .stat-box h5 {
+                    margin: 0;
+                    font-size: 2rem;
+                    font-weight: bold;
+                }
+                .ut-details .card {
+                    border-radius: 10px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+                .ut-details .card-header {
+                    background: #f8f9fa;
+                    border-bottom: 1px solid #dee2e6;
+                    border-radius: 10px 10px 0 0 !important;
+                }
+            `;
+            if (!document.querySelector('style[data-ut-analysis]')) {
+                style.setAttribute('data-ut-analysis', 'true');
+                document.head.appendChild(style);
+            }
         }
 
         function showError(message) {
@@ -469,6 +680,15 @@
 
                 // Filtrar solo las preguntas incorrectas
                 const incorrectQuestions = data.questions.filter(q => q.is_correct === false);
+                
+                console.log('🔍 Total de preguntas en el examen:', data.questions.length);
+                console.log('🔍 Preguntas incorrectas encontradas:', incorrectQuestions.length);
+                console.log('🔍 Detalles de preguntas:', data.questions.map(q => ({
+                    id: q.id,
+                    is_correct: q.is_correct,
+                    user_answer: q.user_answer,
+                    correct_answer: q.correct_answer
+                })));
 
                 if (incorrectQuestions.length > 0) {
                     // Extraer IDs de las preguntas incorrectas
@@ -487,13 +707,135 @@
                     // Abrir banco de preguntas en nueva pestaña
                     window.open('visor-nueva-arquitectura.html?filter=failed_questions', '_blank');
                 } else {
-                    alert('No hay preguntas incorrectas en este examen');
+                    showNoIncorrectModal();
                 }
 
             } catch (error) {
                 console.error('❌ Error obteniendo preguntas incorrectas:', error);
                 alert(`Error cargando preguntas incorrectas: ${error.message}`);
             }
+        }
+    </script>
+
+    <!-- Modal Simple para Sin Preguntas Incorrectas -->
+    <div id="noIncorrectQuestionsModal" class="simple-modal" style="display: none;">
+        <div class="simple-modal-content">
+            <div class="simple-modal-header">
+                <h5>🎉 ¡Excelente!</h5>
+                <button type="button" class="simple-modal-close" onclick="hideNoIncorrectModal()">&times;</button>
+            </div>
+            <div class="simple-modal-body">
+                <p>¡Felicidades! No hay preguntas incorrectas en este examen.</p>
+                <p><small>Has respondido todas las preguntas correctamente. ¡Sigue así!</small></p>
+            </div>
+            <div class="simple-modal-footer">
+                <button type="button" class="btn btn-success" onclick="hideNoIncorrectModal()">
+                    ¡Genial!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .simple-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .simple-modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 0;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .simple-modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .simple-modal-header h5 {
+            margin: 0;
+            color: #28a745;
+            font-size: 1.1rem;
+        }
+
+        .simple-modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .simple-modal-close:hover {
+            color: #333;
+        }
+
+        .simple-modal-body {
+            padding: 20px;
+        }
+
+        .simple-modal-body p {
+            margin: 0 0 10px 0;
+        }
+
+        .simple-modal-body small {
+            color: #666;
+        }
+
+        .simple-modal-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .simple-modal-footer .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .simple-modal-footer .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .simple-modal-footer .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+
+    <script>
+        function showNoIncorrectModal() {
+            document.getElementById('noIncorrectQuestionsModal').style.display = 'flex';
+        }
+
+        function hideNoIncorrectModal() {
+            document.getElementById('noIncorrectQuestionsModal').style.display = 'none';
         }
     </script>
 </body>

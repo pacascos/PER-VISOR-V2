@@ -91,6 +91,10 @@ services:
       - ./data:/app/data
       - ./logs:/app/logs
       - ./backups:/app/backups
+      - ./scripts/servidores/api_postgresql.py:/app/api_postgresql.py:ro
+      - ./scripts/servidores/api_explicaciones.py:/app/api_explicaciones.py:ro
+      - ./scripts/servidores/statistics_api.py:/app/statistics_api.py:ro
+      - ./scripts/servidores/study_mode_logic.py:/app/study_mode_logic.py:ro
     ports:
       - "${API_PORT:-5001}:5001"
     healthcheck:

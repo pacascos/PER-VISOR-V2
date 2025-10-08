@@ -69,9 +69,10 @@ const { chromium } = require('playwright');
 
     // ==================== 2. NAVEGAR A EXAM-SYSTEM ====================
     console.log('\n2️⃣ Navegando a exam-system.html...');
-    await page.goto(`${baseUrl}/exam-system.html`);
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(1000);
+    // Agregar cache busting y esperar después del login
+    await page.waitForTimeout(2000); // Esperar que el token se guarde
+    await page.goto(`${baseUrl}/exam-system.html?_=${Date.now()}`, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(2000); // Esperar que cargue el dashboard
     await page.screenshot({ path: 'tests/screenshots/full-3-exam-system.png', fullPage: true });
     console.log('✅ En exam-system.html');
 
@@ -259,18 +260,156 @@ const { chromium } = require('playwright');
       console.log(`      Porcentaje: ${resultsData.percentage}`);
       console.log(`      Duración: ${resultsData.duration}`);
       console.log(`      Aprobado: ${resultsData.passed ? 'SÍ' : 'NO'}`);
+
+      // ==================== 7. PROBAR ENLACE A PREGUNTAS FALLADAS ====================
+      console.log('\n7️⃣ Probando enlace a preguntas falladas...');
+
+      // Hacer click en el número de incorrectas y verificar localStorage
+      const incorrectCountElement = await page.$('#incorrect-count');
+      if (incorrectCountElement) {
+        const incorrectCount = await page.evaluate(() => {
+          return document.getElementById('incorrect-count')?.textContent || '0';
+        });
+
+        console.log(`   Click en preguntas incorrectas (${incorrectCount})...`);
+
+        // Esperar y hacer click
+        await incorrectCountElement.click();
+        await page.waitForTimeout(3000);
+
+        // Verificar que se haya guardado el filtro en localStorage
+        const filterInfo = await page.evaluate(() => {
+          const failedFilter = localStorage.getItem('failedQuestionsFilter');
+
+          if (!failedFilter) {
+            return { hasFilter: false };
+          }
+
+          try {
+            const filterData = JSON.parse(failedFilter);
+            return {
+              hasFilter: true,
+              totalFailed: filterData.totalFailed || 0,
+              questionIds: filterData.questionIds?.length || 0,
+              examId: filterData.examId || null
+            };
+          } catch (e) {
+            return { hasFilter: false, error: 'Parse error' };
+          }
+        });
+
+        console.log('   Filtro guardado en localStorage:', filterInfo.hasFilter ? 'SÍ' : 'NO');
+        if (filterInfo.hasFilter) {
+          console.log('   Total preguntas falladas:', filterInfo.totalFailed);
+          console.log('   IDs en filtro:', filterInfo.questionIds);
+          console.log('   Exam ID:', filterInfo.examId);
+          console.log('✅ Filtro de preguntas falladas guardado correctamente');
+
+          // Ahora navegar manualmente al banco para verificar
+          console.log('   Navegando al banco de preguntas con filtro...');
+          await page.goto(`${baseUrl}/visor-nueva-arquitectura.html?filter=failed_questions`);
+
+          // Debug: Check config status
+          const configStatus = await page.evaluate(() => ({
+            hasAPIBase: !!window.API_BASE,
+            hasEnvConfig: !!window.envConfig,
+            APIBase: window.API_BASE,
+            envConfigKeys: window.envConfig ? Object.keys(window.envConfig) : []
+          }));
+          console.log('   Config status:', JSON.stringify(configStatus));
+
+          // Esperar a que perViewer esté disponible (with longer timeout)
+          try {
+            await page.waitForFunction(() => typeof window.perViewer !== 'undefined', { timeout: 30000 });
+            console.log('   ✅ perViewer inicializado');
+          } catch (e) {
+            console.log('   ❌ perViewer no se inicializó:', e.message);
+            // Check what's blocking
+            const blockingInfo = await page.evaluate(() => ({
+              hasAPIBase: !!window.API_BASE,
+              hasEnvConfig: !!window.envConfig,
+              hasViewer: typeof viewer !== 'undefined',
+              hasPerViewer: typeof window.perViewer !== 'undefined'
+            }));
+            console.log('   Blocking info:', JSON.stringify(blockingInfo));
+            throw e;
+          }
+
+          await page.waitForTimeout(1000);
+
+          // Verificar que el banner de filtro se muestre y logs de consola
+          page.on('console', msg => console.log(`   [BANCO]: ${msg.text()}`));
+
+          const bankCheck = await page.evaluate(() => {
+            const banner = document.querySelector('.alert-info');
+            const failedFilter = localStorage.getItem('failedQuestionsFilter');
+            let filterData = null;
+            if (failedFilter) {
+              try {
+                filterData = JSON.parse(failedFilter);
+              } catch (e) {}
+            }
+
+            // Verificar el objeto perViewer
+            const hasViewer = typeof perViewer !== 'undefined';
+            const hasFilter = hasViewer && perViewer.failedQuestionsFilter;
+
+            // Contar preguntas mostradas
+            const questionCards = document.querySelectorAll('.question-card');
+            const questionsCount = questionCards.length;
+
+            // Verificar el estado de carga
+            const statsElement = document.querySelector('.stats-text');
+            const statsText = statsElement?.textContent || '';
+
+            return {
+              hasBanner: !!banner,
+              bannerText: banner?.textContent?.trim().substring(0, 100) || '',
+              filterStillExists: !!failedFilter,
+              filterData: filterData,
+              hasViewerObject: hasViewer,
+              viewerHasFilter: hasFilter,
+              viewerFilterData: hasFilter ? perViewer.failedQuestionsFilter : null,
+              questionsDisplayed: questionsCount,
+              statsText: statsText
+            };
+          });
+
+          console.log('   Banner de filtro visible:', bankCheck.hasBanner ? 'SÍ' : 'NO');
+          if (bankCheck.hasBanner) {
+            console.log('   Texto del banner:', bankCheck.bannerText);
+          }
+          console.log('   Filtro aún en localStorage:', bankCheck.filterStillExists ? 'SÍ' : 'NO');
+          console.log('   Objeto perViewer existe:', bankCheck.hasViewerObject ? 'SÍ' : 'NO');
+          console.log('   perViewer tiene filtro:', bankCheck.viewerHasFilter ? 'SÍ' : 'NO');
+          if (bankCheck.viewerFilterData) {
+            console.log('   Filtro en perViewer:', JSON.stringify(bankCheck.viewerFilterData));
+          }
+          console.log('   Preguntas mostradas:', bankCheck.questionsDisplayed);
+          console.log('   Stats:', bankCheck.statsText);
+
+          if (bankCheck.hasBanner && bankCheck.filterStillExists && bankCheck.questionsDisplayed > 0) {
+            console.log('✅ Banco de preguntas cargó el filtro correctamente');
+          } else if (bankCheck.questionsDisplayed === 0) {
+            console.log('⚠️  El banco NO está mostrando preguntas (posible error de carga)');
+          } else {
+            console.log('⚠️  El banco no aplicó el filtro correctamente');
+          }
+
+          await page.screenshot({ path: 'tests/screenshots/full-7-bank-with-filter.png', fullPage: true });
+        } else {
+          console.log('⚠️  No se guardó el filtro en localStorage');
+        }
+      } else {
+        console.log('⚠️  No se encontró el elemento de incorrectas clickeable');
+      }
+
+      await page.screenshot({ path: 'tests/screenshots/full-7-after-failed-check.png', fullPage: true });
+
     } else {
       console.log('⚠️  No redirigió a exam-results.html');
       console.log('   URL actual:', resultsUrl);
     }
-
-    // ==================== 7. VERIFICAR EN API QUE EL EXAMEN SE REGISTRÓ ====================
-    console.log('\n7️⃣ Verificando que el examen se registró en la API...');
-
-    // Navegar de vuelta a exam-system para verificar
-    await page.goto(`${baseUrl}/exam-system.html`);
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(2000);
 
     // ==================== 8. VERIFICAR HISTORIAL DE EXÁMENES ====================
     console.log('\n8️⃣ Verificando registro en historial de exámenes...');
@@ -476,15 +615,15 @@ const { chromium } = require('playwright');
     console.log(`   • Exámenes en historial: ${historyData.examCount || 0}`);
 
     console.log('\n📸 Capturas guardadas en tests/screenshots/:');
-    console.log('   - full-1-homepage.png');
-    console.log('   - full-2-logged-in.png');
-    console.log('   - full-3-exam-system.png');
-    console.log('   - full-4-before-click.png');
-    console.log('   - full-5-exam-loaded.png');
-    console.log('   - full-6-all-answered.png');
-    console.log('   - full-7-before-finish.png');
-    console.log('   - full-8-after-submit.png');
-    console.log('   - full-9-stats.png');
+    console.log('   - full-1-homepage.png (Página principal)');
+    console.log('   - full-2-logged-in.png (Después del login)');
+    console.log('   - full-3-exam-system.png (Sistema de exámenes)');
+    console.log('   - full-4-before-click.png (Antes de nuevo examen)');
+    console.log('   - full-5-exam-loaded.png (Examen cargado)');
+    console.log('   - full-6-all-answered.png (Todas respondidas)');
+    console.log('   - full-7-after-failed-check.png (Verificado filtro de preguntas falladas)');
+    console.log('   - full-8-after-submit.png (Resultados finales)');
+    console.log('   - full-9-stats.png (Dashboard de estadísticas)');
 
     console.log('\n⏸️  Navegador se mantendrá abierto por 30s para inspección...');
     await page.waitForTimeout(30000);

@@ -135,6 +135,15 @@ class FullExamController extends ExamController {
         const question = this.getCurrentQuestion();
         if (!question) return;
 
+        // Start tracking statistics for this question
+        if (window.questionStatsTracker) {
+            window.questionStatsTracker.startQuestionTracking(question.question_id, {
+                categoria: question.ut_category || question.categoria,
+                respuesta_correcta: question.correct_answer || question.respuesta_correcta
+            });
+            this.questionStartTimes[question.question_id] = Date.now();
+        }
+
         // Update question number and category
         const questionNumber = document.getElementById('question-number');
         const questionCategory = document.getElementById('question-category');
@@ -188,6 +197,69 @@ class FullExamController extends ExamController {
     }
 
     /**
+     * Go to specific question (override to record answer before changing)
+     */
+    goToQuestion(index) {
+        // Record current question's answer with tracker before changing
+        const currentQuestion = this.getCurrentQuestion();
+        if (currentQuestion && this.userAnswers[currentQuestion.question_id]) {
+            this.recordAnswerWithTracker(currentQuestion.question_id, this.userAnswers[currentQuestion.question_id]);
+        }
+
+        // Call parent method to change question
+        super.goToQuestion(index);
+    }
+
+    /**
+     * Go to next question (override to record answer before changing)
+     */
+    goToNextQuestion() {
+        // Record current question's answer with tracker before changing
+        const currentQuestion = this.getCurrentQuestion();
+        if (currentQuestion && this.userAnswers[currentQuestion.question_id]) {
+            this.recordAnswerWithTracker(currentQuestion.question_id, this.userAnswers[currentQuestion.question_id]);
+        }
+
+        // Call parent method
+        super.goToNextQuestion();
+    }
+
+    /**
+     * Go to previous question (override to record answer before changing)
+     */
+    goToPreviousQuestion() {
+        // Record current question's answer with tracker before changing
+        const currentQuestion = this.getCurrentQuestion();
+        if (currentQuestion && this.userAnswers[currentQuestion.question_id]) {
+            this.recordAnswerWithTracker(currentQuestion.question_id, this.userAnswers[currentQuestion.question_id]);
+        }
+
+        // Call parent method
+        super.goToPreviousQuestion();
+    }
+
+    /**
+     * Record answer with question stats tracker
+     */
+    recordAnswerWithTracker(questionId, userAnswer) {
+        const question = this.currentExam.questions.find(q => q.question_id === questionId);
+        if (!question || !window.questionStatsTracker || !this.questionStartTimes[questionId]) {
+            return;
+        }
+
+        const timeSpent = Date.now() - this.questionStartTimes[questionId];
+        const correctAnswer = question.correct_answer || question.respuesta_correcta;
+        const isCorrect = userAnswer.toUpperCase() === correctAnswer.toUpperCase();
+        
+        window.questionStatsTracker.recordAnswerAttempt(
+            questionId,
+            userAnswer,
+            isCorrect,
+            timeSpent
+        );
+    }
+
+    /**
      * Update navigation buttons (override parent)
      */
     updateNavigationButtons() {
@@ -233,6 +305,19 @@ class FullExamController extends ExamController {
             this.stopTimer();
             this.showAlert('Enviando examen...', 'info');
 
+            // Record current question's answer with tracker before submitting
+            const currentQuestion = this.getCurrentQuestion();
+            if (currentQuestion && this.userAnswers[currentQuestion.question_id]) {
+                this.recordAnswerWithTracker(currentQuestion.question_id, this.userAnswers[currentQuestion.question_id]);
+            }
+
+            // End tracking for all questions
+            if (window.questionStatsTracker) {
+                this.currentExam.questions.forEach(question => {
+                    window.questionStatsTracker.endQuestionTracking(question.question_id);
+                });
+            }
+
             // Prepare answers in the format expected by the API
             const answers = Object.entries(this.userAnswers).map(([question_id, selected_answer]) => ({
                 question_id,
@@ -266,6 +351,8 @@ class FullExamController extends ExamController {
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
         const finishBtn = document.getElementById('finish-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const confirmCancelBtn = document.getElementById('confirmCancelBtn');
 
         if (prevBtn) {
             prevBtn.addEventListener('click', () => this.goToPreviousQuestion());
@@ -277,6 +364,14 @@ class FullExamController extends ExamController {
 
         if (finishBtn) {
             finishBtn.addEventListener('click', () => this.submitExam());
+        }
+
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => this.showCancelModal());
+        }
+
+        if (confirmCancelBtn) {
+            confirmCancelBtn.addEventListener('click', () => this.cancelExam());
         }
 
         // Keyboard navigation
@@ -294,6 +389,39 @@ class FullExamController extends ExamController {
         });
 
         console.log('✅ Event listeners set up');
+    }
+
+    /**
+     * Show cancel exam confirmation modal
+     */
+    showCancelModal() {
+        showCancelModal();
+    }
+
+    /**
+     * Cancel exam and return to home
+     */
+    cancelExam() {
+        console.log('🚫 Examen cancelado por el usuario');
+        
+        // Clear any timers
+        if (this.examTimer) {
+            clearInterval(this.examTimer);
+            this.examTimer = null;
+        }
+
+        // Clear exam data
+        this.currentExam = null;
+        this.currentQuestionIndex = 0;
+        this.userAnswers = {};
+        this.questionStartTimes = {};
+        this.examStartTime = null;
+
+        // Hide modal
+        hideCancelModal();
+
+        // Redirect to home
+        window.location.href = 'exam-system.html';
     }
 
     /**

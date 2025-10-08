@@ -253,6 +253,20 @@ body {
     gap: 1rem;
 }
 
+.nav-left {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.nav-center {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
 .btn {
     padding: 0.875rem 1.5rem;
     border: none;

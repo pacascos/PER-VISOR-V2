@@ -1,5 +1,5 @@
 /**
- * Question Statistics Dashboard - UT Analysis
+ * Question Statistics Dashboard - UT Analysis (v2)
  * Dashboard para visualizar estadísticas de preguntas agrupadas por UT
  */
 
@@ -9,6 +9,7 @@ class QuestionStatisticsDashboard {
         this.utStats = [];
         this.chart = null;
         
+        console.log('🚀 Inicializando Question Statistics Dashboard v2...');
         this.init();
     }
 
@@ -27,6 +28,7 @@ class QuestionStatisticsDashboard {
             }
 
             const data = await response.json();
+            console.log('📊 Datos recibidos:', data);
             
             if (data.success) {
                 this.utStats = data.ut_stats;
@@ -45,8 +47,11 @@ class QuestionStatisticsDashboard {
         console.log('📊 Renderizando dashboard con', this.utStats.length, 'UTs');
         
         // Hide loading, show content
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('content').style.display = 'block';
+        const loading = document.getElementById('loading');
+        const content = document.getElementById('content');
+        
+        if (loading) loading.style.display = 'none';
+        if (content) content.style.display = 'block';
 
         this.renderSummaryCards();
         this.renderChart();
@@ -55,6 +60,11 @@ class QuestionStatisticsDashboard {
 
     renderSummaryCards() {
         const summaryCards = document.getElementById('summary-cards');
+        
+        if (!summaryCards) {
+            console.error('❌ Elemento summary-cards no encontrado');
+            return;
+        }
         
         // Calculate totals
         const totalQuestions = this.utStats.reduce((sum, ut) => sum + ut.total_questions_available, 0);
@@ -83,7 +93,14 @@ class QuestionStatisticsDashboard {
     }
 
     renderChart() {
-        const ctx = document.getElementById('attemptsChart').getContext('2d');
+        const canvas = document.getElementById('attemptsChart');
+        
+        if (!canvas) {
+            console.error('❌ Elemento attemptsChart no encontrado');
+            return;
+        }
+        
+        const ctx = canvas.getContext('2d');
         
         // Destroy existing chart if it exists
         if (this.chart) {
@@ -91,7 +108,6 @@ class QuestionStatisticsDashboard {
         }
 
         const labels = this.utStats.map(ut => `UT${ut.ut_number}`);
-        const attempts = this.utStats.map(ut => ut.total_attempts);
         const correct = this.utStats.map(ut => ut.total_correct);
         const incorrect = this.utStats.map(ut => ut.total_incorrect);
 
@@ -119,21 +135,67 @@ class QuestionStatisticsDashboard {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
                 plugins: {
                     title: {
-                        display: true,
-                        text: 'Intentos por UT'
+                        display: false
                     },
                     legend: {
                         position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: 'white',
+                        bodyColor: 'white',
+                        borderColor: '#ddd',
+                        borderWidth: 1
                     }
                 },
                 scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Unidades Temáticas',
+                            font: {
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
                     y: {
                         beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Número de Intentos',
+                            font: {
+                                weight: 'bold'
+                            }
+                        },
                         ticks: {
-                            precision: 0
+                            precision: 0,
+                            stepSize: 1
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
                         }
+                    }
+                },
+                layout: {
+                    padding: {
+                        top: 10,
+                        bottom: 10,
+                        left: 10,
+                        right: 10
                     }
                 }
             }
@@ -142,6 +204,11 @@ class QuestionStatisticsDashboard {
 
     renderUTCards() {
         const utCards = document.getElementById('ut-cards');
+        
+        if (!utCards) {
+            console.error('❌ Elemento ut-cards no encontrado');
+            return;
+        }
         
         utCards.innerHTML = this.utStats.map(ut => this.renderUTCard(ut)).join('');
     }
@@ -222,8 +289,11 @@ class QuestionStatisticsDashboard {
     }
 
     showNoData() {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('no-data').style.display = 'block';
+        const loading = document.getElementById('loading');
+        const noData = document.getElementById('no-data');
+        
+        if (loading) loading.style.display = 'none';
+        if (noData) noData.style.display = 'block';
     }
 }
 
@@ -240,6 +310,6 @@ function goToHome() {
 
 // Initialize dashboard when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 Inicializando Question Statistics Dashboard...');
+    console.log('🚀 DOM cargado, inicializando Question Statistics Dashboard v2...');
     new QuestionStatisticsDashboard();
 });

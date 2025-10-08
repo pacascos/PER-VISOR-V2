@@ -35,7 +35,8 @@
       "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Fase 5 - Incrementar rollout a 75%\n\n- Aumentar feature flag unified_exam_page a 75% rollout\n- Documentar estrategia y métricas de Fase 5\n- Preparar validación para rollout completo (100%)\n\nDistribución actual:\n- 75% usuarios → sistema unificado (exam-unified.html)\n- 25% usuarios → sistema antiguo (exam.html)\n\nObjetivos Fase 5:\n- Validar estabilidad con mayoría de tráfico\n- Confirmar métricas de performance a escala\n- Preparar confianza para 100% rollout\n\nDuración esperada: 1 semana\nPróxima fase: 100% rollout (si métricas OK)\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git push:*)",
       "Bash(gh pr create:*)",
-      "Bash(gh pr merge:*)"
+      "Bash(gh pr merge:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []
