@@ -129,7 +129,7 @@ fi
 
 # Push a GitHub
 log "Subiendo a GitHub..."
-CURRENT_BRANCH=$(git branch --show-current)
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 git push origin "$CURRENT_BRANCH" || error "Error al hacer push a GitHub"
 
 success "Código subido a GitHub (rama: $CURRENT_BRANCH)"
