@@ -251,60 +251,11 @@ class StudyExamController extends ExamController {
 
     /**
      * Add back button to return to study config
+     * REMOVED: Botón de volver eliminado por solicitud del usuario
      */
     addBackButton() {
-        // Remove any existing button
-        const existingBtn = document.getElementById('back-to-study-btn');
-        if (existingBtn) existingBtn.remove();
-
-        const backBtn = document.createElement('button');
-        backBtn.id = 'back-to-study-btn';
-        backBtn.style.cssText = `
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: white;
-            color: #64748b;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            z-index: 9998;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border: 2px solid #e2e8f0;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        `;
-        backBtn.innerHTML = `
-            <i class="fas fa-arrow-left"></i>
-            <span>Volver</span>
-        `;
-
-        // Add hover effect
-        backBtn.addEventListener('mouseenter', () => {
-            backBtn.style.background = '#f8fafc';
-            backBtn.style.borderColor = '#667eea';
-            backBtn.style.color = '#667eea';
-        });
-        backBtn.addEventListener('mouseleave', () => {
-            backBtn.style.background = 'white';
-            backBtn.style.borderColor = '#e2e8f0';
-            backBtn.style.color = '#64748b';
-        });
-
-        backBtn.onclick = () => {
-            const confirmed = confirm(
-                '¿Estás seguro de que quieres volver?\n\nSe perderá el progreso actual.'
-            );
-            if (confirmed) {
-                window.location.href = 'study-config.html';
-            }
-        };
-
-        document.body.appendChild(backBtn);
+        // Botón de volver eliminado - ya no se muestra
+        // El usuario puede usar el botón "Cancelar Examen" en su lugar
     }
 
     /**
@@ -313,6 +264,14 @@ class StudyExamController extends ExamController {
     displayCurrentQuestion() {
         const question = this.getCurrentQuestion();
         if (!question) return;
+
+        // Start tracking statistics for this question
+        if (window.questionStatsTracker) {
+            window.questionStatsTracker.startQuestionTracking(question.question_id, {
+                categoria: question.ut_category || question.categoria,
+                respuesta_correcta: question.correct_answer || question.respuesta_correcta
+            });
+        }
 
         // Update question number and category
         const questionNumber = document.getElementById('question-number');
@@ -349,18 +308,18 @@ class StudyExamController extends ExamController {
 
             // Add event listeners to answer options
             answersContainer.querySelectorAll('.answer-option').forEach(option => {
-                option.addEventListener('click', async (e) => {
+                option.addEventListener('click', (e) => {
                     const answer = option.dataset.answer;
                     this.selectAnswer(answer);
 
-                    // Record answer to backend
-                    await this.recordAnswer(question.question_id, answer);
-
-                    // Update UI
+                    // Update UI immediately
                     answersContainer.querySelectorAll('.answer-option').forEach(opt => {
                         opt.classList.remove('selected');
                     });
                     option.classList.add('selected');
+
+                    // NOTE: Answer is NOT sent to backend yet
+                    // It will be sent when user navigates to another question or submits
                 });
             });
         }
@@ -370,11 +329,54 @@ class StudyExamController extends ExamController {
     }
 
     /**
+     * Go to specific question (override to save answer before changing)
+     */
+    async goToQuestion(index) {
+        // Save current question's answer before changing
+        const currentQuestion = this.getCurrentQuestion();
+        if (currentQuestion && this.userAnswers[currentQuestion.question_id]) {
+            await this.recordAnswer(currentQuestion.question_id, this.userAnswers[currentQuestion.question_id]);
+        }
+
+        // Call parent method to change question
+        super.goToQuestion(index);
+    }
+
+    /**
+     * Go to next question (override to save answer before changing)
+     */
+    async goToNextQuestion() {
+        // Save current question's answer before changing
+        const currentQuestion = this.getCurrentQuestion();
+        if (currentQuestion && this.userAnswers[currentQuestion.question_id]) {
+            await this.recordAnswer(currentQuestion.question_id, this.userAnswers[currentQuestion.question_id]);
+        }
+
+        // Call parent method
+        super.goToNextQuestion();
+    }
+
+    /**
+     * Go to previous question (override to save answer before changing)
+     */
+    async goToPreviousQuestion() {
+        // Save current question's answer before changing
+        const currentQuestion = this.getCurrentQuestion();
+        if (currentQuestion && this.userAnswers[currentQuestion.question_id]) {
+            await this.recordAnswer(currentQuestion.question_id, this.userAnswers[currentQuestion.question_id]);
+        }
+
+        // Call parent method
+        super.goToPreviousQuestion();
+    }
+
+    /**
      * Record answer to backend
      */
     async recordAnswer(questionId, userAnswer) {
         try {
             const timeSpent = this.getQuestionTimeSpent(questionId);
+            const question = this.getCurrentQuestion();
 
             console.log('📝 Recording study answer:', {
                 studyTestId: this.studyTestId,
@@ -383,12 +385,26 @@ class StudyExamController extends ExamController {
                 timeSpent
             });
 
+            // Record to study test backend
             await this.examApi.recordStudyAnswer(
                 this.studyTestId,
                 questionId,
                 userAnswer,
                 timeSpent
             );
+
+            // ALSO record using question stats tracker for consistency
+            if (window.questionStatsTracker && question) {
+                const correctAnswer = question.correct_answer || question.respuesta_correcta;
+                const isCorrect = userAnswer.toUpperCase() === correctAnswer.toUpperCase();
+                
+                window.questionStatsTracker.recordAnswerAttempt(
+                    questionId,
+                    userAnswer,
+                    isCorrect,
+                    timeSpent
+                );
+            }
 
             console.log('✅ Answer recorded');
         } catch (error) {
@@ -404,6 +420,7 @@ class StudyExamController extends ExamController {
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
         const finishBtn = document.getElementById('finish-btn');
+        const viewInBankBtn = document.getElementById('view-in-bank-btn');
 
         if (prevBtn) {
             prevBtn.disabled = this.currentQuestionIndex === 0;
@@ -418,6 +435,32 @@ class StudyExamController extends ExamController {
         if (finishBtn) {
             finishBtn.style.display = isLastQuestion ? 'inline-flex' : 'none';
         }
+
+        // Show "Ver en Banco" button in study mode
+        if (viewInBankBtn) {
+            viewInBankBtn.style.display = 'inline-flex';
+            this.updateViewInBankButton();
+        }
+    }
+
+    /**
+     * Update "Ver en Banco" button to open current question in question bank
+     */
+    updateViewInBankButton() {
+        const viewInBankBtn = document.getElementById('view-in-bank-btn');
+        if (!viewInBankBtn) return;
+
+        const question = this.getCurrentQuestion();
+        if (!question) return;
+
+        // Generate URL to open this specific question in the question bank
+        const questionId = question.id || question.question_id;
+        const viewerUrl = `visor-nueva-arquitectura.html?question_id=${questionId}`;
+
+        // Update button click handler
+        viewInBankBtn.onclick = () => {
+            window.open(viewerUrl, '_blank');
+        };
     }
 
     /**
@@ -435,15 +478,29 @@ class StudyExamController extends ExamController {
 
             if (!confirmed) return;
         } else {
-            const confirmed = confirm('¿Estás seguro de que quieres finalizar el test?');
-            if (!confirmed) return;
+            // Mostrar modal de confirmación bonito
+            showFinishTestModal();
+            return; // No continuar hasta que se confirme en el modal
         }
 
         try {
             this.stopTimer();
             this.showAlert('Finalizando test de estudio...', 'info');
 
-            // Submit study test
+            // Save current question's answer before submitting
+            const currentQuestion = this.getCurrentQuestion();
+            if (currentQuestion && this.userAnswers[currentQuestion.question_id]) {
+                await this.recordAnswer(currentQuestion.question_id, this.userAnswers[currentQuestion.question_id]);
+            }
+
+            // End tracking for all questions
+            if (window.questionStatsTracker) {
+                this.currentExam.questions.forEach(question => {
+                    window.questionStatsTracker.endQuestionTracking(question.question_id);
+                });
+            }
+
+            // Submit study test (backend handles statistics update)
             const results = await this.examApi.submitStudyTest(this.studyTestId);
             console.log('✅ Study test submitted:', results);
 
@@ -468,6 +525,8 @@ class StudyExamController extends ExamController {
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
         const finishBtn = document.getElementById('finish-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const confirmCancelBtn = document.getElementById('confirmCancelBtn');
 
         if (prevBtn) {
             prevBtn.addEventListener('click', () => this.goToPreviousQuestion());
@@ -479,6 +538,19 @@ class StudyExamController extends ExamController {
 
         if (finishBtn) {
             finishBtn.addEventListener('click', () => this.submitExam());
+        }
+
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => this.showCancelModal());
+        }
+
+        if (confirmCancelBtn) {
+            confirmCancelBtn.addEventListener('click', () => this.cancelExam());
+        }
+
+        const confirmFinishTestBtn = document.getElementById('confirmFinishTestBtn');
+        if (confirmFinishTestBtn) {
+            confirmFinishTestBtn.addEventListener('click', () => this.confirmFinishTest());
         }
 
         // Keyboard navigation
@@ -499,6 +571,85 @@ class StudyExamController extends ExamController {
     }
 
     /**
+     * Show cancel exam confirmation modal
+     */
+    showCancelModal() {
+        showCancelModal();
+    }
+
+    /**
+     * Cancel exam and return to home
+     */
+    cancelExam() {
+        console.log('🚫 Test de estudio cancelado por el usuario');
+        
+        // Clear any timers
+        if (this.examTimer) {
+            clearInterval(this.examTimer);
+            this.examTimer = null;
+        }
+
+        // Clear exam data
+        this.currentExam = null;
+        this.currentQuestionIndex = 0;
+        this.userAnswers = {};
+        this.questionStartTimes = {};
+        this.examStartTime = null;
+
+        // Hide modal
+        hideCancelModal();
+
+        // Redirect to home
+        window.location.href = 'exam-system.html';
+    }
+
+    /**
+     * Confirm finish test from modal
+     */
+    confirmFinishTest() {
+        console.log('✅ Confirmando finalización del test de estudio');
+        
+        // Hide modal
+        hideFinishTestModal();
+
+        // Continue with the original submit logic
+        this.continueSubmitTest();
+    }
+
+    /**
+     * Continue with test submission (extracted from submitExam)
+     */
+    async continueSubmitTest() {
+        try {
+            this.stopTimer();
+            this.showAlert('Finalizando test de estudio...', 'info');
+
+            const response = await fetch(`${this.API_BASE}/study-tests/${this.studyTestId}/submit`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('✅ Test de estudio finalizado:', result);
+
+            // Redirect to results page
+            window.location.href = `study-results.html?study_test_id=${this.studyTestId}`;
+
+        } catch (error) {
+            console.error('❌ Error submitting study test:', error);
+            this.showAlert('Error al finalizar el test. Intenta de nuevo.', 'danger');
+            this.startTimer(); // Restart timer on error
+        }
+    }
+
+    /**
      * Initialize UI elements
      */
     initializeUI() {
@@ -512,6 +663,7 @@ class StudyExamController extends ExamController {
 
         this.setupEventListeners();
     }
+
 }
 
 console.log('📚 StudyExamController class loaded');

@@ -85,20 +85,35 @@
 
             <!-- Navigation Section -->
             <div id="navigation-section" class="navigation-section">
-                <button id="prev-btn" class="btn btn-secondary" disabled>
-                    <i class="fas fa-arrow-left"></i>
-                    Anterior
-                </button>
+                <div class="nav-left">
+                    <button id="cancel-btn" class="btn btn-danger">
+                        <i class="fas fa-times"></i>
+                        Cancelar Examen
+                    </button>
+                </div>
 
-                <button id="next-btn" class="btn btn-primary">
-                    Siguiente
-                    <i class="fas fa-arrow-right"></i>
-                </button>
+                <div class="nav-center">
+                    <button id="prev-btn" class="btn btn-secondary" disabled>
+                        <i class="fas fa-arrow-left"></i>
+                        Anterior
+                    </button>
 
-                <button id="finish-btn" class="btn btn-success" style="display: none;">
-                    <i class="fas fa-check"></i>
-                    Finalizar Examen
-                </button>
+                    <!-- Botón Ver en Banco - Solo visible en modo estudio -->
+                    <button id="view-in-bank-btn" class="btn btn-outline-info" style="display: none;">
+                        <i class="fas fa-book-open"></i>
+                        Ver en Banco
+                    </button>
+
+                    <button id="next-btn" class="btn btn-primary">
+                        Siguiente
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+
+                    <button id="finish-btn" class="btn btn-success" style="display: none;">
+                        <i class="fas fa-check"></i>
+                        Finalizar Examen
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -112,6 +127,9 @@
     </div>
 
     <!-- Scripts -->
+    <!-- Bootstrap JS (must load first) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
     <!-- Load in order: Base classes first, then specific implementations -->
     <script src="feature-flags.js?v=3"></script>
     <script src="exam-controller.js?v=3"></script>
@@ -164,6 +182,171 @@
             document.addEventListener('DOMContentLoaded', initializeExam);
         } else {
             initializeExam();
+        }
+    </script>
+
+    <!-- Modal Simple de Confirmación para Cancelar Examen -->
+    <div id="cancelExamModal" class="simple-modal" style="display: none;">
+        <div class="simple-modal-content">
+            <div class="simple-modal-header">
+                <h5>⚠️ Cancelar Examen</h5>
+                <button type="button" class="simple-modal-close" onclick="hideCancelModal()">&times;</button>
+            </div>
+            <div class="simple-modal-body">
+                <p>¿Estás seguro de que quieres cancelar el examen?</p>
+                <p><small>Se perderán todas las respuestas y no se guardará el progreso.</small></p>
+            </div>
+            <div class="simple-modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="hideCancelModal()">
+                    Continuar Examen
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmCancelBtn">
+                    Sí, Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Simple de Confirmación para Finalizar Test -->
+    <div id="finishTestModal" class="simple-modal" style="display: none;">
+        <div class="simple-modal-content">
+            <div class="simple-modal-header">
+                <h5>✅ Finalizar Test</h5>
+                <button type="button" class="simple-modal-close" onclick="hideFinishTestModal()">&times;</button>
+            </div>
+            <div class="simple-modal-body">
+                <p>¿Estás seguro de que quieres finalizar el test?</p>
+                <p><small>Se guardará tu progreso y podrás ver los resultados.</small></p>
+            </div>
+            <div class="simple-modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="hideFinishTestModal()">
+                    Continuar Test
+                </button>
+                <button type="button" class="btn btn-success" id="confirmFinishTestBtn">
+                    Sí, Finalizar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .simple-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .simple-modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 0;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .simple-modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .simple-modal-header h5 {
+            margin: 0;
+            color: #dc3545;
+            font-size: 1.1rem;
+        }
+
+        .simple-modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .simple-modal-close:hover {
+            color: #333;
+        }
+
+        .simple-modal-body {
+            padding: 20px;
+        }
+
+        .simple-modal-body p {
+            margin: 0 0 10px 0;
+        }
+
+        .simple-modal-body small {
+            color: #666;
+        }
+
+        .simple-modal-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .simple-modal-footer .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .simple-modal-footer .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .simple-modal-footer .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .simple-modal-footer .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .simple-modal-footer .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+
+    <script>
+        function showCancelModal() {
+            document.getElementById('cancelExamModal').style.display = 'flex';
+        }
+
+        function hideCancelModal() {
+            document.getElementById('cancelExamModal').style.display = 'none';
+        }
+
+        function showFinishTestModal() {
+            document.getElementById('finishTestModal').style.display = 'flex';
+        }
+
+        function hideFinishTestModal() {
+            document.getElementById('finishTestModal').style.display = 'none';
         }
     </script>
 </body>
