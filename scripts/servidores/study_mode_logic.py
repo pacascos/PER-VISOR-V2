@@ -144,9 +144,11 @@ def select_questions_failed(cur, user_id: str, selected_uts: List[int]) -> Tuple
             WITH failed_by_hash AS (
                 SELECT q.hash_pregunta, COUNT(*) as failed_count
                 FROM questions q
+                JOIN exams e ON q.exam_id = e.id
                 JOIN user_answers ua ON q.id = ua.question_id
                 JOIN user_exams ue ON ua.user_exam_id = ue.id
                 WHERE q.categoria = %s
+                AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
                 AND ue.user_id = %s
                 AND ua.is_correct = false
                 AND q.anulada = false
@@ -156,7 +158,9 @@ def select_questions_failed(cur, user_id: str, selected_uts: List[int]) -> Tuple
                 SELECT DISTINCT ON (q.hash_pregunta)
                     q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta, q.hash_pregunta
                 FROM questions q
+                JOIN exams e ON q.exam_id = e.id
                 WHERE q.categoria = %s
+                AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
                 AND q.anulada = false
                 ORDER BY q.hash_pregunta, q.id
             )
@@ -250,7 +254,9 @@ def select_questions_new(cur, user_id: str, selected_uts: List[int]) -> Tuple[Li
                 SELECT DISTINCT ON (q.hash_pregunta)
                     q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta, q.hash_pregunta
                 FROM questions q
+                JOIN exams e ON q.exam_id = e.id
                 WHERE q.categoria = %s
+                AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
                 AND q.id NOT IN (
                     SELECT DISTINCT ua.question_id
                     FROM user_answers ua

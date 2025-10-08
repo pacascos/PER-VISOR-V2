@@ -36,6 +36,27 @@ warning() {
 }
 
 # =============================================================================
+# PARSE ARGUMENTOS
+# =============================================================================
+
+SKIP_MIGRATIONS=false
+
+# Procesar argumentos
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --skip-migrations)
+            SKIP_MIGRATIONS=true
+            shift
+            ;;
+        *)
+            echo "Opción desconocida: $1"
+            echo "Uso: $0 [--skip-migrations]"
+            exit 1
+            ;;
+    esac
+done
+
+# =============================================================================
 # CONFIGURACIÓN
 # =============================================================================
 
@@ -277,12 +298,16 @@ fi
 # APLICAR MIGRACIONES DE BASE DE DATOS (OPCIONAL)
 # =============================================================================
 
-log "🗄️ Aplicando migraciones de base de datos..."
-if ./scripts/apply-migrations.sh -e production 2>&1; then
-    success "Migraciones aplicadas correctamente"
+if [ "$SKIP_MIGRATIONS" = true ]; then
+    warning "⏭️  Saltando migraciones (--skip-migrations)"
 else
-    warning "⚠️  Migraciones fallaron, pero servicios están desplegados"
-    warning "Las migraciones se pueden aplicar manualmente más tarde"
+    log "🗄️ Aplicando migraciones de base de datos..."
+    if ./scripts/apply-migrations.sh -e production 2>&1; then
+        success "Migraciones aplicadas correctamente"
+    else
+        warning "⚠️  Migraciones fallaron, pero servicios están desplegados"
+        warning "Las migraciones se pueden aplicar manualmente más tarde"
+    fi
 fi
 
 # =============================================================================
