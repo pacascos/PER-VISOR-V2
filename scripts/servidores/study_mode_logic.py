@@ -83,14 +83,21 @@ def select_questions_random(cur, user_id: str, selected_uts: List[int]) -> Tuple
 
         logger.info(f"🎲 [RANDOM] UT{ut_number} ({category_name}): Seleccionando {num_questions} preguntas aleatorias")
 
-        # Select random questions from this UT
+        # Select random questions from this UT (excluding duplicates by hash)
+        # First, randomly pick one question per hash, then randomly select from those
         cur.execute("""
-            SELECT q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta
-            FROM questions q
-            JOIN exams e ON q.exam_id = e.id
-            WHERE q.categoria = %s
-            AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
-            AND q.anulada = false
+            WITH unique_questions AS (
+                SELECT DISTINCT ON (q.hash_pregunta)
+                    q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta, q.hash_pregunta
+                FROM questions q
+                JOIN exams e ON q.exam_id = e.id
+                WHERE q.categoria = %s
+                AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
+                AND q.anulada = false
+                ORDER BY q.hash_pregunta, q.id
+            )
+            SELECT id, texto_pregunta, categoria, respuesta_correcta
+            FROM unique_questions
             ORDER BY RANDOM()
             LIMIT %s
         """, (category_name, num_questions))
@@ -132,21 +139,33 @@ def select_questions_failed(cur, user_id: str, selected_uts: List[int]) -> Tuple
 
         logger.info(f"❌ [FAILED] UT{ut_number} ({category_name}): Priorizando {num_questions} preguntas falladas")
 
-        # First, get questions user has answered incorrectly
+        # First, get questions user has answered incorrectly (excluding duplicates by hash)
         cur.execute("""
-            SELECT q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta,
-                   COUNT(*) as failed_count
-            FROM questions q
-            JOIN user_answers ua ON q.id = ua.question_id
-            JOIN user_exams ue ON ua.user_exam_id = ue.id
-            WHERE q.categoria = %s
-            AND ue.user_id = %s
-            AND ua.is_correct = false
-            AND q.anulada = false
-            GROUP BY q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta
-            ORDER BY failed_count DESC, RANDOM()
+            WITH failed_by_hash AS (
+                SELECT q.hash_pregunta, COUNT(*) as failed_count
+                FROM questions q
+                JOIN user_answers ua ON q.id = ua.question_id
+                JOIN user_exams ue ON ua.user_exam_id = ue.id
+                WHERE q.categoria = %s
+                AND ue.user_id = %s
+                AND ua.is_correct = false
+                AND q.anulada = false
+                GROUP BY q.hash_pregunta
+            ),
+            unique_questions AS (
+                SELECT DISTINCT ON (q.hash_pregunta)
+                    q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta, q.hash_pregunta
+                FROM questions q
+                WHERE q.categoria = %s
+                AND q.anulada = false
+                ORDER BY q.hash_pregunta, q.id
+            )
+            SELECT uq.id, uq.texto_pregunta, uq.categoria, uq.respuesta_correcta, fbh.failed_count
+            FROM unique_questions uq
+            JOIN failed_by_hash fbh ON uq.hash_pregunta = fbh.hash_pregunta
+            ORDER BY fbh.failed_count DESC, RANDOM()
             LIMIT %s
-        """, (category_name, user_id, num_questions))
+        """, (category_name, user_id, category_name, num_questions))
 
         failed_questions = cur.fetchall()
         logger.info(f"📊 [FAILED] UT{ut_number}: {len(failed_questions)} preguntas falladas encontradas")
@@ -171,13 +190,19 @@ def select_questions_failed(cur, user_id: str, selected_uts: List[int]) -> Tuple
             already_selected_ids = [q['question_id'] for q in selected_questions]
 
             cur.execute("""
-                SELECT q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta
-                FROM questions q
-                JOIN exams e ON q.exam_id = e.id
-                WHERE q.categoria = %s
-                AND q.id NOT IN (SELECT UNNEST(%s::uuid[]))
-                AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
-                AND q.anulada = false
+                WITH unique_questions AS (
+                    SELECT DISTINCT ON (q.hash_pregunta)
+                        q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta, q.hash_pregunta
+                    FROM questions q
+                    JOIN exams e ON q.exam_id = e.id
+                    WHERE q.categoria = %s
+                    AND q.id NOT IN (SELECT UNNEST(%s::uuid[]))
+                    AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
+                    AND q.anulada = false
+                    ORDER BY q.hash_pregunta, q.id
+                )
+                SELECT id, texto_pregunta, categoria, respuesta_correcta
+                FROM unique_questions
                 ORDER BY RANDOM()
                 LIMIT %s
             """, (category_name, already_selected_ids if already_selected_ids else [None], remaining))
@@ -219,18 +244,24 @@ def select_questions_new(cur, user_id: str, selected_uts: List[int]) -> Tuple[Li
 
         logger.info(f"✨ [NEW] UT{ut_number} ({category_name}): Priorizando {num_questions} preguntas nuevas")
 
-        # Get questions user has never answered
+        # Get questions user has never answered (excluding duplicates by hash)
         cur.execute("""
-            SELECT q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta
-            FROM questions q
-            WHERE q.categoria = %s
-            AND q.id NOT IN (
-                SELECT DISTINCT ua.question_id
-                FROM user_answers ua
-                JOIN user_exams ue ON ua.user_exam_id = ue.id
-                WHERE ue.user_id = %s
+            WITH unique_questions AS (
+                SELECT DISTINCT ON (q.hash_pregunta)
+                    q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta, q.hash_pregunta
+                FROM questions q
+                WHERE q.categoria = %s
+                AND q.id NOT IN (
+                    SELECT DISTINCT ua.question_id
+                    FROM user_answers ua
+                    JOIN user_exams ue ON ua.user_exam_id = ue.id
+                    WHERE ue.user_id = %s
+                )
+                AND q.anulada = false
+                ORDER BY q.hash_pregunta, q.id
             )
-            AND q.anulada = false
+            SELECT id, texto_pregunta, categoria, respuesta_correcta
+            FROM unique_questions
             ORDER BY RANDOM()
             LIMIT %s
         """, (category_name, user_id, num_questions))
@@ -257,13 +288,19 @@ def select_questions_new(cur, user_id: str, selected_uts: List[int]) -> Tuple[Li
             already_selected_ids = [q['question_id'] for q in selected_questions]
 
             cur.execute("""
-                SELECT q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta
-                FROM questions q
-                JOIN exams e ON q.exam_id = e.id
-                WHERE q.categoria = %s
-                AND q.id NOT IN (SELECT UNNEST(%s::uuid[]))
-                AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
-                AND q.anulada = false
+                WITH unique_questions AS (
+                    SELECT DISTINCT ON (q.hash_pregunta)
+                        q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta, q.hash_pregunta
+                    FROM questions q
+                    JOIN exams e ON q.exam_id = e.id
+                    WHERE q.categoria = %s
+                    AND q.id NOT IN (SELECT UNNEST(%s::uuid[]))
+                    AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
+                    AND q.anulada = false
+                    ORDER BY q.hash_pregunta, q.id
+                )
+                SELECT id, texto_pregunta, categoria, respuesta_correcta
+                FROM unique_questions
                 ORDER BY RANDOM()
                 LIMIT %s
             """, (category_name, already_selected_ids if already_selected_ids else [None], remaining))
