@@ -2999,6 +2999,104 @@ def answer_study_question(study_test_id):
                 category, attempt_order, 'practice'
             ))
 
+            # NUEVO: Actualizar estadísticas globales de la pregunta
+            cur.execute("""
+                INSERT INTO question_global_stats (
+                    question_id, total_appearances, total_correct_answers, total_incorrect_answers,
+                    success_rate, avg_time_spent_seconds, last_appeared_at
+                )
+                VALUES (%s, 1, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+                ON CONFLICT (question_id)
+                DO UPDATE SET
+                    total_appearances = question_global_stats.total_appearances + 1,
+                    total_correct_answers = question_global_stats.total_correct_answers + %s,
+                    total_incorrect_answers = question_global_stats.total_incorrect_answers + %s,
+                    success_rate = CASE 
+                        WHEN question_global_stats.total_appearances + 1 > 0 
+                        THEN ROUND((question_global_stats.total_correct_answers + %s) * 100.0 / (question_global_stats.total_appearances + 1), 2)
+                        ELSE 0
+                    END,
+                    avg_time_spent_seconds = ROUND(
+                        (question_global_stats.avg_time_spent_seconds * question_global_stats.total_appearances + %s) / 
+                        (question_global_stats.total_appearances + 1), 2
+                    ),
+                    last_appeared_at = CURRENT_TIMESTAMP,
+                    updated_at = CURRENT_TIMESTAMP
+            """, (
+                question_id,
+                1 if is_correct else 0,  # total_correct_answers inicial
+                0 if is_correct else 1,  # total_incorrect_answers inicial
+                100.0 if is_correct else 0.0,  # success_rate inicial
+                time_spent,  # avg_time_spent_seconds inicial
+                1 if is_correct else 0,  # incremento correcto
+                0 if is_correct else 1,  # incremento incorrecto
+                1 if is_correct else 0,  # para cálculo de success_rate
+                time_spent  # tiempo para promedio
+            ))
+
+            # Actualizar estadísticas del usuario para la pregunta
+            cur.execute("""
+                INSERT INTO question_user_stats (
+                    user_id, question_id, total_attempts, correct_attempts, incorrect_attempts,
+                    user_success_rate, avg_time_spent_seconds, last_attempt_at
+                )
+                VALUES (%s, %s, 1, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+                ON CONFLICT (user_id, question_id)
+                DO UPDATE SET
+                    total_attempts = question_user_stats.total_attempts + 1,
+                    correct_attempts = question_user_stats.correct_attempts + %s,
+                    incorrect_attempts = question_user_stats.incorrect_attempts + %s,
+                    user_success_rate = CASE 
+                        WHEN question_user_stats.total_attempts + 1 > 0 
+                        THEN ROUND((question_user_stats.correct_attempts + %s) * 100.0 / (question_user_stats.total_attempts + 1), 2)
+                        ELSE 0
+                    END,
+                    avg_time_spent_seconds = ROUND(
+                        (question_user_stats.avg_time_spent_seconds * question_user_stats.total_attempts + %s) / 
+                        (question_user_stats.total_attempts + 1), 2
+                    ),
+                    last_attempt_at = CURRENT_TIMESTAMP,
+                    updated_at = CURRENT_TIMESTAMP
+            """, (
+                user_id,
+                question_id,
+                1 if is_correct else 0,  # correct_attempts inicial
+                0 if is_correct else 1,  # incorrect_attempts inicial
+                100.0 if is_correct else 0.0,  # user_success_rate inicial
+                time_spent,  # avg_time_spent_seconds inicial
+                1 if is_correct else 0,  # incremento correcto
+                0 if is_correct else 1,  # incremento incorrecto
+                1 if is_correct else 0,  # para cálculo de success_rate
+                time_spent  # tiempo para promedio
+            ))
+
+            # Actualizar estadísticas por categoría
+            cur.execute("""
+                INSERT INTO question_category_stats (
+                    question_id, category, total_appearances, total_correct_answers,
+                    total_incorrect_answers, category_success_rate
+                )
+                VALUES (%s, %s, 1, %s, %s, %s)
+                ON CONFLICT (question_id, category)
+                DO UPDATE SET
+                    total_appearances = question_category_stats.total_appearances + 1,
+                    total_correct_answers = question_category_stats.total_correct_answers + %s,
+                    total_incorrect_answers = question_category_stats.total_incorrect_answers + %s,
+                    category_success_rate = ROUND(
+                        (question_category_stats.total_correct_answers + %s) * 100.0 / 
+                        (question_category_stats.total_appearances + 1), 2
+                    ),
+                    updated_at = CURRENT_TIMESTAMP
+            """, (
+                question_id, category,
+                1 if is_correct else 0,
+                0 if is_correct else 1,
+                100.0 if is_correct else 0.0,
+                1 if is_correct else 0,
+                0 if is_correct else 1,
+                1 if is_correct else 0
+            ))
+
         conn.commit()
         cur.close()
         conn.close()

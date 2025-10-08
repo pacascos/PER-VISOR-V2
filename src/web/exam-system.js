@@ -46,7 +46,7 @@ class ExamSystem {
         });
 
         document.getElementById('viewQuestionStatsBtn').addEventListener('click', () => {
-            window.open('question-statistics-dashboard.html', '_blank');
+            window.location.href = 'question-statistics-dashboard.html';
         });
 
         document.getElementById('viewStatsBtn').addEventListener('click', () => {

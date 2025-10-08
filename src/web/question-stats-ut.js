@@ -304,9 +304,6 @@ function viewQuestion(questionId) {
     window.open(url, '_blank');
 }
 
-function goToHome() {
-    window.location.href = 'exam-system.html';
-}
 
 // Initialize dashboard when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
