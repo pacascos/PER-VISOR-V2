@@ -305,6 +305,11 @@ function viewQuestion(questionId) {
 }
 
 
+// Navigation function
+function goBack() {
+    window.location.href = 'exam-system.html';
+}
+
 // Initialize dashboard when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 DOM cargado, inicializando Question Statistics Dashboard v2...');

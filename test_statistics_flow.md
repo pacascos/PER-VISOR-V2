@@ -88,3 +88,5 @@ Por favor, ejecuta estas pruebas y reporta:
 4. ¿Las estadísticas aparecen correctamente en el dashboard?
 5. Cualquier error en la consola del navegador
 
+
+

@@ -41,7 +41,6 @@ class StudyModeAdapter {
         this.examSystem.showExamInterface();
         this.examSystem.startTimer();
         this.examSystem.displayCurrentQuestion();
-        this.examSystem.showAlert('¡Test de estudio iniciado!', 'success');
     }
 
     async waitForAuth() {

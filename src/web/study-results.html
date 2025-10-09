@@ -19,8 +19,6 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- CSS Unificado -->
-    <link rel="stylesheet" href="styles/unified-navigation.css">
 
     <!-- Configuration -->
     <script src="config.js"></script>
@@ -308,11 +306,6 @@
                     <!-- Stats grid -->
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-icon">⏱️</div>
-                            <div class="stat-value" id="duration-value">0</div>
-                            <div class="stat-label">Minutos</div>
-                        </div>
-                        <div class="stat-card">
                             <div class="stat-icon">✅</div>
                             <div class="stat-value" id="correct-value">0</div>
                             <div class="stat-label">Correctas</div>
@@ -322,59 +315,15 @@
                             <div class="stat-value" id="incorrect-value" style="cursor: pointer; text-decoration: underline;" onclick="viewIncorrectQuestions()">0</div>
                             <div class="stat-label">Incorrectas</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">📚</div>
-                            <div class="stat-value" id="uts-value">0</div>
-                            <div class="stat-label">UTs estudiadas</div>
-                        </div>
                     </div>
 
-                    <!-- UT Results -->
-                    <div class="section-title">
-                        <i class="fas fa-chart-bar"></i>
-                        Resultados por Unidad Temática
-                    </div>
-                    <div class="ut-results" id="ut-results"></div>
-
-                    <!-- Navegación Unificada Superior -->
-                    <div class="unified-top-nav">
-                        <button class="unified-back-btn" onclick="goToHome()">
-                            <i class="fas fa-home"></i> Volver al Inicio
-                        </button>
-                        <h1 class="page-title">
-                            <i class="fas fa-chart-line"></i> Resultados del Test de Estudio
-                        </h1>
-                        <div></div>
-                    </div>
-
-                    <!-- Barra de Navegación con Tabs -->
-                    <div class="unified-tab-nav">
-                        <a href="exam-system.html" class="unified-tab-item">
-                            <i class="fas fa-home"></i> Principal
-                        </a>
-                        <a href="visor-nueva-arquitectura.html" class="unified-tab-item">
-                            <i class="fas fa-book"></i> Banco
-                        </a>
-                        <a href="statistics-dashboard.html" class="unified-tab-item">
-                            <i class="fas fa-chart-bar"></i> Estadísticas
-                        </a>
-                        <a href="question-statistics-dashboard.html" class="unified-tab-item">
-                            <i class="fas fa-chart-line"></i> Preguntas
-                        </a>
-                        <a href="study-config.html" class="unified-tab-item">
-                            <i class="fas fa-book-reader"></i> Estudio
-                        </a>
-                    </div>
-
-                    <!-- Action buttons -->
-                    <div class="unified-btn-center">
-                        <button class="unified-btn-primary" onclick="repeatStudyMode()">
-                            <i class="fas fa-redo"></i> Repetir con las mismas UTs
-                        </button>
-                        <button class="unified-btn-secondary" onclick="newStudyTest()">
-                            <i class="fas fa-book-reader"></i> Nuevo Test de Estudio
+                    <!-- Botón de volver -->
+                    <div style="text-align: left; margin-bottom: 20px;">
+                        <button class="btn btn-outline-secondary" onclick="goToHome()">
+                            <i class="fas fa-arrow-left"></i> Volver
                         </button>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -495,7 +444,6 @@
             document.getElementById('total-count').textContent = totalQuestions;
 
             // Display stats
-            document.getElementById('duration-value').textContent = duration;
             document.getElementById('correct-value').textContent = correctAnswers;
             document.getElementById('incorrect-value').textContent = incorrectAnswers;
 
@@ -529,22 +477,13 @@
                 </div>
             `;
 
-            // Set UTs count
-            document.getElementById('uts-value').textContent = '—';
         }
 
         function goToHome() {
             window.location.href = 'exam-system.html';
         }
 
-        function newStudyTest() {
-            window.location.href = 'study-config.html';
-        }
 
-        function repeatStudyMode() {
-            // Would need to store selected UTs to repeat
-            window.location.href = 'study-config.html';
-        }
 
         async function viewIncorrectQuestions() {
             try {

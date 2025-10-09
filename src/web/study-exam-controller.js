@@ -104,11 +104,38 @@ class StudyExamController extends ExamController {
     }
 
     /**
+     * Override timer methods for study mode - no timer needed
+     */
+    startTimer() {
+        // Hide timer container in study mode
+        const timerContainer = document.querySelector('.timer-container');
+        if (timerContainer) {
+            timerContainer.style.display = 'none';
+        }
+        console.log('📚 Study mode: Timer hidden');
+    }
+
+    stopTimer() {
+        // Timer is hidden in study mode, nothing to do
+        console.log('📚 Study mode: Timer stopped (was hidden)');
+    }
+
+    updateTimerDisplay() {
+        // No timer display in study mode
+        return;
+    }
+
+    /**
      * Load existing study test
      */
     async loadStudyTest() {
         try {
-            this.showAlert('Cargando test de estudio...', 'info');
+            // Hide timer immediately for study mode
+            const timerContainer = document.querySelector('.timer-container');
+            if (timerContainer) {
+                timerContainer.style.display = 'none';
+                console.log('📚 Study mode: Timer hidden immediately');
+            }
 
             // Load study test questions
             const data = await this.examApi.getStudyTestQuestions(this.studyTestId);
@@ -151,7 +178,6 @@ class StudyExamController extends ExamController {
                 failed: 'Falladas',
                 new: 'Nuevas'
             };
-            this.showAlert(`Test de estudio iniciado: ${modeNames[this.selectionMode]} 📚`, 'success');
 
         } catch (error) {
             console.error('❌ Error loading study test:', error);
@@ -559,9 +585,8 @@ class StudyExamController extends ExamController {
                 this.goToPreviousQuestion();
             } else if (e.key === 'ArrowRight' && this.currentQuestionIndex < this.currentExam.questions.length - 1) {
                 this.goToNextQuestion();
-            } else if (e.key >= '1' && e.key <= '4') {
-                const answers = ['A', 'B', 'C', 'D'];
-                const answer = answers[parseInt(e.key) - 1];
+            } else if (e.key.toLowerCase() === 'a' || e.key.toLowerCase() === 'b' || e.key.toLowerCase() === 'c' || e.key.toLowerCase() === 'd') {
+                const answer = e.key.toUpperCase();
                 const answerOption = document.querySelector(`.answer-option[data-answer="${answer}"]`);
                 if (answerOption) answerOption.click();
             }

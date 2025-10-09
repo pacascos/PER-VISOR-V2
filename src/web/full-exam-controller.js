@@ -380,9 +380,8 @@ class FullExamController extends ExamController {
                 this.goToPreviousQuestion();
             } else if (e.key === 'ArrowRight' && this.currentQuestionIndex < this.currentExam.questions.length - 1) {
                 this.goToNextQuestion();
-            } else if (e.key >= '1' && e.key <= '4') {
-                const answers = ['A', 'B', 'C', 'D'];
-                const answer = answers[parseInt(e.key) - 1];
+            } else if (e.key.toLowerCase() === 'a' || e.key.toLowerCase() === 'b' || e.key.toLowerCase() === 'c' || e.key.toLowerCase() === 'd') {
+                const answer = e.key.toUpperCase();
                 this.selectAnswer(answer);
                 document.getElementById(`answer-${answer}`)?.click();
             }
