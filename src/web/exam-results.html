@@ -321,46 +321,39 @@
 
     <!-- Scripts -->
     <script>
+        // Exam Results Page - v2.0 - Always load from API with UT Analysis
         // Get exam ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const examId = urlParams.get('exam_id');
 
-        console.log('📊 Exam Results Page');
+        console.log('📊 Exam Results Page v2.0 - API with UT Analysis');
         console.log('   Exam ID:', examId);
 
-        // Load results from sessionStorage or API
+        // Load results from API (always use API for detailed UT analysis)
         async function loadResults() {
             try {
-                // First, try to get results from sessionStorage
-                const cachedResults = sessionStorage.getItem('examResults');
-
-                let results;
-
-                if (cachedResults) {
-                    console.log('✅ Using cached results from sessionStorage');
-                    results = JSON.parse(cachedResults);
-                } else if (examId) {
-                    console.log('📡 Fetching results from API...');
-
-                    const API_BASE = window.API_BASE || '';
-                    const token = localStorage.getItem('token') || localStorage.getItem('authToken');
-                    
-                    const response = await fetch(`${API_BASE}/exams/${examId}/results`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        },
-                        credentials: 'include'
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-
-                    results = await response.json();
-                    console.log('✅ Results loaded from API:', results);
-                } else {
-                    throw new Error('No exam ID provided and no cached results found');
+                if (!examId) {
+                    throw new Error('No exam ID provided');
                 }
+
+                console.log('📡 Fetching detailed results from API...');
+
+                const API_BASE = window.API_BASE || '';
+                const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                
+                const response = await fetch(`${API_BASE}/exams/${examId}/results`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const results = await response.json();
+                console.log('✅ Results loaded from API:', results);
 
                 // Display results
                 displayResults(results);
@@ -376,31 +369,20 @@
             document.getElementById('loading-section').style.display = 'none';
             document.getElementById('results-section').style.display = 'block';
 
-            // Handle both old format (from sessionStorage) and new format (from API)
-            let examSummary, utAnalysis, criteriaCheck, utSummary;
-            
-            if (results.exam_summary) {
-                // New format from detailed API
-                examSummary = results.exam_summary;
-                utAnalysis = results.ut_analysis || [];
-                criteriaCheck = results.criteria_check || {};
-                utSummary = results.ut_summary || {};
-            } else {
-                // Old format from sessionStorage
-                examSummary = results;
-                utAnalysis = [];
-                criteriaCheck = {};
-                utSummary = {};
-            }
+            // Extract data from API response
+            const examSummary = results.exam_summary || {};
+            const utAnalysis = results.ut_analysis || [];
+            const criteriaCheck = results.criteria_check || {};
+            const utSummary = results.ut_summary || {};
 
             // Calculate statistics
             const correctCount = examSummary.correct_answers || 0;
             const totalQuestions = examSummary.total_questions || 45;
             const incorrectCount = totalQuestions - correctCount - (examSummary.unanswered || 0);
             const unansweredCount = examSummary.unanswered || 0;
-            const percentage = examSummary.score_percentage || examSummary.score || Math.round((correctCount / totalQuestions) * 100);
+            const percentage = examSummary.score_percentage || Math.round((correctCount / totalQuestions) * 100);
             
-            // Use actual passed status if available
+            // Use actual passed status from criteria check
             const passed = examSummary.actually_passed !== undefined ? examSummary.actually_passed : (percentage >= 65);
 
             // Update title
