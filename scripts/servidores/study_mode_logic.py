@@ -248,29 +248,28 @@ def select_questions_new(cur, user_id: str, selected_uts: List[int]) -> Tuple[Li
 
         logger.info(f"✨ [NEW] UT{ut_number} ({category_name}): Priorizando {num_questions} preguntas nuevas")
 
-        # Get questions user has never answered (excluding duplicates by hash)
+        # Get questions user has never answered (excluding duplicates by hash and recent attempts)
         cur.execute("""
             WITH unique_questions AS (
                 SELECT DISTINCT ON (q.hash_pregunta)
                     q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta, q.hash_pregunta
                 FROM questions q
                 JOIN exams e ON q.exam_id = e.id
+                LEFT JOIN question_user_stats qus ON q.id = qus.question_id AND qus.user_id = %s
                 WHERE q.categoria = %s
                 AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
-                AND q.id NOT IN (
-                    SELECT DISTINCT ua.question_id
-                    FROM user_answers ua
-                    JOIN user_exams ue ON ua.user_exam_id = ue.id
-                    WHERE ue.user_id = %s
-                )
                 AND q.anulada = false
+                AND (
+                    qus.last_attempt_at IS NULL 
+                    OR qus.last_attempt_at < NOW() - INTERVAL '24 hours'
+                )
                 ORDER BY q.hash_pregunta, q.id
             )
             SELECT id, texto_pregunta, categoria, respuesta_correcta
             FROM unique_questions
             ORDER BY RANDOM()
             LIMIT %s
-        """, (category_name, user_id, num_questions))
+        """, (user_id, category_name, num_questions))
 
         new_questions = cur.fetchall()
         logger.info(f"📊 [NEW] UT{ut_number}: {len(new_questions)} preguntas nuevas encontradas")
@@ -290,7 +289,7 @@ def select_questions_new(cur, user_id: str, selected_uts: List[int]) -> Tuple[Li
         if remaining > 0:
             logger.info(f"🎲 [NEW] UT{ut_number}: Completando con {remaining} preguntas aleatorias")
 
-            # Get random questions excluding already selected
+            # Get random questions excluding already selected and recent attempts
             already_selected_ids = [q['question_id'] for q in selected_questions]
 
             cur.execute("""
@@ -299,17 +298,22 @@ def select_questions_new(cur, user_id: str, selected_uts: List[int]) -> Tuple[Li
                         q.id, q.texto_pregunta, q.categoria, q.respuesta_correcta, q.hash_pregunta
                     FROM questions q
                     JOIN exams e ON q.exam_id = e.id
+                    LEFT JOIN question_user_stats qus ON q.id = qus.question_id AND qus.user_id = %s
                     WHERE q.categoria = %s
                     AND q.id NOT IN (SELECT UNNEST(%s::uuid[]))
                     AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
                     AND q.anulada = false
+                    AND (
+                        qus.last_attempt_at IS NULL 
+                        OR qus.last_attempt_at < NOW() - INTERVAL '24 hours'
+                    )
                     ORDER BY q.hash_pregunta, q.id
                 )
                 SELECT id, texto_pregunta, categoria, respuesta_correcta
                 FROM unique_questions
                 ORDER BY RANDOM()
                 LIMIT %s
-            """, (category_name, already_selected_ids if already_selected_ids else [None], remaining))
+            """, (user_id, category_name, already_selected_ids if already_selected_ids else [None], remaining))
 
             random_questions = cur.fetchall()
 
