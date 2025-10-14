@@ -4028,6 +4028,237 @@ def get_question_stats_by_ut():
         logger.error(f"Error obteniendo estadísticas por UT: {e}")
         return jsonify({'error': str(e)}), 500
 
+
+@app.route('/api/question-heatmap/data', methods=['GET'])
+def get_question_heatmap_data():
+    """Obtener datos para el heatmap de preguntas por UT"""
+    try:
+        filter_type = request.args.get('filter', 'all')  # all, exams, tests
+        
+        logger.info(f"🔥 Solicitando datos de heatmap (filtro: {filter_type})")
+        
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Obtener configuración de UTs
+        cur.execute("SELECT * FROM ut_configuration ORDER BY ut_number")
+        ut_configs = cur.fetchall()
+        
+        heatmap_data = {}
+        total_stats = {
+            'total_questions': 0,
+            'never_seen': 0,
+            'seen_once': 0,
+            'seen_multiple': 0,
+            'max_frequency': 0
+        }
+        
+        for ut_config in ut_configs:
+            ut_number = ut_config['ut_number']
+            ut_name = ut_config['ut_name']
+            category_name = ut_config['category_name']
+            
+            # Obtener preguntas según el filtro seleccionado
+            if filter_type == 'exams':
+                # Solo exámenes completos
+                cur.execute("""
+                    SELECT 
+                        q.id,
+                        q.numero_pregunta,
+                        LEFT(q.texto_pregunta, 80) as pregunta_texto,
+                        e.convocatoria,
+                        COALESCE(
+                            (SELECT COUNT(*) FROM user_answers ua 
+                             JOIN user_exams ue ON ua.user_exam_id = ue.id 
+                             WHERE ua.question_id = q.id 
+                             AND ue.exam_type = 'PER'), 0
+                        ) as frequency,
+                        COALESCE(
+                            (SELECT COUNT(*) FROM user_answers ua 
+                             JOIN user_exams ue ON ua.user_exam_id = ue.id 
+                             WHERE ua.question_id = q.id 
+                             AND ue.exam_type = 'PER'
+                             AND ua.is_correct = true), 0
+                        ) as correct,
+                        COALESCE(
+                            (SELECT COUNT(*) FROM user_answers ua 
+                             JOIN user_exams ue ON ua.user_exam_id = ue.id 
+                             WHERE ua.question_id = q.id 
+                             AND ue.exam_type = 'PER'
+                             AND ua.is_correct = false), 0
+                        ) as incorrect,
+                        CASE 
+                            WHEN COALESCE(
+                                (SELECT COUNT(*) FROM user_answers ua 
+                                 JOIN user_exams ue ON ua.user_exam_id = ue.id 
+                                 WHERE ua.question_id = q.id 
+                                 AND ue.exam_type = 'PER'), 0
+                            ) > 0 
+                            THEN ROUND(
+                                COALESCE(
+                                    (SELECT COUNT(*) FROM user_answers ua 
+                                     JOIN user_exams ue ON ua.user_exam_id = ue.id 
+                                     WHERE ua.question_id = q.id 
+                                     AND ue.exam_type = 'PER'
+                                     AND ua.is_correct = true), 0
+                                )::DECIMAL / 
+                                COALESCE(
+                                    (SELECT COUNT(*) FROM user_answers ua 
+                                     JOIN user_exams ue ON ua.user_exam_id = ue.id 
+                                     WHERE ua.question_id = q.id 
+                                     AND ue.exam_type = 'PER'), 0
+                                ) * 100, 2
+                            )
+                            ELSE 0
+                        END as success_rate
+                    FROM questions q
+                    JOIN exams e ON q.exam_id = e.id
+                    WHERE q.categoria = %s
+                    AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
+                    AND q.anulada = false
+                    ORDER BY q.numero_pregunta
+                """, (category_name,))
+                
+            elif filter_type == 'tests':
+                # Solo tests de estudio
+                cur.execute("""
+                    SELECT 
+                        q.id,
+                        q.numero_pregunta,
+                        LEFT(q.texto_pregunta, 80) as pregunta_texto,
+                        e.convocatoria,
+                        COALESCE(
+                            (SELECT COUNT(*) FROM study_test_questions stq 
+                             WHERE stq.question_id = q.id), 0
+                        ) as frequency,
+                        COALESCE(
+                            (SELECT COUNT(*) FROM study_test_questions stq 
+                             WHERE stq.question_id = q.id 
+                             AND stq.is_correct = true), 0
+                        ) as correct,
+                        COALESCE(
+                            (SELECT COUNT(*) FROM study_test_questions stq 
+                             WHERE stq.question_id = q.id 
+                             AND stq.is_correct = false), 0
+                        ) as incorrect,
+                        CASE 
+                            WHEN COALESCE(
+                                (SELECT COUNT(*) FROM study_test_questions stq 
+                                 WHERE stq.question_id = q.id), 0
+                            ) > 0 
+                            THEN ROUND(
+                                COALESCE(
+                                    (SELECT COUNT(*) FROM study_test_questions stq 
+                                     WHERE stq.question_id = q.id 
+                                     AND stq.is_correct = true), 0
+                                )::DECIMAL / 
+                                COALESCE(
+                                    (SELECT COUNT(*) FROM study_test_questions stq 
+                                     WHERE stq.question_id = q.id), 0
+                                ) * 100, 2
+                            )
+                            ELSE 0
+                        END as success_rate
+                    FROM questions q
+                    JOIN exams e ON q.exam_id = e.id
+                    WHERE q.categoria = %s
+                    AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
+                    AND q.anulada = false
+                    ORDER BY q.numero_pregunta
+                """, (category_name,))
+                
+            else:
+                # Todos (exámenes + tests) - usar estadísticas globales
+                cur.execute("""
+                    SELECT 
+                        q.id,
+                        q.numero_pregunta,
+                        LEFT(q.texto_pregunta, 80) as pregunta_texto,
+                        e.convocatoria,
+                        COALESCE(qgs.total_appearances, 0) as frequency,
+                        COALESCE(qgs.total_correct_answers, 0) as correct,
+                        COALESCE(qgs.total_incorrect_answers, 0) as incorrect,
+                        COALESCE(qgs.success_rate, 0) as success_rate
+                    FROM questions q
+                    JOIN exams e ON q.exam_id = e.id
+                    LEFT JOIN question_global_stats qgs ON q.id = qgs.question_id
+                    WHERE q.categoria = %s
+                    AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
+                    AND q.anulada = false
+                    ORDER BY q.numero_pregunta
+                """, (category_name,))
+            
+            questions = cur.fetchall()
+            
+            # Procesar datos para el heatmap
+            ut_questions = []
+            for q in questions:
+                frequency = q['frequency']
+                
+                # Actualizar estadísticas globales
+                total_stats['total_questions'] += 1
+                if frequency == 0:
+                    total_stats['never_seen'] += 1
+                elif frequency == 1:
+                    total_stats['seen_once'] += 1
+                else:
+                    total_stats['seen_multiple'] += 1
+                
+                total_stats['max_frequency'] = max(total_stats['max_frequency'], frequency)
+                
+                # Determinar clase CSS según frecuencia
+                if frequency == 0:
+                    css_class = 'frequency-0'
+                elif frequency == 1:
+                    css_class = 'frequency-1'
+                elif frequency == 2:
+                    css_class = 'frequency-2'
+                elif frequency == 3:
+                    css_class = 'frequency-3'
+                elif frequency == 4:
+                    css_class = 'frequency-4'
+                else:
+                    css_class = 'frequency-5plus'
+                
+                ut_questions.append({
+                    'id': str(q['id']),
+                    'numero_pregunta': q['numero_pregunta'],
+                    'texto': q['pregunta_texto'],
+                    'convocatoria': q['convocatoria'],
+                    'frequency': frequency,
+                    'correct': q['correct'],
+                    'incorrect': q['incorrect'],
+                    'success_rate': q['success_rate'],
+                    'css_class': css_class
+                })
+            
+            heatmap_data[category_name] = {
+                'ut_number': ut_number,
+                'ut_name': ut_name,
+                'questions': ut_questions,
+                'total_questions': len(questions)
+            }
+        
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'data': heatmap_data,
+            'total_stats': total_stats,
+            'filter': filter_type
+        })
+        
+    except Exception as e:
+        logger.error(f"❌ Error obteniendo datos de heatmap: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Error interno del servidor'
+        }), 500
+
 if __name__ == '__main__':
     logger.info("🚀 API PER Nueva Arquitectura iniciando...")
     logger.info("🔹 Base de datos: PostgreSQL")

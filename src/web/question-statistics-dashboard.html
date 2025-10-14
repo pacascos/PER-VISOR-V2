@@ -78,6 +78,32 @@
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
 
+        .header-actions {
+            margin-top: 15px;
+        }
+
+        .header-actions .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .header-actions .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #5a67d8, #6b46c1);
+        }
+
+        .header-actions .btn i {
+            margin-right: 8px;
+        }
+
         .header h1 {
             color: #2c3e50;
             font-size: 2.5rem;
@@ -313,6 +339,12 @@
             </div>
             <h1><i class="fas fa-chart-pie"></i> Estadísticas de Preguntas por UT</h1>
             <p>Análisis detallado de distribución y rendimiento de preguntas por Unidad Temática</p>
+            
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="openHeatmap()">
+                    <i class="fas fa-fire"></i> Ver Heatmap Visual
+                </button>
+            </div>
         </div>
 
         <!-- Loading -->
@@ -349,5 +381,13 @@
     <!-- Scripts -->
     <script src="config.js"></script>
     <script src="question-stats-ut.js?v=2"></script>
+    
+    <script>
+        // Función para abrir el heatmap visual
+        function openHeatmap() {
+            console.log('🔥 Abriendo heatmap visual...');
+            window.location.href = 'question-heatmap.html';
+        }
+    </script>
 </body>
 </html>

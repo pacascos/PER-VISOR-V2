@@ -234,7 +234,11 @@
 
             // Mode selection
             document.querySelectorAll('.mode-option').forEach(option => {
-                option.addEventListener('click', () => {
+                option.addEventListener('click', (e) => {
+                    // Prevenir propagación de eventos
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
                     // Check if UTs are selected
                     if (selectedUTs.length === 0) {
                         showError('Por favor, selecciona al menos una UT antes de generar el test');
@@ -258,7 +262,16 @@
             });
         }
 
+        let isGeneratingTest = false; // Flag para prevenir llamadas duplicadas
+
         async function generateStudyTest() {
+            // Prevenir llamadas duplicadas
+            if (isGeneratingTest) {
+                console.log('⚠️ Ya se está generando un test, ignorando llamada duplicada');
+                return;
+            }
+            
+            isGeneratingTest = true;
             showLoading(true);
             hideMessages();
 
@@ -292,9 +305,12 @@
             } catch (error) {
                 console.error('Error generating study test:', error);
                 showError(error.message || 'Error generando el test de estudio. Por favor, inténtalo de nuevo.');
+                isGeneratingTest = false; // Resetear flag en caso de error
             } finally {
                 showLoading(false);
             }
+            
+            // Nota: No reseteamos isGeneratingTest en caso de éxito porque vamos a redirigir
         }
 
         function showLoading(show) {
