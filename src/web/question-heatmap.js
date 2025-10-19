@@ -112,9 +112,10 @@ class QuestionHeatmap {
     async loadData(filter = 'all') {
         try {
             console.log(`📊 Cargando datos del heatmap (filtro: ${filter})...`);
-            
+
             // Usar el filtro seleccionado (aunque siempre devuelve estadísticas globales)
-            const response = await fetch(`/api/question-heatmap/data?filter=${filter}`, {
+            const apiUrl = window.API_BASE || '/api';
+            const response = await fetch(`${apiUrl}/question-heatmap/data?filter=${filter}`, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
