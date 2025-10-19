@@ -4209,7 +4209,7 @@ def get_question_heatmap_data():
                 
                 total_stats['max_frequency'] = max(total_stats['max_frequency'], frequency)
                 
-                # Determinar clase CSS según frecuencia
+                # Determinar clase CSS según frecuencia (escala ampliada)
                 if frequency == 0:
                     css_class = 'frequency-0'
                 elif frequency == 1:
@@ -4220,8 +4220,38 @@ def get_question_heatmap_data():
                     css_class = 'frequency-3'
                 elif frequency == 4:
                     css_class = 'frequency-4'
+                elif frequency == 5:
+                    css_class = 'frequency-5'
+                elif frequency == 6:
+                    css_class = 'frequency-6'
+                elif frequency == 7:
+                    css_class = 'frequency-7'
+                elif frequency == 8:
+                    css_class = 'frequency-8'
+                elif frequency == 9:
+                    css_class = 'frequency-9'
+                elif frequency == 10:
+                    css_class = 'frequency-10'
+                elif frequency == 11:
+                    css_class = 'frequency-11'
+                elif frequency == 12:
+                    css_class = 'frequency-12'
+                elif frequency == 13:
+                    css_class = 'frequency-13'
+                elif frequency == 14:
+                    css_class = 'frequency-14'
+                elif frequency == 15:
+                    css_class = 'frequency-15'
+                elif frequency == 16:
+                    css_class = 'frequency-16'
+                elif frequency == 17:
+                    css_class = 'frequency-17'
+                elif frequency == 18:
+                    css_class = 'frequency-18'
+                elif frequency == 19:
+                    css_class = 'frequency-19'
                 else:
-                    css_class = 'frequency-5plus'
+                    css_class = 'frequency-20plus'
                 
                 ut_questions.append({
                     'id': str(q['id']),
