@@ -917,6 +917,12 @@
                                 🔄 Con duplicados
                             </label>
                         </div>
+                        <div class="form-check" style="padding-top: 8px;">
+                            <input class="form-check-input" type="checkbox" id="filterAnuladas">
+                            <label class="form-check-label" for="filterAnuladas">
+                                ❌ Incluir anuladas
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -1442,9 +1448,14 @@
 
             async loadAllQuestionsFromAllExams() {
                 try {
+                    // Obtener el estado del filtro de anuladas (por defecto false = no incluir)
+                    const includeAnuladas = document.getElementById('filterAnuladas')?.checked || false;
+                    const excludeAnuladas = !includeAnuladas;
 
                     // Usar el endpoint PostgreSQL filtrado que incluye metadata
-                    const response = await fetch(API_BASE + '/preguntas-filtradas');
+                    const url = API_BASE + '/preguntas-filtradas' + 
+                                `?exclude_anuladas=${excludeAnuladas}`;
+                    const response = await fetch(url);
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
@@ -1855,8 +1866,14 @@
             
             async loadAllQuestions() {
                 try {
-                    // Cargar todas las preguntas usando el endpoint de filtros sin parámetros
-                    const response = await fetch(API_BASE + '/preguntas-filtradas');
+                    // Obtener el estado del filtro de anuladas (por defecto false = no incluir)
+                    const includeAnuladas = document.getElementById('filterAnuladas')?.checked || false;
+                    const excludeAnuladas = !includeAnuladas;
+                    
+                    // Cargar todas las preguntas usando el endpoint de filtros
+                    const url = API_BASE + '/preguntas-filtradas' + 
+                                `?exclude_anuladas=${excludeAnuladas}`;
+                    const response = await fetch(url);
                     const data = await response.json();
                     
                     if (data.success) {
@@ -2622,6 +2639,12 @@
                         );
                     }
                     
+                    // Filtro de preguntas anuladas (aplicar filtro adicional en frontend si es necesario)
+                    // El backend ya filtra, pero aplicamos un filtro adicional por si acaso hay preguntas cargadas anteriormente
+                    const includeAnuladas = document.getElementById('filterAnuladas')?.checked || false;
+                    if (!includeAnuladas) {
+                        filtered = filtered.filter(q => !q.anulada);
+                    }
                     
                     this.filteredQuestions = filtered;
                     this.currentPage = 1;
@@ -2637,25 +2660,30 @@
                 }
             }
             
-            clearFilters() {
+            async clearFilters() {
                 document.getElementById('filterConvocatoria').value = 'all';
                 document.getElementById('filterTitulacion').value = 'all';
                 document.getElementById('filterTest').value = 'all';
                 document.getElementById('filterTema').value = 'all';
                 document.getElementById('searchInput').value = '';
                 document.getElementById('filterDuplicados').checked = true;
+                // Resetear checkbox de anuladas (por defecto no mostrar anuladas)
+                document.getElementById('filterAnuladas').checked = false;
                 
                 // Actualizar filtros en cascada
                 this.updateTestFilter();
                 this.updateTemaFilter();
                 
-                // Aplicar filtros (mostrará todas las preguntas)
+                // Recargar preguntas desde backend para aplicar filtro de anuladas
+                await this.loadAllQuestionsFromAllExams();
+                
+                // Aplicar filtros (mostrará todas las preguntas activas)
                 this.applyFilters();
             }
             
             setupEventListeners() {
                 document.getElementById('searchBtn').addEventListener('click', () => this.applyFilters());
-                document.getElementById('clearFilters').addEventListener('click', () => this.clearFilters());
+                document.getElementById('clearFilters').addEventListener('click', async () => await this.clearFilters());
                 
                 document.getElementById('toggleAnswers').addEventListener('click', (e) => {
                     this.showAnswers = !this.showAnswers;
@@ -2688,6 +2716,12 @@
                 document.getElementById('filterTest').addEventListener('change', () => this.applyFilters());
                 document.getElementById('filterTema').addEventListener('change', () => this.applyFilters());
                 document.getElementById('filterDuplicados').addEventListener('change', () => this.applyFilters());
+                
+                // Event listener para filtro de anuladas - necesita recargar desde backend
+                document.getElementById('filterAnuladas').addEventListener('change', async () => {
+                    await this.loadAllQuestionsFromAllExams();
+                    this.applyFilters(); // Aplicar filtros actuales después de recargar
+                });
                 
                 // Botón X para limpiar búsqueda
                 document.getElementById('clearSearch').addEventListener('click', () => {

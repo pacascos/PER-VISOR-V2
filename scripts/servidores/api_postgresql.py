@@ -318,10 +318,14 @@ def get_preguntas(exam_id):
         logger.error(f"Error obteniendo preguntas: {e}")
         return jsonify({'error': str(e)}), 500
 
-def _build_filter_conditions(convocatoria, tema, search_text):
+def _build_filter_conditions(convocatoria, tema, search_text, exclude_anuladas=True):
     """Construir condiciones WHERE para filtros de preguntas"""
     where_conditions = []
     params = []
+
+    # Filtrar preguntas anuladas por defecto
+    if exclude_anuladas:
+        where_conditions.append("q.anulada = false")
 
     if convocatoria:
         where_conditions.append("e.convocatoria = %s")
@@ -396,9 +400,11 @@ def get_preguntas_filtradas():
         convocatoria = request.args.get('convocatoria', '')
         tema = request.args.get('tema', '')
         search_text = request.args.get('search', '')
+        # Por defecto excluir anuladas, pero permitir mostrarlas si se solicita
+        exclude_anuladas = request.args.get('exclude_anuladas', 'true').lower() == 'true'
 
         # Construir consulta SQL dinámica
-        where_clause, params = _build_filter_conditions(convocatoria, tema, search_text)
+        where_clause, params = _build_filter_conditions(convocatoria, tema, search_text, exclude_anuladas)
         query = _get_filtered_questions_query(where_clause)
 
         cur.execute(query, params)
@@ -419,7 +425,8 @@ def get_preguntas_filtradas():
             'filters': {
                 'convocatoria': convocatoria,
                 'tema': tema,
-                'search_text': search_text
+                'search_text': search_text,
+                'exclude_anuladas': exclude_anuladas
             }
         })
 
