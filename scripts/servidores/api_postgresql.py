@@ -138,8 +138,12 @@ def handle_preflight():
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', secrets.token_hex(32))
 JWT_SECRET = os.getenv('JWT_SECRET', secrets.token_hex(32))
 
-# Register statistics routes (pass JWT_SECRET to share with statistics API)
-register_statistics_routes(app, jwt_secret=JWT_SECRET)
+# Register statistics routes (pass JWT_SECRET and DB connection function to share with statistics API)
+def get_db_connection_for_statistics():
+    """Wrapper for database connection to share with statistics API"""
+    return get_db_connection()
+
+register_statistics_routes(app, jwt_secret=JWT_SECRET, db_connection_func=get_db_connection_for_statistics)
 JWT_EXPIRATION_HOURS = 24
 
 # Funciones de base de datos

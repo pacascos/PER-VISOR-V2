@@ -67,12 +67,26 @@ def token_required(f):
 
     return decorated
 
+# Database connection function - will be set by register_statistics_routes
+_db_connection_func = None
+
+def set_db_connection_func(connection_func):
+    """Set database connection function from main API module"""
+    global _db_connection_func
+    _db_connection_func = connection_func
+
 def get_db_connection():
-    """Get database connection using environment variables"""
+    """Get database connection using shared connection function or environment variables"""
+    # Use shared connection function if available
+    if _db_connection_func:
+        return _db_connection_func()
+    
+    # Fallback to environment variables (same logic as api_postgresql.py)
     DATABASE_URL = os.getenv('DATABASE_URL')
     if DATABASE_URL:
-        # Parse DATABASE_URL postgresql://user:password@host:port/database
+        # Parse DATABASE_URL - support multiple formats
         import re
+        # Format 1: postgresql://user:password@host:port/database
         match = re.match(r'postgresql://([^:]+):([^@]+)@([^:]+):(\d+)/(.+)', DATABASE_URL)
         if match:
             config = {
@@ -83,8 +97,20 @@ def get_db_connection():
                 'password': match.group(2)
             }
         else:
-            raise ValueError("Invalid DATABASE_URL format")
+            # Format 2: postgresql://user:password@/database?host=host (Cloud SQL format)
+            match = re.match(r'postgresql://([^:]+):([^@]+)@/([^?]+)\?host=(.+)', DATABASE_URL)
+            if match:
+                config = {
+                    'host': match.group(4),
+                    'port': int(os.getenv('DATABASE_PORT', 5432)),
+                    'database': match.group(3),
+                    'user': match.group(1),
+                    'password': match.group(2)
+                }
+            else:
+                raise ValueError(f"Invalid DATABASE_URL format: {DATABASE_URL[:50]}...")
     else:
+        # Use individual environment variables
         config = {
             'host': os.getenv('DATABASE_HOST', 'localhost'),
             'port': int(os.getenv('DATABASE_PORT', 5432)),
@@ -742,10 +768,13 @@ ACHIEVEMENT_DEFINITIONS = {
     }
 }
 
-def register_statistics_routes(app, jwt_secret=None):
+def register_statistics_routes(app, jwt_secret=None, db_connection_func=None):
     """Register statistics routes with the main Flask app"""
     # Share JWT secret with main API if provided
     if jwt_secret:
         set_jwt_secret(jwt_secret)
+    # Share database connection function if provided
+    if db_connection_func:
+        set_db_connection_func(db_connection_func)
     app.register_blueprint(statistics_bp)
     logging.info("✅ Statistics API routes registered")
