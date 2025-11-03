@@ -2640,6 +2640,65 @@ def _update_user_statistics_after_exam(cur, user_id, correct_answers, total_ques
                 WHERE user_id = %s
             """, (new_level, user_id))
 
+@app.route('/api/user/exam/<exam_id>/failed-questions', methods=['GET'])
+@require_auth
+def get_failed_questions_from_exam(exam_id):
+    """Get failed questions from a specific exam"""
+    try:
+        user_id = request.current_user['user_id']
+        
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Verificar que el examen pertenece al usuario
+        cur.execute("""
+            SELECT id, started_at FROM user_exams 
+            WHERE id = %s AND user_id = %s
+        """, (exam_id, user_id))
+        
+        exam = cur.fetchone()
+        if not exam:
+            return jsonify({'error': 'Examen no encontrado'}), 404
+        
+        # Obtener preguntas falladas del examen
+        cur.execute("""
+            SELECT
+                ua.question_id,
+                ua.selected_answer,
+                ua.is_correct,
+                ua.answered_at,
+                q.respuesta_correcta,
+                q.texto_pregunta,
+                q.categoria,
+                e.tipo_examen
+            FROM user_answers ua
+            JOIN questions q ON ua.question_id = q.id
+            JOIN exams e ON q.exam_id = e.id
+            WHERE ua.user_exam_id = %s AND ua.is_correct = false
+            ORDER BY ua.answered_at
+        """, (exam_id,))
+        
+        failed_questions = cur.fetchall()
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        logger.info(f"📊 Obtenidas {len(failed_questions)} preguntas falladas del examen {exam_id}")
+        
+        return jsonify({
+            'success': True,
+            'failed_questions': [dict(q) for q in failed_questions],
+            'total_failed': len(failed_questions),
+            'exam_date': exam['started_at'].isoformat()
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo preguntas falladas: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
 
 @app.route('/api/user/exams', methods=['GET'])
 @require_auth
