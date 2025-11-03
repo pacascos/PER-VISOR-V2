@@ -134,12 +134,12 @@ def handle_preflight():
             return response
     return None
 
-# Register statistics routes
-register_statistics_routes(app)
-
 # Configuración de sesiones y JWT
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', secrets.token_hex(32))
 JWT_SECRET = os.getenv('JWT_SECRET', secrets.token_hex(32))
+
+# Register statistics routes (pass JWT_SECRET to share with statistics API)
+register_statistics_routes(app, jwt_secret=JWT_SECRET)
 JWT_EXPIRATION_HOURS = 24
 
 # Funciones de base de datos

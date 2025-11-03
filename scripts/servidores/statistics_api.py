@@ -17,8 +17,20 @@ import jwt
 # Create blueprint for statistics routes
 statistics_bp = Blueprint('statistics', __name__, url_prefix='/api/statistics')
 
-# Configuration
-JWT_SECRET = os.getenv('JWT_SECRET', 'your-jwt-secret-change-in-production')
+# Configuration - JWT_SECRET will be set by register_statistics_routes
+# This allows sharing the same secret with the main API
+_JWT_SECRET = None
+
+def set_jwt_secret(secret):
+    """Set JWT secret from main API module"""
+    global _JWT_SECRET
+    _JWT_SECRET = secret
+
+def get_jwt_secret():
+    """Get JWT secret, using shared secret or environment variable"""
+    if _JWT_SECRET:
+        return _JWT_SECRET
+    return os.getenv('JWT_SECRET', 'your-jwt-secret-change-in-production')
 
 def token_required(f):
     """Decorator to require JWT token for protected routes"""
@@ -38,11 +50,18 @@ def token_required(f):
             return jsonify({'error': 'Token missing'}), 401
 
         try:
-            data = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
+            data = jwt.decode(token, get_jwt_secret(), algorithms=['HS256'])
             current_user_id = data['user_id']
             kwargs['current_user_id'] = current_user_id
-        except jwt.InvalidTokenError:
+        except jwt.ExpiredSignatureError:
+            logging.warning(f"Token expired for request to {request.path}")
+            return jsonify({'error': 'Token expired'}), 401
+        except jwt.InvalidTokenError as e:
+            logging.warning(f"Invalid token for request to {request.path}: {str(e)}")
             return jsonify({'error': 'Token invalid'}), 401
+        except Exception as e:
+            logging.error(f"Error decoding token for request to {request.path}: {str(e)}")
+            return jsonify({'error': 'Token validation failed'}), 401
 
         return f(*args, **kwargs)
 
@@ -723,7 +742,10 @@ ACHIEVEMENT_DEFINITIONS = {
     }
 }
 
-def register_statistics_routes(app):
+def register_statistics_routes(app, jwt_secret=None):
     """Register statistics routes with the main Flask app"""
+    # Share JWT secret with main API if provided
+    if jwt_secret:
+        set_jwt_secret(jwt_secret)
     app.register_blueprint(statistics_bp)
     logging.info("✅ Statistics API routes registered")
