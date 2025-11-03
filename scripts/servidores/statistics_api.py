@@ -259,6 +259,82 @@ def get_user_achievements(user_id, current_user_id):
         logging.error(f"Error getting achievements: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
+@statistics_bp.route('/achievements/<user_id>/unlock', methods=['POST'])
+@token_required
+def unlock_achievement(user_id, current_user_id):
+    """Unlock an achievement for a user"""
+    
+    if user_id != current_user_id:
+        return jsonify({'error': 'Unauthorized access'}), 403
+    
+    data = request.get_json()
+    if not data or 'achievement_id' not in data:
+        return jsonify({'error': 'achievement_id is required'}), 400
+    
+    achievement_id = data['achievement_id']
+    xp = data.get('xp', 0)
+    
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'error': 'Database connection failed'}), 500
+    
+    try:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Verificar que el achievement no esté ya desbloqueado
+        cur.execute("""
+            SELECT id FROM user_achievements
+            WHERE user_id = %s AND achievement_id = %s
+        """, (user_id, achievement_id))
+        
+        if cur.fetchone():
+            cur.close()
+            conn.close()
+            return jsonify({
+                'success': True,
+                'message': 'Achievement already unlocked',
+                'already_unlocked': True
+            }), 200
+        
+        # Obtener XP del achievement si no se proporciona
+        if xp == 0:
+            achievement_def = ACHIEVEMENT_DEFINITIONS.get(achievement_id, {})
+            xp = achievement_def.get('xp', 100)
+        
+        # Insertar achievement desbloqueado
+        cur.execute("""
+            INSERT INTO user_achievements (user_id, achievement_id, unlocked_at, xp_earned)
+            VALUES (%s, %s, %s, %s)
+            RETURNING id
+        """, (user_id, achievement_id, datetime.now(), xp))
+        
+        achievement_record = cur.fetchone()
+        
+        # Actualizar XP del usuario
+        if xp > 0:
+            update_user_xp_and_level(cur, user_id, xp)
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        logging.info(f"Achievement {achievement_id} unlocked for user {user_id}, XP: {xp}")
+        
+        return jsonify({
+            'success': True,
+            'achievement_id': achievement_id,
+            'xp_earned': xp,
+            'already_unlocked': False
+        }), 200
+        
+    except Exception as e:
+        logging.error(f"Error unlocking achievement: {e}")
+        if conn:
+            conn.rollback()
+            cur.close()
+            conn.close()
+        return jsonify({'error': 'Internal server error'}), 500
+
 @statistics_bp.route('/exam-completed', methods=['POST'])
 @token_required
 def record_exam_completion(current_user_id):
