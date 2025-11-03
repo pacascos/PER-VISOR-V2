@@ -4795,6 +4795,7 @@ if __name__ == '__main__':
     logger.info("   - GET    /auth/me")
     logger.info("🎯 Endpoints de exámenes:")
     logger.info("   - POST   /exams/generate")
+    logger.info("   - GET    /api/user/exam/<exam_id>/failed-questions")
     logger.info("📚 Endpoints de modo estudio:")
     logger.info("   - POST   /api/study-tests/generate")
     logger.info("   - GET    /api/study-tests/<study_test_id>/questions")
