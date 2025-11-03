@@ -257,6 +257,42 @@
             border-left-color: #ef4444;
         }
 
+        /* Diferenciación visual entre exámenes y tests de estudio */
+        .exam-history-item.exam-type-exam {
+            border-left-width: 4px;
+        }
+
+        .exam-history-item.exam-type-study-test {
+            border-left-width: 6px;
+            border-left-style: dashed;
+        }
+
+        .exam-history-item.exam-type-study-test.passed {
+            border-left-color: #10b981;
+        }
+
+        .exam-history-item.exam-type-study-test.failed {
+            border-left-color: #ef4444;
+        }
+
+        .exam-type-badge {
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 15px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-right: 0.5rem;
+        }
+
+        .exam-type-badge i {
+            font-size: 0.7rem;
+        }
+
         .exam-history-item:hover {
             transform: translateX(5px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -657,9 +693,7 @@
                     <div class="stat-value" id="weakAreas">3</div>
                     <div class="stat-description">Temas que requieren más práctica</div>
                     <div id="weakAreasList" class="mt-2">
-                        <small class="badge bg-danger me-1">UT3 - Navegación</small>
-                        <small class="badge bg-warning me-1">UT7 - Meteorología</small>
-                        <small class="badge bg-warning me-1">UT9 - Comunicaciones</small>
+                        <!-- Weak areas will be loaded dynamically -->
                     </div>
                 </div>
             </div>
@@ -738,6 +772,25 @@
             </div>
         </div>
 
+        <!-- Reset Statistics Section -->
+        <div class="stat-card" style="margin-top: 2rem;">
+            <div class="stat-card-header">
+                <div class="stat-icon danger">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+                <div class="stat-title">Zona de Peligro</div>
+            </div>
+            <div class="p-3">
+                <p class="text-muted mb-3">
+                    ¿Quieres empezar de cero? Esta acción eliminará todas tus estadísticas, exámenes, tests de estudio y logros.
+                    <strong>Esta acción no se puede deshacer.</strong>
+                </p>
+                <button class="btn btn-danger" onclick="window.statisticsManager.showResetConfirmModal()">
+                    <i class="fas fa-trash-alt me-2"></i>Resetear Todas mis Estadísticas
+                </button>
+            </div>
+        </div>
+
         <!-- Achievement Notification Modal -->
         <div class="modal fade" id="achievementModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -758,6 +811,61 @@
             </div>
         </div>
 
+        <!-- Reset Statistics Confirmation Modal -->
+        <div class="modal fade" id="resetStatsModal" tabindex="-1" aria-labelledby="resetStatsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="resetStatsModalLabel">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Confirmar Reseteo de Estadísticas
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>¡ADVERTENCIA!</strong> Esta acción es irreversible.
+                        </div>
+                        <p class="mb-3">
+                            Al resetear tus estadísticas, se eliminará permanentemente:
+                        </p>
+                        <ul class="text-start mb-4">
+                            <li>Todos tus exámenes completados</li>
+                            <li>Todos tus tests de estudio</li>
+                            <li>Tus logros y progreso</li>
+                            <li>Tus estadísticas (nivel, XP, rachas)</li>
+                            <li>Tu historial completo</li>
+                        </ul>
+                        <p class="mb-3">
+                            <strong>Las estadísticas generales del sistema no se verán afectadas.</strong>
+                        </p>
+                        <div class="mb-3">
+                            <label for="resetConfirmText" class="form-label">
+                                Para confirmar, escribe <strong>"borrar"</strong> en el siguiente campo:
+                            </label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="resetConfirmText" 
+                                placeholder="Escribe 'borrar' para confirmar"
+                                autocomplete="off"
+                            >
+                            <div class="invalid-feedback" id="resetConfirmFeedback"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Cancelar
+                        </button>
+                        <button type="button" class="btn btn-danger" id="confirmResetBtn" disabled>
+                            <i class="fas fa-trash-alt me-2"></i>Resetear Estadísticas
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Bootstrap JS -->
@@ -767,7 +875,7 @@
     <script src="config.js"></script>
 
     <!-- Statistics Manager -->
-    <script src="statistics-manager.js"></script>
+    <script src="statistics-manager.js?v=2.0"></script>
 
     <script>
         let statisticsManager;

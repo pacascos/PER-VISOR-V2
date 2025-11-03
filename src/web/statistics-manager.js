@@ -97,19 +97,19 @@ class StatisticsManager {
             }
         };
 
-        // Topic configuration
+        // Topic configuration - Unidades Temáticas oficiales del PER según ut_configuration
         this.topics = {
             'UT1': { name: 'Nomenclatura náutica', color: '#3b82f6' },
             'UT2': { name: 'Elementos de amarre y fondeo', color: '#10b981' },
-            'UT3': { name: 'Seguridad en la mar', color: '#f59e0b' },
+            'UT3': { name: 'Seguridad', color: '#f59e0b' },
             'UT4': { name: 'Legislación', color: '#ef4444' },
             'UT5': { name: 'Balizamiento', color: '#8b5cf6' },
-            'UT6': { name: 'Reglamento de abordajes', color: '#06b6d4' },
-            'UT7': { name: 'Navegación', color: '#84cc16' },
-            'UT8': { name: 'Meteorología', color: '#f97316' },
-            'UT9': { name: 'Comunicaciones', color: '#ec4899' },
-            'UT10': { name: 'Propulsión mecánica', color: '#6b7280' },
-            'UT11': { name: 'Electricidad y electrónica', color: '#14b8a6' }
+            'UT6': { name: 'Reglamento RIPA', color: '#06b6d4' },
+            'UT7': { name: 'Maniobra', color: '#84cc16' },
+            'UT8': { name: 'Emergencias en la mar', color: '#f97316' },
+            'UT9': { name: 'Meteorología', color: '#ec4899' },
+            'UT10': { name: 'Teoría de la navegación', color: '#6b7280' },
+            'UT11': { name: 'Carta de navegación', color: '#14b8a6' }
         };
     }
 
@@ -175,8 +175,25 @@ class StatisticsManager {
                 throw new Error('Failed to load user statistics');
             }
 
-            // Simplificar: usar solo los datos ya obtenidos del endpoint principal
-            this.userAchievements = []; // Por ahora, sin achievements específicos
+            // Cargar logros desbloqueados desde el backend si existe el endpoint
+            // Si no existe, calcular desde los datos locales
+            try {
+                const achievementsResponse = await fetch(`${this.API_BASE}/statistics/achievements/${this.userId}`, {
+                    headers: headers
+                });
+                
+                if (achievementsResponse.ok) {
+                    const achievementsData = await achievementsResponse.json();
+                    this.userAchievements = achievementsData.unlocked.map(a => a.achievement_id) || [];
+                } else {
+                    // Si no hay endpoint, calcular desde datos locales
+                    this.userAchievements = [];
+                }
+            } catch (e) {
+                // Si el endpoint no existe o hay error, calcular desde datos locales
+                console.log('No se pudieron cargar logros del backend, se calcularán localmente');
+                this.userAchievements = [];
+            }
 
         } catch (error) {
             console.error('Error loading real user statistics:', error);
@@ -305,7 +322,9 @@ class StatisticsManager {
         this.userStats.weak_topics.forEach(topic => {
             const badge = document.createElement('small');
             badge.className = 'badge bg-danger me-1';
-            badge.textContent = `${topic} - ${this.topics[topic].name}`;
+            // Obtener nombre del tema, o usar el código UT si no existe en el mapeo
+            const topicName = this.topics[topic]?.name || topic;
+            badge.textContent = `${topic} - ${topicName}`;
             weakAreasList.appendChild(badge);
         });
     }
@@ -313,34 +332,133 @@ class StatisticsManager {
     renderEvolutionChart() {
         const ctx = document.getElementById('evolutionChart').getContext('2d');
 
-        const dates = this.examHistory.map(exam => exam.date);
-        const scores = this.examHistory.map(exam => exam.score);
+        // Los datos vienen ordenados DESC (más recientes primero), necesitamos invertirlos
+        // para mostrar evolución temporal de izquierda a derecha (pasado → presente)
+        const sortedHistory = [...this.examHistory].reverse();
+
+        // Separar exámenes y tests de estudio
+        const exams = sortedHistory.filter(item => item.exam_type === 'exam');
+        const studyTests = sortedHistory.filter(item => item.exam_type === 'study_test');
+
+        // Obtener todas las fechas únicas ordenadas para el eje X
+        const allDates = sortedHistory.map(exam => {
+            if (!exam.date) return null;
+            try {
+                const date = new Date(exam.date);
+                return date.toISOString().split('T')[0]; // YYYY-MM-DD para comparación
+            } catch (e) {
+                return null;
+            }
+        }).filter(d => d !== null);
+
+        const uniqueDates = [...new Set(allDates)].sort();
+        
+        // Formatear fechas para mostrar en el eje X (DD/MM/YYYY)
+        const formattedDates = uniqueDates.map(dateStr => {
+            try {
+                const date = new Date(dateStr);
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            } catch (e) {
+                return dateStr;
+            }
+        });
+
+        // Crear arrays de scores para cada fecha, usando null si no hay dato
+        const examScores = uniqueDates.map(dateStr => {
+            const exam = exams.find(e => {
+                if (!e.date) return false;
+                const examDate = new Date(e.date).toISOString().split('T')[0];
+                return examDate === dateStr;
+            });
+            return exam ? exam.score : null;
+        });
+
+        const studyTestScores = uniqueDates.map(dateStr => {
+            const test = studyTests.find(t => {
+                if (!t.date) return false;
+                const testDate = new Date(t.date).toISOString().split('T')[0];
+                return testDate === dateStr;
+            });
+            return test ? test.score : null;
+        });
 
         try {
             this.charts.evolution = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: dates,
-                    datasets: [{
-                        label: 'Puntuación (%)',
-                        data: scores,
-                        borderColor: '#4f46e5',
-                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 6,
-                        pointHoverRadius: 8
-                    }]
+                    labels: formattedDates,
+                    datasets: [
+                        {
+                            label: 'Exámenes',
+                            data: examScores,
+                            borderColor: '#4f46e5',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            fill: false,
+                            tension: 0.4,
+                            pointRadius: 7,
+                            pointHoverRadius: 9,
+                            pointStyle: 'circle',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Tests de Estudio',
+                            data: studyTestScores,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: false,
+                            tension: 0.4,
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            pointStyle: 'rect',
+                            borderWidth: 2,
+                            borderDash: [5, 5]
+                        }
+                    ]
                 },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: false
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y + '%';
+                                } else {
+                                    label += 'Sin dato';
+                                }
+                                return label;
+                            }
+                        }
                     }
                 },
                 scales: {
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    },
                     y: {
                         beginAtZero: false,
                         min: 50,
@@ -351,6 +469,11 @@ class StatisticsManager {
                             }
                         }
                     }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
                 }
             }
         });
@@ -362,23 +485,50 @@ class StatisticsManager {
     renderRadarChart() {
         const ctx = document.getElementById('radarChart').getContext('2d');
 
-        const topicNames = Object.keys(this.userProgress);
-        const topicScores = topicNames.map(topic => this.userProgress[topic].percentage);
+        // Obtener códigos UT y sus datos
+        const topicCodes = Object.keys(this.userProgress);
+        const topicScores = topicCodes.map(topic => this.userProgress[topic].percentage);
+        
+        // Convertir códigos UT a nombres legibles para las etiquetas
+        const topicLabels = topicCodes.map(topicCode => {
+            const topicInfo = this.topics[topicCode];
+            if (topicInfo && topicInfo.name) {
+                // Mostrar código UT y nombre corto (ej: "UT3 - Navegación")
+                return `${topicCode}\n${topicInfo.name.split(' ')[0]}`; // Solo primera palabra para no sobrecargar
+            }
+            return topicCode; // Fallback al código si no hay información
+        });
+
+        // Ordenar por código UT numérico (no alfabético) para mantener consistencia
+        const sortedIndices = topicCodes.map((code, index) => ({ code, index, score: topicScores[index] }))
+            .sort((a, b) => {
+                // Extraer número de UT (ej: "UT3" -> 3, "UT11" -> 11)
+                // Usar replace con regex /UT/i para ser case-insensitive
+                const numA = parseInt(a.code.replace(/UT/i, '')) || 0;
+                const numB = parseInt(b.code.replace(/UT/i, '')) || 0;
+                return numA - numB;
+            });
+
+        const sortedLabels = sortedIndices.map(item => topicLabels[item.index]);
+        const sortedScores = sortedIndices.map(item => item.score);
+        const sortedCodes = sortedIndices.map(item => item.code);
 
         try {
             this.charts.radar = new Chart(ctx, {
             type: 'radar',
             data: {
-                labels: topicNames,
+                labels: sortedLabels,
                 datasets: [{
                     label: 'Dominio (%)',
-                    data: topicScores,
+                    data: sortedScores,
                     borderColor: '#10b981',
                     backgroundColor: 'rgba(16, 185, 129, 0.2)',
                     pointBackgroundColor: '#10b981',
                     pointBorderColor: '#fff',
                     pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: '#10b981'
+                    pointHoverBorderColor: '#10b981',
+                    pointRadius: 5,
+                    pointHoverRadius: 7
                 }]
             },
             options: {
@@ -386,7 +536,23 @@ class StatisticsManager {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: false
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const index = context.dataIndex;
+                                const code = sortedCodes[index];
+                                const percentage = context.parsed.r;
+                                return `${code}: ${percentage}%`;
+                            }
+                        }
                     }
                 },
                 scales: {
@@ -397,6 +563,11 @@ class StatisticsManager {
                             stepSize: 20,
                             callback: function(value) {
                                 return value + '%';
+                            }
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 11
                             }
                         }
                     }
@@ -412,7 +583,15 @@ class StatisticsManager {
         const container = document.getElementById('topicMastery');
         container.innerHTML = '';
 
-        Object.keys(this.userProgress).forEach(topicId => {
+        // Ordenar temas por número UT (numérico, no alfabético)
+        const sortedTopics = Object.keys(this.userProgress).sort((a, b) => {
+            // Extraer número de UT (ej: "UT3" -> 3, "UT11" -> 11)
+            const numA = parseInt(a.replace(/UT/i, '')) || 0;
+            const numB = parseInt(b.replace(/UT/i, '')) || 0;
+            return numA - numB;
+        });
+
+        sortedTopics.forEach(topicId => {
             const topic = this.userProgress[topicId];
             const topicInfo = this.topics[topicId];
 
@@ -425,7 +604,7 @@ class StatisticsManager {
 
             topicItem.innerHTML = `
                 <div class="topic-info">
-                    <div class="topic-name">${topicId} - ${topicInfo.name}</div>
+                    <div class="topic-name">${topicId} - ${topicInfo ? topicInfo.name : 'Sin nombre'}</div>
                     <div class="topic-stats">
                         ${topic.correct}/${topic.total} preguntas correctas
                         <i class="fas ${trendIcon} ms-2"></i>
@@ -433,7 +612,7 @@ class StatisticsManager {
                 </div>
                 <div class="topic-progress">
                     <div class="progress">
-                        <div class="progress-bar" style="width: ${topic.percentage}%; background-color: ${topicInfo.color}"></div>
+                        <div class="progress-bar" style="width: ${topic.percentage}%; background-color: ${topicInfo ? topicInfo.color : '#6b7280'}"></div>
                     </div>
                 </div>
                 <div class="topic-score">${topic.percentage}%</div>
@@ -486,10 +665,15 @@ class StatisticsManager {
 
         this.examHistory.forEach(exam => {
             const examElement = document.createElement('div');
-            examElement.className = `exam-history-item ${exam.passed ? 'passed' : 'failed'}`;
+            const isStudyTest = exam.exam_type === 'study_test';
+            const examTypeClass = isStudyTest ? 'exam-type-study-test' : 'exam-type-exam';
+            examElement.className = `exam-history-item ${exam.passed ? 'passed' : 'failed'} ${examTypeClass}`;
             
             const statusText = exam.passed ? 'Aprobado' : 'Suspenso';
             const statusClass = exam.passed ? 'passed' : 'failed';
+            const typeLabel = isStudyTest ? 'Test Estudio' : 'Examen';
+            const typeIcon = isStudyTest ? 'fa-book-reader' : 'fa-clipboard-check';
+            const typeBadgeColor = isStudyTest ? '#10b981' : '#4f46e5';
             
             // Format date to local timezone
             let formattedDate = 'Fecha no disponible';
@@ -512,6 +696,11 @@ class StatisticsManager {
                 <div class="exam-date">
                     <i class="fas fa-calendar-alt me-1"></i>
                     ${formattedDate}
+                </div>
+                
+                <div class="exam-type-badge" style="background-color: ${typeBadgeColor};">
+                    <i class="fas ${typeIcon}"></i>
+                    <span>${typeLabel}</span>
                 </div>
                 
                 <div class="exam-status">
@@ -604,13 +793,29 @@ class StatisticsManager {
         }
 
         // Check exam frequency
-        const daysSinceLastExam = Math.floor((new Date() - this.userStats.last_exam_date) / (1000 * 60 * 60 * 24));
-        if (daysSinceLastExam > 3) {
+        if (this.userStats.last_exam_date) {
+            try {
+                const lastExamDate = new Date(this.userStats.last_exam_date);
+                const daysSinceLastExam = Math.floor((new Date() - lastExamDate) / (1000 * 60 * 60 * 24));
+                
+                if (daysSinceLastExam > 3) {
+                    recommendations.push({
+                        title: 'Realiza un nuevo examen',
+                        description: `Han pasado ${daysSinceLastExam} días desde tu último examen. Es hora de poner a prueba tus conocimientos.`,
+                        priority: 'medium',
+                        icon: 'fas fa-clipboard-check'
+                    });
+                }
+            } catch (e) {
+                console.error('Error calculando días desde último examen:', e);
+            }
+        } else if (this.userStats.exams_completed === 0) {
+            // Si nunca ha hecho un examen
             recommendations.push({
-                title: 'Realiza un nuevo examen',
-                description: `Han pasado ${daysSinceLastExam} días desde tu último examen. Es hora de poner a prueba tus conocimientos.`,
-                priority: 'medium',
-                icon: 'fas fa-clipboard-check'
+                title: 'Realiza tu primer examen',
+                description: 'Comienza tu camino realizando tu primer examen para evaluar tu nivel inicial.',
+                priority: 'high',
+                icon: 'fas fa-play-circle'
             });
         }
 
@@ -640,12 +845,15 @@ class StatisticsManager {
             }
         });
         
-        // Agregar nuevos logros desbloqueados
-        unlockedAchievements.forEach(achievement => {
-            this.userAchievements.push(achievement.id);
-        });
-        
+        // Agregar nuevos logros desbloqueados y guardarlos en el backend
         if (unlockedAchievements.length > 0) {
+            unlockedAchievements.forEach(achievement => {
+                this.userAchievements.push(achievement.id);
+            });
+            
+            // Intentar guardar en el backend (si el endpoint existe)
+            this.saveUnlockedAchievements(unlockedAchievements);
+            
             // Mostrar notificación de nuevos logros
             this.showAchievementNotification(unlockedAchievements);
         }
@@ -697,8 +905,34 @@ class StatisticsManager {
     }
 
     checkSpecialCondition(condition) {
-        // Implementar lógica para logros especiales
-        // Por ahora, retornar false ya que necesitaríamos más datos
+        // Verificar logros especiales basados en examHistory
+        if (!this.examHistory || this.examHistory.length === 0) {
+            return false;
+        }
+
+        // Búho Nocturno: completar examen después de medianoche (00:00-06:00)
+        if (condition.night_exam) {
+            return this.examHistory.some(exam => {
+                if (!exam.date) return false;
+                try {
+                    const examDate = new Date(exam.date);
+                    const hour = examDate.getHours();
+                    return hour >= 0 && hour < 6; // Entre 00:00 y 06:00
+                } catch (e) {
+                    return false;
+                }
+            });
+        }
+
+        // Demonio de la Velocidad: completar examen en menos de X minutos
+        if (condition.fast_completion) {
+            const maxMinutes = condition.fast_completion;
+            return this.examHistory.some(exam => {
+                const timeMinutes = exam.time_minutes || 0;
+                return timeMinutes > 0 && timeMinutes <= maxMinutes;
+            });
+        }
+
         return false;
     }
 
@@ -741,9 +975,150 @@ class StatisticsManager {
         });
     }
 
+    async saveUnlockedAchievements(achievements) {
+        // Intentar guardar logros desbloqueados en el backend
+        try {
+            const authToken = this.getCurrentAuthToken();
+            if (!authToken) return;
+
+            for (const achievement of achievements) {
+                try {
+                    await fetch(`${this.API_BASE}/statistics/achievements/${this.userId}/unlock`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            achievement_id: achievement.id,
+                            xp: achievement.xp
+                        })
+                    });
+                } catch (e) {
+                    // Si el endpoint no existe, solo loguear (no es crítico)
+                    console.log(`Endpoint de logros no disponible, logro ${achievement.id} solo en memoria`);
+                }
+            }
+        } catch (error) {
+            console.error('Error guardando logros:', error);
+            // No es crítico, los logros seguirán funcionando localmente
+        }
+    }
+
     showAchievementDetail(achievement, isUnlocked) {
         const modal = new bootstrap.Modal(document.createElement('div'));
         // Implementation for achievement detail modal
+    }
+
+    showResetConfirmModal() {
+        const modalElement = document.getElementById('resetStatsModal');
+        if (!modalElement) {
+            console.error('Modal de reseteo no encontrado');
+            return;
+        }
+
+        const modal = new bootstrap.Modal(modalElement);
+        const confirmInput = document.getElementById('resetConfirmText');
+        const confirmBtn = document.getElementById('confirmResetBtn');
+        const feedback = document.getElementById('resetConfirmFeedback');
+
+        // Reset estado inicial
+        confirmInput.value = '';
+        confirmInput.classList.remove('is-invalid');
+        confirmBtn.disabled = true;
+        feedback.textContent = '';
+
+        // Validar input en tiempo real
+        confirmInput.addEventListener('input', () => {
+            const inputValue = confirmInput.value.trim().toLowerCase();
+            const requiredText = 'borrar';
+
+            if (inputValue === requiredText) {
+                confirmInput.classList.remove('is-invalid');
+                confirmInput.classList.add('is-valid');
+                confirmBtn.disabled = false;
+                feedback.textContent = '';
+            } else if (inputValue.length > 0) {
+                confirmInput.classList.remove('is-valid');
+                confirmInput.classList.add('is-invalid');
+                confirmBtn.disabled = true;
+                feedback.textContent = `Debes escribir exactamente "${requiredText}" para confirmar`;
+            } else {
+                confirmInput.classList.remove('is-invalid', 'is-valid');
+                confirmBtn.disabled = true;
+                feedback.textContent = '';
+            }
+        });
+
+        // Confirmar reseteo
+        confirmBtn.addEventListener('click', async () => {
+            if (confirmInput.value.trim().toLowerCase() === 'borrar') {
+                await this.resetUserStatistics();
+                modal.hide();
+            }
+        });
+
+        // Limpiar al cerrar el modal
+        modalElement.addEventListener('hidden.bs.modal', () => {
+            confirmInput.value = '';
+            confirmInput.classList.remove('is-invalid', 'is-valid');
+            confirmBtn.disabled = true;
+            feedback.textContent = '';
+        }, { once: true });
+
+        modal.show();
+    }
+
+    async resetUserStatistics() {
+        const authToken = this.getCurrentAuthToken();
+        if (!authToken) {
+            this.showError('No estás autenticado. Por favor, inicia sesión.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${this.API_BASE}/user/reset-statistics`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                
+                // Mostrar mensaje de éxito
+                this.showSuccess('Estadísticas reseteadas correctamente. Recargando página...');
+                
+                // Recargar la página después de 2 segundos
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                const error = await response.json();
+                this.showError(`Error al resetear estadísticas: ${error.error || 'Error desconocido'}`);
+            }
+        } catch (error) {
+            console.error('Error reseteando estadísticas:', error);
+            this.showError(`Error al resetear estadísticas: ${error.message}`);
+        }
+    }
+
+    showSuccess(message) {
+        // Crear notificación de éxito
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-success alert-dismissible fade show position-fixed';
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = `
+            <i class="fas fa-check-circle me-2"></i>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
     }
 
     async viewFailedQuestions(examId) {
