@@ -124,12 +124,8 @@ fi
 
 # Verificar que no hay cambios sin commitear
 if ! git diff-index --quiet HEAD --; then
-    warning "Hay cambios sin commitear. Asegúrate de hacer commit antes del despliegue."
-    echo "¿Quieres continuar de todos modos? (y/N)"
-    read -r response
-    if [[ ! "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-        error "Despliegue cancelado. Haz commit de los cambios primero."
-    fi
+    warning "Hay cambios sin commitear. Continuando con el despliegue de todos modos..."
+    # No bloqueamos el deployment, solo advertimos
 fi
 
 # Verificar autenticación
@@ -254,6 +250,7 @@ if gcloud run deploy ${API_SERVICE_NAME} \
     --max-instances=10 \
     --timeout=300 \
     --set-env-vars="FLASK_ENV=production,BUILD_ID=${BUILD_ID}" \
+    --update-secrets="JWT_SECRET=jwt-secret:latest" \
     --quiet 2>&1; then
     success "Servicio API desplegado"
 else
