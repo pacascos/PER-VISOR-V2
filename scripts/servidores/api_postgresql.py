@@ -1776,12 +1776,24 @@ def get_simple_user_stats():
         conn = psycopg2.connect(**DB_CONFIG)
         cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
+        # Get user statistics from user_statistics table (if exists)
+        cur.execute("""
+            SELECT 
+                level, total_xp, daily_streak_count, longest_streak
+            FROM user_statistics
+            WHERE user_id = %s
+        """, (user_id,))
+        
+        user_stats_row = cur.fetchone()
+        
         # Get completed exams stats (combining user_exams and study_tests)
         cur.execute("""
             SELECT
                 COUNT(*) as exams_completed,
                 SUM(total_questions) as total_questions,
                 SUM(correct_answers) as total_correct,
+                -- Calcular porcentaje global real (correctas/total), no promedio de porcentajes
+                ROUND((SUM(correct_answers)::decimal / NULLIF(SUM(total_questions), 0) * 100), 2) as overall_score,
                 AVG(score_percentage) as avg_score,
                 SUM(duration_minutes) as total_time_minutes
             FROM (
@@ -1842,22 +1854,34 @@ def get_simple_user_stats():
 
         recent_exams = cur.fetchall()
 
-        cur.close()
-        conn.close()
-
         # Format response
         if stats['exams_completed'] == 0:
+            # Close connection early if no exams
+            cur.close()
+            conn.close()
+            # Use defaults or values from user_statistics if available
+            level = user_stats_row['level'] if user_stats_row and user_stats_row['level'] else 1
+            xp = user_stats_row['total_xp'] if user_stats_row and user_stats_row['total_xp'] else 0
+            daily_streak = user_stats_row['daily_streak_count'] if user_stats_row and user_stats_row['daily_streak_count'] else 0
+            longest_streak = user_stats_row['longest_streak'] if user_stats_row and user_stats_row['longest_streak'] else 0
+            
+            # Calculate XP needed for next level
+            xp_to_next = 500
+            if level > 1:
+                xp_needed = 500 + (level - 1) * 100
+                xp_to_next = xp_needed - (xp % xp_needed) if xp > 0 else xp_needed
+            
             return jsonify({
-                'level': 1,
-                'xp': 0,
-                'xp_to_next': 500,
+                'level': level,
+                'xp': xp,
+                'xp_to_next': xp_to_next,
                 'exams_completed': 0,
                 'total_questions': 0,
                 'correct_answers': 0,
                 'overall_score': 0,
                 'study_time_hours': 0,
-                'daily_streak': 0,
-                'longest_streak': 0,
+                'daily_streak': daily_streak,
+                'longest_streak': longest_streak,
                 'weak_topics': [],
                 'strong_topics': [],
                 'last_exam_date': None,
@@ -1865,10 +1889,39 @@ def get_simple_user_stats():
                 'exam_history': []
             }), 200
 
-        # Calculate level based on XP
-        xp = int(stats['exams_completed']) * 50
-        level = 1 + (xp // 500)
-        xp_to_next = 500 - (xp % 500)
+        # Use real data from user_statistics table, or calculate fallback
+        if user_stats_row:
+            level = user_stats_row['level'] if user_stats_row['level'] else 1
+            xp = user_stats_row['total_xp'] if user_stats_row['total_xp'] else 0
+            daily_streak = user_stats_row['daily_streak_count'] if user_stats_row['daily_streak_count'] else 0
+            longest_streak = user_stats_row['longest_streak'] if user_stats_row['longest_streak'] else 0
+        else:
+            # Fallback: calculate from exams completed (simplified)
+            xp = int(stats['exams_completed']) * 50
+            level = 1 + (xp // 500)
+            daily_streak = 0
+            longest_streak = 0
+        
+        # Calculate XP needed for next level (using same formula as statistics_api.py)
+        if level == 1:
+            xp_to_next = 500 - xp if xp < 500 else 0
+        else:
+            # Calculate total XP needed for current level
+            total_xp_for_current = 0
+            for i in range(1, level):
+                if i == 1:
+                    total_xp_for_current += 500
+                else:
+                    total_xp_for_current += (500 + (i - 1) * 100)
+            
+            # XP needed for next level
+            xp_needed_for_next = 500 + (level - 1) * 100
+            
+            # Remaining XP after completing current level
+            xp_after_current = xp - total_xp_for_current
+            
+            # XP still needed
+            xp_to_next = xp_needed_for_next - xp_after_current
 
         # Format exam history with detailed information
         exam_history = []
@@ -1890,28 +1943,96 @@ def get_simple_user_stats():
                 'exam_type': exam['exam_type']
             })
 
-        # Generate topic progress data (simulated for now)
+        # Calculate topic progress from real data
         topic_progress = {}
         if stats['exams_completed'] > 0:
-            # Simulate topic performance based on overall score
-            topics = ['UT1', 'UT2', 'UT3', 'UT4', 'UT5', 'UT6', 'UT7', 'UT8', 'UT9', 'UT10', 'UT11']
-            base_score = float(stats['avg_score'] or 0)
+            # Get mapping from category names to UT codes
+            cur.execute("""
+                SELECT ut_number, category_name 
+                FROM ut_configuration 
+                ORDER BY ut_number
+            """)
+            ut_mapping = {row['category_name']: f"UT{row['ut_number']}" for row in cur.fetchall()}
             
-            for i, topic in enumerate(topics):
-                # Add some variation to each topic
-                variation = (i % 3 - 1) * 10  # -10, 0, or +10
-                topic_score = max(0, min(100, base_score + variation))
+            # Get real topic performance from user_answers and exam_questions
+            cur.execute("""
+                SELECT 
+                    eq.ut_category,
+                    COUNT(*) as total,
+                    SUM(CASE WHEN ua.is_correct THEN 1 ELSE 0 END) as correct
+                FROM exam_questions eq
+                LEFT JOIN user_answers ua ON eq.user_exam_id = ua.user_exam_id 
+                    AND eq.question_id = ua.question_id
+                WHERE eq.user_exam_id IN (
+                    SELECT id FROM user_exams WHERE user_id = %s AND status = 'completed'
+                )
+                GROUP BY eq.ut_category
+            """, (user_id,))
+            
+            exam_topic_stats = cur.fetchall()
+            
+            # Also get from study_tests (las respuestas están en study_test_questions, no en tabla separada)
+            cur.execute("""
+                SELECT 
+                    stq.ut_category,
+                    COUNT(*) as total,
+                    SUM(CASE WHEN stq.is_correct THEN 1 ELSE 0 END) as correct
+                FROM study_test_questions stq
+                WHERE stq.study_test_id IN (
+                    SELECT id FROM study_tests WHERE user_id = %s AND status = 'completed'
+                )
+                AND stq.user_answer IS NOT NULL  -- Solo contar preguntas respondidas
+                GROUP BY stq.ut_category
+            """, (user_id,))
+            
+            study_topic_stats = cur.fetchall()
+            
+            # Combine results using UT codes
+            topic_map = {}
+            for row in exam_topic_stats:
+                category_name = row['ut_category']
+                ut_code = ut_mapping.get(category_name, category_name)  # Fallback al nombre si no hay mapeo
                 
-                # Generate some sample data
-                total_questions = 50 + (i * 5)  # 50-100 questions per topic
-                correct_answers = int((topic_score / 100) * total_questions)
+                if ut_code not in topic_map:
+                    topic_map[ut_code] = {'correct': 0, 'total': 0}
+                topic_map[ut_code]['correct'] += row['correct'] or 0
+                topic_map[ut_code]['total'] += row['total'] or 0
+            
+            for row in study_topic_stats:
+                category_name = row['ut_category']
+                ut_code = ut_mapping.get(category_name, category_name)  # Fallback al nombre si no hay mapeo
                 
-                topic_progress[topic] = {
-                    'correct': correct_answers,
-                    'total': total_questions,
-                    'percentage': round(topic_score, 1)
+                if ut_code not in topic_map:
+                    topic_map[ut_code] = {'correct': 0, 'total': 0}
+                topic_map[ut_code]['correct'] += row['correct'] or 0
+                topic_map[ut_code]['total'] += row['total'] or 0
+            
+            # Format topic progress
+            for ut, data in topic_map.items():
+                total = data['total']
+                correct = data['correct']
+                percentage = round((correct / total * 100), 1) if total > 0 else 0
+                
+                topic_progress[ut] = {
+                    'correct': correct,
+                    'total': total,
+                    'percentage': percentage
                 }
 
+        # Calculate weak and strong topics
+        weak_topics = []
+        strong_topics = []
+        
+        for ut, data in topic_progress.items():
+            if data['percentage'] < 70 and data['total'] >= 5:  # At least 5 questions
+                weak_topics.append(ut)
+            elif data['percentage'] >= 85 and data['total'] >= 5:
+                strong_topics.append(ut)
+        
+        # Close connection after all queries are done
+        cur.close()
+        conn.close()
+        
         return jsonify({
             'level': level,
             'xp': xp,
@@ -1919,12 +2040,12 @@ def get_simple_user_stats():
             'exams_completed': int(stats['exams_completed']),
             'total_questions': int(stats['total_questions'] or 0),
             'correct_answers': int(stats['total_correct'] or 0),
-            'overall_score': round(float(stats['avg_score'] or 0), 1),
+            'overall_score': round(float(stats['overall_score'] or stats['avg_score'] or 0), 1),
             'study_time_hours': round((stats['total_time_minutes'] or 0) / 60, 1),
-            'daily_streak': 1 if stats['exams_completed'] > 0 else 0,
-            'longest_streak': 1 if stats['exams_completed'] > 0 else 0,
-            'weak_topics': [],
-            'strong_topics': [],
+            'daily_streak': daily_streak,
+            'longest_streak': longest_streak,
+            'weak_topics': weak_topics,
+            'strong_topics': strong_topics,
             'last_exam_date': recent_exams[0]['date'].isoformat() if recent_exams else None,
             'topic_progress': topic_progress,
             'exam_history': exam_history
@@ -1932,6 +2053,97 @@ def get_simple_user_stats():
 
     except Exception as e:
         logger.error(f"Error obteniendo estadísticas del usuario: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        # Asegurar que el cursor y conexión se cierren incluso en caso de error
+        try:
+            if 'cur' in locals():
+                cur.close()
+            if 'conn' in locals():
+                conn.close()
+        except:
+            pass
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+# ====================================
+# RESETEO DE ESTADÍSTICAS
+# ====================================
+
+@app.route('/api/user/reset-statistics', methods=['POST'])
+@require_auth
+def reset_user_statistics():
+    """Resetear todas las estadísticas del usuario autenticado"""
+    try:
+        user_id = request.current_user['user_id']
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Error de conexión a la base de datos'}), 500
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # Transacción simple: eliminar solo las tablas principales
+        # Las tablas relacionadas se eliminan por CASCADE automáticamente
+        try:
+            # Eliminar exámenes (CASCADE elimina exam_questions y user_answers)
+            cur.execute("DELETE FROM user_exams WHERE user_id = %s", (user_id,))
+            deleted_exams = cur.rowcount
+
+            # Eliminar tests de estudio (CASCADE elimina study_test_questions)
+            cur.execute("DELETE FROM study_tests WHERE user_id = %s", (user_id,))
+            deleted_study_tests = cur.rowcount
+
+            # Eliminar logros
+            cur.execute("DELETE FROM user_achievements WHERE user_id = %s", (user_id,))
+            deleted_achievements = cur.rowcount
+
+            # Resetear estadísticas a valores por defecto
+            cur.execute("""
+                INSERT INTO user_statistics (user_id, level, total_xp, exams_completed, 
+                                             total_questions_answered, correct_answers, 
+                                             study_time_minutes, daily_streak_count, longest_streak)
+                VALUES (%s, 1, 0, 0, 0, 0, 0, 0, 0)
+                ON CONFLICT (user_id) DO UPDATE SET
+                    level = 1,
+                    total_xp = 0,
+                    exams_completed = 0,
+                    total_questions_answered = 0,
+                    correct_answers = 0,
+                    study_time_minutes = 0,
+                    daily_streak_count = 0,
+                    longest_streak = 0,
+                    last_study_date = NULL,
+                    last_exam_date = NULL,
+                    updated_at = CURRENT_TIMESTAMP
+            """, (user_id,))
+
+            # Confirmar transacción
+            conn.commit()
+            
+            logger.info(f"✅ Estadísticas reseteadas para usuario {user_id}")
+
+            cur.close()
+            conn.close()
+
+            return jsonify({
+                'success': True,
+                'message': 'Estadísticas reseteadas correctamente. Tu cuenta ha vuelto a empezar.',
+                'deleted': {
+                    'exams': deleted_exams,
+                    'study_tests': deleted_study_tests,
+                    'achievements': deleted_achievements
+                }
+            }), 200
+
+        except Exception as e:
+            # Rollback en caso de error
+            conn.rollback()
+            logger.error(f"Error en transacción de reseteo: {e}")
+            raise
+
+    except Exception as e:
+        logger.error(f"Error reseteando estadísticas del usuario: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
 # ====================================
@@ -2229,6 +2441,9 @@ def submit_exam_answers(exam_id):
         """, (duration_minutes, correct_answers, passed, score_percentage,
               json.dumps({'ut_results': ut_results}), exam_id))
 
+        # Actualizar user_statistics con racha y XP
+        _update_user_statistics_after_exam(cur, user_id, correct_answers, total_questions, duration_minutes, score_percentage)
+
         conn.commit()
         cur.close()
         conn.close()
@@ -2396,6 +2611,90 @@ def _calculate_exam_duration(started_at):
 
     duration = datetime.now(started_at.tzinfo) - started_at
     return int(duration.total_seconds() / 60)
+
+def _update_user_statistics_after_exam(cur, user_id, correct_answers, total_questions, duration_minutes, score_percentage):
+    """Update user_statistics table after exam completion (streak, XP, level)"""
+    from datetime import datetime, date
+    
+    # Ensure user_statistics row exists
+    cur.execute("""
+        INSERT INTO user_statistics (user_id, level, total_xp, exams_completed, 
+                                     total_questions_answered, correct_answers, 
+                                     study_time_minutes, daily_streak_count, longest_streak)
+        VALUES (%s, 1, 0, 0, 0, 0, 0, 0, 0)
+        ON CONFLICT (user_id) DO NOTHING
+    """, (user_id,))
+    
+    # Update daily streak
+    cur.execute("""
+        SELECT daily_streak_count, last_study_date
+        FROM user_statistics
+        WHERE user_id = %s
+    """, (user_id,))
+    
+    result = cur.fetchone()
+    if result:
+        current_streak = result['daily_streak_count'] or 0
+        last_study_date = result['last_study_date']
+        today = date.today()
+        
+        if last_study_date:
+            days_since_study = (today - last_study_date).days
+            if days_since_study == 1:
+                # Consecutive day - increment streak
+                new_streak = current_streak + 1
+            elif days_since_study == 0:
+                # Same day - keep current streak
+                new_streak = current_streak
+            else:
+                # Gap in studying - reset streak
+                new_streak = 1
+        else:
+            # First study session
+            new_streak = 1
+        
+        # Calculate XP gained (2 XP per percentage point, minimum 50 XP)
+        xp_gained = max(50, int(score_percentage * 2))
+        
+        # Update statistics
+        cur.execute("""
+            UPDATE user_statistics
+            SET
+                exams_completed = exams_completed + 1,
+                total_questions_answered = total_questions_answered + %s,
+                correct_answers = correct_answers + %s,
+                study_time_minutes = study_time_minutes + %s,
+                total_xp = total_xp + %s,
+                daily_streak_count = %s,
+                longest_streak = GREATEST(longest_streak, %s),
+                last_study_date = %s,
+                last_exam_date = CURRENT_TIMESTAMP,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE user_id = %s
+            RETURNING total_xp
+        """, (total_questions, correct_answers, duration_minutes, xp_gained,
+              new_streak, new_streak, today, user_id))
+        
+        result = cur.fetchone()
+        if result:
+            total_xp = result['total_xp']
+            
+            # Calculate new level (500 XP for level 1, then +100 XP per level)
+            new_level = 1
+            xp_needed = 500
+            remaining_xp = total_xp
+            
+            while remaining_xp >= xp_needed:
+                remaining_xp -= xp_needed
+                new_level += 1
+                xp_needed = 500 + (new_level - 1) * 100
+            
+            # Update level
+            cur.execute("""
+                UPDATE user_statistics
+                SET level = %s
+                WHERE user_id = %s
+            """, (new_level, user_id))
 
 
 @app.route('/api/user/exams', methods=['GET'])
@@ -3239,30 +3538,8 @@ def submit_study_test(study_test_id):
             WHERE id = %s
         """, (correct_answers, score_percentage, duration_minutes, study_test_id))
 
-        # NUEVO: Actualizar estadísticas del usuario (igual que con exámenes)
-        cur.execute("""
-            INSERT INTO user_statistics (
-                user_id, exams_completed, total_questions_answered,
-                correct_answers, study_time_minutes, last_exam_date
-            )
-            VALUES (%s, 1, %s, %s, %s, CURRENT_TIMESTAMP)
-            ON CONFLICT (user_id)
-            DO UPDATE SET
-                exams_completed = user_statistics.exams_completed + 1,
-                total_questions_answered = user_statistics.total_questions_answered + %s,
-                correct_answers = user_statistics.correct_answers + %s,
-                study_time_minutes = user_statistics.study_time_minutes + %s,
-                last_exam_date = CURRENT_TIMESTAMP,
-                updated_at = CURRENT_TIMESTAMP
-        """, (
-            user_id,
-            total_questions,
-            correct_answers,
-            duration_minutes,
-            total_questions,
-            correct_answers,
-            duration_minutes
-        ))
+        # Actualizar user_statistics con racha y XP (usando la misma función que exámenes)
+        _update_user_statistics_after_exam(cur, user_id, correct_answers, total_questions, duration_minutes, score_percentage)
 
         conn.commit()
         cur.close()
@@ -3989,6 +4266,9 @@ def get_question_stats_by_ut():
             ut_stat = cur.fetchone()
 
             # Preguntas más falladas de esta UT
+            # Priorizamos preguntas con más intentos para tener datos más significativos
+            # Ordenamos por: fallos absolutos DESC, luego por tasa de fallos DESC, 
+            # y finalmente por número de intentos DESC (para desempatar)
             cur.execute("""
                 SELECT 
                     q.id as question_id,
@@ -4001,8 +4281,10 @@ def get_question_stats_by_ut():
                 JOIN question_global_stats qgs ON q.id = qgs.question_id
                 WHERE q.categoria = %s
                 AND q.anulada = false
-                AND qgs.total_appearances > 0
-                ORDER BY qgs.total_incorrect_answers DESC, qgs.success_rate ASC
+                AND qgs.total_appearances >= 2  -- Mínimo 2 intentos para considerar estadísticamente significativo
+                ORDER BY qgs.total_incorrect_answers DESC, 
+                         qgs.success_rate ASC, 
+                         qgs.total_appearances DESC
                 LIMIT 5
             """, (category_name,))
             
@@ -4295,6 +4577,189 @@ def get_question_heatmap_data():
             'success': False,
             'error': 'Error interno del servidor'
         }), 500
+
+@app.route('/api/preguntas-duplicadas-agrupadas', methods=['GET'])
+def get_preguntas_duplicadas_agrupadas():
+    """Obtener preguntas duplicadas agrupadas por texto"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Error de conexión a la base de datos'}), 500
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # Obtener grupos de preguntas duplicadas
+        # IMPORTANTE: Solo mostrar las que tienen hashes diferentes (necesitan unificación)
+        query = """
+            WITH grupos AS (
+                SELECT 
+                    q.texto_pregunta,
+                    q.categoria,
+                    COUNT(*) as num_apariciones,
+                    COUNT(DISTINCT q.hash_pregunta) as num_hashes_diferentes,
+                    (SELECT q2.id::text 
+                     FROM questions q2
+                     JOIN exams e2 ON q2.exam_id = e2.id
+                     WHERE q2.texto_pregunta = q.texto_pregunta
+                     AND q2.categoria = q.categoria
+                     AND q2.anulada = false
+                     ORDER BY e2.convocatoria DESC
+                     LIMIT 1) as pregunta_id_base
+                FROM questions q
+                JOIN exams e ON q.exam_id = e.id
+                WHERE q.anulada = false
+                AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
+                GROUP BY q.texto_pregunta, q.categoria
+                HAVING COUNT(*) > 1 
+                AND COUNT(DISTINCT q.hash_pregunta) > 1  -- SOLO las que tienen hashes diferentes
+            )
+            SELECT 
+                g.texto_pregunta,
+                g.categoria,
+                g.num_apariciones,
+                g.num_hashes_diferentes,
+                g.pregunta_id_base as pregunta_id,
+                -- Obtener hash recomendado (de la convocatoria más reciente)
+                (SELECT q2.hash_pregunta
+                 FROM questions q2
+                 JOIN exams e2 ON q2.exam_id = e2.id
+                 WHERE q2.texto_pregunta = g.texto_pregunta
+                 AND q2.anulada = false
+                 ORDER BY e2.convocatoria DESC, 
+                          CASE WHEN e2.tipo_examen = 'PER_NORMAL' THEN 1 ELSE 2 END
+                 LIMIT 1) as hash_recomendado
+            FROM grupos g
+            ORDER BY g.categoria, g.num_apariciones DESC
+        """
+
+        cur.execute(query)
+        grupos = cur.fetchall()
+
+        # Para cada grupo, obtener todas las instancias
+        resultados = []
+        for grupo in grupos:
+            # Obtener todas las instancias de esta pregunta
+            cur.execute("""
+                SELECT 
+                    q.id::text,
+                    q.hash_pregunta,
+                    q.numero_pregunta,
+                    q.respuesta_correcta,
+                    e.convocatoria,
+                    e.tipo_examen,
+                    e.titulo as examen
+                FROM questions q
+                JOIN exams e ON q.exam_id = e.id
+                WHERE q.texto_pregunta = %s
+                AND q.anulada = false
+                AND (e.tipo_examen = 'PER_NORMAL' OR e.tipo_examen = 'PER_LIBERADO')
+                ORDER BY e.convocatoria DESC, 
+                         CASE WHEN e.tipo_examen = 'PER_NORMAL' THEN 1 ELSE 2 END
+            """, (grupo['texto_pregunta'],))
+            
+            instancias = cur.fetchall()
+            
+            # Obtener opciones para cada instancia
+            instancias_completas = []
+            for instancia in instancias:
+                cur.execute("""
+                    SELECT opcion, texto
+                    FROM answer_options
+                    WHERE question_id = %s
+                    ORDER BY opcion
+                """, (instancia['id'],))
+                
+                opciones_rows = cur.fetchall()
+                opciones = {row['opcion']: row['texto'] for row in opciones_rows}
+                
+                instancias_completas.append({
+                    'id': instancia['id'],
+                    'hash_pregunta': instancia['hash_pregunta'],
+                    'numero_pregunta': instancia['numero_pregunta'],
+                    'respuesta_correcta': instancia['respuesta_correcta'],
+                    'convocatoria': instancia['convocatoria'],
+                    'tipo_examen': instancia['tipo_examen'],
+                    'examen': instancia['examen'],
+                    'opciones': opciones,
+                    'marcar_como_duplicada': False  # Estado inicial
+                })
+
+            resultados.append({
+                'texto_pregunta': grupo['texto_pregunta'],
+                'categoria': grupo['categoria'],
+                'num_apariciones': grupo['num_apariciones'],
+                'num_hashes_diferentes': grupo['num_hashes_diferentes'],
+                'pregunta_id': grupo['pregunta_id'],
+                'hash_recomendado': grupo['hash_recomendado'],
+                'instancias': instancias_completas,
+                'revisado': False,
+                'duplicados_marcados': 0
+            })
+
+        cur.close()
+        conn.close()
+
+        return jsonify(resultados), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo preguntas duplicadas agrupadas: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/api/unificar-hashes-duplicados', methods=['POST'])
+def unificar_hashes_duplicados():
+    """Unificar hashes de preguntas duplicadas marcadas"""
+    try:
+        data = request.get_json()
+        if not data or 'grupos' not in data:
+            return jsonify({'error': 'Datos inválidos'}), 400
+
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Error de conexión a la base de datos'}), 500
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        total_unificados = 0
+        for grupo in data['grupos']:
+            hash_activo = grupo.get('hash_activo')
+            pregunta_ids_duplicadas = grupo.get('pregunta_ids_duplicadas', [])
+            pregunta_ids_activas = grupo.get('pregunta_ids_activas', [])
+
+            if not hash_activo or not pregunta_ids_duplicadas:
+                continue
+
+            # Actualizar hash de las preguntas duplicadas
+            placeholders = ','.join(['%s'] * len(pregunta_ids_duplicadas))
+            cur.execute(f"""
+                UPDATE questions
+                SET hash_pregunta = %s,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id::text IN ({placeholders})
+            """, [hash_activo] + pregunta_ids_duplicadas)
+
+            total_unificados += cur.rowcount
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        logger.info(f"✅ Hashes unificados: {total_unificados} preguntas")
+        
+        return jsonify({
+            'success': True,
+            'mensaje': f'Se unificaron los hashes de {total_unificados} preguntas',
+            'total_unificados': total_unificados
+        }), 200
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        logger.error(f"Error unificando hashes: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
 
 if __name__ == '__main__':
     logger.info("🚀 API PER Nueva Arquitectura iniciando...")
