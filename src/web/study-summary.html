@@ -264,6 +264,9 @@
                 <button class="btn btn-outline-light btn-sm" onclick="openStatistics()">
                     <i class="fas fa-chart-bar"></i> Ver estadísticas detalladas
                 </button>
+                <a href="#" id="exportLink" class="btn btn-success btn-sm" download style="margin-left: 10px;">
+                    <i class="fas fa-download"></i> Exportar CSV
+                </a>
             </div>
             <h1><i class="fas fa-book"></i> Resumen de Estudio por UT</h1>
             <p>Listado depurado de preguntas activas, agrupadas por Unidad Temática y mostrando solo la respuesta correcta.</p>
@@ -331,6 +334,14 @@
         const API_BASE = window.API_BASE || '/api';
         let summaryData = null;
         let filteredData = null;
+
+        // Configurar enlace de exportación al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            const exportLink = document.getElementById('exportLink');
+            if (exportLink) {
+                exportLink.href = `${API_BASE}/study-summary/export`;
+            }
+        });
 
         async function loadSummary() {
             const loading = document.getElementById('loading');
