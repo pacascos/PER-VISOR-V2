@@ -11,6 +11,7 @@ pathlib-mate>=1.0.0
 pdfminer.six>=20221105
 PyMuPDF>=1.23.0  # Para OCR con tesseract
 Pillow>=10.0.0   # Para conversión de imágenes
+reportlab>=4.0.0  # Para generar PDFs
 
 # OCR (para PDFs escaneados 2017-2019)
 pytesseract>=0.3.10

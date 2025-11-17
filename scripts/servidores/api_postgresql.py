@@ -4961,6 +4961,258 @@ def export_study_summary():
         return jsonify({'error': str(e), 'success': False}), 500
 
 
+@app.route('/api/study-summary/export-pdf', methods=['GET'])
+def export_study_summary_pdf():
+    """Exportar resumen de estudio a PDF"""
+    try:
+        from reportlab.lib.pagesizes import A4
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import cm
+        from reportlab.lib import colors
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle
+        from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_JUSTIFY
+        from io import BytesIO
+        
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # Obtener configuración de UTs
+        cur.execute("""
+            SELECT ut_number, ut_name
+            FROM ut_configuration
+            ORDER BY ut_number
+        """)
+        ut_rows = cur.fetchall()
+        ut_map = {row['ut_number']: row['ut_name'] for row in ut_rows}
+
+        # Obtener preguntas activas agrupadas por UT (una por hash)
+        cur.execute("""
+            WITH ranked_questions AS (
+                SELECT
+                    q.id,
+                    q.hash_pregunta,
+                    q.texto_pregunta,
+                    eq.ut_number,
+                    COALESCE(ut.ut_name, q.categoria) AS ut_name,
+                    q.respuesta_correcta,
+                    e.titulo AS examen_titulo,
+                    e.convocatoria,
+                    e.tipo_examen,
+                    e.fecha,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY q.hash_pregunta
+                        ORDER BY
+                            CASE e.tipo_examen
+                                WHEN 'PER_NORMAL' THEN 1
+                                WHEN 'PER_LIBERADO' THEN 2
+                                ELSE 3
+                            END,
+                            e.fecha DESC NULLS LAST,
+                            e.convocatoria DESC NULLS LAST,
+                            q.id DESC
+                    ) AS rn
+                FROM questions q
+                JOIN exam_questions eq ON eq.question_id = q.id
+                JOIN exams e ON e.id = q.exam_id
+                LEFT JOIN ut_configuration ut ON ut.ut_number = eq.ut_number
+                WHERE q.anulada = false
+            )
+            SELECT *
+            FROM ranked_questions
+            WHERE rn = 1
+            ORDER BY ut_number NULLS LAST, fecha DESC NULLS LAST, convocatoria DESC NULLS LAST, examen_titulo, id
+        """)
+
+        rows = cur.fetchall()
+
+        # Crear PDF en memoria
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=A4,
+                                rightMargin=2*cm, leftMargin=2*cm,
+                                topMargin=2*cm, bottomMargin=2*cm)
+
+        # Estilos
+        styles = getSampleStyleSheet()
+        title_style = ParagraphStyle(
+            'CustomTitle',
+            parent=styles['Heading1'],
+            fontSize=16,
+            textColor=colors.HexColor('#2c3e50'),
+            spaceAfter=30,
+            alignment=TA_CENTER
+        )
+        
+        heading_style = ParagraphStyle(
+            'CustomHeading',
+            parent=styles['Heading2'],
+            fontSize=12,
+            textColor=colors.HexColor('#667eea'),
+            spaceAfter=12,
+            spaceBefore=20
+        )
+        
+        question_style = ParagraphStyle(
+            'Question',
+            parent=styles['Normal'],
+            fontSize=10,
+            spaceAfter=8,
+            alignment=TA_LEFT,
+            leftIndent=20,
+            textColor=colors.HexColor('#2d3748')
+        )
+        
+        answer_style = ParagraphStyle(
+            'Answer',
+            parent=styles['Normal'],
+            fontSize=9,
+            spaceAfter=15,
+            leftIndent=30,
+            textColor=colors.HexColor('#2e7d32'),
+            backColor=colors.HexColor('#e8f5e9'),
+            borderPadding=8
+        )
+        
+        meta_style = ParagraphStyle(
+            'Meta',
+            parent=styles['Normal'],
+            fontSize=8,
+            textColor=colors.HexColor('#6c757d'),
+            spaceAfter=5
+        )
+
+        # Construir contenido del PDF
+        story = []
+        
+        # Título
+        story.append(Paragraph("Resumen de Estudio PER", title_style))
+        story.append(Paragraph(f"Generado el {datetime.now().strftime('%d/%m/%Y %H:%M')}", meta_style))
+        story.append(Spacer(1, 20))
+
+        # Agrupar por UT
+        summary = defaultdict(list)
+        
+        for row in rows:
+            ut_number = row['ut_number']
+            ut_name = row['ut_name'] or ut_map.get(ut_number) or 'Sin clasificación'
+            
+            # Obtener opciones de respuesta
+            cur.execute("""
+                SELECT opcion, texto
+                FROM answer_options
+                WHERE question_id = %s
+                ORDER BY opcion
+            """, (row['id'],))
+            
+            opciones_rows = cur.fetchall()
+            opciones = {}
+            for op in opciones_rows:
+                opciones[op['opcion'].upper()] = op['texto']
+
+            respuesta_letra = (row['respuesta_correcta'] or '').strip().upper()
+            respuesta_texto = opciones.get(respuesta_letra, '')
+
+            summary[ut_number].append({
+                'question_id': str(row['id']),
+                'ut_number': ut_number,
+                'ut_name': ut_name,
+                'texto_pregunta': row['texto_pregunta'],
+                'respuesta_letra': respuesta_letra,
+                'respuesta_texto': respuesta_texto,
+                'convocatoria': row['convocatoria'] or '',
+                'tipo_examen': row['tipo_examen'] or '',
+                'fecha': row['fecha'].isoformat() if row['fecha'] else '',
+                'examen_titulo': row['examen_titulo'] or ''
+            })
+
+        # Ordenar y generar contenido
+        numero_pregunta = 1
+        sorted_ut_numbers = sorted([ut for ut in summary.keys() if ut is not None])
+        
+        # Función auxiliar para escapar HTML
+        def escape_html(text):
+            if not text:
+                return ""
+            return (text.replace('&', '&amp;')
+                      .replace('<', '&lt;')
+                      .replace('>', '&gt;')
+                      .replace('\n', '<br/>'))
+        
+        # Primero las UTs numeradas
+        for ut_number in sorted_ut_numbers:
+            preguntas = summary[ut_number]
+            preguntas.sort(key=lambda x: (x['fecha'] or '0000-01-01', x['convocatoria'] or ''), reverse=True)
+            
+            # Encabezado de UT
+            ut_name = preguntas[0]['ut_name'] if preguntas else ut_map.get(ut_number, 'Sin clasificación')
+            story.append(Paragraph(f"UT {ut_number}: {ut_name}", heading_style))
+            
+            for pregunta in preguntas:
+                # Número y pregunta
+                pregunta_text = escape_html(f"{numero_pregunta}. {pregunta['texto_pregunta']}")
+                story.append(Paragraph(pregunta_text, question_style))
+                
+                # Respuesta correcta
+                respuesta_html = escape_html(f"<b>Respuesta ({pregunta['respuesta_letra']}):</b> {pregunta['respuesta_texto']}")
+                story.append(Paragraph(respuesta_html, answer_style))
+                
+                # Metadatos
+                meta_text = f"Código: {pregunta['question_id']} | {pregunta['convocatoria']} | {pregunta['examen_titulo']}"
+                story.append(Paragraph(escape_html(meta_text), meta_style))
+                
+                story.append(Spacer(1, 12))
+                numero_pregunta += 1
+            
+            story.append(Spacer(1, 20))
+        
+        # Preguntas sin UT
+        if None in summary:
+            preguntas = summary[None]
+            preguntas.sort(key=lambda x: (x['fecha'] or '0000-01-01', x['convocatoria'] or ''), reverse=True)
+            
+            story.append(Paragraph("Sin clasificación", heading_style))
+            
+            for pregunta in preguntas:
+                pregunta_text = escape_html(f"{numero_pregunta}. {pregunta['texto_pregunta']}")
+                story.append(Paragraph(pregunta_text, question_style))
+                
+                respuesta_html = escape_html(f"<b>Respuesta ({pregunta['respuesta_letra']}):</b> {pregunta['respuesta_texto']}")
+                story.append(Paragraph(respuesta_html, answer_style))
+                
+                meta_text = f"Código: {pregunta['question_id']} | {pregunta['convocatoria']} | {pregunta['examen_titulo']}"
+                story.append(Paragraph(escape_html(meta_text), meta_style))
+                
+                story.append(Spacer(1, 12))
+                numero_pregunta += 1
+
+        cur.close()
+        conn.close()
+
+        # Construir PDF
+        doc.build(story)
+        buffer.seek(0)
+
+        # Crear respuesta con PDF
+        from flask import Response
+        response = Response(
+            buffer.getvalue(),
+            mimetype='application/pdf',
+            headers={
+                'Content-Disposition': f'attachment; filename="resumen_estudio_per_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf"'
+            }
+        )
+        
+        return response
+
+    except Exception as e:
+        logger.error(f"Error exportando resumen de estudio a PDF: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return jsonify({'error': str(e), 'success': False}), 500
+
+
 @app.route('/api/question-heatmap/data', methods=['GET'])
 def get_question_heatmap_data():
     """Obtener datos para el heatmap de preguntas por UT"""
