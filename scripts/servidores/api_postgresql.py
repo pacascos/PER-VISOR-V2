@@ -5154,9 +5154,9 @@ def export_study_summary_pdf():
                 pregunta_text = escape_html(f"{numero_pregunta}. {pregunta['texto_pregunta']}")
                 story.append(Paragraph(pregunta_text, question_style))
                 
-                # Respuesta correcta
-                respuesta_html = escape_html(f"<b>Respuesta ({pregunta['respuesta_letra']}):</b> {pregunta['respuesta_texto']}")
-                story.append(Paragraph(respuesta_html, answer_style))
+                # Respuesta correcta (solo texto, sin letra)
+                respuesta_text = escape_html(pregunta['respuesta_texto']) if pregunta['respuesta_texto'] else ''
+                story.append(Paragraph(respuesta_text, answer_style))
                 
                 # Metadatos
                 meta_text = f"Código: {pregunta['question_id']} | {pregunta['convocatoria']} | {pregunta['examen_titulo']}"
@@ -5178,8 +5178,9 @@ def export_study_summary_pdf():
                 pregunta_text = escape_html(f"{numero_pregunta}. {pregunta['texto_pregunta']}")
                 story.append(Paragraph(pregunta_text, question_style))
                 
-                respuesta_html = escape_html(f"<b>Respuesta ({pregunta['respuesta_letra']}):</b> {pregunta['respuesta_texto']}")
-                story.append(Paragraph(respuesta_html, answer_style))
+                # Respuesta correcta (solo texto, sin letra)
+                respuesta_text = escape_html(pregunta['respuesta_texto']) if pregunta['respuesta_texto'] else ''
+                story.append(Paragraph(respuesta_text, answer_style))
                 
                 meta_text = f"Código: {pregunta['question_id']} | {pregunta['convocatoria']} | {pregunta['examen_titulo']}"
                 story.append(Paragraph(escape_html(meta_text), meta_style))
