@@ -4682,7 +4682,7 @@ def get_study_summary():
             SELECT *
             FROM ranked_questions
             WHERE rn = 1
-            ORDER BY ut_number NULLS LAST, examen_titulo, id
+            ORDER BY ut_number NULLS LAST, fecha DESC NULLS LAST, convocatoria DESC NULLS LAST, examen_titulo, id
         """)
 
         rows = cur.fetchall()
@@ -4729,12 +4729,20 @@ def get_study_summary():
             })
 
         # Construir respuesta ordenada por UT
+        # Dentro de cada UT, ordenar preguntas por fecha de convocatoria descendente
         uts_output = []
         for ut_number, ut_name in ut_map.items():
+            preguntas_ut = summary.get(ut_number, [])
+            # Ordenar preguntas por fecha de convocatoria descendente
+            preguntas_ut.sort(key=lambda x: (
+                x['examen']['fecha'] if x['examen']['fecha'] else '0000-01-01',
+                x['examen']['convocatoria'] or ''
+            ), reverse=True)
+            
             uts_output.append({
                 'ut_number': ut_number,
                 'ut_name': ut_name,
-                'preguntas': summary.get(ut_number, [])
+                'preguntas': preguntas_ut
             })
 
         # Añadir preguntas sin UT si existen
