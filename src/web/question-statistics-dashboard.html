@@ -366,6 +366,19 @@
                 </div>
             </div>
 
+            <!-- Bookmarked Questions Section -->
+            <div class="bookmarked-section" style="margin-top: 40px; margin-bottom: 40px;">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h4 style="color: #667eea; font-weight: 600;">
+                        <i class="fas fa-bookmark" style="color: #f59e0b;"></i> Preguntas Marcadas
+                    </h4>
+                    <span id="bookmarked-count" class="badge bg-warning" style="font-size: 1rem; padding: 8px 16px;">0</span>
+                </div>
+                <div id="bookmarked-questions-container" class="bookmarked-questions-container" style="display: block; visibility: visible;">
+                    <!-- Las preguntas marcadas se cargarán aquí -->
+                </div>
+            </div>
+
             <!-- UT Cards -->
             <div id="ut-cards"></div>
         </div>
@@ -380,13 +393,60 @@
 
     <!-- Scripts -->
     <script src="config.js"></script>
-    <script src="question-stats-ut.js?v=2"></script>
+    <script src="bookmark-manager.js?v=1"></script>
+    <script src="question-stats-ut.js?v=3"></script>
     
     <script>
+        // Inicializar dashboard y guardar referencia global
+        let questionStatsDashboard;
+        document.addEventListener('DOMContentLoaded', () => {
+            questionStatsDashboard = new QuestionStatisticsDashboard();
+            window.questionStatsDashboard = questionStatsDashboard;
+        });
+
         // Función para abrir el heatmap visual
         function openHeatmap() {
             console.log('🔥 Abriendo heatmap visual...');
             window.location.href = 'question-heatmap.html';
+        }
+
+        // Función para ver pregunta marcada en el banco
+        function viewBookmarkedQuestion(questionId) {
+            // Guardar el ID de la pregunta en localStorage para que el visor la muestre
+            localStorage.setItem('viewQuestionId', questionId);
+            // Redirigir al banco de preguntas
+            window.location.href = 'visor-nueva-arquitectura.html?question_id=' + questionId;
+        }
+
+        // Función para desmarcar pregunta
+        async function unbookmarkQuestion(questionId) {
+            const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+            if (!token) {
+                alert('Debes estar autenticado para desmarcar preguntas');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${window.API_BASE || '/api'}/questions/${questionId}/bookmark`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Recargar preguntas marcadas
+                    if (window.questionStatsDashboard) {
+                        await window.questionStatsDashboard.loadBookmarkedQuestions();
+                    }
+                } else {
+                    alert('Error al desmarcar la pregunta');
+                }
+            } catch (error) {
+                console.error('Error desmarcando pregunta:', error);
+                alert('Error al desmarcar la pregunta');
+            }
         }
     </script>
 </body>

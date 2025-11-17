@@ -20,6 +20,7 @@ import jwt
 from datetime import datetime, timedelta
 from google.cloud import secretmanager
 import random
+from collections import defaultdict
 
 # Import statistics API routes
 from statistics_api import register_statistics_routes
@@ -138,12 +139,8 @@ def handle_preflight():
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', secrets.token_hex(32))
 JWT_SECRET = os.getenv('JWT_SECRET', secrets.token_hex(32))
 
-# Register statistics routes (pass JWT_SECRET and DB connection function to share with statistics API)
-def get_db_connection_for_statistics():
-    """Wrapper for database connection to share with statistics API"""
-    return get_db_connection()
-
-register_statistics_routes(app, jwt_secret=JWT_SECRET, db_connection_func=get_db_connection_for_statistics)
+# Register statistics routes
+register_statistics_routes(app)
 JWT_EXPIRATION_HOURS = 24
 
 # Funciones de base de datos
@@ -2348,6 +2345,315 @@ def get_exam_questions(exam_id):
         logger.error(f"Error obteniendo preguntas del examen: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
+@app.route('/api/exams/<exam_id>/repeat', methods=['POST'])
+@require_auth
+def repeat_exam(exam_id):
+    """
+    Create a new exam with the same questions as an existing exam
+    Allows users to retake an exam with identical questions
+    """
+    try:
+        user_id = request.current_user['user_id']
+
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Verificar que el examen original pertenezca al usuario
+        cur.execute("""
+            SELECT id, total_questions, exam_type
+            FROM user_exams
+            WHERE id = %s AND user_id = %s
+        """, (exam_id, user_id))
+
+        original_exam = cur.fetchone()
+        if not original_exam:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Examen no encontrado'}), 404
+
+        # Obtener las preguntas del examen original
+        cur.execute("""
+            SELECT question_id, question_order, ut_category, ut_number
+            FROM exam_questions
+            WHERE user_exam_id = %s
+            ORDER BY question_order
+        """, (exam_id,))
+
+        original_questions = cur.fetchall()
+
+        if not original_questions:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'No se encontraron preguntas en el examen original'}), 404
+
+        # Crear nuevo examen
+        cur.execute("""
+            INSERT INTO user_exams (user_id, exam_type, total_questions, status)
+            VALUES (%s, %s, %s, 'in_progress')
+            RETURNING id
+        """, (user_id, original_exam['exam_type'], original_exam['total_questions']))
+
+        new_exam_result = cur.fetchone()
+        if not new_exam_result:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Error creando nuevo examen'}), 500
+
+        new_exam_id = new_exam_result['id']
+
+        # Insertar las mismas preguntas en el nuevo examen
+        questions_selected = []
+        for q in original_questions:
+            cur.execute("""
+                INSERT INTO exam_questions (user_exam_id, question_id, question_order, ut_category, ut_number)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (new_exam_id, q['question_id'], q['question_order'], q['ut_category'], q['ut_number']))
+
+            questions_selected.append({
+                'question_id': str(q['question_id']),
+                'order': q['question_order'],
+                'ut_number': q['ut_number'],
+                'ut_category': q['ut_category']
+            })
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        logger.info(f"🔄 Examen repetido: Usuario {request.current_user['username']} - Original: {exam_id}, Nuevo: {new_exam_id} - {len(questions_selected)} preguntas")
+
+        return jsonify({
+            'success': True,
+            'exam_id': str(new_exam_id),
+            'original_exam_id': str(exam_id),
+            'total_questions': len(questions_selected),
+            'questions': questions_selected,
+            'message': f'Examen repetido con {len(questions_selected)} preguntas'
+        }), 201
+
+    except Exception as e:
+        logger.error(f"Error repitiendo examen: {e}")
+        logger.error(f"Tipo de error: {type(e).__name__}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+# ====================================
+# SISTEMA DE PREGUNTAS MARCADAS
+# ====================================
+
+@app.route('/api/questions/<question_id>/bookmark', methods=['POST'])
+@require_auth
+def bookmark_question(question_id):
+    """
+    Marcar una pregunta para revisión posterior
+    """
+    try:
+        user_id = request.current_user['user_id']
+
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Verificar que la pregunta existe
+        cur.execute("SELECT id FROM questions WHERE id = %s", (question_id,))
+        question = cur.fetchone()
+        if not question:
+            cur.close()
+            conn.close()
+            return jsonify({'error': 'Pregunta no encontrada'}), 404
+
+        # Marcar la pregunta (INSERT con ON CONFLICT DO NOTHING para evitar duplicados)
+        cur.execute("""
+            INSERT INTO bookmarked_questions (user_id, question_id)
+            VALUES (%s, %s)
+            ON CONFLICT (user_id, question_id) DO NOTHING
+            RETURNING id, created_at
+        """, (user_id, question_id))
+
+        result = cur.fetchone()
+        if result:
+            conn.commit()
+            logger.info(f"📌 Pregunta {question_id} marcada por usuario {request.current_user['username']}")
+            cur.close()
+            conn.close()
+            return jsonify({
+                'success': True,
+                'bookmarked': True,
+                'message': 'Pregunta marcada correctamente'
+            }), 201
+        else:
+            # Ya estaba marcada
+            cur.close()
+            conn.close()
+            return jsonify({
+                'success': True,
+                'bookmarked': True,
+                'message': 'La pregunta ya estaba marcada'
+            }), 200
+
+    except Exception as e:
+        logger.error(f"Error marcando pregunta: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/api/questions/<question_id>/bookmark', methods=['DELETE'])
+@require_auth
+def unbookmark_question(question_id):
+    """
+    Desmarcar una pregunta
+    """
+    try:
+        user_id = request.current_user['user_id']
+
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Desmarcar la pregunta
+        cur.execute("""
+            DELETE FROM bookmarked_questions
+            WHERE user_id = %s AND question_id = %s
+            RETURNING id
+        """, (user_id, question_id))
+
+        result = cur.fetchone()
+        if result:
+            conn.commit()
+            logger.info(f"📌 Pregunta {question_id} desmarcada por usuario {request.current_user['username']}")
+            cur.close()
+            conn.close()
+            return jsonify({
+                'success': True,
+                'bookmarked': False,
+                'message': 'Pregunta desmarcada correctamente'
+            }), 200
+        else:
+            cur.close()
+            conn.close()
+            return jsonify({
+                'success': True,
+                'bookmarked': False,
+                'message': 'La pregunta no estaba marcada'
+            }), 200
+
+    except Exception as e:
+        logger.error(f"Error desmarcando pregunta: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/api/questions/<question_id>/bookmark/status', methods=['GET'])
+@require_auth
+def get_bookmark_status(question_id):
+    """
+    Obtener el estado de marcado de una pregunta para el usuario actual
+    """
+    try:
+        user_id = request.current_user['user_id']
+
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Verificar si está marcada
+        cur.execute("""
+            SELECT id, created_at
+            FROM bookmarked_questions
+            WHERE user_id = %s AND question_id = %s
+        """, (user_id, question_id))
+
+        bookmark = cur.fetchone()
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'bookmarked': bookmark is not None,
+            'created_at': bookmark['created_at'].isoformat() if bookmark else None
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo estado de marcado: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@app.route('/api/questions/bookmarked', methods=['GET'])
+@require_auth
+def get_bookmarked_questions():
+    """
+    Obtener todas las preguntas marcadas por el usuario
+    """
+    try:
+        user_id = request.current_user['user_id']
+
+        # Conectar a base de datos
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # Obtener preguntas marcadas con detalles
+        cur.execute("""
+            SELECT 
+                bq.question_id,
+                bq.created_at as bookmarked_at,
+                q.texto_pregunta,
+                q.categoria,
+                q.respuesta_correcta,
+                q.numero_pregunta,
+                e.titulo as exam_titulo,
+                e.convocatoria,
+                e.tipo_examen
+            FROM bookmarked_questions bq
+            JOIN questions q ON bq.question_id = q.id
+            JOIN exams e ON q.exam_id = e.id
+            WHERE bq.user_id = %s
+            ORDER BY bq.created_at DESC
+        """, (user_id,))
+
+        bookmarked = cur.fetchall()
+
+        # Obtener opciones para cada pregunta
+        questions_list = []
+        for item in bookmarked:
+            cur.execute("""
+                SELECT opcion, texto
+                FROM answer_options
+                WHERE question_id = %s
+                ORDER BY opcion
+            """, (item['question_id'],))
+
+            options = cur.fetchall()
+            options_dict = {opt['opcion']: opt['texto'] for opt in options}
+
+            questions_list.append({
+                'question_id': str(item['question_id']),
+                'texto_pregunta': item['texto_pregunta'],
+                'categoria': item['categoria'],
+                'respuesta_correcta': item['respuesta_correcta'],
+                'numero_pregunta': item['numero_pregunta'],
+                'exam_titulo': item['exam_titulo'],
+                'convocatoria': item['convocatoria'],
+                'tipo_examen': item['tipo_examen'],
+                'bookmarked_at': item['bookmarked_at'].isoformat(),
+                'opciones': options_dict
+            })
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'total': len(questions_list),
+            'questions': questions_list
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error obteniendo preguntas marcadas: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
 @app.route('/api/exams/<exam_id>/submit', methods=['POST'])
 @require_auth
 def submit_exam_answers(exam_id):
@@ -4276,6 +4582,7 @@ def get_question_stats_by_ut():
                 SELECT 
                     q.id as question_id,
                     q.texto_pregunta,
+                    q.respuesta_correcta,
                     qgs.total_incorrect_answers,
                     qgs.total_appearances,
                     qgs.success_rate,
@@ -4319,6 +4626,141 @@ def get_question_stats_by_ut():
     except Exception as e:
         logger.error(f"Error obteniendo estadísticas por UT: {e}")
         return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/study-summary', methods=['GET'])
+def get_study_summary():
+    """Obtener resumen de preguntas activas agrupadas por UT con respuestas correctas"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        # Obtener configuración de UTs
+        cur.execute("""
+            SELECT ut_number, ut_name
+            FROM ut_configuration
+            ORDER BY ut_number
+        """)
+        ut_rows = cur.fetchall()
+        ut_map = {row['ut_number']: row['ut_name'] for row in ut_rows}
+
+        # Obtener preguntas activas agrupadas por UT (una por hash)
+        cur.execute("""
+            WITH ranked_questions AS (
+                SELECT
+                    q.id,
+                    q.hash_pregunta,
+                    q.texto_pregunta,
+                    eq.ut_number,
+                    COALESCE(ut.ut_name, q.categoria) AS ut_name,
+                    q.respuesta_correcta,
+                    e.titulo AS examen_titulo,
+                    e.convocatoria,
+                    e.tipo_examen,
+                    e.fecha,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY q.hash_pregunta
+                        ORDER BY
+                            CASE e.tipo_examen
+                                WHEN 'PER_NORMAL' THEN 1
+                                WHEN 'PER_LIBERADO' THEN 2
+                                ELSE 3
+                            END,
+                            e.fecha DESC NULLS LAST,
+                            e.convocatoria DESC NULLS LAST,
+                            q.id DESC
+                    ) AS rn
+                FROM questions q
+                JOIN exam_questions eq ON eq.question_id = q.id
+                JOIN exams e ON e.id = q.exam_id
+                LEFT JOIN ut_configuration ut ON ut.ut_number = eq.ut_number
+                WHERE q.anulada = false
+            )
+            SELECT *
+            FROM ranked_questions
+            WHERE rn = 1
+            ORDER BY ut_number NULLS LAST, examen_titulo, id
+        """)
+
+        rows = cur.fetchall()
+
+        # Agrupar por UT y obtener opciones para cada pregunta
+        summary = defaultdict(list)
+        total_questions = 0
+
+        for row in rows:
+            ut_number = row['ut_number']
+            ut_name = row['ut_name'] or ut_map.get(ut_number) or 'Sin clasificación'
+            total_questions += 1
+
+            # Obtener opciones de respuesta desde answer_options
+            cur.execute("""
+                SELECT opcion, texto
+                FROM answer_options
+                WHERE question_id = %s
+                ORDER BY opcion
+            """, (row['id'],))
+            
+            opciones_rows = cur.fetchall()
+            opciones = {}
+            for op in opciones_rows:
+                opciones[op['opcion'].upper()] = op['texto']
+
+            # Formatear respuesta correcta
+            respuesta_letra = (row['respuesta_correcta'] or '').strip().upper()
+
+            summary[ut_number].append({
+                'question_id': str(row['id']),
+                'hash_pregunta': row['hash_pregunta'],
+                'texto_pregunta': row['texto_pregunta'],
+                'respuesta_correcta': {
+                    'letra': respuesta_letra,
+                    'texto': opciones.get(respuesta_letra, '')
+                },
+                'examen': {
+                    'titulo': row['examen_titulo'],
+                    'convocatoria': row['convocatoria'],
+                    'tipo_examen': row['tipo_examen'],
+                    'fecha': row['fecha'].isoformat() if row['fecha'] else None
+                }
+            })
+
+        # Construir respuesta ordenada por UT
+        uts_output = []
+        for ut_number, ut_name in ut_map.items():
+            uts_output.append({
+                'ut_number': ut_number,
+                'ut_name': ut_name,
+                'preguntas': summary.get(ut_number, [])
+            })
+
+        # Añadir preguntas sin UT si existen
+        if None in summary:
+            uts_output.append({
+                'ut_number': None,
+                'ut_name': 'Sin clasificación',
+                'preguntas': summary[None]
+            })
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'metadata': {
+                'generado_en': datetime.now().isoformat() + 'Z',
+                'total_uts': len(uts_output),
+                'total_preguntas': total_questions
+            },
+            'uts': uts_output
+        })
+
+    except Exception as e:
+        logger.error(f"Error obteniendo resumen de estudio: {e}")
+        return jsonify({'error': str(e), 'success': False}), 500
 
 
 @app.route('/api/question-heatmap/data', methods=['GET'])

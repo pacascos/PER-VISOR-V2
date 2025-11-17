@@ -8,6 +8,7 @@ class QuestionStatisticsDashboard {
         this.apiBase = window.API_BASE || '/api';
         this.utStats = [];
         this.chart = null;
+        this.isRendering = false; // Flag para evitar renderizado múltiple
         
         console.log('🚀 Inicializando Question Statistics Dashboard v2...');
         this.init();
@@ -15,6 +16,7 @@ class QuestionStatisticsDashboard {
 
     init() {
         this.loadData();
+        this.loadBookmarkedQuestions();
     }
 
     async loadData() {
@@ -43,6 +45,154 @@ class QuestionStatisticsDashboard {
         }
     }
 
+    async loadBookmarkedQuestions() {
+        try {
+            const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+            if (!token) {
+                console.log('⚠️ No hay token de autenticación, omitiendo preguntas marcadas');
+                // Aún así, mostrar la sección vacía
+                this.renderBookmarkedQuestions([]);
+                return;
+            }
+
+            console.log('📌 Cargando preguntas marcadas...');
+            
+            const response = await fetch(`${this.apiBase}/questions/bookmarked`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!response.ok) {
+                if (response.status === 401) {
+                    console.log('⚠️ No autenticado, omitiendo preguntas marcadas');
+                    // Aún así, mostrar la sección vacía
+                    this.renderBookmarkedQuestions([]);
+                    return;
+                }
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log('📌 Preguntas marcadas recibidas:', data);
+            
+            if (data.success) {
+                this.renderBookmarkedQuestions(data.questions || []);
+            } else {
+                // Si no hay éxito, mostrar sección vacía
+                this.renderBookmarkedQuestions([]);
+            }
+
+        } catch (error) {
+            console.error('❌ Error cargando preguntas marcadas:', error);
+            // En caso de error, mostrar sección vacía
+            this.renderBookmarkedQuestions([]);
+        }
+    }
+
+    renderBookmarkedQuestions(questions) {
+        const container = document.getElementById('bookmarked-questions-container');
+        const countBadge = document.getElementById('bookmarked-count');
+        const bookmarkedSection = document.querySelector('.bookmarked-section');
+        
+        if (!container) {
+            console.warn('⚠️ No se encontró el contenedor de preguntas marcadas');
+            return;
+        }
+
+        // Asegurar que la sección sea visible
+        if (bookmarkedSection) {
+            bookmarkedSection.style.display = 'block';
+            bookmarkedSection.style.visibility = 'visible';
+            bookmarkedSection.style.opacity = '1';
+        }
+
+        // Actualizar contador
+        if (countBadge) {
+            countBadge.textContent = questions.length;
+        }
+
+        if (questions.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: #64748b;">
+                    <i class="fas fa-bookmark" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                    <p style="font-size: 1.1rem; font-weight: 500; margin-bottom: 0.5rem;">No tienes preguntas marcadas aún</p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Marca preguntas durante los exámenes para revisarlas más tarde</p>
+                </div>
+            `;
+            // Asegurar que el contenedor sea visible incluso sin preguntas
+            container.style.display = 'block';
+            container.style.visibility = 'visible';
+            return;
+        }
+
+        // Asegurar que el contenedor sea visible
+        container.style.display = 'block';
+        container.style.visibility = 'visible';
+        container.style.opacity = '1';
+
+        // Renderizar preguntas
+        container.innerHTML = questions.map(q => {
+            const bookmarkedDate = new Date(q.bookmarked_at);
+            const formattedDate = bookmarkedDate.toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            return `
+                <div class="question-item" style="background: #fffbf0; border: 1px solid #fde68a; border-left: 4px solid #f59e0b;">
+                    <div class="question-text" style="font-weight: 500; margin-bottom: 10px;">
+                        ${q.texto_pregunta}
+                    </div>
+                    <div class="question-stats" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                            <span style="color: #64748b; font-size: 0.85rem;">
+                                <i class="fas fa-tag"></i> ${q.categoria}
+                            </span>
+                            <span style="color: #64748b; font-size: 0.85rem;">
+                                <i class="fas fa-calendar"></i> ${formattedDate}
+                            </span>
+                            <span style="color: #64748b; font-size: 0.85rem;">
+                                <i class="fas fa-file-alt"></i> ${q.exam_titulo || 'N/A'} (${q.convocatoria || 'N/A'})
+                            </span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="view-question-btn" onclick="viewBookmarkedQuestion('${q.question_id}')" style="background: #667eea;">
+                                <i class="fas fa-eye"></i> Ver en Banco
+                            </button>
+                            <button class="view-question-btn" onclick="unbookmarkQuestion('${q.question_id}')" style="background: #ef4444;">
+                                <i class="fas fa-bookmark-slash"></i> Desmarcar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // Añadir estilos si no existen
+        if (!document.getElementById('bookmarked-questions-styles')) {
+            const style = document.createElement('style');
+            style.id = 'bookmarked-questions-styles';
+            style.textContent = `
+                .bookmarked-questions-container {
+                    max-height: 600px;
+                    overflow-y: auto;
+                }
+                .bookmarked-questions-container .question-item {
+                    transition: all 0.3s ease;
+                }
+                .bookmarked-questions-container .question-item:hover {
+                    transform: translateX(5px);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
     renderDashboard() {
         console.log('📊 Renderizando dashboard con', this.utStats.length, 'UTs');
         
@@ -56,6 +206,15 @@ class QuestionStatisticsDashboard {
         this.renderSummaryCards();
         this.renderChart();
         this.renderUTCards();
+        
+        // Asegurar que la sección de marcadas sea visible después de renderizar
+        setTimeout(() => {
+            const bookmarkedSection = document.querySelector('.bookmarked-section');
+            if (bookmarkedSection) {
+                bookmarkedSection.style.display = 'block';
+                bookmarkedSection.style.visibility = 'visible';
+            }
+        }, 100);
     }
 
     renderSummaryCards() {
@@ -100,16 +259,35 @@ class QuestionStatisticsDashboard {
             return;
         }
         
+        // Evitar renderizado múltiple
+        if (this.isRendering) {
+            console.log('⚠️ Chart ya se está renderizando, omitiendo...');
+            return;
+        }
+        
+        this.isRendering = true;
+        
         const ctx = canvas.getContext('2d');
         
         // Destroy existing chart if it exists
         if (this.chart) {
-            this.chart.destroy();
+            try {
+                this.chart.destroy();
+            } catch (e) {
+                console.warn('Error destruyendo chart anterior:', e);
+            }
+            this.chart = null;
         }
 
-        const labels = this.utStats.map(ut => `UT${ut.ut_number}`);
-        const correct = this.utStats.map(ut => ut.total_correct);
-        const incorrect = this.utStats.map(ut => ut.total_incorrect);
+        // Ordenar UTs numéricamente por ut_number (no alfabéticamente)
+        const sortedUtStats = [...this.utStats].sort((a, b) => {
+            return a.ut_number - b.ut_number;
+        });
+
+        // Usar nombre completo de la UT en los labels
+        const labels = sortedUtStats.map(ut => `${ut.ut_name}`);
+        const correct = sortedUtStats.map(ut => ut.total_correct);
+        const incorrect = sortedUtStats.map(ut => ut.total_incorrect);
 
         this.chart = new Chart(ctx, {
             type: 'bar',
@@ -168,6 +346,13 @@ class QuestionStatisticsDashboard {
                                 weight: 'bold'
                             }
                         },
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45,
+                            font: {
+                                size: 10
+                            }
+                        },
                         grid: {
                             display: false
                         }
@@ -200,6 +385,8 @@ class QuestionStatisticsDashboard {
                 }
             }
         });
+        
+        this.isRendering = false;
     }
 
     renderUTCards() {
@@ -210,7 +397,12 @@ class QuestionStatisticsDashboard {
             return;
         }
         
-        utCards.innerHTML = this.utStats.map(ut => this.renderUTCard(ut)).join('');
+        // Ordenar UTs numéricamente por ut_number antes de renderizar
+        const sortedUtStats = [...this.utStats].sort((a, b) => {
+            return a.ut_number - b.ut_number;
+        });
+        
+        utCards.innerHTML = sortedUtStats.map(ut => this.renderUTCard(ut)).join('');
     }
 
     renderUTCard(ut) {
@@ -269,6 +461,8 @@ class QuestionStatisticsDashboard {
 
     renderFailedQuestion(question) {
         const failureRate = parseFloat(question.failure_rate) || 0;
+        const respuestaCorrecta = question.respuesta_correcta || 'N/A';
+        const respuestaLabel = respuestaCorrecta.toUpperCase();
         
         return `
             <div class="question-item">
@@ -276,9 +470,12 @@ class QuestionStatisticsDashboard {
                     ${question.texto_pregunta}
                 </div>
                 <div class="question-stats">
-                    <div>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                         <span class="failure-badge">${failureRate}% fallos</span>
-                        <span class="ms-2">${question.total_appearances} intentos</span>
+                        <span>${question.total_appearances} intentos</span>
+                        <span style="background: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-weight: 600; font-size: 0.85rem;">
+                            <i class="fas fa-check-circle"></i> Respuesta correcta: ${respuestaLabel}
+                        </span>
                     </div>
                     <button class="view-question-btn" onclick="viewQuestion('${question.question_id}')">
                         <i class="fas fa-eye"></i> Ver
@@ -289,6 +486,12 @@ class QuestionStatisticsDashboard {
     }
 
     showNoData() {
+        // Ocultar sección de marcadas si no hay datos
+        const bookmarkedSection = document.querySelector('.bookmarked-section');
+        if (bookmarkedSection) {
+            bookmarkedSection.style.display = 'none';
+        }
+
         const loading = document.getElementById('loading');
         const noData = document.getElementById('no-data');
         
