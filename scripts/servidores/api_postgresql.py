@@ -5214,6 +5214,148 @@ def export_study_summary_pdf():
         return jsonify({'error': str(e), 'success': False}), 500
 
 
+@app.route('/api/admin/analisis-repeticion-preguntas', methods=['GET'])
+@require_auth
+def analisis_repeticion_preguntas():
+    """Análisis de repetición de preguntas en exámenes (solo producción)"""
+    try:
+        # Solo permitir en producción o para admin
+        if os.getenv('FLASK_ENV') != 'production' and request.current_user.get('role') != 'admin':
+            return jsonify({'error': 'No autorizado'}), 403
+        
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Análisis completo
+        cur.execute("""
+            WITH preguntas_en_examenes AS (
+                SELECT 
+                    q.id AS question_id,
+                    q.hash_pregunta,
+                    COUNT(DISTINCT e.id) AS veces_en_examen,
+                    COUNT(DISTINCT CASE WHEN e.tipo_examen = 'PER_NORMAL' THEN e.id END) AS veces_per_normal,
+                    COUNT(DISTINCT CASE WHEN e.tipo_examen = 'PER_LIBERADO' THEN e.id END) AS veces_per_liberado,
+                    MIN(e.convocatoria) AS primera_convocatoria,
+                    MAX(e.convocatoria) AS ultima_convocatoria,
+                    STRING_AGG(DISTINCT e.convocatoria, ', ' ORDER BY e.convocatoria) AS todas_convocatorias
+                FROM questions q
+                INNER JOIN exams e ON e.id = q.exam_id
+                WHERE q.anulada = false
+                  AND e.tipo_examen IN ('PER_NORMAL', 'PER_LIBERADO')
+                GROUP BY q.id, q.hash_pregunta
+            ),
+            total_preguntas_activas AS (
+                SELECT COUNT(*) AS total FROM questions WHERE anulada = false
+            ),
+            preguntas_nunca_salidas AS (
+                SELECT COUNT(*) AS total
+                FROM questions q
+                WHERE q.anulada = false
+                  AND NOT EXISTS (
+                      SELECT 1 FROM exams e
+                      WHERE e.id = q.exam_id
+                        AND e.tipo_examen IN ('PER_NORMAL', 'PER_LIBERADO')
+                  )
+            ),
+            analisis_por_hash AS (
+                SELECT 
+                    q.hash_pregunta,
+                    COUNT(DISTINCT e.id) AS examenes_diferentes,
+                    COUNT(DISTINCT q.id) AS preguntas_distintas_mismo_hash
+                FROM questions q
+                INNER JOIN exams e ON e.id = q.exam_id
+                WHERE q.anulada = false
+                  AND e.tipo_examen IN ('PER_NORMAL', 'PER_LIBERADO')
+                GROUP BY q.hash_pregunta
+            )
+            SELECT 
+                (SELECT total FROM total_preguntas_activas) AS total_preguntas_activas,
+                (SELECT COUNT(*) FROM preguntas_en_examenes) AS preguntas_han_salido,
+                (SELECT total FROM preguntas_nunca_salidas) AS preguntas_nunca_salidas,
+                (SELECT COUNT(*) FROM preguntas_en_examenes WHERE veces_en_examen > 1) AS preguntas_repetidas_1_vez,
+                (SELECT COUNT(*) FROM preguntas_en_examenes WHERE veces_en_examen > 5) AS preguntas_repetidas_5_veces,
+                (SELECT COUNT(*) FROM preguntas_en_examenes WHERE veces_en_examen > 10) AS preguntas_repetidas_10_veces,
+                (SELECT COUNT(DISTINCT hash_pregunta) FROM preguntas_en_examenes) AS hashes_unicos_en_examenes,
+                (SELECT COUNT(*) FROM analisis_por_hash WHERE examenes_diferentes > 1) AS hashes_repetidos_multiples_examenes
+        """)
+        
+        resumen = cur.fetchone()
+        
+        # Top preguntas más repetidas
+        cur.execute("""
+            SELECT 
+                q.hash_pregunta,
+                COUNT(DISTINCT e.id) AS veces_en_examen,
+                COUNT(DISTINCT q.id) AS preguntas_distintas_mismo_hash,
+                MIN(e.convocatoria) AS primera_convocatoria,
+                MAX(e.convocatoria) AS ultima_convocatoria,
+                STRING_AGG(DISTINCT e.convocatoria, ', ' ORDER BY e.convocatoria) AS todas_convocatorias
+            FROM questions q
+            INNER JOIN exams e ON e.id = q.exam_id
+            WHERE q.anulada = false
+              AND e.tipo_examen IN ('PER_NORMAL', 'PER_LIBERADO')
+            GROUP BY q.hash_pregunta
+            ORDER BY veces_en_examen DESC
+            LIMIT 20
+        """)
+        
+        top_repetidas = cur.fetchall()
+        
+        # Distribución
+        cur.execute("""
+            WITH preguntas_en_examenes AS (
+                SELECT 
+                    q.id,
+                    COUNT(DISTINCT e.id) AS veces_en_examen
+                FROM questions q
+                INNER JOIN exams e ON e.id = q.exam_id
+                WHERE q.anulada = false
+                  AND e.tipo_examen IN ('PER_NORMAL', 'PER_LIBERADO')
+                GROUP BY q.id
+            )
+            SELECT 
+                CASE 
+                    WHEN veces_en_examen = 1 THEN '1 vez'
+                    WHEN veces_en_examen BETWEEN 2 AND 5 THEN '2-5 veces'
+                    WHEN veces_en_examen BETWEEN 6 AND 10 THEN '6-10 veces'
+                    WHEN veces_en_examen BETWEEN 11 AND 20 THEN '11-20 veces'
+                    WHEN veces_en_examen > 20 THEN 'Más de 20 veces'
+                END AS rango,
+                COUNT(*) AS cantidad_preguntas
+            FROM preguntas_en_examenes
+            GROUP BY 
+                CASE 
+                    WHEN veces_en_examen = 1 THEN '1 vez'
+                    WHEN veces_en_examen BETWEEN 2 AND 5 THEN '2-5 veces'
+                    WHEN veces_en_examen BETWEEN 6 AND 10 THEN '6-10 veces'
+                    WHEN veces_en_examen BETWEEN 11 AND 20 THEN '11-20 veces'
+                    WHEN veces_en_examen > 20 THEN 'Más de 20 veces'
+                END
+            ORDER BY MIN(veces_en_examen)
+        """)
+        
+        distribucion = cur.fetchall()
+        
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'resumen': dict(resumen) if resumen else {},
+            'top_repetidas': [dict(r) for r in top_repetidas],
+            'distribucion': [dict(d) for d in distribucion]
+        })
+        
+    except Exception as e:
+        logger.error(f"Error en análisis de repetición: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return jsonify({'error': str(e), 'success': False}), 500
+
+
 @app.route('/api/question-heatmap/data', methods=['GET'])
 def get_question_heatmap_data():
     """Obtener datos para el heatmap de preguntas por UT"""
