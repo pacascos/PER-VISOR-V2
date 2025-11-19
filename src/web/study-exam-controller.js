@@ -21,6 +21,11 @@ class StudyExamController extends ExamController {
             onAuthError: () => this.handleAuthError()
         });
 
+        // Inicializar BookmarkManager
+        this.bookmarkManager = new BookmarkManager({
+            authToken: this.authToken
+        });
+
         console.log('📚 StudyExamController initialized', {
             studyTestId: this.studyTestId,
             selectedUTs: this.selectedUTs,
@@ -168,6 +173,7 @@ class StudyExamController extends ExamController {
 
             // Show exam interface
             this.showExamInterface();
+            this.setupBookmarkButton(); // Setup bookmark button
             this.showStudyModeBadge();
             this.startTimer();
             this.startQuestionTimer();
@@ -350,8 +356,64 @@ class StudyExamController extends ExamController {
             });
         }
 
+        // Update bookmark button
+        this.updateBookmarkButton(question.question_id);
+
         // Update progress and navigation
         super.displayCurrentQuestion();
+    }
+
+    /**
+     * Update bookmark button state
+     */
+    async updateBookmarkButton(questionId) {
+        const bookmarkBtn = document.getElementById('bookmark-btn');
+        if (!bookmarkBtn) return;
+
+        // Cargar estado de marcado
+        const isBookmarked = await this.bookmarkManager.loadBookmarkStatus(questionId);
+        
+        if (isBookmarked) {
+            bookmarkBtn.classList.add('bookmarked');
+            bookmarkBtn.querySelector('i').className = 'fas fa-bookmark';
+            bookmarkBtn.querySelector('.bookmark-text').textContent = 'Marcada';
+            bookmarkBtn.title = 'Desmarcar pregunta';
+        } else {
+            bookmarkBtn.classList.remove('bookmarked');
+            bookmarkBtn.querySelector('i').className = 'far fa-bookmark';
+            bookmarkBtn.querySelector('.bookmark-text').textContent = 'Marcar';
+            bookmarkBtn.title = 'Marcar pregunta para revisión';
+        }
+    }
+
+    /**
+     * Setup bookmark button event listener
+     */
+    setupBookmarkButton() {
+        const bookmarkBtn = document.getElementById('bookmark-btn');
+        if (!bookmarkBtn) return;
+
+        bookmarkBtn.addEventListener('click', async () => {
+            const question = this.getCurrentQuestion();
+            if (!question) return;
+
+            const questionId = question.question_id;
+            const wasBookmarked = this.bookmarkManager.isBookmarked(questionId);
+
+            // Toggle bookmark
+            const success = await this.bookmarkManager.toggleBookmark(questionId);
+            
+            if (success) {
+                // Actualizar UI
+                await this.updateBookmarkButton(questionId);
+                
+                // Mostrar mensaje
+                const message = wasBookmarked ? 'Pregunta desmarcada' : 'Pregunta marcada para revisión';
+                this.showAlert(message, 'success');
+            } else {
+                this.showAlert('Error al marcar/desmarcar la pregunta', 'danger');
+            }
+        });
     }
 
     /**

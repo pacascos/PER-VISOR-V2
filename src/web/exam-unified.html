@@ -66,11 +66,19 @@
             <!-- Question Section -->
             <div id="question-section" class="question-section">
                 <div class="question-header">
-                    <div id="question-number" class="question-number">
-                        Pregunta 1 de 45
+                    <div class="question-header-left">
+                        <div id="question-number" class="question-number">
+                            Pregunta 1 de 45
+                        </div>
+                        <div id="question-category" class="question-category">
+                            UT 1 - Nomenclatura náutica
+                        </div>
                     </div>
-                    <div id="question-category" class="question-category">
-                        UT 1 - Nomenclatura náutica
+                    <div class="question-header-right">
+                        <button id="bookmark-btn" class="btn btn-outline-warning btn-sm bookmark-btn" title="Marcar pregunta para revisión">
+                            <i class="far fa-bookmark"></i>
+                            <span class="bookmark-text">Marcar</span>
+                        </button>
                     </div>
                 </div>
 
@@ -132,6 +140,7 @@
     
     <!-- Load in order: Base classes first, then specific implementations -->
     <script src="feature-flags.js?v=3"></script>
+    <script src="bookmark-manager.js?v=1"></script>
     <script src="exam-controller.js?v=3"></script>
     <script src="exam-api.js?v=3"></script>
     <script src="full-exam-controller.js?v=4"></script>

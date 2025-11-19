@@ -17,6 +17,11 @@ class FullExamController extends ExamController {
             onAuthError: () => this.handleAuthError()
         });
 
+        // Inicializar BookmarkManager
+        this.bookmarkManager = new BookmarkManager({
+            authToken: this.authToken
+        });
+
         console.log('📝 FullExamController initialized');
     }
 
@@ -72,27 +77,50 @@ class FullExamController extends ExamController {
     }
 
     /**
-     * Generate new full exam
+     * Generate new full exam or load existing exam from URL
      */
     async generateExam() {
         try {
-            this.showAlert('Generando examen...', 'info');
+            // Check if exam_id is provided in URL (for repeating exams)
+            const urlParams = new URLSearchParams(window.location.search);
+            const examIdFromUrl = urlParams.get('exam_id');
 
-            // Generate exam
-            const examData = await this.examApi.generateFullExam();
-            console.log('📝 Exam generated:', examData);
+            if (examIdFromUrl) {
+                // Load existing exam
+                console.log('📝 Loading existing exam:', examIdFromUrl);
+                this.showAlert('Cargando examen...', 'info');
 
-            // Load question details
-            const questionData = await this.examApi.getExamQuestions(examData.exam_id);
-            console.log('📚 Questions loaded:', questionData.questions.length);
+                // Load question details
+                const questionData = await this.examApi.getExamQuestions(examIdFromUrl);
+                console.log('📚 Questions loaded:', questionData.questions.length);
 
-            // Set up exam state
-            this.currentExam = {
-                exam_id: examData.exam_id,
-                total_questions: examData.total_questions || 45,
-                questions: questionData.questions,
-                questionDetails: questionData.questions // Alias for compatibility
-            };
+                // Set up exam state
+                this.currentExam = {
+                    exam_id: examIdFromUrl,
+                    total_questions: questionData.total_questions || 45,
+                    questions: questionData.questions,
+                    questionDetails: questionData.questions // Alias for compatibility
+                };
+            } else {
+                // Generate new exam
+                this.showAlert('Generando examen...', 'info');
+
+                // Generate exam
+                const examData = await this.examApi.generateFullExam();
+                console.log('📝 Exam generated:', examData);
+
+                // Load question details
+                const questionData = await this.examApi.getExamQuestions(examData.exam_id);
+                console.log('📚 Questions loaded:', questionData.questions.length);
+
+                // Set up exam state
+                this.currentExam = {
+                    exam_id: examData.exam_id,
+                    total_questions: examData.total_questions || 45,
+                    questions: questionData.questions,
+                    questionDetails: questionData.questions // Alias for compatibility
+                };
+            }
 
             this.currentQuestionIndex = 0;
             this.userAnswers = {};
@@ -102,6 +130,7 @@ class FullExamController extends ExamController {
 
             // Show exam interface
             this.showExamInterface();
+            this.setupBookmarkButton(); // Setup bookmark button
             this.startTimer();
             this.startQuestionTimer();
             this.displayCurrentQuestion();
@@ -192,8 +221,64 @@ class FullExamController extends ExamController {
             });
         }
 
+        // Update bookmark button
+        this.updateBookmarkButton(question.question_id);
+
         // Update progress and navigation
         super.displayCurrentQuestion();
+    }
+
+    /**
+     * Update bookmark button state
+     */
+    async updateBookmarkButton(questionId) {
+        const bookmarkBtn = document.getElementById('bookmark-btn');
+        if (!bookmarkBtn) return;
+
+        // Cargar estado de marcado
+        const isBookmarked = await this.bookmarkManager.loadBookmarkStatus(questionId);
+        
+        if (isBookmarked) {
+            bookmarkBtn.classList.add('bookmarked');
+            bookmarkBtn.querySelector('i').className = 'fas fa-bookmark';
+            bookmarkBtn.querySelector('.bookmark-text').textContent = 'Marcada';
+            bookmarkBtn.title = 'Desmarcar pregunta';
+        } else {
+            bookmarkBtn.classList.remove('bookmarked');
+            bookmarkBtn.querySelector('i').className = 'far fa-bookmark';
+            bookmarkBtn.querySelector('.bookmark-text').textContent = 'Marcar';
+            bookmarkBtn.title = 'Marcar pregunta para revisión';
+        }
+    }
+
+    /**
+     * Setup bookmark button event listener
+     */
+    setupBookmarkButton() {
+        const bookmarkBtn = document.getElementById('bookmark-btn');
+        if (!bookmarkBtn) return;
+
+        bookmarkBtn.addEventListener('click', async () => {
+            const question = this.getCurrentQuestion();
+            if (!question) return;
+
+            const questionId = question.question_id;
+            const wasBookmarked = this.bookmarkManager.isBookmarked(questionId);
+
+            // Toggle bookmark
+            const success = await this.bookmarkManager.toggleBookmark(questionId);
+            
+            if (success) {
+                // Actualizar UI
+                await this.updateBookmarkButton(questionId);
+                
+                // Mostrar mensaje
+                const message = wasBookmarked ? 'Pregunta desmarcada' : 'Pregunta marcada para revisión';
+                this.showAlert(message, 'success');
+            } else {
+                this.showAlert('Error al marcar/desmarcar la pregunta', 'danger');
+            }
+        });
     }
 
     /**
