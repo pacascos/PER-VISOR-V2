@@ -344,6 +344,9 @@
                 <button class="btn btn-primary" onclick="openHeatmap()">
                     <i class="fas fa-fire"></i> Ver Heatmap Visual
                 </button>
+                <button class="btn btn-success" onclick="openStudySummary()">
+                    <i class="fas fa-book"></i> Resumen de Estudio y Exportación
+                </button>
             </div>
         </div>
 
@@ -408,6 +411,12 @@
         function openHeatmap() {
             console.log('🔥 Abriendo heatmap visual...');
             window.location.href = 'question-heatmap.html';
+        }
+
+        // Función para abrir el resumen de estudio con opciones de exportación
+        function openStudySummary() {
+            console.log('📚 Abriendo resumen de estudio...');
+            window.location.href = 'study-summary.html';
         }
 
         // Función para ver pregunta marcada en el banco
