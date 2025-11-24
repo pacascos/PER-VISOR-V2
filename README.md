@@ -10,82 +10,125 @@ Sistema completo para visualización y gestión de exámenes náuticos con expli
 - **Base de Datos Completa**: 8 convocatorias (2023-2025) con 2782 preguntas
 - **API Backend**: Servidor Flask para generación de explicaciones
 
-## 🚀 Instalación y Configuración
+## 🚀 Instalación desde cero
 
-### 1. Clonar el Repositorio
+### 1. Requisitos
+- Docker + Docker Compose v2 (opcional pero recomendado)
+- Python 3.11+
+- PostgreSQL 15 (local o Cloud SQL)
+- Cuenta de OpenAI + clave API
+- Google Cloud CLI (solo si vas a desplegar en GCP)
+
+### 2. Clonar y preparar entorno
 ```bash
-git clone https://github.com/pacascos/PER.git
-cd PER
+git clone https://github.com/pacascos/PER-VISOR-V2.git
+cd PER-VISOR-V2
+cp env.example .env   # Ajusta las claves en este archivo
+```
+Variables mínimas:
+- `OPENAI_API_KEY`
+- `OPENAI_MODEL` (por defecto `gpt-5-2025-08-07`)
+- `JWT_SECRET`, `SECRET_KEY` y `DATABASE_URL` cuando despliegues el backend
+
+📖 Más detalles: [OPENAI_CONFIG.md](OPENAI_CONFIG.md) y [CONFIGURACION_PROYECTO.md](CONFIGURACION_PROYECTO.md).
+
+### 3. Base de datos (estructura + datos públicos)
+```bash
+# Crear BD local (opcional si usas Docker)
+createdb per_exams
+
+# Aplicar esquema completo
+psql -U per_user -d per_exams -f sql/01_schema.sql
+
+# Cargar datos públicos (preguntas, respuestas, estadísticas, etc.)
+psql -U per_user -d per_exams -f sql/02_seed_public_data.sql
+```
+- Los datos sensibles (tabla `public.users`) no se incluyen; crea un `sql/03_seed_sensitive.sql` privado si lo necesitas.
+- Para regenerar los scripts desde un backup: `python3 scripts/generate_public_sql.py`
+
+### 4. Ejecución local
+
+#### 4.1 Docker Compose (todo en contenedores)
+```bash
+docker compose up --build -d
+docker compose ps
+```
+Servicios:
+- `per_postgres` (BD PostgreSQL 15)
+- `per_api` (Flask + Gunicorn)
+- `per_web` (Nginx sirviendo `src/web`)
+
+Gestión rápida:
+```bash
+docker compose logs -f api
+docker compose restart api
+docker compose down        # detiene todo
+docker compose down -v     # elimina volúmenes
 ```
 
-### 2. Configuración Automática (Recomendado)
+#### 4.2 Ejecución manual (sin Docker)
 ```bash
-# Ejecutar script de configuración
-./setup.sh
-```
-
-### 2.1. Configuración Manual
-```bash
-# Copiar archivo de ejemplo
-cp env.example .env
-
-# Editar .env y configurar tu API key de OpenAI
-nano .env
-```
-
-**Importante**: Configura las siguientes variables en el archivo `.env`:
-- `OPENAI_API_KEY`: Tu clave API de OpenAI
-- `OPENAI_MODEL`: Modelo a usar (gpt-5-2025-08-07 por defecto)
-
-📖 **Documentación completa**: [OPENAI_CONFIG.md](OPENAI_CONFIG.md)
-
-### 3. Instalación
-
-#### Opción A: Con Docker (Recomendado)
-```bash
-# Construir y ejecutar con Docker Compose
-docker-compose up --build -d
-
-# Verificar que los servicios estén funcionando
-docker-compose ps
-```
-
-#### Opción B: Instalación Manual
-```bash
-# Instalar dependencias Python
+# Backend Flask
 pip install -r requirements.txt
+cd scripts/servidores
+python3 api_postgresql.py
 
-# Servidor Web (Puerto 8095)
+# Frontend estático
 cd src/web
 python3 -m http.server 8095
-
-# API Flask (Puerto 5001)
-cd scripts/servidores
-python3 api_explicaciones.py
 ```
 
-### 4. Acceder al Sistema
-- **Visor Web**: http://localhost:8095
-- **API Health**: http://localhost:5001/health
-- **API Docs**: http://localhost:5001/docs
+### 5. Endpoints locales
+- Frontend: http://localhost:8095
+- API health: http://localhost:5001/health
+- API docs: http://localhost:5001/docs
 
-### 5. Gestión de Servicios Docker
-```bash
-# Ver logs de todos los servicios
-docker-compose logs -f
+### 6. Despliegue en Google Cloud Run + Cloud SQL
 
-# Ver logs de un servicio específico
-docker-compose logs -f api
+1. **Preparar proyecto GCP**  
+   `gcloud init && gcloud config set project webpersonal-189221`  
+   Habilita APIs: `cloudbuild`, `run`, `sqladmin`, `secretmanager`.
 
-# Reiniciar un servicio
-docker-compose restart api
+2. **Base de datos Cloud SQL**  
+   - `gcloud sql instances create per-db-instance --database-version=POSTGRES_15 ...`
+   - `gcloud sql users create per_user ...`
+   - Importa el backup completo (`per_db_backup_YYYYMMDD.sql.gz`) o aplica `sql/01_schema.sql` + `sql/02_seed_public_data.sql`.
 
-# Detener todos los servicios
-docker-compose down
+3. **Secret Manager**  
+   Crea secretos `database-url`, `openai-api-key`, `jwt-secret`, `flask-secret-key`.
 
-# Detener y eliminar volúmenes
-docker-compose down -v
-```
+4. **Construir y subir imágenes**  
+   ```bash
+   gcloud auth configure-docker europe-west1-docker.pkg.dev
+   docker build -t europe-west1-docker.pkg.dev/webpersonal-189221/per-images/per-api:latest .
+   docker push europe-west1-docker.pkg.dev/webpersonal-189221/per-images/per-api:latest
+   docker build -f frontend.Dockerfile -t europe-west1-docker.pkg.dev/webpersonal-189221/per-images/per-frontend:latest .
+   docker push europe-west1-docker.pkg.dev/webpersonal-189221/per-images/per-frontend:latest
+   ```
+
+5. **Deploy Cloud Run**
+   ```bash
+   gcloud run deploy per-api \
+     --image=europe-west1-docker.pkg.dev/webpersonal-189221/per-images/per-api:latest \
+     --region=europe-west1 --allow-unauthenticated \
+     --set-secrets="DATABASE_URL=database-url:latest" \
+     --set-secrets="OPENAI_API_KEY=openai-api-key:latest" \
+     --set-secrets="JWT_SECRET=jwt-secret:latest" \
+     --set-secrets="SECRET_KEY=flask-secret-key:latest" \
+     --add-cloudsql-instances=webpersonal-189221:europe-west1:per-db-instance
+
+   gcloud run deploy per-frontend \
+     --image=europe-west1-docker.pkg.dev/webpersonal-189221/per-images/per-frontend:latest \
+     --region=europe-west1 --allow-unauthenticated
+   ```
+
+6. **Dominio y DNS**  
+   Usa `gcloud beta run domain-mappings create --service=per-frontend --domain=bancotest.com`.
+
+📚 Documentación detallada:  
+- [DEPLOYMENT_GOOGLE_CLOUD.md](DEPLOYMENT_GOOGLE_CLOUD.md)  
+- [docs/BACKUP_PLAN_2025-11-24.md](docs/BACKUP_PLAN_2025-11-24.md) (plan de apagado/restauración)  
+- [docs/DB_SCRIPTS.md](docs/DB_SCRIPTS.md) (cómo mantener los dumps públicos)
 
 ## 📊 Datos Incluidos
 

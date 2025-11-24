@@ -1,0 +1,49 @@
+apiVersion: domains.cloudrun.com/v1
+kind: DomainMapping
+metadata:
+  annotations:
+    run.googleapis.com/operation-id: 0183170d-8549-4e70-9511-2df8fd446365
+    serving.knative.dev/creator: cascos@gmail.com
+    serving.knative.dev/lastModifier: cascos@gmail.com
+  creationTimestamp: '2025-09-29T09:03:18.771834Z'
+  generation: 1
+  labels:
+    cloud.googleapis.com/location: europe-west1
+    run.googleapis.com/overrideAt: '2025-09-29T09:03:24.468Z'
+  name: bancotest.com
+  namespace: '435987927843'
+  resourceVersion: AAY/7Rv7k9Y
+  selfLink: /apis/domains.cloudrun.com/v1/namespaces/435987927843/domainmappings/bancotest.com
+  uid: 40b342c5-12c3-4268-94f4-e2095de2154f
+spec:
+  routeName: per-frontend
+status:
+  conditions:
+  - lastTransitionTime: '2025-09-29T09:17:49.535190Z'
+    status: 'True'
+    type: Ready
+  - lastTransitionTime: '2025-09-29T09:17:49.535190Z'
+    status: 'True'
+    type: CertificateProvisioned
+  - lastTransitionTime: '2025-09-29T09:03:27.649756Z'
+    status: 'True'
+    type: DomainRoutable
+  mappedRouteName: per-frontend
+  observedGeneration: 1
+  resourceRecords:
+  - rrdata: 216.239.32.21
+    type: A
+  - rrdata: 216.239.34.21
+    type: A
+  - rrdata: 216.239.36.21
+    type: A
+  - rrdata: 216.239.38.21
+    type: A
+  - rrdata: 2001:4860:4802:32::15
+    type: AAAA
+  - rrdata: 2001:4860:4802:34::15
+    type: AAAA
+  - rrdata: 2001:4860:4802:36::15
+    type: AAAA
+  - rrdata: 2001:4860:4802:38::15
+    type: AAAA

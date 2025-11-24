@@ -1,0 +1,4 @@
+# Scripts privados o datos sensibles que no deben versionarse
+03_seed_sensitive.sql
+private/
+

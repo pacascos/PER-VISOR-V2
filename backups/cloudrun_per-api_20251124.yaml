@@ -1,0 +1,97 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  annotations:
+    run.googleapis.com/client-name: gcloud
+    run.googleapis.com/client-version: 548.0.0
+    run.googleapis.com/ingress: all
+    run.googleapis.com/ingress-status: all
+    run.googleapis.com/operation-id: 23c6863d-15a9-47f7-8a5c-b0843fc9d92e
+    run.googleapis.com/urls: '["https://per-api-435987927843.europe-west1.run.app","https://per-api-sdmkab2wra-ew.a.run.app"]'
+    serving.knative.dev/creator: cascos@gmail.com
+    serving.knative.dev/lastModifier: github-actions-deploy@webpersonal-189221.iam.gserviceaccount.com
+  creationTimestamp: '2025-09-28T23:09:01.480103Z'
+  generation: 121
+  labels:
+    cloud.googleapis.com/location: europe-west1
+  name: per-api
+  namespace: '435987927843'
+  resourceVersion: AAZEHBS3RQI
+  selfLink: /apis/serving.knative.dev/v1/namespaces/435987927843/services/per-api
+  uid: aef87493-501f-4805-a0d2-5f1bc675d945
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: '10'
+        autoscaling.knative.dev/minScale: '1'
+        run.googleapis.com/client-name: gcloud
+        run.googleapis.com/client-version: 548.0.0
+        run.googleapis.com/cloudsql-instances: webpersonal-189221:europe-west1:per-db-instance
+        run.googleapis.com/startup-cpu-boost: 'true'
+      labels:
+        client.knative.dev/nonce: rsacvplvfg
+        run.googleapis.com/startupProbeType: Default
+    spec:
+      containerConcurrency: 100
+      containers:
+      - env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              key: latest
+              name: database-url
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: latest
+              name: jwt-secret
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: latest
+              name: openai-api-key
+        - name: FLASK_ENV
+          value: production
+        - name: BUILD_ID
+          value: 20251121145905-69afef8
+        image: europe-west1-docker.pkg.dev/webpersonal-189221/per-images/per-api:20251121145905-69afef8
+        ports:
+        - containerPort: 8080
+          name: http1
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+        startupProbe:
+          failureThreshold: 1
+          periodSeconds: 240
+          tcpSocket:
+            port: 8080
+          timeoutSeconds: 240
+      serviceAccountName: 435987927843-compute@developer.gserviceaccount.com
+      timeoutSeconds: 300
+  traffic:
+  - latestRevision: true
+    percent: 100
+status:
+  address:
+    url: https://per-api-sdmkab2wra-ew.a.run.app
+  conditions:
+  - lastTransitionTime: '2025-11-21T15:00:57.592066Z'
+    status: 'True'
+    type: Ready
+  - lastTransitionTime: '2025-11-21T15:00:50.980709Z'
+    status: 'True'
+    type: ConfigurationsReady
+  - lastTransitionTime: '2025-11-21T15:00:57.559588Z'
+    status: 'True'
+    type: RoutesReady
+  latestCreatedRevisionName: per-api-00119-gvb
+  latestReadyRevisionName: per-api-00119-gvb
+  observedGeneration: 121
+  traffic:
+  - latestRevision: true
+    percent: 100
+    revisionName: per-api-00119-gvb
+  url: https://per-api-sdmkab2wra-ew.a.run.app

@@ -1,0 +1,79 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  annotations:
+    run.googleapis.com/client-name: gcloud
+    run.googleapis.com/client-version: 548.0.0
+    run.googleapis.com/ingress: all
+    run.googleapis.com/ingress-status: all
+    run.googleapis.com/operation-id: 2125f46f-bacc-4572-91b4-d502380bf05e
+    run.googleapis.com/urls: '["https://per-frontend-435987927843.europe-west1.run.app","https://per-frontend-sdmkab2wra-ew.a.run.app"]'
+    serving.knative.dev/creator: cascos@gmail.com
+    serving.knative.dev/lastModifier: github-actions-deploy@webpersonal-189221.iam.gserviceaccount.com
+  creationTimestamp: '2025-09-28T23:19:33.233443Z'
+  generation: 94
+  labels:
+    cloud.googleapis.com/location: europe-west1
+  name: per-frontend
+  namespace: '435987927843'
+  resourceVersion: AAZEHBhu8tw
+  selfLink: /apis/serving.knative.dev/v1/namespaces/435987927843/services/per-frontend
+  uid: ee2d68ae-f70f-43a0-9d6f-88feb9442b70
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: '5'
+        autoscaling.knative.dev/minScale: '1'
+        run.googleapis.com/client-name: gcloud
+        run.googleapis.com/client-version: 548.0.0
+        run.googleapis.com/startup-cpu-boost: 'true'
+      labels:
+        client.knative.dev/nonce: vyveqckgce
+        run.googleapis.com/startupProbeType: Default
+    spec:
+      containerConcurrency: 1000
+      containers:
+      - env:
+        - name: BUILD_ID
+          value: 20251121145905-69afef8
+        image: europe-west1-docker.pkg.dev/webpersonal-189221/per-images/per-frontend:20251121145905-69afef8
+        ports:
+        - containerPort: 80
+          name: http1
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+        startupProbe:
+          failureThreshold: 1
+          periodSeconds: 240
+          tcpSocket:
+            port: 80
+          timeoutSeconds: 240
+      serviceAccountName: 435987927843-compute@developer.gserviceaccount.com
+      timeoutSeconds: 30
+  traffic:
+  - latestRevision: true
+    percent: 100
+status:
+  address:
+    url: https://per-frontend-sdmkab2wra-ew.a.run.app
+  conditions:
+  - lastTransitionTime: '2025-11-21T15:01:59.961308Z'
+    status: 'True'
+    type: Ready
+  - lastTransitionTime: '2025-11-21T15:01:54.654636Z'
+    status: 'True'
+    type: ConfigurationsReady
+  - lastTransitionTime: '2025-11-21T15:01:59.928094Z'
+    status: 'True'
+    type: RoutesReady
+  latestCreatedRevisionName: per-frontend-00094-9lh
+  latestReadyRevisionName: per-frontend-00094-9lh
+  observedGeneration: 94
+  traffic:
+  - latestRevision: true
+    percent: 100
+    revisionName: per-frontend-00094-9lh
+  url: https://per-frontend-sdmkab2wra-ew.a.run.app
