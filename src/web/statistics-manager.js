@@ -730,13 +730,18 @@ class StatisticsManager {
                             <span>${exam.total_questions || 0} preguntas</span>
                         </div>
                     </div>
-                    ${exam.incorrect_answers > 0 ? `
-                        <div class="exam-actions" style="margin-top: 0.75rem;">
+                    <div class="exam-actions" style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        ${exam.incorrect_answers > 0 ? `
                             <button class="btn btn-sm btn-outline-danger" onclick="window.statisticsManager.viewFailedQuestions('${exam.exam_id}')">
                                 <i class="fas fa-eye me-1"></i>Ver ${exam.incorrect_answers} Fallos
                             </button>
-                        </div>
-                    ` : ''}
+                        ` : ''}
+                        ${!isStudyTest ? `
+                            <button class="btn btn-sm btn-outline-primary" onclick="window.statisticsManager.repeatExam('${exam.exam_id}')" title="Repetir este examen con las mismas preguntas">
+                                <i class="fas fa-redo me-1"></i>Repetir Examen
+                            </button>
+                        ` : ''}
+                    </div>
                 </div>
             `;
             
@@ -1161,6 +1166,44 @@ class StatisticsManager {
         } catch (error) {
             console.error('❌ Error obteniendo preguntas falladas:', error);
             this.showError(`Error cargando preguntas falladas: ${error.message}`);
+        }
+    }
+
+    async repeatExam(examId) {
+        try {
+            console.log('🔄 Repitiendo examen:', examId);
+
+            // Mostrar mensaje de carga
+            this.showSuccess('Generando nuevo examen con las mismas preguntas...');
+
+            // Llamar al endpoint para repetir el examen
+            const response = await fetch(`${this.API_BASE}/exams/${examId}/repeat`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.getCurrentAuthToken()}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            
+            if (data.success && data.exam_id) {
+                console.log('✅ Examen repetido exitosamente. Nuevo exam_id:', data.exam_id);
+                
+                // Redirigir a la página de examen unificada
+                window.location.href = `exam-unified.html?exam_id=${data.exam_id}`;
+            } else {
+                throw new Error('No se pudo generar el nuevo examen');
+            }
+
+        } catch (error) {
+            console.error('❌ Error repitiendo examen:', error);
+            this.showError(`Error al repetir el examen: ${error.message}`);
         }
     }
 

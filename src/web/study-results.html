@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados Test de Estudio - Sistema PER</title>
+    <title>Resultados Test de Estudio - Zarpeo</title>
 
     <!-- Favicon dinámico -->
     <link rel="icon" type="image/svg+xml" href="" id="dynamic-favicon">
     <script>
-        const isProduction = window.location.hostname === 'bancotest.com';
+        const isProduction = window.location.hostname === 'zarpeo.com' || window.location.hostname === 'www.zarpeo.com';
         document.getElementById('dynamic-favicon').href = isProduction ? 'favicon-prod.svg' : 'favicon.svg';
         window.ENVIRONMENT = isProduction ? 'PRODUCCIÓN' : 'DESARROLLO';
         window.ENVIRONMENT_COLOR = isProduction ? '#dc2626' : '#059669';
@@ -331,7 +331,7 @@
 
     <script>
         // Configuration - usar window.API_BASE si está disponible
-        const API_URL = window.API_BASE || (window.location.hostname === 'bancotest.com'
+        const API_URL = window.API_BASE || (window.location.hostname === 'zarpeo.com' || window.location.hostname === 'www.zarpeo.com'
             ? 'https://per-api-435987927843.europe-west1.run.app'
             : 'http://localhost:5001');
 

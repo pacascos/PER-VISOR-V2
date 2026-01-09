@@ -1,5 +1,5 @@
 /**
- * Configuración de Entorno - PER Sistema
+ * Configuración de Entorno - Zarpeo
  * Detecta automáticamente el entorno y configura las URLs correctas
  */
 
@@ -17,7 +17,7 @@ class EnvironmentConfig {
         if (hostname === 'localhost' || hostname === '127.0.0.1') {
             this.environment = 'development';
             this.isProduction = false;
-        } else if (hostname === 'bancotest.com') {
+        } else if (hostname === 'zarpeo.com' || hostname === 'www.zarpeo.com') {
             this.environment = 'production';
             this.isProduction = true;
         } else if (hostname.includes('run.app')) {
@@ -35,14 +35,16 @@ class EnvironmentConfig {
     setConfiguration() {
         switch (this.environment) {
             case 'development':
+                // IMPORTANTE: API_BASE debe terminar en /api porque el frontend
+                // hace fetch(`${API_BASE}/auth/login`) sin añadir /api
                 this.config = {
-                    API_BASE: '/api',  // Ruta base para el API
-                    FRONTEND_BASE: '', // Relativa - mismo dominio
+                    API_BASE: 'http://localhost:5001/api',
+                    FRONTEND_BASE: '',
                     ENVIRONMENT_NAME: 'DESARROLLO',
                     ENVIRONMENT_COLOR: '#059669'
                 };
                 break;
-                
+
             case 'staging':
                 this.config = {
                     API_BASE: 'https://per-api-435987927843.europe-west1.run.app/api',
@@ -52,20 +54,19 @@ class EnvironmentConfig {
                 };
                 break;
 
-                   case 'production':
-                       this.config = {
-                           API_BASE: 'https://per-api-435987927843.europe-west1.run.app/api',  // Directa al API
-                           FRONTEND_BASE: '', // Relativa - mismo dominio
-                           ENVIRONMENT_NAME: 'PRODUCCIÓN',
-                           ENVIRONMENT_COLOR: '#dc2626'
-                       };
-                       break;
-                
-            default:
-                // Fallback a desarrollo
+            case 'production':
                 this.config = {
-                    API_BASE: '/api',  // Ruta base para el API
-                    FRONTEND_BASE: '', // Relativa - mismo dominio
+                    API_BASE: 'https://per-api-435987927843.europe-west1.run.app/api',
+                    FRONTEND_BASE: '',
+                    ENVIRONMENT_NAME: 'PRODUCCION',
+                    ENVIRONMENT_COLOR: '#dc2626'
+                };
+                break;
+
+            default:
+                this.config = {
+                    API_BASE: 'http://localhost:5001/api',
+                    FRONTEND_BASE: '',
                     ENVIRONMENT_NAME: 'DESARROLLO',
                     ENVIRONMENT_COLOR: '#059669'
                 };

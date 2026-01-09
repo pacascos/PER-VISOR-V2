@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PER Sistema - Redirigiendo...</title>
+    <title>Zarpeo - Redirigiendo...</title>
     <meta http-equiv="refresh" content="0; url=login.html">
     <!-- Favicon dinámico -->
     <link rel="icon" type="image/svg+xml" href="" id="dynamic-favicon">
     <script>
         // Detectar entorno y configurar favicon
-        const isProduction = window.location.hostname === 'bancotest.com';
+        const isProduction = window.location.hostname === 'zarpeo.com' || window.location.hostname === 'www.zarpeo.com';
         document.getElementById('dynamic-favicon').href = isProduction ? 'favicon-prod.svg' : 'favicon.svg';
     </script>
     <style>
@@ -52,7 +52,7 @@
 </head>
 <body>
     <div class="redirect-message">
-        <h1>🚢 PER Sistema</h1>
+        <h1>⚓ Zarpeo</h1>
         <p>Redirigiendo al sistema de exámenes...</p>
         <div class="spinner"></div>
         <p><small>Si no eres redirigido automáticamente, <a href="login.html">haz clic aquí</a></small></p>
