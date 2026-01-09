@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Estadísticas - PER Sistema</title>
+    <title>Dashboard de Estadísticas - Zarpeo</title>
 
     <!-- Favicon dinámico -->
     <link rel="icon" type="image/svg+xml" href="" id="dynamic-favicon">
     <script>
         // Detectar entorno y configurar favicon
-        const isProduction = window.location.hostname === 'bancotest.com';
+        const isProduction = window.location.hostname === 'zarpeo.com' || window.location.hostname === 'www.zarpeo.com';
         document.getElementById('dynamic-favicon').href = isProduction ? 'favicon-prod.svg' : 'favicon.svg';
     </script>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <!-- CSS Unificado -->
     <link rel="stylesheet" href="styles/unified-navigation.css">
+
+    <!-- Google Fonts - Zarpeo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -28,16 +30,27 @@
 
     <style>
         :root {
-            --primary-color: #4f46e5;
+            /* Colores Zarpeo */
+            --color-marino: #0B3C5D;
+            --color-oceano: #0E6BA8;
+            --color-turquesa: #2EC4B6;
+            --color-naranja: #F4A261;
+
+            /* Aliases */
+            --primary-color: var(--color-oceano);
             --success-color: #10b981;
-            --warning-color: #f59e0b;
+            --warning-color: var(--color-naranja);
             --danger-color: #ef4444;
-            --info-color: #3b82f6;
-            --dark-color: #1f2937;
+            --info-color: var(--color-oceano);
+            --dark-color: var(--color-marino);
             --light-color: #f8fafc;
             --border-radius: 16px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow: 0 4px 12px rgba(11, 60, 93, 0.1);
+            --shadow-lg: 0 8px 24px rgba(11, 60, 93, 0.15);
+
+            /* Tipografía */
+            --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         * {
@@ -47,8 +60,8 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, var(--color-marino) 0%, var(--color-oceano) 100%);
             min-height: 100vh;
             color: var(--dark-color);
         }
@@ -83,25 +96,27 @@
         /* Estilos de navegación movidos a unified-navigation.css */
 
         .stats-title {
+            font-family: var(--font-heading);
             font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--primary-color);
+            font-weight: 700;
+            color: var(--color-marino);
             margin-bottom: 0.5rem;
         }
 
         .stats-subtitle {
-            color: #6b7280;
+            color: #64748B;
             font-size: 1.1rem;
         }
 
         .user-level {
             display: inline-flex;
             align-items: center;
-            background: linear-gradient(135deg, var(--primary-color), #7c3aed);
+            background: linear-gradient(135deg, var(--color-oceano), var(--color-turquesa));
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 25px;
-            font-weight: bold;
+            font-family: var(--font-heading);
+            font-weight: 600;
             margin-top: 1rem;
         }
 
@@ -151,15 +166,17 @@
         .stat-icon.primary { background: var(--primary-color); }
 
         .stat-title {
+            font-family: var(--font-heading);
             font-size: 1.2rem;
             font-weight: 600;
-            color: var(--dark-color);
+            color: var(--color-marino);
         }
 
         .stat-value {
+            font-family: var(--font-heading);
             font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--primary-color);
+            font-weight: 700;
+            color: var(--color-oceano);
             margin-bottom: 0.5rem;
         }
 
@@ -180,7 +197,7 @@
         }
 
         .progress-bar {
-            background: linear-gradient(135deg, var(--success-color), #34d399);
+            background: linear-gradient(90deg, var(--color-oceano), var(--color-turquesa));
             transition: width 0.6s ease;
             border-radius: 5px;
         }
@@ -255,42 +272,6 @@
         .exam-history-item.failed {
             background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
             border-left-color: #ef4444;
-        }
-
-        /* Diferenciación visual entre exámenes y tests de estudio */
-        .exam-history-item.exam-type-exam {
-            border-left-width: 4px;
-        }
-
-        .exam-history-item.exam-type-study-test {
-            border-left-width: 6px;
-            border-left-style: dashed;
-        }
-
-        .exam-history-item.exam-type-study-test.passed {
-            border-left-color: #10b981;
-        }
-
-        .exam-history-item.exam-type-study-test.failed {
-            border-left-color: #ef4444;
-        }
-
-        .exam-type-badge {
-            flex: 0 0 auto;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.3rem 0.7rem;
-            border-radius: 15px;
-            color: white;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-right: 0.5rem;
-        }
-
-        .exam-type-badge i {
-            font-size: 0.7rem;
         }
 
         .exam-history-item:hover {
@@ -509,8 +490,8 @@
         .spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid #e5e7eb;
-            border-top: 4px solid var(--primary-color);
+            border: 4px solid rgba(14, 107, 168, 0.2);
+            border-top: 4px solid var(--color-oceano);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -577,10 +558,19 @@
         <!-- Navegación Unificada Superior -->
         <div class="unified-top-nav">
             <button class="unified-back-btn" onclick="location.href='exam-system.html'">
-                <i class="fas fa-arrow-left"></i> Volver al Sistema
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Volver al Sistema
             </button>
             <h1 class="page-title">
-                <i class="fas fa-chart-line"></i> Dashboard de Estadísticas
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                Dashboard de Estadísticas
             </h1>
             <div></div>
         </div>
@@ -588,19 +578,39 @@
         <!-- Barra de Navegación con Tabs -->
         <div class="unified-tab-nav">
             <a href="exam-system.html" class="unified-tab-item">
-                <i class="fas fa-home"></i> Principal
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                Principal
             </a>
             <a href="visor-nueva-arquitectura.html" class="unified-tab-item">
-                <i class="fas fa-book"></i> Banco
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                Banco
             </a>
             <a href="statistics-dashboard.html" class="unified-tab-item active">
-                <i class="fas fa-chart-bar"></i> Estadísticas
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                Estadísticas
             </a>
             <a href="question-statistics-dashboard.html" class="unified-tab-item">
-                <i class="fas fa-chart-line"></i> Preguntas
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                Preguntas
             </a>
             <a href="study-config.html" class="unified-tab-item">
-                <i class="fas fa-book-reader"></i> Estudio
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                </svg>
+                Estudio
             </a>
         </div>
 
@@ -610,12 +620,16 @@
 
             <div class="user-info-header">
                 <div class="user-level" id="userLevel">
-                    <i class="fas fa-star me-2"></i>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="margin-right: 8px;">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
                     <span id="levelText">Nivel 1</span>
                 </div>
 
                 <div class="streak-indicator" id="streakIndicator">
-                    <i class="fas fa-fire streak-flame"></i>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" class="streak-flame">
+                        <path d="M12 23c-3.866 0-7-3.134-7-7 0-3.092 2.5-6.492 5-9 .5 2 1.5 3 3 3s2-1.5 2-3c2.5 2.508 5 5.908 5 9 0 3.866-3.134 7-7 7z"></path>
+                    </svg>
                     <span id="streakText">0 días</span>
                 </div>
             </div>
@@ -633,7 +647,14 @@
                 <div class="stat-card">
                     <div class="stat-card-header">
                         <div class="stat-icon success">
-                            <i class="fas fa-trophy"></i>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                                <path d="M4 22h16"></path>
+                                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                            </svg>
                         </div>
                         <div class="stat-title">Rendimiento Global</div>
                     </div>
@@ -650,7 +671,10 @@
                 <div class="stat-card">
                     <div class="stat-card-header">
                         <div class="stat-icon info">
-                            <i class="fas fa-clipboard-check"></i>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 11l3 3L22 4"></path>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                            </svg>
                         </div>
                         <div class="stat-title">Exámenes Completados</div>
                     </div>
@@ -668,7 +692,10 @@
                 <div class="stat-card">
                     <div class="stat-card-header">
                         <div class="stat-icon warning">
-                            <i class="fas fa-clock"></i>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
                         </div>
                         <div class="stat-title">Tiempo de Estudio</div>
                     </div>
@@ -686,14 +713,20 @@
                 <div class="stat-card">
                     <div class="stat-card-header">
                         <div class="stat-icon danger">
-                            <i class="fas fa-exclamation-triangle"></i>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
                         </div>
                         <div class="stat-title">Áreas de Mejora</div>
                     </div>
                     <div class="stat-value" id="weakAreas">3</div>
                     <div class="stat-description">Temas que requieren más práctica</div>
                     <div id="weakAreasList" class="mt-2">
-                        <!-- Weak areas will be loaded dynamically -->
+                        <small class="badge bg-danger me-1">UT3 - Navegación</small>
+                        <small class="badge bg-warning me-1">UT7 - Meteorología</small>
+                        <small class="badge bg-warning me-1">UT9 - Comunicaciones</small>
                     </div>
                 </div>
             </div>
@@ -702,7 +735,10 @@
             <div class="stat-card">
                 <div class="stat-card-header">
                     <div class="stat-icon primary">
-                        <i class="fas fa-chart-area"></i>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 3v18h18"></path>
+                            <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                        </svg>
                     </div>
                     <div class="stat-title">Evolución del Rendimiento</div>
                 </div>
@@ -715,7 +751,13 @@
             <div class="stat-card">
                 <div class="stat-card-header">
                     <div class="stat-icon success">
-                        <i class="fas fa-brain"></i>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16z"></path>
+                            <path d="M12 2v8l4 2"></path>
+                            <path d="M20 12a8 8 0 0 1-8 8"></path>
+                            <path d="M2 12h2"></path>
+                            <path d="M20 12h2"></path>
+                        </svg>
                     </div>
                     <div class="stat-title">Dominio por Temas</div>
                 </div>
@@ -728,7 +770,14 @@
             <div class="stat-card">
                 <div class="stat-card-header">
                     <div class="stat-icon info">
-                        <i class="fas fa-list-check"></i>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        </svg>
                     </div>
                     <div class="stat-title">Progreso Detallado por UT</div>
                 </div>
@@ -741,7 +790,11 @@
             <div class="stat-card">
                 <div class="stat-card-header">
                     <div class="stat-icon primary">
-                        <i class="fas fa-history"></i>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 3v5h5"></path>
+                            <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"></path>
+                            <path d="M12 7v5l4 2"></path>
+                        </svg>
                     </div>
                     <div class="stat-title">Historial de Exámenes</div>
                 </div>
@@ -754,7 +807,10 @@
             <div class="stat-card">
                 <div class="stat-card-header">
                     <div class="stat-icon warning">
-                        <i class="fas fa-medal"></i>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="8" r="6"></circle>
+                            <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"></path>
+                        </svg>
                     </div>
                     <div class="stat-title">Logros Desbloqueados</div>
                 </div>
@@ -766,28 +822,16 @@
 
         <!-- Recommendations -->
         <div id="recommendationsSection" class="recommendations d-none">
-            <h3><i class="fas fa-lightbulb me-2"></i>Recomendaciones de Estudio</h3>
+            <h3>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;">
+                    <line x1="9" y1="18" x2="15" y2="18"></line>
+                    <line x1="10" y1="22" x2="14" y2="22"></line>
+                    <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path>
+                </svg>
+                Recomendaciones de Estudio
+            </h3>
             <div id="recommendationsList">
                 <!-- Recommendations will be loaded here -->
-            </div>
-        </div>
-
-        <!-- Reset Statistics Section -->
-        <div class="stat-card" style="margin-top: 2rem;">
-            <div class="stat-card-header">
-                <div class="stat-icon danger">
-                    <i class="fas fa-trash-alt"></i>
-                </div>
-                <div class="stat-title">Zona de Peligro</div>
-            </div>
-            <div class="p-3">
-                <p class="text-muted mb-3">
-                    ¿Quieres empezar de cero? Esta acción eliminará todas tus estadísticas, exámenes, tests de estudio y logros.
-                    <strong>Esta acción no se puede deshacer.</strong>
-                </p>
-                <button class="btn btn-danger" onclick="window.statisticsManager.showResetConfirmModal()">
-                    <i class="fas fa-trash-alt me-2"></i>Resetear Todas mis Estadísticas
-                </button>
             </div>
         </div>
 
@@ -795,9 +839,16 @@
         <div class="modal fade" id="achievementModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header bg-warning text-dark">
+                    <div class="modal-header" style="background: linear-gradient(135deg, var(--color-naranja), #fbbf24); color: var(--color-marino);">
                         <h5 class="modal-title">
-                            <i class="fas fa-trophy me-2"></i>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                                <path d="M4 22h16"></path>
+                                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                            </svg>
                             ¡Nuevo Logro Desbloqueado!
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -806,61 +857,6 @@
                         <div id="achievementContent">
                             <!-- Achievement content will be loaded here -->
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Reset Statistics Confirmation Modal -->
-        <div class="modal fade" id="resetStatsModal" tabindex="-1" aria-labelledby="resetStatsModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="resetStatsModalLabel">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Confirmar Reseteo de Estadísticas
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            <strong>¡ADVERTENCIA!</strong> Esta acción es irreversible.
-                        </div>
-                        <p class="mb-3">
-                            Al resetear tus estadísticas, se eliminará permanentemente:
-                        </p>
-                        <ul class="text-start mb-4">
-                            <li>Todos tus exámenes completados</li>
-                            <li>Todos tus tests de estudio</li>
-                            <li>Tus logros y progreso</li>
-                            <li>Tus estadísticas (nivel, XP, rachas)</li>
-                            <li>Tu historial completo</li>
-                        </ul>
-                        <p class="mb-3">
-                            <strong>Las estadísticas generales del sistema no se verán afectadas.</strong>
-                        </p>
-                        <div class="mb-3">
-                            <label for="resetConfirmText" class="form-label">
-                                Para confirmar, escribe <strong>"borrar"</strong> en el siguiente campo:
-                            </label>
-                            <input 
-                                type="text" 
-                                class="form-control" 
-                                id="resetConfirmText" 
-                                placeholder="Escribe 'borrar' para confirmar"
-                                autocomplete="off"
-                            >
-                            <div class="invalid-feedback" id="resetConfirmFeedback"></div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="fas fa-times me-2"></i>Cancelar
-                        </button>
-                        <button type="button" class="btn btn-danger" id="confirmResetBtn" disabled>
-                            <i class="fas fa-trash-alt me-2"></i>Resetear Estadísticas
-                        </button>
                     </div>
                 </div>
             </div>
@@ -875,7 +871,7 @@
     <script src="config.js"></script>
 
     <!-- Statistics Manager -->
-    <script src="statistics-manager.js?v=2.0"></script>
+    <script src="statistics-manager.js"></script>
 
     <script>
         let statisticsManager;

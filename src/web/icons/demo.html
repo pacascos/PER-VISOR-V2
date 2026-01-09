@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Zarpeo Icon Library (v2)</title>
+  <link rel="stylesheet" href="./zarpeo-icons.css" />
+  <style>
+    body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin:24px; color:#0B3C5D; }
+    .grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap:16px; }
+    .card{ border:1px solid #E6EAF0; border-radius:12px; padding:12px; background:#fff; }
+    .name{ font-size:12px; margin-top:8px; color:#5F6C7B; }
+  </style>
+</head>
+<body>
+  <h1>Zarpeo · Icon Library (v2)</h1>
+  <p>Color por defecto: <code>#0E6BA8</code> (puedes cambiarlo con <code>--zarpeo-icon-color</code>).</p>
+
+  <div id="sprite"></div>
+  <div class="grid" id="grid"></div>
+
+  <script>
+    fetch("./sprite.svg").then(r => r.text()).then(svg => {
+      document.getElementById("sprite").innerHTML = svg;
+    }).then(() => {
+      const names = ["anchor", "boat", "book-nautical", "calendar", "certificate", "chart", "charter", "chat", "compass", "fish", "heart", "hook", "lifebuoy", "login", "logout", "map", "marina", "per-exam", "pin", "quiz", "sailboat", "search", "settings", "shield", "store", "tackle", "timer", "user", "user-plus", "users", "waves", "weather"];
+      const grid = document.getElementById("grid");
+      for(const n of names){
+        const el = document.createElement("div");
+        el.className = "card";
+        el.innerHTML = `
+          <svg class="zicon lg" viewBox="0 0 24 24">
+            <use href="#zarpeo-${n}"></use>
+          </svg>
+          <div class="name">zarpeo-${n}</div>
+        `;
+        grid.appendChild(el);
+      }
+    });
+  </script>
+</body>
+</html>

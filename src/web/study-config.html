@@ -3,21 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configurar Test de Estudio - Sistema PER</title>
+    <title>Configurar Test de Estudio - Zarpeo</title>
 
     <!-- Favicon dinámico -->
     <link rel="icon" type="image/svg+xml" href="" id="dynamic-favicon">
     <script>
-        const isProduction = window.location.hostname === 'bancotest.com';
+        const isProduction = window.location.hostname === 'zarpeo.com' || window.location.hostname === 'www.zarpeo.com';
         document.getElementById('dynamic-favicon').href = isProduction ? 'favicon-prod.svg' : 'favicon.svg';
         window.ENVIRONMENT = isProduction ? 'PRODUCCIÓN' : 'DESARROLLO';
         window.ENVIRONMENT_COLOR = isProduction ? '#dc2626' : '#059669';
     </script>
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- CSS Moderno -->
+    <!-- CSS Moderno con Identidad Zarpeo -->
     <link rel="stylesheet" href="styles/modern-study.css">
 
     <!-- Configuration -->
@@ -38,7 +35,11 @@
         <!-- Navegación simple -->
         <div class="simple-nav">
             <button class="nav-btn back-btn" onclick="window.location.href='exam-system.html'">
-                <i class="fas fa-arrow-left"></i> Volver
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Volver
             </button>
         </div>
 
@@ -48,7 +49,14 @@
             <div class="study-card ut-selection-card">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <i class="fas fa-list-check"></i>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        </svg>
                         Unidades Temáticas
                     </h2>
                 </div>
@@ -96,7 +104,11 @@
             <!-- Mensajes de estado -->
             <div class="error-card" id="error-message" style="display: none;">
                 <div class="error-icon">
-                    <i class="fas fa-exclamation-triangle"></i>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
                 </div>
                 <div id="error-text"></div>
             </div>
@@ -105,7 +117,7 @@
 
     <script>
         // Configuration - usar window.API_BASE si está disponible (configurado por config.js)
-        const API_URL = window.API_BASE || (window.location.hostname === 'bancotest.com'
+        const API_URL = window.API_BASE || (window.location.hostname === 'zarpeo.com' || window.location.hostname === 'www.zarpeo.com'
             ? 'https://per-api-435987927843.europe-west1.run.app'
             : 'http://localhost:5001');
 

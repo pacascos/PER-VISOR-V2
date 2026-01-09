@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados del Examen - PER</title>
+    <title>Resultados del Examen - Zarpeo</title>
 
-    <!-- Bootstrap CSS -->
+    <!-- Tipografias Zarpeo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS (solo layout) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- CSS Unificado -->
     <link rel="stylesheet" href="styles/unified-navigation.css">
@@ -17,32 +19,59 @@
     <!-- Configuration -->
     <script src="config.js"></script>
 
-    <!-- Favicon dinámico -->
+    <!-- Favicon dinamico -->
     <link rel="icon" type="image/svg+xml" href="" id="dynamic-favicon">
     <script>
-        const isProduction = window.location.hostname === 'bancotest.com';
+        const isProduction = window.location.hostname === 'zarpeo.com' || window.location.hostname === 'www.zarpeo.com';
         document.getElementById('dynamic-favicon').href = isProduction ? 'favicon-prod.svg' : 'favicon.svg';
-        window.ENVIRONMENT = isProduction ? 'PRODUCCIÓN' : 'DESARROLLO';
+        window.ENVIRONMENT = isProduction ? 'PRODUCCION' : 'DESARROLLO';
         window.ENVIRONMENT_COLOR = isProduction ? '#dc2626' : '#059669';
     </script>
 
     <style>
+        :root {
+            --color-marino: #0B3C5D;
+            --color-oceano: #0E6BA8;
+            --color-turquesa: #2EC4B6;
+            --color-naranja: #F4A261;
+            --bg-white: #FFFFFF;
+            --bg-light: #F8FAFC;
+            --bg-muted: #F1F5F9;
+            --bg-subtle: #E2E8F0;
+            --text-primary: #0B3C5D;
+            --text-secondary: #64748B;
+            --text-muted: #94A3B8;
+            --color-success: #10B981;
+            --color-error: #EF4444;
+            --border-color: #E2E8F0;
+            --border-radius: 10px;
+            --border-radius-lg: 16px;
+            --shadow-md: 0 4px 12px rgba(11, 60, 93, 0.1);
+            --shadow-lg: 0 8px 24px rgba(11, 60, 93, 0.15);
+            --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--color-marino) 0%, var(--color-oceano) 100%);
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-body);
+            color: var(--text-primary);
         }
 
         .environment-indicator {
             position: fixed;
             top: 10px;
             right: 10px;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(11, 60, 93, 0.9);
             color: white;
-            padding: 4px 8px;
+            padding: 4px 10px;
             border-radius: 12px;
             font-size: 11px;
-            font-weight: bold;
+            font-weight: 600;
+            font-family: var(--font-heading);
             z-index: 9999;
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -56,13 +85,14 @@
 
         .results-card {
             background: white;
-            border-radius: 20px;
+            border-radius: var(--border-radius-lg);
             padding: 3rem 2rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow-lg);
         }
 
         .result-title {
             text-align: center;
+            font-family: var(--font-heading);
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 3rem;
@@ -72,16 +102,18 @@
             gap: 1rem;
         }
 
+        .result-title svg {
+            width: 48px;
+            height: 48px;
+            stroke: currentColor;
+        }
+
         .result-title.passed {
-            color: #10b981;
+            color: var(--color-turquesa);
         }
 
         .result-title.failed {
-            color: #ef4444;
-        }
-
-        .result-title i {
-            font-size: 3rem;
+            color: var(--color-error);
         }
 
         .stats-grid {
@@ -92,8 +124,8 @@
         }
 
         .stat-card {
-            background: #f9fafb;
-            border-radius: 12px;
+            background: var(--bg-light);
+            border-radius: var(--border-radius);
             padding: 1.5rem;
             text-align: center;
             border: 2px solid transparent;
@@ -102,67 +134,55 @@
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-md);
         }
 
         .stat-card.correct {
-            border-color: #10b981;
-            background: #f0fdf4;
+            border-color: var(--color-turquesa);
+            background: rgba(46, 196, 182, 0.1);
         }
 
         .stat-card.incorrect {
-            border-color: #ef4444;
-            background: #fef2f2;
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
         }
 
         .stat-card.unanswered {
-            border-color: #94a3b8;
-            background: #f8fafc;
+            border-color: var(--text-muted);
+            background: var(--bg-muted);
         }
 
         .stat-card.percentage {
-            border-color: #667eea;
-            background: #eef2ff;
+            border-color: var(--color-oceano);
+            background: rgba(14, 107, 168, 0.1);
         }
 
         .stat-value {
+            font-family: var(--font-heading);
             font-size: 3rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
 
-        .stat-card.correct .stat-value {
-            color: #10b981;
-        }
-
-        .stat-card.incorrect .stat-value {
-            color: #ef4444;
-        }
-
-        .stat-card.unanswered .stat-value {
-            color: #64748b;
-        }
-
-        .stat-card.percentage .stat-value {
-            color: #667eea;
-        }
+        .stat-card.correct .stat-value { color: var(--color-turquesa); }
+        .stat-card.incorrect .stat-value { color: var(--color-error); }
+        .stat-card.unanswered .stat-value { color: var(--text-secondary); }
+        .stat-card.percentage .stat-value { color: var(--color-oceano); }
 
         .stat-label {
             font-size: 1rem;
-            color: #64748b;
+            color: var(--text-secondary);
             font-weight: 500;
         }
 
         .exam-info {
             text-align: center;
             margin: 2rem 0;
-            color: #64748b;
+            color: var(--text-secondary);
             font-size: 1.1rem;
         }
 
-        .exam-info p {
-            margin: 0.5rem 0;
-        }
+        .exam-info p { margin: 0.5rem 0; }
 
         .action-buttons {
             display: flex;
@@ -173,11 +193,12 @@
         }
 
         .btn-primary-custom {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--color-oceano);
             border: none;
             color: white;
             padding: 1rem 2rem;
-            border-radius: 12px;
+            border-radius: var(--border-radius);
+            font-family: var(--font-heading);
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
@@ -188,16 +209,25 @@
         }
 
         .btn-primary-custom:hover {
+            background: var(--color-marino);
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary-custom svg,
+        .btn-secondary-custom svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
         }
 
         .btn-secondary-custom {
             background: white;
-            border: 2px solid #667eea;
-            color: #667eea;
+            border: 2px solid var(--color-oceano);
+            color: var(--color-oceano);
             padding: 1rem 2rem;
-            border-radius: 12px;
+            border-radius: var(--border-radius);
+            font-family: var(--font-heading);
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
@@ -208,10 +238,9 @@
         }
 
         .btn-secondary-custom:hover {
-            background: #667eea;
+            background: var(--color-oceano);
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         }
 
         .loading-spinner {
@@ -219,9 +248,250 @@
             padding: 3rem;
         }
 
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(14, 107, 168, 0.2);
+            border-top-color: var(--color-oceano);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* UT Analysis Section */
+        .ut-analysis-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .ut-analysis-section h4 {
+            font-family: var(--font-heading);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ut-analysis-section h4 svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--color-oceano);
+        }
+
+        .criteria-summary .alert {
+            border-radius: var(--border-radius);
+        }
+
+        .stat-box {
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            background: var(--bg-light);
+        }
+
+        .stat-box h5 {
+            margin: 0;
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .ut-details .card {
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .ut-details .card-header {
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border-color);
+            border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+        }
+
+        /* Simple Modal */
+        .simple-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(11, 60, 93, 0.5);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .simple-modal-content {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 0;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .simple-modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .simple-modal-header h5 {
+            margin: 0;
+            font-family: var(--font-heading);
+            color: var(--color-turquesa);
+            font-size: 1.1rem;
+        }
+
+        .simple-modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .simple-modal-close:hover {
+            color: var(--text-primary);
+            background: var(--bg-muted);
+        }
+
+        .simple-modal-body {
+            padding: 1.5rem;
+        }
+
+        .simple-modal-body p {
+            margin: 0 0 0.75rem 0;
+        }
+
+        .simple-modal-body small {
+            color: var(--text-secondary);
+        }
+
+        .simple-modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .simple-modal-footer .btn {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-family: var(--font-heading);
+            font-weight: 600;
+        }
+
+        .simple-modal-footer .btn-success {
+            background: var(--color-turquesa);
+            color: white;
+        }
+
+        .simple-modal-footer .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Navigation overrides for Zarpeo colors */
+        .unified-top-nav {
+            background: var(--color-marino);
+        }
+
+        .unified-back-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-family: var(--font-heading);
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .unified-back-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+        }
+
+        .unified-back-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .page-title {
+            font-family: var(--font-heading);
+            color: white;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .page-title svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+        }
+
+        .unified-tab-nav {
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .unified-tab-item {
+            color: var(--text-secondary);
+            font-family: var(--font-heading);
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .unified-tab-item svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+        }
+
+        .unified-tab-item:hover {
+            color: var(--color-oceano);
+            border-bottom-color: var(--color-oceano);
+        }
+
+        .unified-tab-item.active {
+            color: var(--color-oceano);
+            border-bottom-color: var(--color-oceano);
+        }
+
+        @media (max-width: 768px) {
+            .result-title { font-size: 1.75rem; }
+            .stat-value { font-size: 2rem; }
+            .results-card { padding: 2rem 1rem; }
         }
     </style>
 </head>
@@ -229,33 +499,55 @@
     <!-- Indicador de entorno -->
     <div class="environment-indicator" id="env-indicator"></div>
 
-    <!-- Navegación Unificada Superior -->
-    <div class="unified-top-nav">
+    <!-- Navegacion Superior -->
+    <div class="unified-top-nav" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem;">
         <button class="unified-back-btn" onclick="window.location.href='exam-system.html'">
-            <i class="fas fa-home"></i> Volver al Inicio
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            Volver al Inicio
         </button>
         <h1 class="page-title">
-            <i class="fas fa-chart-pie"></i> Resultados del Examen
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
+                <path d="M22 12A10 10 0 0 0 12 2v10z"/>
+            </svg>
+            Resultados del Examen
         </h1>
         <div></div>
     </div>
 
-    <!-- Barra de Navegación con Tabs -->
-    <div class="unified-tab-nav">
+    <!-- Barra de Navegacion con Tabs -->
+    <div class="unified-tab-nav" style="display: flex; justify-content: center; gap: 0.5rem; padding: 0.5rem 1rem;">
         <a href="exam-system.html" class="unified-tab-item">
-            <i class="fas fa-home"></i> Principal
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            Principal
         </a>
         <a href="visor-nueva-arquitectura.html" class="unified-tab-item">
-            <i class="fas fa-book"></i> Banco
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            Banco
         </a>
         <a href="statistics-dashboard.html" class="unified-tab-item">
-            <i class="fas fa-chart-bar"></i> Estadísticas
-        </a>
-        <a href="question-statistics-dashboard.html" class="unified-tab-item">
-            <i class="fas fa-chart-line"></i> Preguntas
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+            Estadisticas
         </a>
         <a href="exam-system.html" class="unified-tab-item active">
-            <i class="fas fa-file-alt"></i> Examen
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            Examen
         </a>
     </div>
 
@@ -263,20 +555,22 @@
         <!-- Loading State -->
         <div id="loading-section" class="results-card">
             <div class="loading-spinner">
-                <div class="spinner-border text-primary" role="status"></div>
-                <p class="mt-3">Cargando resultados...</p>
+                <div class="spinner"></div>
+                <p class="mt-3" style="color: var(--text-secondary);">Cargando resultados...</p>
             </div>
         </div>
 
         <!-- Results Content -->
         <div id="results-section" class="results-card" style="display: none;">
-            <!-- Title (will be set dynamically) -->
             <h1 class="result-title" id="result-title">
-                <i class="fas fa-circle-xmark"></i>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/>
+                    <line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
                 <span>Cargando...</span>
             </h1>
 
-            <!-- Statistics Grid -->
             <div class="stats-grid">
                 <div class="stat-card correct">
                     <div class="stat-value" id="correct-count">0</div>
@@ -299,20 +593,24 @@
                 </div>
             </div>
 
-            <!-- Exam Info -->
             <div class="exam-info">
-                <p><strong>Duración del examen:</strong> <span id="exam-duration">0 minutos</span></p>
+                <p><strong>Duracion del examen:</strong> <span id="exam-duration">0 minutos</span></p>
                 <p><strong>Preguntas totales:</strong> <span id="total-questions">45</span></p>
             </div>
 
-            <!-- Action Buttons -->
             <div class="action-buttons">
                 <button class="btn-primary-custom" onclick="window.location.href='exam-system.html'">
-                    <i class="fas fa-home"></i>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
                     Volver al Inicio
                 </button>
                 <button class="btn-secondary-custom" onclick="window.location.href='exam-unified.html'">
-                    <i class="fas fa-redo"></i>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"/>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                    </svg>
                     Nuevo Examen
                 </button>
             </div>
@@ -321,30 +619,23 @@
 
     <!-- Scripts -->
     <script>
-        // Exam Results Page - v2.0 - Always load from API with UT Analysis
-        // Get exam ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const examId = urlParams.get('exam_id');
 
-        console.log('📊 Exam Results Page v2.0 - API with UT Analysis');
-        console.log('   Exam ID:', examId);
+        console.log('Exam Results Page - API with UT Analysis');
+        console.log('Exam ID:', examId);
 
-        // Load results from API (always use API for detailed UT analysis)
         async function loadResults() {
             try {
                 if (!examId) {
                     throw new Error('No exam ID provided');
                 }
 
-                console.log('📡 Fetching detailed results from API...');
-
                 const API_BASE = window.API_BASE || '';
                 const token = localStorage.getItem('token') || localStorage.getItem('authToken');
-                
+
                 const response = await fetch(`${API_BASE}/exams/${examId}/results`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
+                    headers: { 'Authorization': `Bearer ${token}` },
                     credentials: 'include'
                 });
 
@@ -353,123 +644,110 @@
                 }
 
                 const results = await response.json();
-                console.log('✅ Results loaded from API:', results);
-
-                // Display results
                 displayResults(results);
 
             } catch (error) {
-                console.error('❌ Error loading results:', error);
+                console.error('Error loading results:', error);
                 showError('No se pudieron cargar los resultados del examen.');
             }
         }
 
         function displayResults(results) {
-            // Hide loading, show results
             document.getElementById('loading-section').style.display = 'none';
             document.getElementById('results-section').style.display = 'block';
 
-            // Extract data from API response
             const examSummary = results.exam_summary || {};
             const utAnalysis = results.ut_analysis || [];
             const criteriaCheck = results.criteria_check || {};
             const utSummary = results.ut_summary || {};
 
-            // Calculate statistics
             const correctCount = examSummary.correct_answers || 0;
             const totalQuestions = examSummary.total_questions || 45;
             const incorrectCount = totalQuestions - correctCount - (examSummary.unanswered || 0);
             const unansweredCount = examSummary.unanswered || 0;
             const percentage = examSummary.score_percentage || Math.round((correctCount / totalQuestions) * 100);
-            
-            // Use actual passed status from criteria check
             const passed = examSummary.actually_passed !== undefined ? examSummary.actually_passed : (percentage >= 65);
 
-            // Update title
             const titleElement = document.getElementById('result-title');
             if (passed) {
                 titleElement.className = 'result-title passed';
-                titleElement.innerHTML = '<i class="fas fa-circle-check"></i><span>¡Examen Aprobado!</span>';
+                titleElement.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    <span>Examen Aprobado</span>
+                `;
             } else {
                 titleElement.className = 'result-title failed';
-                titleElement.innerHTML = '<i class="fas fa-circle-xmark"></i><span>Examen No Aprobado</span>';
+                titleElement.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="15" y1="9" x2="9" y2="15"/>
+                        <line x1="9" y1="9" x2="15" y2="15"/>
+                    </svg>
+                    <span>Examen No Aprobado</span>
+                `;
             }
 
-            // Update stats
             document.getElementById('correct-count').textContent = correctCount;
             document.getElementById('incorrect-count').textContent = incorrectCount;
             document.getElementById('unanswered-count').textContent = unansweredCount;
             document.getElementById('percentage-value').textContent = percentage + '%';
-
-            // Update exam info
             document.getElementById('total-questions').textContent = totalQuestions;
 
-            // Calculate duration if available
             if (examSummary.started_at && examSummary.completed_at) {
                 const start = new Date(examSummary.started_at);
                 const end = new Date(examSummary.completed_at);
-                const durationMs = end - start;
-                const durationMinutes = Math.round(durationMs / 60000);
+                const durationMinutes = Math.round((end - start) / 60000);
                 document.getElementById('exam-duration').textContent = durationMinutes + ' minutos';
             } else if (examSummary.duration_minutes) {
                 document.getElementById('exam-duration').textContent = examSummary.duration_minutes + ' minutos';
             }
 
-            // Display UT analysis if available
             if (utAnalysis && utAnalysis.length > 0) {
                 displayUTAnalysis(utAnalysis, criteriaCheck, utSummary);
             }
-
-            console.log('✅ Results displayed');
-            console.log('   Correct:', correctCount);
-            console.log('   Incorrect:', incorrectCount);
-            console.log('   Unanswered:', unansweredCount);
-            console.log('   Score:', percentage + '%');
-            console.log('   Passed:', passed);
-            console.log('   Actually Passed:', examSummary.actually_passed);
-            console.log('   UT Analysis:', utAnalysis);
         }
 
         function displayUTAnalysis(utAnalysis, criteriaCheck, utSummary) {
-            // Create UT analysis section
             let utAnalysisHTML = `
                 <div class="ut-analysis-section mt-4">
                     <h4 class="mb-3">
-                        <i class="fas fa-chart-bar"></i>
-                        Análisis por Unidad Temática (UT)
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10"/>
+                            <line x1="12" y1="20" x2="12" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                        Analisis por Unidad Tematica (UT)
                     </h4>
             `;
 
-            // Add criteria summary if available
             if (criteriaCheck && Object.keys(criteriaCheck).length > 0) {
-                const overallOk = criteriaCheck.overall_score_ok ? '✅' : '❌';
-                const criticalOk = criteriaCheck.critical_uts_ok ? '✅' : '❌';
-                const actuallyPassed = criteriaCheck.actually_passed ? '✅' : '❌';
+                const overallOk = criteriaCheck.overall_score_ok ? 'Si' : 'No';
+                const criticalOk = criteriaCheck.critical_uts_ok ? 'Si' : 'No';
+                const actuallyPassed = criteriaCheck.actually_passed ? 'Si' : 'No';
 
                 utAnalysisHTML += `
                     <div class="criteria-summary mb-4">
                         <div class="alert ${criteriaCheck.actually_passed ? 'alert-success' : 'alert-danger'}">
-                            <h6><i class="fas fa-clipboard-check"></i> Verificación de Criterios de Aprobación</h6>
+                            <h6>Verificacion de Criterios de Aprobacion</h6>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <small><strong>Puntuación General (≥65%):</strong> ${overallOk}</small>
+                                    <small><strong>Puntuacion General (>=65%):</strong> ${overallOk}</small>
                                 </div>
                                 <div class="col-md-4">
-                                    <small><strong>UTs Críticas:</strong> ${criticalOk}</small>
+                                    <small><strong>UTs Criticas:</strong> ${criticalOk}</small>
                                 </div>
                                 <div class="col-md-4">
                                     <small><strong>Resultado Final:</strong> ${actuallyPassed}</small>
                                 </div>
                             </div>
-                            ${criteriaCheck.critical_uts_required ? `
-                                <small class="text-muted">UTs Críticas: ${criteriaCheck.critical_uts_required.join(', ')}</small>
-                            ` : ''}
                         </div>
                     </div>
                 `;
             }
 
-            // Add UT summary if available
             if (utSummary && Object.keys(utSummary).length > 0) {
                 utAnalysisHTML += `
                     <div class="ut-summary mb-3">
@@ -481,13 +759,13 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="stat-box text-success">
+                                <div class="stat-box" style="color: var(--color-turquesa);">
                                     <h5>${utSummary.uts_passed || 0}</h5>
                                     <small>UTs Aprobadas</small>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="stat-box text-danger">
+                                <div class="stat-box" style="color: var(--color-error);">
                                     <h5>${utSummary.uts_failed || 0}</h5>
                                     <small>UTs Fallidas</small>
                                 </div>
@@ -497,25 +775,21 @@
                 `;
             }
 
-            // Add individual UT analysis
             utAnalysisHTML += '<div class="ut-details">';
-            
+
             utAnalysis.forEach(ut => {
                 const passedClass = ut.passed ? 'success' : 'danger';
-                const passedIcon = ut.passed ? 'fa-check-circle' : 'fa-times-circle';
-                const criticalBadge = ut.max_errors_allowed !== null ? 
-                    `<span class="badge bg-warning">Crítica (máx. ${ut.max_errors_allowed} errores)</span>` : '';
+                const criticalBadge = ut.max_errors_allowed !== null ?
+                    `<span class="badge bg-warning">Critica (max. ${ut.max_errors_allowed} errores)</span>` : '';
 
                 utAnalysisHTML += `
                     <div class="card mb-3">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h6 class="mb-0">
-                                <i class="fas fa-book"></i>
                                 UT ${ut.ut_number} - ${ut.ut_category}
                                 ${criticalBadge}
                             </h6>
                             <span class="badge bg-${passedClass}">
-                                <i class="fas ${passedIcon}"></i>
                                 ${ut.passed ? 'Aprobada' : 'Fallida'}
                             </span>
                         </div>
@@ -524,40 +798,28 @@
                                 <div class="col-md-3">
                                     <div class="text-center">
                                         <h5 class="text-${passedClass}">${ut.score_percentage}%</h5>
-                                        <small>Puntuación</small>
+                                        <small>Puntuacion</small>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="text-center">
-                                        <h5 class="text-success">${ut.correct_answers}</h5>
+                                        <h5 style="color: var(--color-turquesa);">${ut.correct_answers}</h5>
                                         <small>Correctas</small>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="text-center">
-                                        <h5 class="text-danger">${ut.incorrect_answers}</h5>
+                                        <h5 style="color: var(--color-error);">${ut.incorrect_answers}</h5>
                                         <small>Incorrectas</small>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="text-center">
-                                        <h5 class="text-secondary">${ut.unanswered || 0}</h5>
+                                        <h5 style="color: var(--text-secondary);">${ut.unanswered || 0}</h5>
                                         <small>Sin responder</small>
                                     </div>
                                 </div>
                             </div>
-                            ${ut.max_errors_allowed !== null ? `
-                                <div class="mt-2">
-                                    <small class="text-muted">
-                                        <i class="fas fa-info-circle"></i>
-                                        UT Crítica: Máximo ${ut.max_errors_allowed} errores permitidos
-                                        ${ut.incorrect_answers > ut.max_errors_allowed ? 
-                                            ` (${ut.incorrect_answers - ut.max_errors_allowed} error(es) de más)` : 
-                                            ` (✅ Dentro del límite)`
-                                        }
-                                    </small>
-                                </div>
-                            ` : ''}
                         </div>
                     </div>
                 `;
@@ -565,75 +827,41 @@
 
             utAnalysisHTML += '</div></div>';
 
-            // Add to results section
             const resultsSection = document.getElementById('results-section');
             const existingUTSection = resultsSection.querySelector('.ut-analysis-section');
             if (existingUTSection) {
                 existingUTSection.remove();
             }
             resultsSection.insertAdjacentHTML('beforeend', utAnalysisHTML);
-
-            // Add some CSS for UT analysis
-            const style = document.createElement('style');
-            style.textContent = `
-                .ut-analysis-section {
-                    margin-top: 2rem;
-                    padding-top: 2rem;
-                    border-top: 2px solid #e9ecef;
-                }
-                .criteria-summary .alert {
-                    border-radius: 10px;
-                }
-                .stat-box {
-                    padding: 1rem;
-                    border-radius: 8px;
-                    background: #f8f9fa;
-                }
-                .stat-box h5 {
-                    margin: 0;
-                    font-size: 2rem;
-                    font-weight: bold;
-                }
-                .ut-details .card {
-                    border-radius: 10px;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                }
-                .ut-details .card-header {
-                    background: #f8f9fa;
-                    border-bottom: 1px solid #dee2e6;
-                    border-radius: 10px 10px 0 0 !important;
-                }
-            `;
-            if (!document.querySelector('style[data-ut-analysis]')) {
-                style.setAttribute('data-ut-analysis', 'true');
-                document.head.appendChild(style);
-            }
         }
 
         function showError(message) {
             document.getElementById('loading-section').innerHTML = `
                 <div class="text-center">
-                    <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
-                    <p class="mt-3 text-danger">${message}</p>
+                    <svg style="width: 48px; height: 48px; stroke: var(--color-naranja); margin-bottom: 1rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    <p style="color: var(--color-error);">${message}</p>
                     <button class="btn-primary-custom mt-3" onclick="window.location.href='exam-system.html'">
-                        <i class="fas fa-home"></i>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                            <polyline points="9 22 9 12 15 12 15 22"/>
+                        </svg>
                         Volver al Inicio
                     </button>
                 </div>
             `;
         }
 
-        // Load results when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            // Set environment indicator
             const envIndicator = document.getElementById('env-indicator');
             envIndicator.textContent = window.ENVIRONMENT;
-            envIndicator.style.background = window.ENVIRONMENT_COLOR;
-
+            envIndicator.style.borderLeft = '3px solid ' + window.ENVIRONMENT_COLOR;
             loadResults();
         });
 
-        // View incorrect questions in question bank
         async function viewIncorrectQuestions() {
             try {
                 if (!examId) {
@@ -641,16 +869,11 @@
                     return;
                 }
 
-                console.log('🔍 Obteniendo preguntas incorrectas del examen:', examId);
-
                 const API_BASE = window.API_BASE || '';
                 const token = localStorage.getItem('token') || localStorage.getItem('authToken');
 
-                // Obtener todas las preguntas del examen con sus respuestas
                 const response = await fetch(`${API_BASE}/exams/${examId}/questions`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
+                    headers: { 'Authorization': `Bearer ${token}` },
                     credentials: 'include'
                 });
 
@@ -659,157 +882,46 @@
                 }
 
                 const data = await response.json();
-
-                // Filtrar solo las preguntas incorrectas
                 const incorrectQuestions = data.questions.filter(q => q.is_correct === false);
-                
-                console.log('🔍 Total de preguntas en el examen:', data.questions.length);
-                console.log('🔍 Preguntas incorrectas encontradas:', incorrectQuestions.length);
-                console.log('🔍 Detalles de preguntas:', data.questions.map(q => ({
-                    id: q.id,
-                    is_correct: q.is_correct,
-                    user_answer: q.user_answer,
-                    correct_answer: q.correct_answer
-                })));
 
                 if (incorrectQuestions.length > 0) {
-                    // Extraer IDs de las preguntas incorrectas
                     const incorrectQuestionIds = incorrectQuestions.map(q => q.id);
-
-                    // Guardar el filtro en localStorage para que el banco de preguntas lo use
                     localStorage.setItem('failedQuestionsFilter', JSON.stringify({
                         examId: examId,
                         questionIds: incorrectQuestionIds,
                         examDate: new Date().toISOString(),
                         totalFailed: incorrectQuestions.length
                     }));
-
-                    console.log('🔍 Abriendo banco de preguntas con', incorrectQuestionIds.length, 'preguntas incorrectas');
-
-                    // Abrir banco de preguntas en nueva pestaña
                     window.open('visor-nueva-arquitectura.html?filter=failed_questions', '_blank');
                 } else {
                     showNoIncorrectModal();
                 }
 
             } catch (error) {
-                console.error('❌ Error obteniendo preguntas incorrectas:', error);
+                console.error('Error obteniendo preguntas incorrectas:', error);
                 alert(`Error cargando preguntas incorrectas: ${error.message}`);
             }
         }
     </script>
 
-    <!-- Modal Simple para Sin Preguntas Incorrectas -->
+    <!-- Modal para Sin Preguntas Incorrectas -->
     <div id="noIncorrectQuestionsModal" class="simple-modal" style="display: none;">
         <div class="simple-modal-content">
             <div class="simple-modal-header">
-                <h5>🎉 ¡Excelente!</h5>
+                <h5>Excelente!</h5>
                 <button type="button" class="simple-modal-close" onclick="hideNoIncorrectModal()">&times;</button>
             </div>
             <div class="simple-modal-body">
-                <p>¡Felicidades! No hay preguntas incorrectas en este examen.</p>
-                <p><small>Has respondido todas las preguntas correctamente. ¡Sigue así!</small></p>
+                <p>Felicidades! No hay preguntas incorrectas en este examen.</p>
+                <p><small>Has respondido todas las preguntas correctamente. Sigue asi!</small></p>
             </div>
             <div class="simple-modal-footer">
                 <button type="button" class="btn btn-success" onclick="hideNoIncorrectModal()">
-                    ¡Genial!
+                    Genial!
                 </button>
             </div>
         </div>
     </div>
-
-    <style>
-        .simple-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .simple-modal-content {
-            background: white;
-            border-radius: 10px;
-            padding: 0;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .simple-modal-header {
-            padding: 20px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .simple-modal-header h5 {
-            margin: 0;
-            color: #28a745;
-            font-size: 1.1rem;
-        }
-
-        .simple-modal-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #999;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .simple-modal-close:hover {
-            color: #333;
-        }
-
-        .simple-modal-body {
-            padding: 20px;
-        }
-
-        .simple-modal-body p {
-            margin: 0 0 10px 0;
-        }
-
-        .simple-modal-body small {
-            color: #666;
-        }
-
-        .simple-modal-footer {
-            padding: 20px;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        .simple-modal-footer .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .simple-modal-footer .btn-success {
-            background: #28a745;
-            color: white;
-        }
-
-        .simple-modal-footer .btn:hover {
-            opacity: 0.9;
-        }
-    </style>
 
     <script>
         function showNoIncorrectModal() {

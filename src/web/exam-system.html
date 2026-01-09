@@ -3,30 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Exámenes PER - Patrón de Embarcaciones de Recreo</title>
+    <title>Zarpeo - Sistema de Examenes Nauticos</title>
 
-    <!-- Favicon dinámico -->
+    <!-- Favicon dinamico -->
     <link rel="icon" type="image/svg+xml" href="" id="dynamic-favicon">
     <script>
         // Detectar entorno y configurar favicon
-        const isProduction = window.location.hostname === 'bancotest.com';
+        const isProduction = window.location.hostname === 'zarpeo.com' || window.location.hostname === 'www.zarpeo.com';
         document.getElementById('dynamic-favicon').href = isProduction ? 'favicon-prod.svg' : 'favicon.svg';
-        
+
         // Configurar indicador de entorno
-        window.ENVIRONMENT = isProduction ? 'PRODUCCIÓN' : 'DESARROLLO';
+        window.ENVIRONMENT = isProduction ? 'PRODUCCION' : 'DESARROLLO';
         window.ENVIRONMENT_COLOR = isProduction ? '#dc2626' : '#059669';
     </script>
 
-    <!-- Bootstrap CSS -->
+    <!-- Tipografias Zarpeo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS (solo para layout) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <!-- CSS Unificado -->
     <link rel="stylesheet" href="styles/unified-navigation.css">
 
     <style>
+        /* ============================================
+           VARIABLES ZARPEO
+           ============================================ */
+        :root {
+            --color-marino: #0B3C5D;
+            --color-oceano: #0E6BA8;
+            --color-turquesa: #2EC4B6;
+            --color-naranja: #F4A261;
+
+            --bg-white: #FFFFFF;
+            --bg-light: #F8FAFC;
+            --bg-muted: #F1F5F9;
+            --bg-subtle: #E2E8F0;
+
+            --text-primary: #0B3C5D;
+            --text-secondary: #64748B;
+            --text-muted: #94A3B8;
+            --text-inverse: #FFFFFF;
+
+            --border-color: #E2E8F0;
+            --border-radius: 10px;
+            --border-radius-lg: 16px;
+
+            --shadow-sm: 0 1px 2px rgba(11, 60, 93, 0.05);
+            --shadow-md: 0 4px 12px rgba(11, 60, 93, 0.1);
+            --shadow-lg: 0 8px 24px rgba(11, 60, 93, 0.15);
+
+            --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -34,80 +67,86 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, var(--color-marino) 0%, var(--color-oceano) 100%);
             min-height: 100vh;
-            color: #333;
+            color: var(--text-primary);
         }
 
-        /* Indicador de entorno */
+        /* ============================================
+           INDICADOR DE ENTORNO
+           ============================================ */
         .environment-indicator {
             position: fixed;
             top: 10px;
             right: 10px;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(11, 60, 93, 0.9);
             color: white;
-            padding: 4px 8px;
+            padding: 4px 10px;
             border-radius: 12px;
             font-size: 11px;
-            font-weight: bold;
+            font-weight: 600;
+            font-family: var(--font-heading);
             z-index: 9999;
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* Pie de página con versión */
+        /* ============================================
+           PIE DE PAGINA VERSION
+           ============================================ */
         .version-footer {
             margin-top: 2rem;
             padding: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+            background: rgba(11, 60, 93, 0.1);
+            border-radius: var(--border-radius);
             text-align: center;
             font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
+            color: var(--text-secondary);
         }
 
         .version-info {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem;
             flex-wrap: wrap;
         }
 
         .version-item {
             display: flex;
             align-items: center;
-            gap: 0.25rem;
+            gap: 0.5rem;
+        }
+
+        .version-item svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--color-oceano);
         }
 
         .version-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 2px 6px;
-            border-radius: 4px;
+            background: var(--bg-subtle);
+            padding: 2px 8px;
+            border-radius: 6px;
             font-size: 0.75rem;
-            font-weight: bold;
+            font-weight: 600;
+            font-family: var(--font-heading);
         }
 
         .version-badge.production {
             background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 0.75rem;
-            padding: 3px 8px;
-            border-radius: 6px;
         }
 
         .version-badge.development {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, var(--color-turquesa) 0%, #25a89c 100%);
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 0.75rem;
-            padding: 3px 8px;
-            border-radius: 6px;
         }
 
+        /* ============================================
+           CONTENEDOR PRINCIPAL
+           ============================================ */
         .main-container {
             min-height: 100vh;
             display: flex;
@@ -117,129 +156,105 @@
         }
 
         .exam-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
             width: 100%;
             max-width: 900px;
             overflow: hidden;
         }
 
+        /* ============================================
+           HEADER
+           ============================================ */
         .exam-header {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            background: linear-gradient(135deg, var(--color-marino), var(--color-oceano));
             color: white;
-            padding: 0.5rem;
+            padding: 1rem;
             text-align: center;
-            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .exam-header .logo-icon {
+            width: 32px;
+            height: 32px;
         }
 
         .exam-title {
-            font-size: 1.25rem;
-            font-weight: bold;
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
             margin: 0;
+            letter-spacing: -0.5px;
         }
-
 
         .exam-content {
             padding: 2rem;
         }
 
-        .auth-form {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .form-control {
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 12px 16px;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .form-control:focus {
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            border: none;
-            border-radius: 12px;
-            padding: 12px 24px;
-            font-weight: 600;
-            width: 100%;
-            transition: all 0.3s;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
-        }
-
-        .btn-secondary {
-            background: #6b7280;
-            border: none;
-            border-radius: 12px;
-            padding: 12px 24px;
-            font-weight: 600;
-            color: white;
-            transition: all 0.3s;
-        }
-
-        .auth-toggle {
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #6b7280;
-        }
-
-        .auth-toggle a {
-            color: #4f46e5;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
+        /* ============================================
+           DASHBOARD
+           ============================================ */
         .dashboard {
             display: none;
         }
 
         .user-info {
-            background: #f8fafc;
-            border-radius: 12px;
+            background: var(--bg-light);
+            border-radius: var(--border-radius);
             padding: 1.5rem;
             margin-bottom: 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border: 1px solid var(--border-color);
         }
 
         .user-welcome {
+            font-family: var(--font-heading);
             font-size: 1.2rem;
             font-weight: 600;
-            color: #374151;
+            color: var(--text-primary);
+        }
+
+        .user-info small {
+            color: var(--text-secondary);
         }
 
         .btn-logout {
             background: #ef4444;
             border: none;
             color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 10px 16px;
+            border-radius: var(--border-radius);
+            font-family: var(--font-heading);
             font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
         }
 
+        .btn-logout:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        .btn-logout svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+        }
+
+        /* ============================================
+           CARDS DE ACCION
+           ============================================ */
         .exam-actions {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -249,164 +264,215 @@
 
         .action-card {
             background: white;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
             padding: 1.5rem;
             text-align: center;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             cursor: pointer;
         }
 
         .action-card:hover {
-            border-color: #4f46e5;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-color: var(--color-oceano);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
         }
 
         .action-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: #4f46e5;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
+        .action-icon svg {
+            width: 48px;
+            height: 48px;
+            stroke: var(--color-oceano);
+            stroke-width: 1.5;
+        }
+
+        .action-card:hover .action-icon svg {
+            stroke: var(--color-marino);
+        }
+
+        /* Colores especificos por card */
+        .action-card.study .action-icon svg { stroke: var(--color-turquesa); }
+        .action-card.study:hover { border-color: var(--color-turquesa); }
+
+        .action-card.exam .action-icon svg { stroke: var(--color-oceano); }
+        .action-card.exam:hover { border-color: var(--color-oceano); }
+
+        .action-card.stats .action-icon svg { stroke: var(--color-naranja); }
+        .action-card.stats:hover { border-color: var(--color-naranja); }
+
+        .action-card.admin .action-icon svg { stroke: #ef4444; }
+        .action-card.admin:hover { border-color: #ef4444; }
+
         .action-title {
-            font-size: 1.2rem;
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
-            color: #374151;
+            color: var(--text-primary);
         }
 
         .action-description {
-            color: #6b7280;
-            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
 
+        /* ============================================
+           INTERFAZ DE EXAMEN
+           ============================================ */
         .exam-interface {
             display: none;
         }
 
         .exam-progress {
-            background: #f8fafc;
-            border-radius: 12px;
+            background: var(--bg-light);
+            border-radius: var(--border-radius);
             padding: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
         }
 
         .progress-bar {
             height: 8px;
-            background: #e5e7eb;
+            background: var(--bg-subtle);
             border-radius: 4px;
             margin-bottom: 0.5rem;
+            overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+            background: linear-gradient(90deg, var(--color-oceano), var(--color-turquesa));
             border-radius: 4px;
-            transition: width 0.3s;
+            transition: width 0.3s ease;
         }
 
         .progress-text {
             display: flex;
             justify-content: space-between;
             font-size: 0.9rem;
-            color: #6b7280;
+            color: var(--text-secondary);
         }
 
+        /* ============================================
+           PREGUNTA
+           ============================================ */
         .question-card {
             background: white;
-            border-radius: 12px;
+            border-radius: var(--border-radius-lg);
             padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
         }
 
         .question-header {
-            margin-bottom: 0.25rem;
+            margin-bottom: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .question-number {
-            background: #4f46e5;
+            background: var(--color-oceano);
             color: white;
-            padding: 0.125rem 0.5rem;
-            border-radius: 15px;
-            font-size: 0.7rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
             font-weight: 600;
-            display: inline-block;
         }
 
         .question-text {
             font-size: 1.1rem;
-            color: #374151;
-            line-height: 1.6;
+            color: var(--text-primary);
+            line-height: 1.7;
             margin-bottom: 1.5rem;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 1rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
         }
-
 
         .question-options {
             list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
         .question-option {
-            margin-bottom: 1rem;
-        }
-
-        .option-input {
-            margin-right: 12px;
-            transform: scale(1.2);
+            margin-bottom: 0.75rem;
         }
 
         .option-label {
             font-size: 1rem;
-            color: #374151;
+            color: var(--text-primary);
             cursor: pointer;
-            padding: 12px;
-            border-radius: 8px;
-            transition: all 0.2s;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--border-color);
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
         }
 
         .option-label:hover {
-            background: #f8fafc;
+            border-color: var(--color-oceano);
+            background: var(--bg-light);
+        }
+
+        .option-input {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: var(--color-oceano);
         }
 
         .option-letter {
-            background: #e5e7eb;
-            color: #374151;
+            background: var(--bg-subtle);
+            color: var(--text-primary);
             width: 28px;
             height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: var(--font-heading);
             font-weight: 600;
             margin-right: 12px;
             font-size: 0.9rem;
+            flex-shrink: 0;
         }
 
-        .exam-navigation {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 2rem;
-        }
-
+        /* ============================================
+           TIMER
+           ============================================ */
         .timer {
             background: #fef3c7;
             color: #d97706;
-            padding: 0.25rem 0.5rem;
-            border-radius: 6px;
+            padding: 0.35rem 0.75rem;
+            border-radius: var(--border-radius);
+            font-family: var(--font-heading);
             font-weight: 600;
-            font-size: 0.7rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .timer svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
         }
 
         .timer.warning {
@@ -414,15 +480,96 @@
             color: #dc2626;
         }
 
-        .nav-buttons {
+        /* ============================================
+           NAVEGACION DE EXAMEN
+           ============================================ */
+        .exam-navigation {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
             gap: 1rem;
         }
 
+        .nav-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        /* ============================================
+           BOTONES
+           ============================================ */
+        .btn {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+        }
+
+        .btn-primary {
+            background: var(--color-oceano);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-marino);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--bg-subtle);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: var(--color-turquesa);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #25a89c;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* ============================================
+           ALERTAS
+           ============================================ */
         .alert {
-            border-radius: 12px;
+            border-radius: var(--border-radius);
             border: none;
             padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            font-family: var(--font-body);
         }
 
         .alert-danger {
@@ -436,27 +583,27 @@
         }
 
         .alert-info {
-            background: #dbeafe;
-            color: #1e40af;
+            background: #e0f2fe;
+            color: var(--color-oceano);
         }
 
-        .hidden {
-            display: none !important;
-        }
-
+        /* ============================================
+           LOADING
+           ============================================ */
         .loading {
             text-align: center;
             padding: 2rem;
-            display: none; /* Ocultar por defecto para evitar parpadeo */
-        }
-        
-        .loading.show {
-            display: block; /* Mostrar cuando sea necesario */
+            display: none;
         }
 
-        .loading i {
-            font-size: 2rem;
-            color: #4f46e5;
+        .loading.show {
+            display: block;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            stroke: var(--color-oceano);
             animation: spin 1s linear infinite;
         }
 
@@ -465,52 +612,106 @@
             to { transform: rotate(360deg); }
         }
 
+        /* ============================================
+           RESUMEN DE EXAMEN
+           ============================================ */
         .exam-summary {
             background: white;
-            border-radius: 12px;
-            padding: 2rem;
+            border-radius: var(--border-radius-lg);
+            padding: 2.5rem;
             text-align: center;
+            border: 1px solid var(--border-color);
         }
 
         .summary-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
         }
 
-        .summary-icon.success {
-            color: #10b981;
+        .summary-icon.success svg {
+            stroke: var(--color-turquesa);
         }
 
-        .summary-icon.fail {
-            color: #ef4444;
+        .summary-icon.fail svg {
+            stroke: #ef4444;
         }
 
         .summary-title {
+            font-family: var(--font-heading);
             font-size: 1.8rem;
-            font-weight: bold;
+            font-weight: 700;
             margin-bottom: 1rem;
+            color: var(--text-primary);
         }
 
         .summary-score {
-            font-size: 2.5rem;
-            font-weight: bold;
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            font-weight: 700;
             margin-bottom: 1rem;
+            color: var(--color-oceano);
         }
 
         .summary-details {
-            color: #6b7280;
+            color: var(--text-secondary);
             margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 768px) {
+            .exam-content {
+                padding: 1.5rem;
+            }
+
+            .user-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .exam-navigation {
+                flex-direction: column;
+            }
+
+            .nav-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .version-info {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Indicador de entorno -->
     <div class="environment-indicator" id="env-indicator"></div>
-    
+
     <div class="main-container">
         <div class="exam-card">
             <div class="exam-header">
-                <h1 class="exam-title">Sistema de Exámenes PER</h1>
+                <!-- Logo Zarpeo SVG inline -->
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="20" cy="20" r="18" fill="white" fill-opacity="0.2"/>
+                    <path d="M20 8 L20 32 M12 28 L28 28 M14 24 L20 10 L26 24" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 28 C10 28 14 26 20 26 C26 26 30 28 30 28" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <h1 class="exam-title">Zarpeo</h1>
             </div>
 
             <div class="exam-content">
@@ -518,85 +719,130 @@
                 <div id="dashboard-section" class="dashboard">
                     <div class="user-info">
                         <div>
-                            <div class="user-welcome">¡Bienvenido, <span id="username"></span>!</div>
-                            <small class="text-muted">Listo para comenzar tu examen PER</small>
+                            <div class="user-welcome">Bienvenido, <span id="username"></span></div>
+                            <small>Listo para comenzar tu examen PER</small>
                         </div>
-                        <button class="btn btn-logout" id="logoutBtn">
-                            <i class="fas fa-sign-out-alt me-1"></i>Salir
+                        <button class="btn-logout" id="logoutBtn">
+                            <!-- Logout icon -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                <polyline points="16 17 21 12 16 7"/>
+                                <line x1="21" y1="12" x2="9" y2="12"/>
+                            </svg>
+                            Salir
                         </button>
                     </div>
 
                     <div class="exam-actions">
-                        <div class="action-card" id="studyModeBtn">
-                            <div class="action-icon" style="color: #667eea;">
-                                <i class="fas fa-book-reader"></i>
+                        <!-- Estudio -->
+                        <div class="action-card study" id="studyModeBtn">
+                            <div class="action-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                                </svg>
                             </div>
                             <div class="action-title">Estudio</div>
-                            <div class="action-description">Practica seleccionando UTs específicas y modo de estudio</div>
+                            <div class="action-description">Practica seleccionando UTs especificas y modo de estudio</div>
                         </div>
 
-                        <div class="action-card" id="startExamBtn">
+                        <!-- Nuevo Examen -->
+                        <div class="action-card exam" id="startExamBtn">
                             <div class="action-icon">
-                                <i class="fas fa-play-circle"></i>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polygon points="10 8 16 12 10 16 10 8"/>
+                                </svg>
                             </div>
                             <div class="action-title">Nuevo Examen</div>
                             <div class="action-description">Comenzar un examen de 45 preguntas con 90 minutos</div>
                         </div>
 
-                        <div class="action-card" id="viewQuestionStatsBtn">
+                        <!-- Estadisticas de Preguntas -->
+                        <div class="action-card stats" id="viewQuestionStatsBtn">
                             <div class="action-icon">
-                                <i class="fas fa-chart-line"></i>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="20" x2="18" y2="10"/>
+                                    <line x1="12" y1="20" x2="12" y2="4"/>
+                                    <line x1="6" y1="20" x2="6" y2="14"/>
+                                </svg>
                             </div>
-                            <div class="action-title">Estadísticas de Preguntas</div>
-                            <div class="action-description">Ver análisis detallado de preguntas más falladas</div>
+                            <div class="action-title">Estadisticas de Preguntas</div>
+                            <div class="action-description">Ver analisis detallado de preguntas mas falladas</div>
                         </div>
 
-                        <div class="action-card" id="viewStatsBtn">
+                        <!-- Estadisticas -->
+                        <div class="action-card stats" id="viewStatsBtn">
                             <div class="action-icon">
-                                <i class="fas fa-chart-bar"></i>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 3v18h18"/>
+                                    <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
+                                </svg>
                             </div>
-                            <div class="action-title">Estadísticas</div>
+                            <div class="action-title">Estadisticas</div>
                             <div class="action-description">Ver tu progreso y resultados anteriores</div>
                         </div>
 
+                        <!-- Banco de Preguntas -->
                         <div class="action-card" id="viewQuestionsBankBtn">
                             <div class="action-icon">
-                                <i class="fas fa-book"></i>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                                </svg>
                             </div>
                             <div class="action-title">Banco de Preguntas</div>
                             <div class="action-description">Acceder al visor de preguntas existente</div>
                         </div>
 
-                        <div class="action-card admin-only" id="adminPanelBtn" style="display: none;">
-                            <div class="action-icon" style="color: #e53e3e;">
-                                <i class="fas fa-crown"></i>
+                        <!-- Panel Admin (oculto por defecto) -->
+                        <div class="action-card admin admin-only" id="adminPanelBtn" style="display: none;">
+                            <div class="action-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2L12 16.8 5.6 21.2 8 14 2 9.2h7.6z"/>
+                                </svg>
                             </div>
-                            <div class="action-title">Panel de Administración</div>
-                            <div class="action-description">Gestionar usuarios y estadísticas del sistema</div>
+                            <div class="action-title">Panel de Administracion</div>
+                            <div class="action-description">Gestionar usuarios y estadisticas del sistema</div>
                         </div>
                     </div>
 
-
-                    <!-- Pie de página con información de versión -->
+                    <!-- Pie de pagina con version -->
                     <div class="version-footer" id="versionFooter" style="display: none;">
                         <div class="version-info">
                             <div class="version-item">
-                                <i class="fas fa-tag"></i>
-                                <span>Versión:</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                                    <line x1="7" y1="7" x2="7.01" y2="7"/>
+                                </svg>
+                                <span>Version:</span>
                                 <span class="version-badge" id="versionBadge">1.0.1</span>
                             </div>
                             <div class="version-item">
-                                <i class="fas fa-code-branch"></i>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="6" y1="3" x2="6" y2="15"/>
+                                    <circle cx="18" cy="6" r="3"/>
+                                    <circle cx="6" cy="18" r="3"/>
+                                    <path d="M18 9a9 9 0 0 1-9 9"/>
+                                </svg>
                                 <span>Commit:</span>
                                 <span id="commitHash">9865bd9</span>
                             </div>
                             <div class="version-item">
-                                <i class="fas fa-calendar"></i>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
                                 <span>Build:</span>
                                 <span id="buildDate">2025-01-29-1637</span>
                             </div>
                             <div class="version-item">
-                                <i class="fas fa-clock"></i>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
                                 <span>Desplegado:</span>
                                 <span id="deployedAt">2025-01-29T14:37:03Z</span>
                             </div>
@@ -606,13 +852,19 @@
 
                 <!-- Exam Interface -->
                 <div id="exam-section" class="exam-interface">
-                    <!-- Pastilla de pregunta y timer en la misma línea -->
+                    <!-- Pregunta y timer -->
                     <div class="question-header">
                         <div class="question-number">
                             Pregunta <span id="questionNumber">1</span>
-                            <span class="ms-2 text-sm">UT<span id="questionUT">1</span> - <span id="questionCategory">Categoría</span></span>
+                            <span class="ms-2">UT<span id="questionUT">1</span> - <span id="questionCategory">Categoria</span></span>
                         </div>
-                        <span class="timer" id="timer">90:00</span>
+                        <span class="timer" id="timer">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                            90:00
+                        </span>
                     </div>
 
                     <div class="exam-progress">
@@ -626,8 +878,10 @@
 
                     <div class="question-card" id="questionCard">
                         <div class="loading" id="questionLoading">
-                            <i class="fas fa-spinner"></i>
-                            <p class="mt-2">Cargando pregunta...</p>
+                            <svg class="loading-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                            </svg>
+                            <p style="margin-top: 1rem; color: var(--text-secondary);">Cargando pregunta...</p>
                         </div>
 
                         <div id="questionContent" class="hidden">
@@ -643,19 +897,32 @@
 
                     <div class="exam-navigation">
                         <button class="btn btn-danger" id="cancelExamBtn">
-                            <i class="fas fa-times me-1"></i>Cancelar Examen
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"/>
+                                <line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                            Cancelar Examen
                         </button>
 
                         <button class="btn btn-secondary" id="prevBtn" disabled>
-                            <i class="fas fa-chevron-left me-1"></i>Anterior
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6"/>
+                            </svg>
+                            Anterior
                         </button>
 
                         <div class="nav-buttons">
                             <button class="btn btn-primary" id="nextBtn">
-                                Siguiente<i class="fas fa-chevron-right ms-1"></i>
+                                Siguiente
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="9 18 15 12 9 6"/>
+                                </svg>
                             </button>
                             <button class="btn btn-success hidden" id="finishBtn">
-                                <i class="fas fa-check me-1"></i>Finalizar Examen
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                                Finalizar Examen
                             </button>
                         </div>
                     </div>
@@ -677,10 +944,10 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Configuración de entorno (debe cargarse primero) -->
+    <!-- Configuracion de entorno -->
     <script src="config.js"></script>
 
-    <!-- Feature Flags (load before other scripts) -->
+    <!-- Feature Flags -->
     <script src="feature-flags.js?v=3"></script>
 
     <!-- Question Statistics Tracker -->
@@ -698,37 +965,35 @@
             const indicator = document.getElementById('env-indicator');
             if (indicator && window.ENVIRONMENT) {
                 indicator.textContent = window.ENVIRONMENT;
-                indicator.style.borderLeft = `3px solid ${window.ENVIRONMENT_COLOR}`;
+                indicator.style.borderLeft = '3px solid ' + window.ENVIRONMENT_COLOR;
             }
         });
     </script>
 
-    <!-- Cargar información de versión -->
+    <!-- Cargar informacion de version -->
     <script>
         async function loadVersionInfo() {
             try {
                 const response = await fetch('version.json');
                 const versionData = await response.json();
-                
-                // Actualizar elementos del pie de página
+
+                // Actualizar elementos del pie de pagina
                 document.getElementById('versionBadge').textContent = versionData.version;
-                document.getElementById('versionBadge').className = `version-badge ${versionData.environment}`;
+                document.getElementById('versionBadge').className = 'version-badge ' + versionData.environment;
                 document.getElementById('commitHash').textContent = versionData.commit;
                 document.getElementById('buildDate').textContent = versionData.build;
                 document.getElementById('deployedAt').textContent = versionData.deployed_at;
-                
-                // Mostrar el pie de página
+
+                // Mostrar el pie de pagina
                 document.getElementById('versionFooter').style.display = 'block';
-                
-                console.log('📋 Información de versión cargada:', versionData);
+
+                console.log('Version info loaded:', versionData);
             } catch (error) {
-                console.warn('⚠️ No se pudo cargar la información de versión:', error);
-                // Mostrar versión por defecto
+                console.warn('Could not load version info:', error);
                 document.getElementById('versionFooter').style.display = 'block';
             }
         }
 
-        // Cargar versión cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', loadVersionInfo);
     </script>
 </body>

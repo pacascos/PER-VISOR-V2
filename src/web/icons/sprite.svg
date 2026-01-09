@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<symbol id="zarpeo-boat" viewBox="0 0 24 24"><path d="M3 20h18"/>
+  <path d="M6 18l-2-6h16l-2 6"/>
+  <path d="M6 12V7l6-3v8"/>
+  <path d="M12 12V4l6 5v3"/></symbol>
+<symbol id="zarpeo-sailboat" viewBox="0 0 24 24"><path d="M3 20h18"/>
+  <path d="M6 18l-2-6h16l-2 6"/>
+  <path d="M10 12V4l6 8h-6z"/>
+  <path d="M10 4l-3 8h3"/></symbol>
+<symbol id="zarpeo-anchor" viewBox="0 0 24 24"><path d="M12 3v11"/>
+  <circle cx="12" cy="6" r="1"/>
+  <path d="M8 14H6a6 6 0 0 0 12 0h-2"/>
+  <path d="M10 14a2 2 0 0 0 4 0"/></symbol>
+<symbol id="zarpeo-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/>
+  <path d="M14.5 9.5l-2 6-6 2 2-6z"/>
+  <path d="M12 3v2"/>
+  <path d="M12 19v2"/>
+  <path d="M3 12h2"/>
+  <path d="M19 12h2"/></symbol>
+<symbol id="zarpeo-map" viewBox="0 0 24 24"><path d="M9 18l-6 2V6l6-2 6 2 6-2v14l-6 2-6-2z"/>
+  <path d="M9 4v14"/>
+  <path d="M15 6v14"/></symbol>
+<symbol id="zarpeo-pin" viewBox="0 0 24 24"><path d="M12 21s6-5 6-11a6 6 0 0 0-12 0c0 6 6 11 6 11z"/>
+  <circle cx="12" cy="10" r="2"/></symbol>
+<symbol id="zarpeo-marina" viewBox="0 0 24 24"><path d="M4 20h16"/>
+  <path d="M7 20V9"/>
+  <path d="M7 9c0-3 2.5-5 5-5s5 2 5 5v11"/>
+  <path d="M10 13h7"/>
+  <path d="M10 16h7"/></symbol>
+<symbol id="zarpeo-waves" viewBox="0 0 24 24"><path d="M3 15c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2"/>
+  <path d="M3 19c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2"/></symbol>
+<symbol id="zarpeo-fish" viewBox="0 0 24 24"><path d="M10 12c2-3 6-4 9-3-1 3-1 6 0 9-3 1-7 0-9-3"/>
+  <path d="M10 12H4l-2-2 2-2h6"/>
+  <circle cx="15" cy="12" r="0.8" fill="#0E6BA8" stroke="none"/></symbol>
+<symbol id="zarpeo-hook" viewBox="0 0 24 24"><path d="M14 4v8a4 4 0 1 1-8 0V9"/>
+  <path d="M10 9V6a2 2 0 0 1 4 0v3"/></symbol>
+<symbol id="zarpeo-tackle" viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="12" rx="2"/>
+  <path d="M8 7V5h8v2"/>
+  <path d="M8 13h8"/>
+  <path d="M9.5 16h.01"/>
+  <path d="M12 16h.01"/>
+  <path d="M14.5 16h.01"/></symbol>
+<symbol id="zarpeo-chart" viewBox="0 0 24 24"><path d="M4 19V5"/>
+  <path d="M4 19h16"/>
+  <path d="M7 15l3-3 3 2 5-6"/>
+  <path d="M18 8v2h-2"/></symbol>
+<symbol id="zarpeo-weather" viewBox="0 0 24 24"><path d="M7 16a4 4 0 1 1 1-7.9A5 5 0 0 1 18 11a3 3 0 0 1-1 5H7z"/>
+  <path d="M8 20l1-2"/>
+  <path d="M12 20l1-2"/>
+  <path d="M16 20l1-2"/></symbol>
+<symbol id="zarpeo-store" viewBox="0 0 24 24"><path d="M4 7l2-3h12l2 3"/>
+  <path d="M4 7v3a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0V7"/>
+  <path d="M6 20V12h12v8"/>
+  <path d="M10 20v-5h4v5"/></symbol>
+<symbol id="zarpeo-charter" viewBox="0 0 24 24"><path d="M6 20h12"/>
+  <path d="M8 20V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v14"/>
+  <path d="M10 8h4"/>
+  <path d="M10 12h4"/>
+  <path d="M10 16h4"/></symbol>
+<symbol id="zarpeo-lifebuoy" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/>
+  <circle cx="12" cy="12" r="4"/>
+  <path d="M6.5 6.5l2.2 2.2"/>
+  <path d="M15.3 15.3l2.2 2.2"/>
+  <path d="M17.5 6.5l-2.2 2.2"/>
+  <path d="M8.7 15.3l-2.2 2.2"/></symbol>
+<symbol id="zarpeo-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/>
+  <path d="M8 3v4"/>
+  <path d="M16 3v4"/>
+  <path d="M4 9h16"/>
+  <path d="M8 13h.01"/>
+  <path d="M12 13h.01"/>
+  <path d="M16 13h.01"/>
+  <path d="M8 16h.01"/>
+  <path d="M12 16h.01"/>
+  <path d="M16 16h.01"/></symbol>
+<symbol id="zarpeo-chat" viewBox="0 0 24 24"><path d="M21 15a4 4 0 0 1-4 4H9l-4 3v-3a4 4 0 0 1-3-4V7a4 4 0 0 1 4-4h11a4 4 0 0 1 4 4z"/>
+  <path d="M7 10h10"/>
+  <path d="M7 13h7"/></symbol>
+<symbol id="zarpeo-user" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/>
+  <circle cx="12" cy="8" r="4"/></symbol>
+<symbol id="zarpeo-users" viewBox="0 0 24 24"><path d="M17 21a6 6 0 0 0-12 0"/>
+  <circle cx="11" cy="8" r="3.5"/>
+  <path d="M21 21a5 5 0 0 0-7-4.6"/>
+  <path d="M17.5 8.5a2.5 2.5 0 1 0 0-5"/></symbol>
+<symbol id="zarpeo-user-plus" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-12.8-6.5"/>
+  <circle cx="10" cy="8" r="4"/>
+  <path d="M19 8v6"/>
+  <path d="M16 11h6"/></symbol>
+<symbol id="zarpeo-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/>
+  <path d="M21 21l-4.3-4.3"/></symbol>
+<symbol id="zarpeo-heart" viewBox="0 0 24 24"><path d="M12 21s-7-4.4-9.2-9A5.3 5.3 0 0 1 12 6a5.3 5.3 0 0 1 9.2 6c-2.2 4.6-9.2 9-9.2 9z"/></symbol>
+<symbol id="zarpeo-per-exam" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2"/>
+  <path d="M9 7h6"/>
+  <path d="M9 11h6"/>
+  <path d="M9 15h4"/>
+  <path d="M14 15l1 1 3-3"/></symbol>
+<symbol id="zarpeo-quiz" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="2"/>
+  <path d="M8 8h8"/>
+  <path d="M8 12h5"/>
+  <path d="M10 16h.01"/>
+  <path d="M14 16h.01"/></symbol>
+<symbol id="zarpeo-timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/>
+  <path d="M12 13l3-2"/>
+  <path d="M9 3h6"/>
+  <path d="M10 3v2"/>
+  <path d="M14 3v2"/></symbol>
+<symbol id="zarpeo-certificate" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="14" rx="2"/>
+  <path d="M9 7h6"/>
+  <path d="M9 10h6"/>
+  <circle cx="12" cy="14" r="2.2"/>
+  <path d="M11 16.2l-1 4.8 2-1 2 1-1-4.8"/></symbol>
+<symbol id="zarpeo-book-nautical" viewBox="0 0 24 24"><path d="M6 4h9a3 3 0 0 1 3 3v13H9a3 3 0 0 0-3 3z"/>
+  <path d="M6 4v16a3 3 0 0 0 3 3h9"/>
+  <path d="M10 9h6"/>
+  <path d="M10 12h6"/></symbol>
+<symbol id="zarpeo-shield" viewBox="0 0 24 24"><path d="M12 2l7 4v6c0 5-3 9-7 10-4-1-7-5-7-10V6z"/>
+  <path d="M9 12l2 2 4-5"/></symbol>
+<symbol id="zarpeo-settings" viewBox="0 0 24 24"><path d="M12 2l1 2.5 2.7.6-1.7 2.1.3 2.8L12 11l-2.3 1.9.3-2.8L8.3 8.1 11 7.5z"/>
+  <circle cx="12" cy="12" r="3"/>
+  <path d="M19 12a7 7 0 0 0-.2-1.7l2-1.5-2-3.5-2.4.7A7 7 0 0 0 14 4.2L13.5 2h-3L10 4.2A7 7 0 0 0 7.6 6l-2.4-.7-2 3.5 2 1.5A7 7 0 0 0 5 12c0 .6.1 1.2.2 1.7l-2 1.5 2 3.5 2.4-.7A7 7 0 0 0 10 19.8L10.5 22h3L14 19.8a7 7 0 0 0 2.4-1.7l2.4.7 2-3.5-2-1.5c.1-.5.2-1.1.2-1.7z"/></symbol>
+<symbol id="zarpeo-login" viewBox="0 0 24 24"><path d="M10 17l-1 1H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5l1 1"/>
+  <path d="M13 7l5 5-5 5"/>
+  <path d="M18 12H9"/></symbol>
+<symbol id="zarpeo-logout" viewBox="0 0 24 24"><path d="M14 17l1 1h5a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-5l-1 1"/>
+  <path d="M11 7l-5 5 5 5"/>
+  <path d="M6 12h9"/></symbol>
+</svg>

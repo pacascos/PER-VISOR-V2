@@ -1,0 +1,15 @@
+:root {
+  --zarpeo-icon-color: #0E6BA8;
+}
+
+.zicon{
+  width:24px;
+  height:24px;
+  display:inline-block;
+  vertical-align:middle;
+}
+.zicon.sm{ width:16px; height:16px; }
+.zicon.md{ width:24px; height:24px; }
+.zicon.lg{ width:32px; height:32px; }
+
+.zicon svg, svg.zicon { stroke: var(--zarpeo-icon-color); fill: none; }
