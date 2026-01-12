@@ -121,6 +121,23 @@ cd scripts/analisis && python3 verificar_estado.py
 cd scripts/debug && python3 test_duplicados.py
 ```
 
+### Frontend Tests (Playwright)
+```bash
+# Test funcional completo del Banco de Preguntas (35 tests)
+node tests/test-banco-preguntas.js
+
+# Resultados se guardan en:
+# - test-screenshots-banco/test-results.json
+# - test-screenshots-banco/*.png (screenshots)
+```
+
+**Tests disponibles:**
+| Script | Descripcion |
+|--------|-------------|
+| `tests/test-banco-preguntas.js` | Banco de preguntas: filtros, botones, paginacion, modales |
+
+**Credenciales de test:** `testuser` / `123`
+
 ## Key Technical Details
 
 ### Configuration
