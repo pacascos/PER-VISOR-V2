@@ -45,12 +45,8 @@ class ExamSystem {
             window.open('admin-panel.html', '_blank');
         });
 
-        document.getElementById('viewQuestionStatsBtn').addEventListener('click', () => {
-            window.location.href = 'statistics-dashboard.html?tab=topics';
-        });
-
         document.getElementById('viewStatsBtn').addEventListener('click', () => {
-            // Redirect to new gamified statistics dashboard
+            // Redirect to unified statistics dashboard
             window.location.href = 'statistics-dashboard.html';
         });
 
