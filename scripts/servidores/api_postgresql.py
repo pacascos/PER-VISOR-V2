@@ -104,6 +104,7 @@ ALLOWED_ORIGINS = [
     'http://localhost:8095',
     'http://127.0.0.1:8095',
     'https://per-frontend-435987927843.europe-west1.run.app',
+    'https://per-frontend-sdmkab2wra-ew.a.run.app',
     'https://bancotest.com',
     'https://www.bancotest.com',
     'https://zarpeo.com',

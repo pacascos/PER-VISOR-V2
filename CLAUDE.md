@@ -83,6 +83,39 @@ make list-backups
 docker exec -i per_postgres psql -U per_user -d per_exams < backups/backup_file.sql
 ```
 
+### CORS - Problema Frecuente en Producción
+⚠️ **Si el frontend no puede conectar con la API, verificar CORS primero!**
+
+Cloud Run genera DOS formatos de URL para cada servicio:
+- Formato largo: `https://per-frontend-435987927843.europe-west1.run.app`
+- Formato corto: `https://per-frontend-sdmkab2wra-ew.a.run.app`
+
+**AMBOS formatos deben estar en ALLOWED_ORIGINS** en `scripts/servidores/api_postgresql.py`:
+
+```python
+ALLOWED_ORIGINS = [
+    'http://localhost:8095',
+    'http://127.0.0.1:8095',
+    'https://per-frontend-435987927843.europe-west1.run.app',
+    'https://per-frontend-sdmkab2wra-ew.a.run.app',  # ← No olvidar formato corto!
+    'https://zarpeo.com',
+    'https://www.zarpeo.com'
+]
+```
+
+**Diagnóstico rápido:**
+```bash
+# Verificar qué URLs están desplegadas
+gcloud run services list --platform managed --region europe-west1
+
+# Test de CORS
+curl -I -X OPTIONS https://per-api-sdmkab2wra-ew.a.run.app/api/health \
+  -H "Origin: https://per-frontend-sdmkab2wra-ew.a.run.app"
+# Debe devolver: access-control-allow-origin: https://per-frontend-...
+```
+
+**Si falla CORS:** Añadir URL faltante a ALLOWED_ORIGINS y redesplegar API.
+
 ## Common Development Commands
 
 ### Starting the Application

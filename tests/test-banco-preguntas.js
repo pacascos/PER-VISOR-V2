@@ -1,20 +1,22 @@
 /**
  * Test Funcional Completo - Banco de Preguntas (visor-nueva-arquitectura.html)
  *
- * Ejecutar con: node tests/test-banco-preguntas.js
+ * Ejecutar con:
+ *   Local:      node tests/test-banco-preguntas.js
+ *   Produccion: BASE_URL=https://per-frontend-sdmkab2wra-ew.a.run.app node tests/test-banco-preguntas.js
  *
  * Prerequisitos:
- * - Servidor web corriendo en localhost:8095
- * - API corriendo en localhost:5001
+ * - Servidor web corriendo (local o produccion)
+ * - API corriendo
  * - Playwright instalado: npm install playwright
  */
 
 const { chromium } = require('playwright');
 
-// Configuracion
-const BASE_URL = 'http://localhost:8095';
+// Configuracion - acepta URL desde variable de entorno
+const BASE_URL = process.env.BASE_URL || 'http://localhost:8095';
 const CREDENTIALS = { username: 'testuser', password: '123' };
-const SCREENSHOTS_DIR = './test-screenshots-banco';
+const SCREENSHOTS_DIR = process.env.BASE_URL ? './test-screenshots-banco-prod' : './test-screenshots-banco';
 
 // Resultados
 const results = {
