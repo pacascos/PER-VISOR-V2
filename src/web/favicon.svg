@@ -21,6 +21,6 @@
     <circle cx="22" cy="24" r="1.5"/>
   </g>
 
-  <!-- Texto "PER" pequeño -->
-  <text x="16" y="30" font-family="Arial, sans-serif" font-size="8" font-weight="bold" text-anchor="middle" fill="white">PER</text>
+  <!-- Texto "Z" pequeño -->
+  <text x="16" y="30" font-family="Arial, sans-serif" font-size="8" font-weight="bold" text-anchor="middle" fill="white">Z</text>
 </svg>

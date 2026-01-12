@@ -17,20 +17,8 @@ import jwt
 # Create blueprint for statistics routes
 statistics_bp = Blueprint('statistics', __name__, url_prefix='/api/statistics')
 
-# Configuration - JWT_SECRET will be set by register_statistics_routes
-# This allows sharing the same secret with the main API
-_JWT_SECRET = None
-
-def set_jwt_secret(secret):
-    """Set JWT secret from main API module"""
-    global _JWT_SECRET
-    _JWT_SECRET = secret
-
-def get_jwt_secret():
-    """Get JWT secret, using shared secret or environment variable"""
-    if _JWT_SECRET:
-        return _JWT_SECRET
-    return os.getenv('JWT_SECRET', 'your-jwt-secret-change-in-production')
+# Configuration
+JWT_SECRET = os.getenv('JWT_SECRET', 'your-jwt-secret-change-in-production')
 
 def token_required(f):
     """Decorator to require JWT token for protected routes"""
@@ -50,43 +38,22 @@ def token_required(f):
             return jsonify({'error': 'Token missing'}), 401
 
         try:
-            data = jwt.decode(token, get_jwt_secret(), algorithms=['HS256'])
+            data = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
             current_user_id = data['user_id']
             kwargs['current_user_id'] = current_user_id
-        except jwt.ExpiredSignatureError:
-            logging.warning(f"Token expired for request to {request.path}")
-            return jsonify({'error': 'Token expired'}), 401
-        except jwt.InvalidTokenError as e:
-            logging.warning(f"Invalid token for request to {request.path}: {str(e)}")
+        except jwt.InvalidTokenError:
             return jsonify({'error': 'Token invalid'}), 401
-        except Exception as e:
-            logging.error(f"Error decoding token for request to {request.path}: {str(e)}")
-            return jsonify({'error': 'Token validation failed'}), 401
 
         return f(*args, **kwargs)
 
     return decorated
 
-# Database connection function - will be set by register_statistics_routes
-_db_connection_func = None
-
-def set_db_connection_func(connection_func):
-    """Set database connection function from main API module"""
-    global _db_connection_func
-    _db_connection_func = connection_func
-
 def get_db_connection():
-    """Get database connection using shared connection function or environment variables"""
-    # Use shared connection function if available
-    if _db_connection_func:
-        return _db_connection_func()
-    
-    # Fallback to environment variables (same logic as api_postgresql.py)
+    """Get database connection using environment variables"""
     DATABASE_URL = os.getenv('DATABASE_URL')
     if DATABASE_URL:
-        # Parse DATABASE_URL - support multiple formats
+        # Parse DATABASE_URL postgresql://user:password@host:port/database
         import re
-        # Format 1: postgresql://user:password@host:port/database
         match = re.match(r'postgresql://([^:]+):([^@]+)@([^:]+):(\d+)/(.+)', DATABASE_URL)
         if match:
             config = {
@@ -97,20 +64,8 @@ def get_db_connection():
                 'password': match.group(2)
             }
         else:
-            # Format 2: postgresql://user:password@/database?host=host (Cloud SQL format)
-            match = re.match(r'postgresql://([^:]+):([^@]+)@/([^?]+)\?host=(.+)', DATABASE_URL)
-            if match:
-                config = {
-                    'host': match.group(4),
-                    'port': int(os.getenv('DATABASE_PORT', 5432)),
-                    'database': match.group(3),
-                    'user': match.group(1),
-                    'password': match.group(2)
-                }
-            else:
-                raise ValueError(f"Invalid DATABASE_URL format: {DATABASE_URL[:50]}...")
+            raise ValueError("Invalid DATABASE_URL format")
     else:
-        # Use individual environment variables
         config = {
             'host': os.getenv('DATABASE_HOST', 'localhost'),
             'port': int(os.getenv('DATABASE_PORT', 5432)),
@@ -302,82 +257,6 @@ def get_user_achievements(user_id, current_user_id):
 
     except Exception as e:
         logging.error(f"Error getting achievements: {e}")
-        return jsonify({'error': 'Internal server error'}), 500
-
-@statistics_bp.route('/achievements/<user_id>/unlock', methods=['POST'])
-@token_required
-def unlock_achievement(user_id, current_user_id):
-    """Unlock an achievement for a user"""
-    
-    if user_id != current_user_id:
-        return jsonify({'error': 'Unauthorized access'}), 403
-    
-    data = request.get_json()
-    if not data or 'achievement_id' not in data:
-        return jsonify({'error': 'achievement_id is required'}), 400
-    
-    achievement_id = data['achievement_id']
-    xp = data.get('xp', 0)
-    
-    conn = get_db_connection()
-    if not conn:
-        return jsonify({'error': 'Database connection failed'}), 500
-    
-    try:
-        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        
-        # Verificar que el achievement no esté ya desbloqueado
-        cur.execute("""
-            SELECT id FROM user_achievements
-            WHERE user_id = %s AND achievement_id = %s
-        """, (user_id, achievement_id))
-        
-        if cur.fetchone():
-            cur.close()
-            conn.close()
-            return jsonify({
-                'success': True,
-                'message': 'Achievement already unlocked',
-                'already_unlocked': True
-            }), 200
-        
-        # Obtener XP del achievement si no se proporciona
-        if xp == 0:
-            achievement_def = ACHIEVEMENT_DEFINITIONS.get(achievement_id, {})
-            xp = achievement_def.get('xp', 100)
-        
-        # Insertar achievement desbloqueado
-        cur.execute("""
-            INSERT INTO user_achievements (user_id, achievement_id, unlocked_at, xp_earned)
-            VALUES (%s, %s, %s, %s)
-            RETURNING id
-        """, (user_id, achievement_id, datetime.now(), xp))
-        
-        achievement_record = cur.fetchone()
-        
-        # Actualizar XP del usuario
-        if xp > 0:
-            update_user_xp_and_level(cur, user_id, xp)
-        
-        conn.commit()
-        cur.close()
-        conn.close()
-        
-        logging.info(f"Achievement {achievement_id} unlocked for user {user_id}, XP: {xp}")
-        
-        return jsonify({
-            'success': True,
-            'achievement_id': achievement_id,
-            'xp_earned': xp,
-            'already_unlocked': False
-        }), 200
-        
-    except Exception as e:
-        logging.error(f"Error unlocking achievement: {e}")
-        if conn:
-            conn.rollback()
-            cur.close()
-            conn.close()
         return jsonify({'error': 'Internal server error'}), 500
 
 @statistics_bp.route('/exam-completed', methods=['POST'])
@@ -768,13 +647,7 @@ ACHIEVEMENT_DEFINITIONS = {
     }
 }
 
-def register_statistics_routes(app, jwt_secret=None, db_connection_func=None):
+def register_statistics_routes(app):
     """Register statistics routes with the main Flask app"""
-    # Share JWT secret with main API if provided
-    if jwt_secret:
-        set_jwt_secret(jwt_secret)
-    # Share database connection function if provided
-    if db_connection_func:
-        set_db_connection_func(db_connection_func)
     app.register_blueprint(statistics_bp)
     logging.info("✅ Statistics API routes registered")
