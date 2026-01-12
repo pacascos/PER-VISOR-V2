@@ -309,7 +309,7 @@ class QuestionHeatmap {
 
 // Función para volver a estadísticas
 function goBack() {
-    window.location.href = 'question-statistics-dashboard.html';
+    window.location.href = 'statistics-dashboard.html?tab=topics';
 }
 
 // Inicializar cuando se carga la página

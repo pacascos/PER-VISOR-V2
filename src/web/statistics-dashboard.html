@@ -24,6 +24,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
@@ -81,20 +84,66 @@
             text-align: center;
         }
 
-        .top-navigation {
+        /* === TABS INTERNAS === */
+        .inner-tabs {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            padding: 1rem 2rem;
-            margin-bottom: 1rem;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
-        /* Estilos de navegación movidos a unified-navigation.css */
+        .inner-tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            border-radius: 12px;
+            font-family: var(--font-heading);
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--color-marino);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
+        .inner-tab-btn:hover {
+            background: rgba(14, 107, 168, 0.1);
+        }
+
+        .inner-tab-btn.active {
+            background: linear-gradient(135deg, var(--color-oceano), var(--color-turquesa));
+            color: white;
+            box-shadow: 0 4px 12px rgba(14, 107, 168, 0.3);
+        }
+
+        .inner-tab-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === ESTILOS MI PROGRESO === */
         .stats-title {
             font-family: var(--font-heading);
             font-size: 2.5rem;
@@ -122,8 +171,8 @@
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
@@ -132,7 +181,7 @@
             backdrop-filter: blur(10px);
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            padding: 2rem;
+            padding: 1.5rem;
             transition: all 0.3s ease;
         }
 
@@ -167,7 +216,7 @@
 
         .stat-title {
             font-family: var(--font-heading);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: var(--color-marino);
         }
@@ -262,6 +311,8 @@
             border-radius: 12px;
             border-left: 4px solid;
             transition: all 0.3s ease;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .exam-history-item.passed {
@@ -284,6 +335,17 @@
             font-weight: 600;
             color: var(--dark-color);
             font-size: 0.9rem;
+        }
+
+        .exam-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
         }
 
         .exam-status {
@@ -327,6 +389,7 @@
         .exam-details {
             flex: 1;
             margin-left: 1rem;
+            min-width: 200px;
         }
 
         .exam-stats {
@@ -334,36 +397,13 @@
             gap: 1rem;
             font-size: 0.85rem;
             color: #6b7280;
+            flex-wrap: wrap;
         }
 
         .exam-stat {
             display: flex;
             align-items: center;
             gap: 0.25rem;
-        }
-
-        .exam-stat i {
-            width: 14px;
-        }
-
-        .exam-actions .btn {
-            font-size: 0.8rem;
-            padding: 0.25rem 0.75rem;
-        }
-
-        .failed-question-item {
-            border-left: 4px solid #ef4444 !important;
-            background: rgba(239, 68, 68, 0.05);
-        }
-
-        .option-item {
-            padding: 0.5rem;
-            border-radius: 8px;
-            transition: background-color 0.2s ease;
-        }
-
-        .option-item:hover {
-            background-color: rgba(0, 0, 0, 0.05);
         }
 
         .chart-container {
@@ -458,7 +498,6 @@
             font-size: 0.9rem;
         }
 
-
         .streak-indicator {
             display: inline-flex;
             align-items: center;
@@ -480,6 +519,216 @@
             100% { opacity: 0.8; }
         }
 
+        /* === ESTILOS ANÁLISIS POR TEMAS (UT) === */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, var(--color-oceano) 0%, var(--color-turquesa) 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .summary-card h3 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-card p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .ut-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .ut-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .ut-header {
+            background: linear-gradient(135deg, var(--color-oceano) 0%, var(--color-turquesa) 100%);
+            color: white;
+            padding: 1.25rem 1.5rem;
+            position: relative;
+        }
+
+        .ut-number {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .ut-name {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .ut-body {
+            padding: 1.5rem;
+        }
+
+        .ut-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ut-stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .ut-stat-value {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-oceano);
+            margin-bottom: 0.25rem;
+        }
+
+        .ut-stat-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .success-rate {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #28a745;
+        }
+
+        .success-rate.low {
+            color: #dc3545;
+        }
+
+        .success-rate.medium {
+            color: #ffc107;
+        }
+
+        .failed-questions {
+            margin-top: 1.5rem;
+        }
+
+        .failed-questions h6 {
+            color: var(--danger-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .question-item {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .question-item:hover {
+            background: #fff1f1;
+            border-color: #feb2b2;
+            transform: translateX(5px);
+        }
+
+        .question-text {
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .question-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #666;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .failure-badge {
+            background: var(--danger-color);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .correct-badge {
+            background: var(--success-color);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .view-question-btn {
+            background: var(--color-oceano);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .view-question-btn:hover {
+            background: var(--color-marino);
+        }
+
+        /* === ESTILOS PREGUNTAS MARCADAS === */
+        .bookmarked-questions-container {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .bookmark-item {
+            background: #fffbf0;
+            border: 1px solid #fde68a;
+            border-left: 4px solid #f59e0b;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .bookmark-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* === UTILIDADES === */
         .loading-spinner {
             display: flex;
             justify-content: center;
@@ -501,15 +750,62 @@
             100% { transform: rotate(360deg); }
         }
 
-        @keyframes slideIn {
-            0% { 
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            100% { 
-                transform: translateX(0);
-                opacity: 1;
-            }
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .action-btn-primary {
+            background: linear-gradient(135deg, var(--color-oceano), var(--color-turquesa));
+            color: white;
+            box-shadow: 0 4px 15px rgba(14, 107, 168, 0.3);
+        }
+
+        .action-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(14, 107, 168, 0.4);
+            color: white;
+        }
+
+        .action-btn-success {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .action-btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+            color: white;
         }
 
         @media (max-width: 768px) {
@@ -525,15 +821,13 @@
                 font-size: 2rem;
             }
 
-            .top-navigation {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
+            .inner-tabs {
+                padding: 0.25rem;
             }
 
-            .top-navigation h2 {
-                order: -1;
-                margin-bottom: 0.5rem;
+            .inner-tab-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
             }
 
             .exam-history-item {
@@ -547,8 +841,8 @@
                 width: 100%;
             }
 
-            .exam-stats {
-                flex-wrap: wrap;
+            .summary-cards {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -575,7 +869,7 @@
             <div></div>
         </div>
 
-        <!-- Barra de Navegación con Tabs -->
+        <!-- Barra de Navegación con Tabs Principales -->
         <div class="unified-tab-nav">
             <a href="exam-system.html" class="unified-tab-item">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -599,12 +893,6 @@
                 </svg>
                 Estadísticas
             </a>
-            <a href="question-statistics-dashboard.html" class="unified-tab-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                </svg>
-                Preguntas
-            </a>
             <a href="study-config.html" class="unified-tab-item">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
@@ -614,9 +902,9 @@
             </a>
         </div>
 
-        <!-- Header -->
+        <!-- Header con info del usuario -->
         <div class="stats-header">
-            <p class="stats-subtitle">Seguimiento de tu progreso en el examen PER</p>
+            <p class="stats-subtitle">Seguimiento completo de tu progreso en el examen PER</p>
 
             <div class="user-info-header">
                 <div class="user-level" id="userLevel">
@@ -635,228 +923,240 @@
             </div>
         </div>
 
+        <!-- Tabs Internas -->
+        <div class="inner-tabs">
+            <button class="inner-tab-btn active" onclick="switchTab('progress')" data-tab="progress">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                    <path d="M4 22h16"></path>
+                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                </svg>
+                Mi Progreso
+            </button>
+            <button class="inner-tab-btn" onclick="switchTab('topics')" data-tab="topics">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                Análisis por Temas
+            </button>
+            <button class="inner-tab-btn" onclick="switchTab('bookmarks')" data-tab="bookmarks">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+                Preguntas Marcadas
+                <span id="bookmarkCount" class="badge bg-warning ms-1" style="font-size: 0.7rem;">0</span>
+            </button>
+        </div>
+
         <!-- Loading State -->
         <div id="loadingState" class="loading-spinner">
             <div class="spinner"></div>
         </div>
 
-        <!-- Main Stats Grid -->
-        <div id="statsContent" class="d-none">
-            <div class="stats-grid">
-                <!-- Overall Performance -->
+        <!-- ==================== TAB 1: MI PROGRESO ==================== -->
+        <div id="tab-progress" class="tab-content active">
+            <div id="statsContent" class="d-none">
+                <div class="stats-grid">
+                    <!-- Overall Performance -->
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon success">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="stat-title">Rendimiento Global</div>
+                        </div>
+                        <div class="stat-value" id="overallScore">0%</div>
+                        <div class="stat-description">Puntuación promedio en todos los exámenes</div>
+                        <div class="progress-wrapper">
+                            <div class="progress">
+                                <div class="progress-bar" id="overallProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Exams Completed -->
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon info">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <div class="stat-title">Exámenes Completados</div>
+                        </div>
+                        <div class="stat-value" id="examsCompleted">0</div>
+                        <div class="stat-description">Total de exámenes realizados</div>
+                        <div class="progress-wrapper">
+                            <div class="progress">
+                                <div class="progress-bar" id="examProgress" style="width: 0%"></div>
+                            </div>
+                            <small class="text-muted">Meta: 20 exámenes</small>
+                        </div>
+                    </div>
+
+                    <!-- Study Time -->
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon warning">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-title">Tiempo de Estudio</div>
+                        </div>
+                        <div class="stat-value" id="studyTime">0h</div>
+                        <div class="stat-description">Tiempo total invertido estudiando</div>
+                        <div class="progress-wrapper">
+                            <div class="progress">
+                                <div class="progress-bar" id="timeProgress" style="width: 0%"></div>
+                            </div>
+                            <small class="text-muted">Meta: 50 horas</small>
+                        </div>
+                    </div>
+
+                    <!-- Weak Areas -->
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-title">Áreas de Mejora</div>
+                        </div>
+                        <div class="stat-value" id="weakAreas">0</div>
+                        <div class="stat-description">Temas que requieren más práctica</div>
+                        <div id="weakAreasList" class="mt-2"></div>
+                    </div>
+                </div>
+
+                <!-- Evolution Chart -->
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-icon primary">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-title">Evolución del Rendimiento</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="evolutionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Topic Mastery Radar -->
                 <div class="stat-card">
                     <div class="stat-card-header">
                         <div class="stat-icon success">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-                                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-                                <path d="M4 22h16"></path>
-                                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
-                                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
-                                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
-                            </svg>
+                            <i class="fas fa-bullseye"></i>
                         </div>
-                        <div class="stat-title">Rendimiento Global</div>
+                        <div class="stat-title">Dominio por Temas</div>
                     </div>
-                    <div class="stat-value" id="overallScore">85%</div>
-                    <div class="stat-description">Puntuación promedio en todos los exámenes</div>
-                    <div class="progress-wrapper">
-                        <div class="progress">
-                            <div class="progress-bar" id="overallProgress" style="width: 85%"></div>
-                        </div>
+                    <div class="chart-container">
+                        <canvas id="radarChart"></canvas>
                     </div>
                 </div>
 
-                <!-- Exams Completed -->
+                <!-- Detailed Topic Progress -->
                 <div class="stat-card">
                     <div class="stat-card-header">
                         <div class="stat-icon info">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 11l3 3L22 4"></path>
-                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-                            </svg>
+                            <i class="fas fa-list-ul"></i>
                         </div>
-                        <div class="stat-title">Exámenes Completados</div>
+                        <div class="stat-title">Progreso Detallado por UT</div>
                     </div>
-                    <div class="stat-value" id="examsCompleted">12</div>
-                    <div class="stat-description">Total de exámenes realizados</div>
-                    <div class="progress-wrapper">
-                        <div class="progress">
-                            <div class="progress-bar" id="examProgress" style="width: 60%"></div>
-                        </div>
-                        <small class="text-muted">Meta: 20 exámenes</small>
-                    </div>
+                    <div class="topic-mastery" id="topicMastery"></div>
                 </div>
 
-                <!-- Study Time -->
+                <!-- Exam History -->
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div class="stat-icon primary">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="stat-title">Historial de Exámenes</div>
+                    </div>
+                    <div class="exam-history-container" id="examHistoryContainer"></div>
+                </div>
+
+                <!-- Achievements -->
                 <div class="stat-card">
                     <div class="stat-card-header">
                         <div class="stat-icon warning">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
+                            <i class="fas fa-medal"></i>
                         </div>
-                        <div class="stat-title">Tiempo de Estudio</div>
+                        <div class="stat-title">Logros Desbloqueados</div>
                     </div>
-                    <div class="stat-value" id="studyTime">24h</div>
-                    <div class="stat-description">Tiempo total invertido estudiando</div>
-                    <div class="progress-wrapper">
-                        <div class="progress">
-                            <div class="progress-bar" id="timeProgress" style="width: 48%"></div>
-                        </div>
-                        <small class="text-muted">Meta: 50 horas</small>
-                    </div>
+                    <div class="achievements-grid" id="achievementsGrid"></div>
                 </div>
+            </div>
 
-                <!-- Weak Areas -->
+            <!-- Recommendations -->
+            <div id="recommendationsSection" class="recommendations d-none">
+                <h3>
+                    <i class="fas fa-lightbulb" style="margin-right: 8px; color: var(--color-naranja);"></i>
+                    Recomendaciones de Estudio
+                </h3>
+                <div id="recommendationsList"></div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 2: ANÁLISIS POR TEMAS ==================== -->
+        <div id="tab-topics" class="tab-content">
+            <!-- Loading -->
+            <div id="topicsLoading" class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+
+            <div id="topicsContent" style="display: none;">
+                <!-- Summary Cards -->
+                <div class="summary-cards" id="summary-cards"></div>
+
+                <!-- Chart -->
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <div class="stat-icon danger">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                                <line x1="12" y1="9" x2="12" y2="13"></line>
-                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                            </svg>
+                        <div class="stat-icon primary">
+                            <i class="fas fa-chart-bar"></i>
                         </div>
-                        <div class="stat-title">Áreas de Mejora</div>
+                        <div class="stat-title">Distribución de Intentos por UT</div>
                     </div>
-                    <div class="stat-value" id="weakAreas">3</div>
-                    <div class="stat-description">Temas que requieren más práctica</div>
-                    <div id="weakAreasList" class="mt-2">
-                        <small class="badge bg-danger me-1">UT3 - Navegación</small>
-                        <small class="badge bg-warning me-1">UT7 - Meteorología</small>
-                        <small class="badge bg-warning me-1">UT9 - Comunicaciones</small>
+                    <div style="position: relative; height: 350px; width: 100%; margin-top: 1rem;">
+                        <canvas id="attemptsChart"></canvas>
                     </div>
                 </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <a href="question-heatmap.html" class="action-btn action-btn-primary">
+                        <i class="fas fa-fire"></i> Ver Heatmap Visual
+                    </a>
+                    <a href="study-summary.html" class="action-btn action-btn-success">
+                        <i class="fas fa-book"></i> Resumen de Estudio
+                    </a>
+                </div>
+
+                <!-- UT Cards -->
+                <div id="ut-cards" style="margin-top: 2rem;"></div>
             </div>
 
-            <!-- Evolution Chart -->
-            <div class="stat-card">
-                <div class="stat-card-header">
-                    <div class="stat-icon primary">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 3v18h18"></path>
-                            <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
-                        </svg>
-                    </div>
-                    <div class="stat-title">Evolución del Rendimiento</div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="evolutionChart"></canvas>
-                </div>
+            <!-- No Data -->
+            <div id="topicsNoData" class="no-data" style="display: none;">
+                <i class="fas fa-chart-bar"></i>
+                <h4>No hay datos disponibles</h4>
+                <p>Las estadísticas se generarán cuando comiences a realizar exámenes y tests de estudio.</p>
             </div>
+        </div>
 
-            <!-- Topic Mastery -->
-            <div class="stat-card">
-                <div class="stat-card-header">
-                    <div class="stat-icon success">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16z"></path>
-                            <path d="M12 2v8l4 2"></path>
-                            <path d="M20 12a8 8 0 0 1-8 8"></path>
-                            <path d="M2 12h2"></path>
-                            <path d="M20 12h2"></path>
-                        </svg>
-                    </div>
-                    <div class="stat-title">Dominio por Temas</div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="radarChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Detailed Topic Progress -->
-            <div class="stat-card">
-                <div class="stat-card-header">
-                    <div class="stat-icon info">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="8" y1="6" x2="21" y2="6"></line>
-                            <line x1="8" y1="12" x2="21" y2="12"></line>
-                            <line x1="8" y1="18" x2="21" y2="18"></line>
-                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                        </svg>
-                    </div>
-                    <div class="stat-title">Progreso Detallado por UT</div>
-                </div>
-                <div class="topic-mastery" id="topicMastery">
-                    <!-- Topics will be loaded here -->
-                </div>
-            </div>
-
-            <!-- Exam History -->
-            <div class="stat-card">
-                <div class="stat-card-header">
-                    <div class="stat-icon primary">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 3v5h5"></path>
-                            <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"></path>
-                            <path d="M12 7v5l4 2"></path>
-                        </svg>
-                    </div>
-                    <div class="stat-title">Historial de Exámenes</div>
-                </div>
-                <div class="exam-history-container" id="examHistoryContainer">
-                    <!-- Exam history will be loaded here -->
-                </div>
-            </div>
-
-            <!-- Achievements -->
+        <!-- ==================== TAB 3: PREGUNTAS MARCADAS ==================== -->
+        <div id="tab-bookmarks" class="tab-content">
             <div class="stat-card">
                 <div class="stat-card-header">
                     <div class="stat-icon warning">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="8" r="6"></circle>
-                            <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"></path>
-                        </svg>
+                        <i class="fas fa-bookmark"></i>
                     </div>
-                    <div class="stat-title">Logros Desbloqueados</div>
+                    <div class="stat-title">Preguntas Marcadas para Repasar</div>
                 </div>
-                <div class="achievements-grid" id="achievementsGrid">
-                    <!-- Achievements will be loaded here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Recommendations -->
-        <div id="recommendationsSection" class="recommendations d-none">
-            <h3>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;">
-                    <line x1="9" y1="18" x2="15" y2="18"></line>
-                    <line x1="10" y1="22" x2="14" y2="22"></line>
-                    <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path>
-                </svg>
-                Recomendaciones de Estudio
-            </h3>
-            <div id="recommendationsList">
-                <!-- Recommendations will be loaded here -->
-            </div>
-        </div>
-
-        <!-- Achievement Notification Modal -->
-        <div class="modal fade" id="achievementModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header" style="background: linear-gradient(135deg, var(--color-naranja), #fbbf24); color: var(--color-marino);">
-                        <h5 class="modal-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
-                                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-                                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-                                <path d="M4 22h16"></path>
-                                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
-                                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
-                                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
-                            </svg>
-                            ¡Nuevo Logro Desbloqueado!
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <div id="achievementContent">
-                            <!-- Achievement content will be loaded here -->
-                        </div>
+                <div id="bookmarkedQuestionsContainer" class="bookmarked-questions-container">
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
                     </div>
                 </div>
             </div>
@@ -867,28 +1167,411 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Configuración de entorno (debe cargarse primero) -->
+    <!-- Configuración de entorno -->
     <script src="config.js"></script>
 
-    <!-- Statistics Manager -->
+    <!-- Managers -->
     <script src="statistics-manager.js"></script>
+    <script src="bookmark-manager.js"></script>
 
     <script>
+        // === VARIABLES GLOBALES ===
         let statisticsManager;
+        let utStats = [];
+        let utChart = null;
 
-        function initializeDashboard() {
-            statisticsManager = new StatisticsManager();
-            statisticsManager.initialize();
-            
-            // Hacer el manager disponible globalmente para los botones
-            window.statisticsManager = statisticsManager;
+        // === FUNCIONES DE NAVEGACIÓN ENTRE TABS ===
+        function switchTab(tabName) {
+            // Actualizar botones
+            document.querySelectorAll('.inner-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.tab === tabName) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Actualizar contenido
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            // Cargar datos si es necesario
+            if (tabName === 'topics' && utStats.length === 0) {
+                loadTopicsData();
+            }
+            if (tabName === 'bookmarks') {
+                loadBookmarkedQuestions();
+            }
         }
 
-        // Intentar inicializar inmediatamente si el DOM ya está listo
+        // === INICIALIZACIÓN ===
+        async function initializeDashboard() {
+            statisticsManager = new StatisticsManager();
+            await statisticsManager.initialize();
+
+            // Hacer el manager disponible globalmente
+            window.statisticsManager = statisticsManager;
+
+            // Ocultar loading principal
+            document.getElementById('loadingState').classList.add('d-none');
+        }
+
+        // === TAB 2: ANÁLISIS POR TEMAS ===
+        async function loadTopicsData() {
+            const loading = document.getElementById('topicsLoading');
+            const content = document.getElementById('topicsContent');
+            const noData = document.getElementById('topicsNoData');
+
+            loading.style.display = 'flex';
+            content.style.display = 'none';
+            noData.style.display = 'none';
+
+            try {
+                const response = await fetch(`${window.API_BASE || '/api'}/question-stats/by-ut`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success && data.ut_stats && data.ut_stats.length > 0) {
+                    utStats = data.ut_stats;
+                    renderTopicsSummary();
+                    renderTopicsChart();
+                    renderUTCards();
+
+                    loading.style.display = 'none';
+                    content.style.display = 'block';
+                } else {
+                    loading.style.display = 'none';
+                    noData.style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error('Error cargando estadísticas por UT:', error);
+                loading.style.display = 'none';
+                noData.style.display = 'block';
+            }
+        }
+
+        function renderTopicsSummary() {
+            const summaryCards = document.getElementById('summary-cards');
+
+            const totalQuestions = utStats.reduce((sum, ut) => sum + ut.total_questions_available, 0);
+            const totalAttempts = utStats.reduce((sum, ut) => sum + ut.total_attempts, 0);
+            const totalCorrect = utStats.reduce((sum, ut) => sum + ut.total_correct, 0);
+            const avgSuccessRate = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
+
+            summaryCards.innerHTML = `
+                <div class="summary-card">
+                    <h3>${totalQuestions.toLocaleString()}</h3>
+                    <p>Preguntas Disponibles</p>
+                </div>
+                <div class="summary-card">
+                    <h3>${totalAttempts.toLocaleString()}</h3>
+                    <p>Intentos Totales</p>
+                </div>
+                <div class="summary-card">
+                    <h3>${totalCorrect.toLocaleString()}</h3>
+                    <p>Respuestas Correctas</p>
+                </div>
+                <div class="summary-card">
+                    <h3>${avgSuccessRate}%</h3>
+                    <p>Tasa de Éxito Global</p>
+                </div>
+            `;
+        }
+
+        function renderTopicsChart() {
+            const canvas = document.getElementById('attemptsChart');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+
+            if (utChart) {
+                utChart.destroy();
+                utChart = null;
+            }
+
+            const sortedUtStats = [...utStats].sort((a, b) => a.ut_number - b.ut_number);
+            const labels = sortedUtStats.map(ut => ut.ut_name);
+            const correct = sortedUtStats.map(ut => ut.total_correct);
+            const incorrect = sortedUtStats.map(ut => ut.total_incorrect);
+
+            utChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Correctas',
+                            data: correct,
+                            backgroundColor: '#10b981',
+                            borderColor: '#059669',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Incorrectas',
+                            data: incorrect,
+                            backgroundColor: '#ef4444',
+                            borderColor: '#dc2626',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45,
+                                font: { size: 10 }
+                            },
+                            grid: { display: false }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0 },
+                            grid: { color: 'rgba(0, 0, 0, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderUTCards() {
+            const container = document.getElementById('ut-cards');
+            const sortedUtStats = [...utStats].sort((a, b) => a.ut_number - b.ut_number);
+
+            container.innerHTML = sortedUtStats.map(ut => {
+                const successRate = parseFloat(ut.avg_success_rate) || 0;
+                const successClass = successRate >= 70 ? '' : successRate >= 50 ? 'medium' : 'low';
+
+                const topFailedHTML = ut.top_failed_questions && ut.top_failed_questions.length > 0
+                    ? ut.top_failed_questions.map(q => renderFailedQuestion(q)).join('')
+                    : '<p class="text-muted">No hay datos de preguntas falladas</p>';
+
+                return `
+                    <div class="ut-card">
+                        <div class="ut-header">
+                            <div class="ut-number">UT ${ut.ut_number}</div>
+                            <div class="ut-name">${ut.ut_name}</div>
+                        </div>
+                        <div class="ut-body">
+                            <div class="ut-stats-grid">
+                                <div class="ut-stat-item">
+                                    <div class="ut-stat-value">${ut.total_questions_available.toLocaleString()}</div>
+                                    <div class="ut-stat-label">Disponibles</div>
+                                </div>
+                                <div class="ut-stat-item">
+                                    <div class="ut-stat-value">${ut.total_attempts}</div>
+                                    <div class="ut-stat-label">Intentos</div>
+                                </div>
+                                <div class="ut-stat-item">
+                                    <div class="ut-stat-value">${ut.total_correct}</div>
+                                    <div class="ut-stat-label">Correctas</div>
+                                </div>
+                                <div class="ut-stat-item">
+                                    <div class="ut-stat-value">${ut.total_incorrect}</div>
+                                    <div class="ut-stat-label">Incorrectas</div>
+                                </div>
+                                <div class="ut-stat-item">
+                                    <div class="ut-stat-value success-rate ${successClass}">${successRate}%</div>
+                                    <div class="ut-stat-label">Tasa de Éxito</div>
+                                </div>
+                            </div>
+
+                            <div class="failed-questions">
+                                <h6>
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Top 5 Preguntas Más Falladas
+                                </h6>
+                                ${topFailedHTML}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderFailedQuestion(question) {
+            const failureRate = parseFloat(question.failure_rate) || 0;
+            const respuestaLabel = (question.respuesta_correcta || 'N/A').toUpperCase();
+
+            return `
+                <div class="question-item">
+                    <div class="question-text">${question.texto_pregunta}</div>
+                    <div class="question-stats">
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <span class="failure-badge">${failureRate}% fallos</span>
+                            <span>${question.total_appearances} intentos</span>
+                            <span class="correct-badge">
+                                <i class="fas fa-check-circle"></i> Correcta: ${respuestaLabel}
+                            </span>
+                        </div>
+                        <button class="view-question-btn" onclick="viewQuestion('${question.question_id}')">
+                            <i class="fas fa-eye"></i> Ver
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // === TAB 3: PREGUNTAS MARCADAS ===
+        async function loadBookmarkedQuestions() {
+            const container = document.getElementById('bookmarkedQuestionsContainer');
+            const countBadge = document.getElementById('bookmarkCount');
+
+            container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
+
+            const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+            if (!token) {
+                renderEmptyBookmarks(container, countBadge);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${window.API_BASE || '/api'}/questions/bookmarked`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) {
+                    renderEmptyBookmarks(container, countBadge);
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (data.success && data.questions && data.questions.length > 0) {
+                    renderBookmarkedQuestions(data.questions, container, countBadge);
+                } else {
+                    renderEmptyBookmarks(container, countBadge);
+                }
+
+            } catch (error) {
+                console.error('Error cargando preguntas marcadas:', error);
+                renderEmptyBookmarks(container, countBadge);
+            }
+        }
+
+        function renderEmptyBookmarks(container, countBadge) {
+            if (countBadge) countBadge.textContent = '0';
+            container.innerHTML = `
+                <div class="no-data">
+                    <i class="fas fa-bookmark"></i>
+                    <h4>No tienes preguntas marcadas</h4>
+                    <p>Marca preguntas durante los exámenes para revisarlas más tarde</p>
+                </div>
+            `;
+        }
+
+        function renderBookmarkedQuestions(questions, container, countBadge) {
+            if (countBadge) countBadge.textContent = questions.length;
+
+            container.innerHTML = questions.map(q => {
+                const bookmarkedDate = new Date(q.bookmarked_at);
+                const formattedDate = bookmarkedDate.toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                return `
+                    <div class="bookmark-item">
+                        <div class="question-text" style="font-weight: 500; margin-bottom: 10px;">
+                            ${q.texto_pregunta}
+                        </div>
+                        <div class="question-stats">
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                                <span style="color: #64748b; font-size: 0.85rem;">
+                                    <i class="fas fa-tag"></i> ${q.categoria}
+                                </span>
+                                <span style="color: #64748b; font-size: 0.85rem;">
+                                    <i class="fas fa-calendar"></i> ${formattedDate}
+                                </span>
+                                <span style="color: #64748b; font-size: 0.85rem;">
+                                    <i class="fas fa-file-alt"></i> ${q.exam_titulo || 'N/A'} (${q.convocatoria || 'N/A'})
+                                </span>
+                            </div>
+                            <div style="display: flex; gap: 8px; margin-top: 0.5rem;">
+                                <button class="view-question-btn" onclick="viewQuestion('${q.question_id}')">
+                                    <i class="fas fa-eye"></i> Ver en Banco
+                                </button>
+                                <button class="view-question-btn" onclick="unbookmarkQuestion('${q.question_id}')" style="background: #ef4444;">
+                                    <i class="fas fa-bookmark"></i> Desmarcar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // === FUNCIONES GLOBALES ===
+        function viewQuestion(questionId) {
+            window.open(`visor-nueva-arquitectura.html?question_id=${questionId}`, '_blank');
+        }
+
+        async function unbookmarkQuestion(questionId) {
+            const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+            if (!token) {
+                alert('Debes estar autenticado para desmarcar preguntas');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${window.API_BASE || '/api'}/questions/${questionId}/bookmark`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    loadBookmarkedQuestions();
+                } else {
+                    alert('Error al desmarcar la pregunta');
+                }
+            } catch (error) {
+                console.error('Error desmarcando pregunta:', error);
+                alert('Error al desmarcar la pregunta');
+            }
+        }
+
+        // === MANEJAR TAB POR URL ===
+        function handleUrlTab() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tabParam = urlParams.get('tab');
+            if (tabParam && ['progress', 'topics', 'bookmarks'].includes(tabParam)) {
+                switchTab(tabParam);
+            }
+        }
+
+        // === INICIAR ===
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeDashboard);
+            document.addEventListener('DOMContentLoaded', () => {
+                initializeDashboard();
+                handleUrlTab();
+            });
         } else {
             initializeDashboard();
+            handleUrlTab();
         }
     </script>
 </body>
