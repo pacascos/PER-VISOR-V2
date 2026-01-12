@@ -36,7 +36,11 @@
       "Bash(git push:*)",
       "Bash(gh pr create:*)",
       "Bash(gh pr merge:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(open:*)",
+      "Bash(./scripts/deploy-production.sh:*)",
+      "Bash(gcloud run services update-traffic:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []

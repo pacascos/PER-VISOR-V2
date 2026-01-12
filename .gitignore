@@ -130,3 +130,24 @@ service-account*.json
 *.srl
 *.cert
 ca-bundle.*
+
+# Backups de base de datos (NUNCA subir)
+backups/
+*.sql
+*.sql.gz
+
+# Backups de git antiguos
+.git_old_backup/
+
+# Node modules
+node_modules/
+
+# Screenshots de tests
+test-screenshots*/
+qa-*.png
+screenshot-*.png
+
+# Archivos de test temporales
+test_*.json
+test_*.html
+TEST_*.md
